@@ -11,6 +11,40 @@ Owner: Lloyd
 Project Type:
 GCSE Revision, Progress Tracking and Exam Readiness Platform
 
+## Simple Explanation
+
+This project is being built so a student can revise, take timed assessments, complete exam-style sessions, save their progress automatically, and get clear feedback on what to do next.
+
+If you are new to coding, the easiest way to understand the architecture is this:
+
+- The website is what the student sees and taps on.
+- The API layer is the messenger between the website and the core platform logic.
+- The modules and services contain the real rules for exams, progress, accessibility, and recommendations.
+- The database stores the student's information, answers, and progress.
+
+In simple product terms:
+
+- Frontend means the visible screens.
+- API means the layer that passes requests and responses around.
+- Services or modules mean the parts that do the real work.
+- Database means the storage layer.
+
+Why this matters:
+
+- It keeps the project organised.
+- It makes the system easier to improve later.
+- It allows a future mobile app to reuse the same backend logic.
+- It stops important rules from being trapped only inside the website.
+
+The most important MVP idea is:
+
+1. A student starts a session
+2. The system saves progress automatically
+3. The student can leave and return later
+4. The student can finish and see results
+
+If that flow works well, the core of the platform works.
+
 ## Current Repository Status
 
 This repository now includes the initial Mark 3.2 scaffold:
@@ -188,19 +222,209 @@ Future Mobile App
 
 No business logic should live only in the website frontend.
 
+## Architecture Diagrams
+
+### Platform Architecture
+
+```mermaid
+flowchart TD
+    A["Website Client<br/>Next.js Web App"] --> B["API Layer"]
+    M["Future Mobile Client"] --> B
+
+    B --> C["Exam Engine Service"]
+    B --> D["Power Grid Service"]
+    B --> E["Saved Progress Service"]
+    B --> F["Read Aloud Service"]
+    B --> G["Accessibility Service"]
+    B --> H["Recommendations Service"]
+    B --> I["Access Arrangements Service"]
+    B --> J["Content Services"]
+
+    C --> K["Data Store"]
+    D --> K
+    E --> K
+    F --> K
+    G --> K
+    H --> K
+    I --> K
+    J --> K
+```
+
+### Module Boundaries
+
+```mermaid
+flowchart LR
+    A["Dashboard"] --> B["API Layer"]
+    C["Power Grid"] --> B
+    D["Timed Assessments"] --> B
+    E["Full GCSE Exams"] --> B
+    F["Results"] --> B
+
+    B --> G["Exam Engine"]
+    B --> H["Saved Progress"]
+    B --> I["Recommendations"]
+    B --> J["Read Aloud"]
+    B --> K["Accessibility"]
+    B --> L["Access Arrangements"]
+    B --> M["Subjects / Topics / Revision / Quiz / Past Papers"]
+    B --> N["Language"]
+    B --> O["CMS/Admin Placeholder"]
+
+    D --> G
+    E --> G
+    G --> H
+    I --> H
+    J --> L
+    K --> L
+    H --> L
+```
+
+### Core Student Journey
+
+```mermaid
+flowchart TD
+    A["Student Starts Session"] --> B["Exam Engine Creates Session"]
+    B --> C["Saved Progress Starts Auto-Save"]
+    C --> D["Student Answers Questions"]
+    D --> E["Timer and State Persist"]
+    E --> F{"Student Leaves?"}
+    F -- "Yes" --> G["Resume From Saved Progress"]
+    G --> D
+    F -- "No" --> H["Student Finishes Session"]
+    H --> I["Results Generated"]
+    I --> J["Power Grid and Dashboard Update"]
+    I --> K["Recommendations Update"]
+```
+
 ## Core MVP Modules
 
 1. Dashboard
 2. Power Grid Progress
 3. Timed Assessments
-4. Full GCSE Exam Engine
+4. Exam Engine
 5. Saved Progress
 6. Recommendations
 7. Accessibility
 8. Read Aloud
-9. Language Ready Structure
-10. CMS/Admin Placeholder
-11. Access Arrangements
+9. Access Arrangements
+
+Supporting MVP foundations:
+
+- Language-ready structure
+- CMS/Admin placeholder only
+
+## MVP Delivery Plan
+
+The Mark 3.2 MVP should be delivered in stages so the platform grows around a stable assessment core without mixing module responsibilities too early.
+
+### Stage 1: Foundation
+
+- Keep the architecture modular and API first.
+- Preserve separation between exam logic, progress logic, content logic, read aloud, and access arrangements.
+- Keep the project language ready even before translation is implemented.
+- Treat CMS/Admin as a placeholder module during MVP.
+
+### Stage 2: Exam Engine
+
+- Build the core question, answer, timing, and session flow.
+- Support GCSE-style assessment flows and official exam durations.
+- Keep exam rules independent from progress persistence and recommendations.
+
+### Stage 3: Power Grid
+
+- Build the topic and skill progression experience.
+- Show revision status, confidence, and next-step visibility.
+- Consume data through the API layer rather than frontend-only logic.
+
+### Stage 4: Saved Progress
+
+- Auto-save all student progress.
+- Store answers, active sessions, timing state, and active access arrangement settings.
+- Keep saved progress separate from content modelling and exam rules.
+
+### Stage 5: Read Aloud
+
+- Build Read Aloud as its own module and service boundary.
+- Allow exam and revision experiences to consume it without embedding its logic.
+- Prepare it to integrate with Access Arrangements.
+
+### Stage 6: Dashboard
+
+- Build the student home view after the core systems are stable.
+- Show current activity, recent progress, Power Grid summary, and recommended next actions.
+
+### Stage 7: Timed Assessments
+
+- Add shorter manual assessment flows.
+- Enforce the rule that manual assessments cannot exceed official durations.
+- Keep the structure ready for future access arrangements support.
+
+### Stage 8: Full GCSE Exams
+
+- Add complete exam mode on top of the mature Exam Engine.
+- Use official durations.
+- Keep the API and timing model ready for future access arrangements.
+
+### Stage 9: Results and Recommendations
+
+- Deliver clear results views for completed sessions.
+- Add simple rules-based recommendations for MVP.
+- Avoid AI support until explicitly prioritised.
+
+### Stage 10: Accessibility and Access Arrangements Foundation
+
+- Add accessibility settings in a dedicated module.
+- Maintain framework-neutral Access Arrangements contracts through the API layer.
+- Avoid complex SEND or school administration UI during MVP.
+
+## MVP Success Milestone
+
+The first true MVP milestone is reached when a student can:
+
+1. Start an exam-style session
+2. Answer questions
+3. Have progress auto-saved
+4. Leave and later return
+5. Continue the same session
+6. Finish the session
+7. View basic results
+
+Once this works reliably, the platform has its core assessment spine in place.
+
+### MVP Delivery Dependency Map
+
+```mermaid
+flowchart TD
+    A["Foundation"] --> B["Exam Engine"]
+    B --> C["Saved Progress"]
+    B --> D["Timed Assessments"]
+    B --> E["Full GCSE Exams"]
+    B --> F["Results"]
+    C --> G["Dashboard"]
+    C --> H["Power Grid"]
+    C --> I["Recommendations"]
+    C --> J["Access Arrangements Foundation"]
+    J --> K["Read Aloud"]
+    J --> L["Accessibility"]
+    F --> H
+    F --> I
+    H --> G
+    I --> G
+```
+
+## Build Priority
+
+1. Exam Engine
+2. Power Grid
+3. Saved Progress
+4. Read Aloud
+5. Dashboard
+6. Timed Assessments
+7. Full GCSE Exams
+8. Results
+9. Recommendations
+10. Accessibility
+11. Access Arrangements foundation
 
 ## Project Modules
 

@@ -4,8 +4,26 @@
 
 :root {
   color-scheme: light;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
+
+html {
+  background: #f5f5f4;
 }
 
 body {
   margin: 0;
+  background: #f5f5f4;
+  color: #1c1917;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }

@@ -55,18 +55,35 @@ This repository now includes the initial Mark 3.2 scaffold:
 - `src` directory structure
 - Module-first architecture placeholders
 - Access Arrangements contracts, services, and integration types
-- Placeholder app routes for early navigation and build validation
+- Initial exam engine mock data models and UI prototype
+- App routes for early navigation and build validation
 
 This is a contracts-first foundation build.
 
 It does not yet include:
 
 - Dashboard functionality
-- Assessment workflows
-- Exam workflows
+- Real assessment workflows
+- Real exam workflows
 - Saved progress persistence
 - Power Grid calculations
-- Production UI implementation
+- Results workflows
+- API-backed data persistence
+
+## Current UI Milestone
+
+The platform now includes an initial Exam Engine UI slice at `/exams`.
+
+This screen currently demonstrates:
+
+- Mock GCSE paper selection
+- Question-by-question exam flow
+- Session summary and official timing display
+- Autosave state feedback
+- Question flagging and progress map
+- Mock resume state through seeded session data
+
+This is still mock-data driven, but it gives the MVP a real product-shaped starting point for the Exam Engine.
 
 ## Tech Stack
 
@@ -113,6 +130,8 @@ npm run build
 - `/admin`
 
 These routes are placeholders only and exist to validate the app scaffold.
+
+The `/exams` route now contains the first interactive UI prototype.
 
 ## Current Folder Structure
 

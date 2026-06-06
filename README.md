@@ -112,6 +112,32 @@ flowchart LR
     G --> H["Know what to revise next"]
 ```
 
+### Support flow
+
+```mermaid
+flowchart LR
+    A["Student opens accessibility"] --> B["Accessibility Module"]
+    B --> C["Access Profile Snapshot"]
+    C --> D["Read Aloud Session"]
+    C --> E["Recommendations Module"]
+    D --> F["Speech Preview in UI"]
+    E --> G["Next best support-aware action"]
+```
+
+### Results flow
+
+```mermaid
+flowchart LR
+    A["Exam session"] --> C["Results Module"]
+    B["Timed assessment attempt"] --> C["Results Module"]
+    C --> D["Score summaries"]
+    C --> E["Trend signal"]
+    C --> F["Next review priority"]
+    D --> G["Results route"]
+    E --> G
+    F --> G
+```
+
 ## Mark 3.2 Blueprint
 
 ### Core MVP modules
@@ -212,10 +238,11 @@ This is no longer just a scaffold. The repo now contains several connected MVP s
 - `/assessments`
 - `/exams`
 - `/progress`
+- `/accessibility`
+- `/results`
 
 ### Placeholder routes still waiting for fuller product work
 
-- `/accessibility`
 - `/admin`
 
 ### Working product slices
@@ -227,8 +254,11 @@ This is no longer just a scaffold. The repo now contains several connected MVP s
 - A timed assessment experience with duration presets and autosave-backed resume state
 - A full exam experience with mock GCSE papers, progress map, flags, and autosave-backed resume state
 - A Power Grid progress route using calculated subject summaries
+- An accessibility and support route with settings, read aloud preview, and support-aware recommendation cards
+- A results route that turns exam and timed assessment attempts into outcome summaries
 - Access arrangement contracts and services integrated into exam and timed assessment flows
 - Saved progress services for both exam sessions and timed assessment attempts
+- Read aloud, accessibility, and recommendations modules with real working foundations
 
 ## Route-by-Route Explanation
 
@@ -335,6 +365,42 @@ Learning note:
 
 This route turns raw activity into meaning. That translation belongs in the Power Grid service, not scattered across page components.
 
+### `/accessibility`
+
+This is now a real support route rather than a placeholder.
+
+It currently shows:
+
+- accessibility settings state
+- access-profile-driven support snapshot data
+- read aloud preview text
+- voice and speed controls
+- browser speech synthesis preview behaviour
+- support-aware recommendation cards
+
+Learning note:
+
+This route is a good example of multiple small modules working together. Accessibility owns settings, read aloud owns preview session behaviour, and recommendations owns what to do next.
+
+### `/results`
+
+This is the current outcome route for finished or reviewable work.
+
+It currently shows:
+
+- overall score summary
+- exam result cards
+- timed assessment result cards
+- score trends
+- answered counts
+- review or flag counts
+- strongest area
+- next priority
+
+Learning note:
+
+This route closes the student loop. It proves that outcome interpretation can live in its own module rather than being bolted onto exam or assessment screens.
+
 ## Module-by-Module Explanation
 
 ### `dashboard`
@@ -397,6 +463,44 @@ Current work:
 
 - seeded topic quiz questions
 - multiple-choice answer structures
+
+### `accessibility`
+
+Purpose:
+
+- owns accessibility settings and support presentation state
+
+Current work:
+
+- accessibility snapshot generation
+- settings mapping from the access profile
+- support settings view model for the accessibility route
+
+### `read-aloud`
+
+Purpose:
+
+- owns read aloud session state and preview behaviour inputs
+
+Current work:
+
+- read aloud preview text
+- voice options
+- speed controls
+- support-aware enablement
+
+### `recommendations`
+
+Purpose:
+
+- owns student next-step guidance
+
+Current work:
+
+- recommendation cards
+- priority levels
+- route destinations
+- guidance built from Power Grid and support state
 
 ### `timed-assessment`
 
@@ -468,6 +572,20 @@ Current work:
 - subject-level progress summaries
 - overall readiness summary
 - next best action generation
+
+### `results`
+
+Purpose:
+
+- owns score summaries and post-session outcome interpretation
+
+Current work:
+
+- exam result summaries
+- timed assessment result summaries
+- score aggregation
+- trend mapping
+- next review priority
 
 ## Why The Architecture Looks Like This
 
@@ -551,6 +669,7 @@ Right now the project uses:
 - no real database
 - no real authentication
 - no real API routes yet
+- no real CMS data entry yet
 
 That means the current build is a functional MVP-shaped prototype, not a production system yet.
 
@@ -611,14 +730,14 @@ Then move on to:
 
 Important MVP work still ahead:
 
-- accessibility route with real settings
-- read aloud route or controls integration
-- recommendations route and services
-- real saved persistence beyond in-memory state
+- admin/CMS route and module slice
+- stronger real saved persistence beyond in-memory state
 - API layer
 - authentication flow
-- admin/CMS tools
-- results workflows
+- CMS content management tools
+- deeper results workflows with more detailed marking logic
+- language-ready route support
+- broader past paper coverage
 
 ## Summary
 

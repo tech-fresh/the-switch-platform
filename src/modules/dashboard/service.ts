@@ -92,6 +92,14 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       stat: "Snapshot-aware foundation",
       tone: "amber",
     },
+    {
+      href: "/results",
+      eyebrow: "Results",
+      title: "Review completed session outcomes",
+      description: "See score summaries, review flags, and next-step guidance after practice and exam sessions.",
+      stat: `${summary.activeSessionCount} result sources`,
+      tone: "rose",
+    },
   ];
 
   const examSessionCards: DashboardSessionCard[] = examSessions.map(({ paper, session }) => {

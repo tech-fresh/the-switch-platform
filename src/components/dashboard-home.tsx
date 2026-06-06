@@ -8,6 +8,8 @@ interface DashboardHomeProps {
 
 function getToneClasses(tone: DashboardMetric["tone"] | DashboardRouteCard["tone"]): string {
   switch (tone) {
+    case "rose":
+      return "border-rose-300 bg-rose-50 text-rose-950";
     case "emerald":
       return "border-emerald-300 bg-emerald-50 text-emerald-950";
     case "amber":
@@ -76,6 +78,9 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
               </Link>
               <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/progress">
                 Progress
+              </Link>
+              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/results">
+                Results
               </Link>
             </nav>
           </header>

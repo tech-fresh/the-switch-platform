@@ -13,7 +13,7 @@ export interface DashboardRouteCard {
   title: string;
   description: string;
   stat: string;
-  tone: "teal" | "emerald" | "amber" | "sky";
+  tone: "teal" | "emerald" | "amber" | "sky" | "rose";
 }
 
 export interface DashboardSessionCard {

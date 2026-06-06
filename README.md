@@ -2,389 +2,502 @@
 
 ## Mark 3.2 MVP
 
-The Switch is a GCSE revision, timed practice, progress tracking, and exam-readiness platform.
+The Switch Platform is a GCSE revision, timed practice, progress tracking, and exam-readiness product.
 
-This repository is the current website-first MVP foundation. It is being built so a student can:
+This repository is the website-first MVP build. It is being designed so a student can:
 
-1. Open a revision or exam route.
-2. Start a timed session.
-3. Have their work auto-saved.
-4. Leave and come back later.
-5. See progress and readiness signals in plain language.
+1. Choose a subject and topic
+2. Read focused revision guidance
+3. Practise through a quiz or timed checkpoint
+4. Sit a full exam-style paper
+5. Save progress automatically
+6. Return later without losing work
+7. See how prepared they are
+8. Know what to revise next
 
-The codebase is still using mock data and in-memory persistence, but it now has a real architecture shape and several connected routes instead of only placeholders.
+This README is written as a project guide and a learning guide. If you are learning to code, the idea is that you should be able to read this file and understand:
+
+- what the product is
+- what has already been built
+- how the codebase is organised
+- why the architecture is set up this way
+- what each major route and module is responsible for
+
+## Project Vision
+
+The Switch is meant to help students:
+
+- Learn
+- Practise
+- Track progress
+- Improve
+- Become exam ready
+
+The platform must be:
+
+- Mobile first
+- SEND friendly
+- Accessible
+- Modular
+- Scalable
+- API first
+- Web first
+- Future app ready
+
+## Simple Explanation
+
+The easiest way to understand the project is like this:
+
+- `src/app` is the visible website
+- `src/modules` is where the actual feature rules live
+- the page asks the modules for data
+- the modules decide the logic
+- later, an API can sit in front of those modules
+- later still, a mobile app can reuse the same logic
+
+That separation matters because it stops important product rules from being trapped inside page components.
+
+For example:
+
+- exam timing rules should belong to the exam engine
+- saved progress rules should belong to saved progress
+- progress calculations should belong to power grid
+- support settings should belong to access arrangements and accessibility
+
+## Visual Overview
+
+### Product map
+
+```mermaid
+flowchart TD
+    A["Student"] --> B["Dashboard / Home"]
+    B --> C["Subjects"]
+    B --> D["Timed Assessments"]
+    B --> E["Exams"]
+    B --> F["Progress"]
+    C --> G["Revision Content"]
+    C --> H["Quick Quiz"]
+    D --> I["Timed Assessment Module"]
+    E --> J["Exam Engine Module"]
+    I --> K["Saved Progress"]
+    J --> K
+    K --> L["Power Grid"]
+    L --> F
+```
+
+### Architecture layers
+
+```mermaid
+flowchart TD
+    A["UI Route in src/app"] --> B["Feature Component"]
+    B --> C["Module Service"]
+    C --> D["Module Types / Contracts"]
+    C --> E["Saved Progress / Aggregated State"]
+    C --> F["Access Arrangements"]
+    E --> G["Future API Layer"]
+    G --> H["Future Database"]
+    G --> I["Future Mobile App"]
+```
+
+### Current student flow
+
+```mermaid
+flowchart LR
+    A["Choose subject"] --> B["Open topic"]
+    B --> C["Read revision guidance"]
+    C --> D["Answer quick quiz"]
+    D --> E["Start timed assessment"]
+    E --> F["Resume full exam"]
+    F --> G["See Power Grid progress"]
+    G --> H["Know what to revise next"]
+```
+
+## Mark 3.2 Blueprint
+
+### Core MVP modules
+
+1. Dashboard
+2. Power Grid Progress
+3. Timed Assessments
+4. Full GCSE Exam Engine
+5. Saved Progress
+6. Recommendations
+7. Accessibility
+8. Read Aloud
+9. Language Ready Structure
+10. CMS/Admin Placeholder
+11. Access Arrangements
+
+### Launch subjects
+
+- GCSE Mathematics
+- GCSE English Language
+- GCSE Combined Science
+- Biology
+- Chemistry
+- Physics
+
+### Power Grid levels
+
+1. Ignition
+2. Powered Up
+3. Current Flow
+4. Voltage Rising
+5. Full Circuit
+6. High Voltage
+7. Grid Master
+8. Power Station
+9. Switch Legend
+
+### Progress trends
+
+- Improving
+- Stable
+- Declining
+
+### Exam engine support
+
+Boards:
+
+- AQA
+- Edexcel
+- OCR
+- Eduqas
+- WJEC
+- CCEA
+- Cambridge IGCSE
+- Edexcel International GCSE
+- OxfordAQA International GCSE
+
+Qualification types:
+
+- GCSE
+- IGCSE
+- FunctionalSkills
+- EntryLevel
+- Level1
+- Level2
+
+Exam tiers:
+
+- FOUNDATION
+- HIGHER
+
+Modes:
+
+- Full GCSE Exam
+- Manual Timed Assessment
+
+### Access arrangements support
+
+- EXTRA_TIME_25
+- EXTRA_TIME_50
+- READER
+- SCRIBE
+- REST_BREAKS
+- COLOURED_OVERLAY
+- SEPARATE_ROOM
+- TEXT_TO_SPEECH
+- LARGE_PRINT
 
 ## What Has Been Built So Far
 
-The project now includes:
+This is no longer just a scaffold. The repo now contains several connected MVP slices.
 
-- A Next.js App Router frontend
-- TypeScript across the app and modules
-- Tailwind CSS styling
-- A modular service-first architecture
-- A proper root home screen at `/`
-- A student dashboard at `/dashboard`
-- A working mock exam experience at `/exams`
-- A working mock timed assessment experience at `/assessments`
-- A working mock progress view at `/progress`
-- Saved progress foundations for exams and timed assessments
-- Power Grid progress calculations
-- Access arrangements foundations and integration contracts
-- Module READMEs that explain ownership and boundaries
-
-## What The Project Looks Like Right Now
-
-### Implemented routes
-
-These routes now have meaningful UI and connected data:
+### Built routes
 
 - `/`
 - `/dashboard`
-- `/exams`
+- `/subjects`
 - `/assessments`
+- `/exams`
 - `/progress`
 
-### Placeholder routes
+### Placeholder routes still waiting for fuller product work
 
-These routes exist in the app structure but are still simple placeholders:
-
-- `/subjects`
 - `/accessibility`
 - `/admin`
 
-## Simple Architecture Explanation
+### Working product slices
 
-Think of the project in layers:
+- A live dashboard aggregation layer
+- A subject entry route with topic selection
+- Topic revision content rendered from the revision module
+- Topic quick quiz prompts rendered from the quiz module
+- A timed assessment experience with duration presets and autosave-backed resume state
+- A full exam experience with mock GCSE papers, progress map, flags, and autosave-backed resume state
+- A Power Grid progress route using calculated subject summaries
+- Access arrangement contracts and services integrated into exam and timed assessment flows
+- Saved progress services for both exam sessions and timed assessment attempts
 
-```text
-Student sees screen
-        |
-        v
-App Route / UI
-        |
-        v
-Shared UI component
-        |
-        v
-Module service
-        |
-        v
-Saved state / calculated result
-```
-
-In plain English:
-
-- `src/app` contains route files
-- `src/components` contains reusable UI
-- `src/modules` contains feature rules and service logic
-- the UI asks modules for data
-- the UI should not own core business rules
-
-That matters because later:
-
-- a real API layer can call the same module logic
-- a future mobile app can reuse the same backend rules
-- exam logic stays separate from progress logic
-- saved progress stays separate from content rules
-
-## Current Project Flow
-
-### Whole platform flow
-
-```text
-Home / Dashboard
-       |
-       v
-Dashboard Module
-       |
-       +-------------------------+
-       |                         |
-       v                         v
-Exam Engine               Timed Assessment
-       |                         |
-       +------------+------------+
-                    |
-                    v
-             Saved Progress
-                    |
-                    v
-         Access Arrangement Snapshot
-                    |
-                    v
-               Power Grid
-                    |
-                    v
-         Progress + dashboard signals
-```
-
-### Exam flow
-
-```text
-/exams
-  -> exam-engine/service.ts
-  -> access-arrangements/service.ts
-  -> saved-progress/service.ts
-  -> exam session returned
-  -> exam UI renders session
-```
-
-What this means:
-
-- exam timing rules belong to the exam engine
-- access arrangements can adjust duration
-- saved progress can restore a previous session
-- the UI only shows the session result
-
-### Timed assessment flow
-
-```text
-/assessments
-  -> timed-assessment/service.ts
-  -> official duration cap enforced
-  -> access-arrangements/service.ts
-  -> saved-progress/service.ts
-  -> assessment attempt returned
-  -> assessment UI renders attempt
-```
-
-What this means:
-
-- the student can choose a shorter manual duration
-- the duration cannot exceed the official cap
-- that rule is enforced in the service layer
-- the attempt can be restored from saved progress
-
-### Progress flow
-
-```text
-Exam session data + Assessment attempt data
-                    |
-                    v
-             power-grid/service.ts
-                    |
-                    v
-       readiness score + trend + next action
-                    |
-                    v
-          /progress, /, and /dashboard
-```
-
-What this means:
-
-- progress logic is not mixed into exam logic
-- Power Grid translates activity into student-facing signals
-- dashboard and home routes consume those signals
-
-## Current Route Breakdown
+## Route-by-Route Explanation
 
 ### `/`
 
-This is now the proper home screen for the platform.
+This is the product home route.
 
-It currently shows:
+It uses the dashboard aggregation layer to present:
 
-- platform introduction
-- key platform metrics
-- route launch cards
-- exam session summary cards
-- timed assessment summary cards
+- high-level metrics
+- launch cards into the major routes
+- exam session summaries
+- timed assessment summaries
 - subject focus cards
 - a recommended next action
 
-This route uses:
+Learning note:
 
-- `src/app/page.tsx`
-- `src/components/dashboard-home.tsx`
-- `src/modules/dashboard/service.ts`
+This route is a good example of composition. It does not calculate exam logic itself. It asks another module for a ready-made dashboard view model.
 
 ### `/dashboard`
 
-This is now the student dashboard route.
-
-It uses the same dashboard aggregation layer as the home route, but frames the experience as the student home surface.
+This is the student-home style dashboard route.
 
 It currently shows:
 
 - overall readiness
 - active sessions
-- subject focus
-- route launch points
-- saved-support snapshot messaging
+- subject watch cards
+- links into the core working routes
+- next best action guidance
 
-### `/exams`
+Learning note:
 
-This is the first substantial exam workflow route.
+This is what “aggregation” means in a codebase. One route combines outputs from several modules into one student-facing screen.
 
-It currently shows:
+### `/subjects`
 
-- mock GCSE papers
-- paper switching
-- question-by-question exam flow
-- autosave timestamp feedback
-- flagged questions
-- completion percentage
-- progress map behaviour
-- seeded resume state
-- access-arrangement-aware duration handling
+This is now the start of the learn-and-practise flow.
+
+It currently lets the student:
+
+- choose a launch subject
+- switch between topics
+- see a topic summary
+- read revision guidance sections
+- see a quick quiz question for the current topic
+
+Learning note:
+
+This route proves that subject metadata, topics, revision content, and quiz prompts can all live in separate modules while still forming one usable screen.
 
 ### `/assessments`
 
-This is the first substantial timed assessment workflow route.
+This is the timed checkpoint practice route.
 
 It currently shows:
 
-- timed assessment selection
+- assessment selection
 - duration presets
 - official duration caps
 - adjusted duration after access arrangements
-- current question resume point
+- resume state
 - notes and bookmarks summary
-- saved progress state
+- saved progress-backed session state
 
-### `/progress`
+Learning note:
 
-This route currently proves that Power Grid logic can be kept separate from exam and assessment logic.
+The page does not decide whether a student is allowed 15, 30, or full duration. The timed-assessment service owns that logic.
+
+### `/exams`
+
+This is the current full exam-style route.
 
 It currently shows:
 
-- overall level
+- mock GCSE paper selection
+- question-by-question flow
+- autosave timestamp feedback
+- progress map
+- question flagging
+- completion percentage
+- resumed session state
+- access-arrangement-aware timing
+
+Learning note:
+
+This route is a good example of the UI being “thin”. It renders the session state, but the exam engine, access arrangements, and saved progress modules shape the logic.
+
+### `/progress`
+
+This is the current Power Grid route.
+
+It currently shows:
+
+- overall Power Grid level
 - readiness score
-- active session counts
-- subject-level readiness
-- trend indicators
-- recommended focus
-- next best action
+- active session count
+- subject-level progress cards
+- evidence statements
+- next best action guidance
 
-## Current Modules And Their Status
+Learning note:
 
-### Modules with real working foundations
+This route turns raw activity into meaning. That translation belongs in the Power Grid service, not scattered across page components.
 
-#### `dashboard`
+## Module-by-Module Explanation
 
-Purpose:
-
-- combines data from other modules for home-style routes
-
-Current work done:
-
-- route launch cards
-- aggregated metrics
-- exam and assessment session summaries
-- subject focus summaries
-
-#### `exam-engine`
+### `dashboard`
 
 Purpose:
 
-- owns exam mode rules and official exam timing
+- builds one combined home/dashboard view model from multiple modules
 
-Current work done:
+Current work:
 
-- mock GCSE paper definitions
-- exam session creation
-- seeded responses
-- resume hydration from saved progress
-- access arrangement aware duration handling
+- metrics
+- route cards
+- exam session cards
+- timed assessment cards
+- subject focus cards
 
-#### `timed-assessment`
+### `subjects`
+
+Purpose:
+
+- owns subject metadata and subject-level readiness signals
+
+Current work:
+
+- launch subject definitions
+- exam readiness score per subject
+- next topic recommendation per subject
+
+### `topics`
+
+Purpose:
+
+- owns topic lists and subject-to-topic mapping
+
+Current work:
+
+- topic summaries
+- confidence scores
+- practice counts
+- timed assessment availability markers
+
+### `revision`
+
+Purpose:
+
+- owns revision content structure
+
+Current work:
+
+- revision stacks for seeded topics
+- sectioned content matching the Mark 3.2 revision structure
+
+### `quiz`
+
+Purpose:
+
+- owns quick practice prompts and answer options
+
+Current work:
+
+- seeded topic quiz questions
+- multiple-choice answer structures
+
+### `timed-assessment`
 
 Purpose:
 
 - owns manual timed assessment attempt behaviour
 
-Current work done:
+Current work:
 
-- timed assessment definitions
-- attempt creation
-- duration preset handling
-- official duration capping
-- access arrangement aware timing
+- assessment definitions
+- duration cap handling
+- access-arrangement-aware duration adjustment
+- seeded attempt state
 - resume hydration from saved progress
 
-#### `saved-progress`
+### `exam-engine`
 
 Purpose:
 
-- owns save and resume state
+- owns full exam mode rules and official exam timing
 
-Current work done:
+Current work:
 
-- saved progress record types
-- exam progress payloads
-- timed assessment progress payloads
+- mock paper definitions
+- question structures
+- exam session creation
+- seeded answers and flags
+- resume hydration from saved progress
+- access-arrangement-aware official duration handling
+
+### `saved-progress`
+
+Purpose:
+
+- owns save and resume contracts
+
+Current work:
+
+- saved exam progress payloads
+- saved timed assessment payloads
 - in-memory repository
 - save helpers
-- resume helpers
-- status tracking
-- access arrangement snapshots
+- progress status handling
 
-#### `power-grid`
+### `access-arrangements`
 
 Purpose:
 
-- owns progress calculations and level mapping
+- owns SEND and access arrangement contracts and application logic
 
-Current work done:
+Current work:
+
+- access arrangement values
+- student access profile
+- duration adjustment rules
+- integration contracts for exams and timed assessments
+- saved progress snapshot support
+
+### `power-grid`
+
+Purpose:
+
+- owns readiness scoring and progress translation
+
+Current work:
 
 - Power Grid levels
-- trend mapping
-- subject progress summaries
-- overall readiness scoring
-- next-best-action generation
+- trend types
+- subject-level progress summaries
+- overall readiness summary
+- next best action generation
 
-#### `access-arrangements`
+## Why The Architecture Looks Like This
 
-Purpose:
+This is one of the most important ideas in the whole repo.
 
-- owns access arrangement contracts and adjustment logic
+The code is being written so the student-facing page does not become the only place where rules live.
 
-Current work done:
+Bad long-term approach:
 
-- student access profile model
-- duration adjustment logic
-- read aloud configuration
-- accessibility preference mapping
-- saved progress snapshot generation
-- framework-neutral API contracts
+- page decides timing
+- page decides progress
+- page decides support logic
+- page decides resume rules
 
-### Modules that currently exist mostly as boundaries and scaffolding
+Better approach:
 
-These modules are present to preserve architecture, but do not yet have substantial product logic in the repo:
+- exam engine decides exam timing
+- timed assessment decides manual duration rules
+- saved progress decides how sessions are restored
+- power grid decides progress meaning
+- access arrangements decide support adjustments
 
-- `accessibility`
-- `auth`
-- `cms`
-- `language`
-- `past-papers`
-- `quiz`
-- `read-aloud`
-- `recommendations`
-- `revision`
-- `subjects`
-- `topics`
+That gives you:
 
-This is intentional. The architecture is being preserved before every feature is fully built.
+- cleaner code
+- safer changes later
+- easier API extraction
+- easier future mobile app reuse
 
-## Important Files To Understand
-
-If you want to learn the project by reading code, start here:
-
-- `src/app/page.tsx`
-- `src/app/dashboard/page.tsx`
-- `src/components/dashboard-home.tsx`
-- `src/app/exams/page.tsx`
-- `src/app/exams/exam-experience.tsx`
-- `src/app/assessments/page.tsx`
-- `src/app/assessments/assessment-experience.tsx`
-- `src/app/progress/page.tsx`
-- `src/modules/dashboard/service.ts`
-- `src/modules/exam-engine/service.ts`
-- `src/modules/timed-assessment/service.ts`
-- `src/modules/saved-progress/service.ts`
-- `src/modules/power-grid/service.ts`
-- `src/modules/access-arrangements/service.ts`
-
-## Current Folder Structure
+## Folder Structure
 
 ```text
 src/
@@ -396,11 +509,9 @@ src/
     exams/
     progress/
     subjects/
-    globals.css
-    layout.tsx
-    page.tsx
   components/
-    dashboard-home.tsx
+  data/
+  lib/
   modules/
     access-arrangements/
     accessibility/
@@ -419,14 +530,36 @@ src/
     subjects/
     timed-assessment/
     topics/
+  types/
 ```
 
-## Tech Stack
+### Simple folder explanation
 
-- Next.js App Router
-- React 19
-- TypeScript
-- Tailwind CSS
+- `src/app`: page routes
+- `src/components`: reusable UI
+- `src/modules`: product features and business rules
+- `src/lib`: shared utilities
+- `src/data`: future static seed content or fixtures
+- `src/types`: shared exports
+
+## Current Development State
+
+Right now the project uses:
+
+- mock data
+- in-memory saved progress
+- no real database
+- no real authentication
+- no real API routes yet
+
+That means the current build is a functional MVP-shaped prototype, not a production system yet.
+
+But it is already more than a mock layout because:
+
+- routes are connected
+- services are doing real work
+- modules own real responsibilities
+- different student journeys now exist end to end
 
 ## Local Development
 
@@ -436,7 +569,7 @@ Install dependencies:
 npm install
 ```
 
-Run the development server:
+Run the dev server:
 
 ```bash
 npm run dev
@@ -448,61 +581,61 @@ Run the type check:
 npm run type-check
 ```
 
-Build the production version:
+Build the project:
 
 ```bash
 npm run build
 ```
 
-## What Is Real Versus Mock Right Now
+## What To Look At First If You Are Learning
 
-### Real in the codebase
+If you want the fastest path to understanding this codebase, read in this order:
 
-- route structure
-- service boundaries
-- data types
-- module ownership
-- autosave data shapes
-- readiness calculation flow
-- access arrangement adjustment flow
-- connected UI routes for dashboard, exams, assessments, and progress
+1. [src/app/subjects/page.tsx](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/app/subjects/page.tsx)
+2. [src/app/subjects/subject-experience.tsx](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/app/subjects/subject-experience.tsx)
+3. [src/modules/subjects/service.ts](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/modules/subjects/service.ts)
+4. [src/modules/topics/service.ts](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/modules/topics/service.ts)
+5. [src/modules/revision/service.ts](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/modules/revision/service.ts)
+6. [src/modules/quiz/service.ts](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/modules/quiz/service.ts)
 
-### Still mock or temporary
+Then move on to:
 
-- exam paper content
-- assessment content
-- saved progress storage
-- student profiles
-- route data source
-- results engine
-- recommendations engine
-- accessibility UI
-- admin and CMS workflows
+1. [src/app/assessments/page.tsx](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/app/assessments/page.tsx)
+2. [src/modules/timed-assessment/service.ts](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/modules/timed-assessment/service.ts)
+3. [src/modules/saved-progress/service.ts](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/modules/saved-progress/service.ts)
+4. [src/app/exams/page.tsx](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/app/exams/page.tsx)
+5. [src/modules/exam-engine/service.ts](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/modules/exam-engine/service.ts)
+6. [src/modules/power-grid/service.ts](/Users/lloydnwagbara/Documents/THE%20SWITCH%202/src/modules/power-grid/service.ts)
 
-## What Still Needs To Be Built
+## What Still Needs Building
 
-The project is still missing:
+Important MVP work still ahead:
 
-- real database persistence
-- a real API layer between frontend and backend services
-- real authentication
-- full subject and topic flows
-- recommendations logic
-- accessibility settings UI
-- read aloud UI and browser integration
+- accessibility route with real settings
+- read aloud route or controls integration
+- recommendations route and services
+- real saved persistence beyond in-memory state
+- API layer
+- authentication flow
+- admin/CMS tools
 - results workflows
-- full GCSE exam mode expansion
-- future mobile-ready backend delivery layer
 
-## Why The README Is Written This Way
+## Summary
 
-This README is meant to help you learn the project when you open it on GitHub.
+The Switch is no longer just a blueprint sitting in a README.
 
-It tells you:
+It now has:
 
-- what has already been built
-- what is still placeholder-only
-- which modules own which rules
-- where to read first if you want to understand the code
+- a meaningful modular architecture
+- a working student dashboard
+- a subjects flow
+- a timed assessment flow
+- an exam flow
+- a progress flow
+- saved progress foundations
+- access arrangements foundations
+- Power Grid foundations
 
-That way the repository is easier to read as both a product build and a learning project.
+And most importantly, the code is being shaped so that each part of the system has a job.
+
+That is one of the biggest differences between “a page that works” and “a product that can keep growing.”

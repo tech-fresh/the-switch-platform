@@ -1,4 +1,5 @@
 import { SubjectExperience } from "./subject-experience";
+import { getTopicContentPackage } from "@/modules/cms/content-package-service";
 import { getMockQuizQuestion } from "@/modules/quiz/service";
 import { getMockRevisionContent } from "@/modules/revision/service";
 import { getMockSubjects } from "@/modules/subjects/service";
@@ -16,6 +17,9 @@ export default function SubjectsPage() {
   const quizByTopic = Object.fromEntries(
     allTopics.map((topic) => [topic.topicId, getMockQuizQuestion(topic.topicId)]),
   );
+  const contentPackagesByTopic = Object.fromEntries(
+    allTopics.map((topic) => [topic.topicId, getTopicContentPackage(topic.topicId)]),
+  );
 
   return (
     <SubjectExperience
@@ -23,6 +27,7 @@ export default function SubjectsPage() {
       topicsBySubject={topicsBySubject}
       revisionByTopic={revisionByTopic}
       quizByTopic={quizByTopic}
+      contentPackagesByTopic={contentPackagesByTopic}
     />
   );
 }

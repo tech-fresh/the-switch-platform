@@ -330,6 +330,7 @@ The current build is a working website MVP with modular services underneath it. 
 - `/api/assessments/definitions`
 - `/api/assessments/seed/:assessmentId`
 - `/api/cms/overview`
+- `/api/cms/content-packages`
 - `/api/past-papers/catalog`
 
 ### Architecture foundations already in code
@@ -366,6 +367,7 @@ The current build is a working website MVP with modular services underneath it. 
 - Thin API route handlers that expose modular auth and account data without moving business logic into the frontend
 - Thin API route handlers that expose modular product data across the main MVP routes
 - CMS and past-paper provider boundaries for future content updates and paper ingestion
+- JSON topic content packages that can add reading material, questions, and clickable free official resource links
 - Read aloud, accessibility, and recommendations modules with real working foundations
 
 ## Route-by-Route Explanation

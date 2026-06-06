@@ -2,6 +2,18 @@
 
 ## Mark 3.2 MVP
 
+## Website Preview And App Mockup
+
+The current homepage now presents both the website-first preview and the future app direction from the same modular dashboard data model.
+
+### Website preview
+
+![The Switch website preview](public/readme/website-preview.svg)
+
+### App mockup
+
+![The Switch app mockup](public/readme/app-mockup.svg)
+
 The Switch Platform is a GCSE revision, timed practice, progress tracking, and exam-readiness product.
 
 This repository is the website-first MVP build. It is being designed so a student can:

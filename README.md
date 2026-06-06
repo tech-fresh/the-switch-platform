@@ -138,6 +138,20 @@ flowchart LR
     F --> G
 ```
 
+### Saved progress flow
+
+```mermaid
+flowchart LR
+    A["Exam Engine"] --> D["Saved Progress Module"]
+    B["Timed Assessment Module"] --> D
+    C["Access Arrangement Snapshot"] --> D
+    D --> E["Saved Progress Route"]
+    D --> F["Dashboard Resume Cards"]
+    E --> G["Resume Exam Session"]
+    E --> H["Resume Timed Assessment"]
+    D --> I["Future API Layer"]
+```
+
 ## Mark 3.2 Blueprint
 
 ### Core MVP modules
@@ -238,6 +252,7 @@ This is no longer just a scaffold. The repo now contains several connected MVP s
 - `/assessments`
 - `/exams`
 - `/progress`
+- `/saved-progress`
 - `/accessibility`
 - `/results`
 
@@ -254,10 +269,11 @@ This is no longer just a scaffold. The repo now contains several connected MVP s
 - A timed assessment experience with duration presets and autosave-backed resume state
 - A full exam experience with mock GCSE papers, progress map, flags, and autosave-backed resume state
 - A Power Grid progress route using calculated subject summaries
+- A Saved Progress route that brings exam and timed assessment autosaves into one shared resume surface
 - An accessibility and support route with settings, read aloud preview, and support-aware recommendation cards
 - A results route that turns exam and timed assessment attempts into outcome summaries
 - Access arrangement contracts and services integrated into exam and timed assessment flows
-- Saved progress services for both exam sessions and timed assessment attempts
+- Saved progress services for both exam sessions and timed assessment attempts, including shared overview summaries
 - Read aloud, accessibility, and recommendations modules with real working foundations
 
 ## Route-by-Route Explanation
@@ -364,6 +380,24 @@ It currently shows:
 Learning note:
 
 This route turns raw activity into meaning. That translation belongs in the Power Grid service, not scattered across page components.
+
+### `/saved-progress`
+
+This is the shared autosave and resume route.
+
+It currently shows:
+
+- saved exam sessions
+- saved timed assessment attempts
+- completion percentages
+- resume-from question markers
+- latest autosave timestamps
+- access arrangement snapshot coverage
+- direct return paths back into exams and assessments
+
+Learning note:
+
+This route proves that save and resume logic can stay in its own module while still serving multiple student experiences. The route reads a shared overview instead of rebuilding exam or assessment logic in the UI.
 
 ### `/accessibility`
 

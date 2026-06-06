@@ -1,5 +1,6 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
+import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import type {
   DashboardFocusCard,
@@ -10,7 +11,10 @@ import type {
 } from "./types";
 
 export async function getDashboardHomeData(): Promise<DashboardHomeData> {
-  const summary = await getMockPowerGridSummary();
+  const [summary, savedProgress] = await Promise.all([
+    getMockPowerGridSummary(),
+    getSavedProgressOverview(),
+  ]);
   const papers = getMockExamPapers();
   const assessments = getMockTimedAssessments();
 
@@ -83,6 +87,14 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       description: "Choose a capped duration and jump back into a saved assessment attempt.",
       stat: `${assessmentSessions.length} timed checkpoints`,
       tone: "emerald",
+    },
+    {
+      href: "/saved-progress",
+      eyebrow: "Saved Progress",
+      title: "Resume from autosave",
+      description: "See every in-progress exam and checkpoint record in one resume surface.",
+      stat: `${savedProgress.activeCount} active resumes`,
+      tone: "amber",
     },
     {
       href: "/accessibility",

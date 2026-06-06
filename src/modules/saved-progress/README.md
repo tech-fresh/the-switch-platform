@@ -9,5 +9,6 @@ Current foundations in this module:
 - Saved progress record types for exam sessions and timed assessment attempts
 - Autosave helper functions for exam and timed assessment state
 - In-memory repository for local prototype flows
+- Saved Progress overview service for shared resume surfaces across modules
 
 This module owns persistence contracts, not UI behaviour.

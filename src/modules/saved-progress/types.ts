@@ -39,6 +39,7 @@ export interface SavedProgressRepository {
     entityType: SavedProgressEntityType,
     entityId: string,
   ): Promise<SavedProgressRecord | null>;
+  listByUserId(userId: string): Promise<SavedProgressRecord[]>;
   save(record: SavedProgressRecord): Promise<SavedProgressRecord>;
 }
 
@@ -65,4 +66,30 @@ export interface SaveTimedAssessmentProgressInput {
   timeRemainingMinutes: number;
   accessArrangementSnapshot?: SavedProgressAccessArrangementSnapshot;
   status?: SavedProgressStatus;
+}
+
+export interface SavedProgressSessionSummary {
+  progressId: string;
+  entityId: string;
+  entityType: SavedProgressEntityType;
+  title: string;
+  subtitle: string;
+  href: string;
+  status: SavedProgressStatus;
+  lastActivityAt: string;
+  completionPercentage: number;
+  currentQuestionLabel: string;
+  timeRemainingLabel: string;
+  supportSummary: string;
+  reviewSummary: string;
+}
+
+export interface SavedProgressOverview {
+  sessionCount: number;
+  activeCount: number;
+  submittedCount: number;
+  accessSnapshotCount: number;
+  latestActivityAt?: string;
+  recommendedAction: string;
+  sessions: SavedProgressSessionSummary[];
 }

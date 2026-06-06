@@ -13,6 +13,11 @@ const defaultRepository: SavedProgressRepository = {
   async getByEntityId(userId, entityType, entityId) {
     return inMemorySavedProgress.get(buildRepositoryKey(userId, entityType, entityId)) ?? null;
   },
+  async listByUserId(userId) {
+    return [...inMemorySavedProgress.values()]
+      .filter((record) => record.userId === userId)
+      .sort((left, right) => right.lastActivityAt.localeCompare(left.lastActivityAt));
+  },
   async save(record) {
     inMemorySavedProgress.set(
       buildRepositoryKey(record.userId, record.entityType, record.entityId),
@@ -98,6 +103,13 @@ export async function markSavedProgressStatus(
     status,
     lastActivityAt: new Date().toISOString(),
   });
+}
+
+export async function listSavedProgressByUser(
+  userId: string,
+  repository: SavedProgressRepository = defaultRepository,
+): Promise<SavedProgressRecord[]> {
+  return repository.listByUserId(userId);
 }
 
 function buildRepositoryKey(

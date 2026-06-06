@@ -79,6 +79,9 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
               <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/progress">
                 Progress
               </Link>
+              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/saved-progress">
+                Saved Progress
+              </Link>
               <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/results">
                 Results
               </Link>

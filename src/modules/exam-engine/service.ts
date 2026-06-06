@@ -1,4 +1,8 @@
-import type { ExamPaper, ExamSession } from "./types";
+import { applyAccessArrangementsToExam } from "@/modules/access-arrangements";
+import type { StudentAccessProfileRepository } from "@/modules/access-arrangements";
+import { getSavedProgress, saveExamProgress } from "@/modules/saved-progress/service";
+import type { SavedProgressRepository } from "@/modules/saved-progress/types";
+import type { ExamPaper, ExamQuestionResponse, ExamSession } from "./types";
 
 const mockExamPapers: ExamPaper[] = [
   {
@@ -117,7 +121,11 @@ const mockExamPapers: ExamPaper[] = [
         type: "multiple-choice",
         options: [
           { optionId: "a", label: "A", text: '"Cars hurried by in every lane."' },
-          { optionId: "b", label: "B", text: '"The single light blinked across the empty moor."' },
+          {
+            optionId: "b",
+            label: "B",
+            text: '"The single light blinked across the empty moor."',
+          },
           { optionId: "c", label: "C", text: '"Children shouted from the playground."' },
           { optionId: "d", label: "D", text: '"Music spilled from the open door."' },
         ],
@@ -132,7 +140,11 @@ const mockExamPapers: ExamPaper[] = [
         type: "multiple-choice",
         options: [
           { optionId: "a", label: "A", text: "It speeds up the ending." },
-          { optionId: "b", label: "B", text: "It narrows the reader's attention and increases tension." },
+          {
+            optionId: "b",
+            label: "B",
+            text: "It narrows the reader's attention and increases tension.",
+          },
           { optionId: "c", label: "C", text: "It makes the scene more humorous." },
           { optionId: "d", label: "D", text: "It reveals the narrator is unreliable." },
         ],
@@ -145,35 +157,112 @@ export function getMockExamPapers(): ExamPaper[] {
   return mockExamPapers;
 }
 
-export function getMockExamSession(examId: string): ExamSession {
+export async function getMockExamSession(
+  examId: string,
+  options?: {
+    userId?: string;
+    accessProfileRepository?: StudentAccessProfileRepository;
+    savedProgressRepository?: SavedProgressRepository;
+  },
+): Promise<ExamSession> {
   const paper = mockExamPapers.find((item) => item.examId === examId);
 
   if (!paper) {
     throw new Error(`Unknown mock exam paper: ${examId}`);
   }
 
-  const baseResponses = paper.questions.map((question, index) => ({
-    questionId: question.questionId,
-    status: index === 0 ? ("in-progress" as const) : ("not-started" as const),
-    selectedOptionId:
-      examId === "aqa-maths-higher-paper-1" && question.questionId === "q1"
-        ? "a"
-        : undefined,
-    flagged: question.questionId === "q2",
-  }));
+  const userId = options?.userId ?? "student-demo";
+  const seededResponses = buildSeededResponses(examId, paper.questions.map((question) => question.questionId));
+  const answeredCount = seededResponses.filter((response) => response.selectedOptionId).length;
 
-  const answeredCount = baseResponses.filter(
-    (response) => response.selectedOptionId,
-  ).length;
+  const appliedExam = await applyAccessArrangementsToExam(
+    {
+      examId: paper.examId,
+      userId,
+      officialDurationMinutes: paper.durationMinutes,
+      qualificationType: paper.qualificationType,
+      examBoard: paper.board,
+      tier: paper.tier,
+    },
+    options?.accessProfileRepository,
+  );
 
-  return {
+  const baseSession: ExamSession = {
     examSessionId: `${examId}-session-001`,
     examId: paper.examId,
-    userId: "student-demo",
+    userId,
     startedAt: "2026-06-05T08:45:00.000Z",
     lastSavedAt: "2026-06-05T09:08:00.000Z",
-    durationMinutes: paper.durationMinutes,
-    timeRemainingMinutes: Math.max(paper.durationMinutes - (18 + answeredCount), 12),
-    questionResponses: baseResponses,
+    durationMinutes: appliedExam.accessArrangementApplication.duration.adjustedDurationMinutes,
+    timeRemainingMinutes: Math.max(
+      appliedExam.accessArrangementApplication.duration.adjustedDurationMinutes - (18 + answeredCount),
+      12,
+    ),
+    accessArrangements: appliedExam,
+    questionResponses: seededResponses,
   };
+
+  const resumedSession = await hydrateSessionFromSavedProgress(
+    baseSession,
+    options?.savedProgressRepository,
+  );
+
+  await saveExamProgress(
+    {
+      userId: resumedSession.userId,
+      examSessionId: resumedSession.examSessionId,
+      currentQuestionId: getCurrentQuestionId(resumedSession),
+      questionResponses: resumedSession.questionResponses,
+      timeRemainingMinutes: resumedSession.timeRemainingMinutes,
+      accessArrangementSnapshot:
+        resumedSession.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
+    },
+    options?.savedProgressRepository,
+  );
+
+  return resumedSession;
+}
+
+function buildSeededResponses(
+  examId: string,
+  questionIds: string[],
+): ExamQuestionResponse[] {
+  return questionIds.map((questionId, index) => ({
+    questionId,
+    status: index === 0 ? "in-progress" : "not-started",
+    selectedOptionId:
+      examId === "aqa-maths-higher-paper-1" && questionId === "q1" ? "a" : undefined,
+    flagged: questionId === "q2",
+  }));
+}
+
+async function hydrateSessionFromSavedProgress(
+  session: ExamSession,
+  repository?: SavedProgressRepository,
+): Promise<ExamSession> {
+  const savedProgress = await getSavedProgress(
+    session.userId,
+    "exam-session",
+    session.examSessionId,
+    repository,
+  );
+
+  if (!savedProgress?.examProgress) {
+    return session;
+  }
+
+  return {
+    ...session,
+    lastSavedAt: savedProgress.lastActivityAt,
+    timeRemainingMinutes: savedProgress.examProgress.timeRemainingMinutes,
+    questionResponses: savedProgress.examProgress.questionResponses,
+  };
+}
+
+function getCurrentQuestionId(session: ExamSession): string {
+  const firstActiveResponse = session.questionResponses.find(
+    (response) => response.status !== "not-started" || response.selectedOptionId,
+  );
+
+  return firstActiveResponse?.questionId ?? session.questionResponses[0]?.questionId ?? "";
 }

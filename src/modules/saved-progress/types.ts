@@ -1,7 +1,68 @@
 import type { SavedProgressAccessArrangementSnapshot } from "@/modules/access-arrangements";
+import type { ExamQuestionResponse } from "@/modules/exam-engine/types";
+
+export type SavedProgressEntityType = "exam-session" | "timed-assessment-attempt";
+
+export type SavedProgressStatus = "in-progress" | "paused" | "submitted";
+
+export interface SavedExamProgressPayload {
+  currentQuestionId: string;
+  questionResponses: ExamQuestionResponse[];
+  flaggedQuestionIds: string[];
+  timeRemainingMinutes: number;
+}
+
+export interface SavedTimedAssessmentProgressPayload {
+  currentQuestionId?: string;
+  selectedAnswerIds: string[];
+  writtenAnswers: Record<string, string>;
+  notes: Record<string, string>;
+  bookmarkedQuestionIds: string[];
+  timeRemainingMinutes: number;
+}
 
 export interface SavedProgressRecord {
   progressId: string;
   userId: string;
+  entityId: string;
+  entityType: SavedProgressEntityType;
+  status: SavedProgressStatus;
+  lastActivityAt: string;
   accessArrangementSnapshot?: SavedProgressAccessArrangementSnapshot;
+  examProgress?: SavedExamProgressPayload;
+  timedAssessmentProgress?: SavedTimedAssessmentProgressPayload;
+}
+
+export interface SavedProgressRepository {
+  getByEntityId(
+    userId: string,
+    entityType: SavedProgressEntityType,
+    entityId: string,
+  ): Promise<SavedProgressRecord | null>;
+  save(record: SavedProgressRecord): Promise<SavedProgressRecord>;
+}
+
+export interface SaveExamProgressInput {
+  progressId?: string;
+  userId: string;
+  examSessionId: string;
+  currentQuestionId: string;
+  questionResponses: ExamQuestionResponse[];
+  timeRemainingMinutes: number;
+  accessArrangementSnapshot?: SavedProgressAccessArrangementSnapshot;
+  status?: SavedProgressStatus;
+}
+
+export interface SaveTimedAssessmentProgressInput {
+  progressId?: string;
+  userId: string;
+  assessmentAttemptId: string;
+  currentQuestionId?: string;
+  selectedAnswerIds: string[];
+  writtenAnswers: Record<string, string>;
+  notes: Record<string, string>;
+  bookmarkedQuestionIds: string[];
+  timeRemainingMinutes: number;
+  accessArrangementSnapshot?: SavedProgressAccessArrangementSnapshot;
+  status?: SavedProgressStatus;
 }

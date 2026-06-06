@@ -1,0 +1,329 @@
+{
+  "catalogVersion": "0.1.0",
+  "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+  "subjects": [
+    {
+      "subjectId": "gcse-maths",
+      "name": "GCSE Mathematics",
+      "qualificationType": "GCSE",
+      "examBoards": ["AQA", "Edexcel", "OCR"],
+      "description": "Core number, algebra, geometry, ratio, and statistics revision.",
+      "topicCount": 2,
+      "revisionResourceCount": 8,
+      "examReadinessScore": 56,
+      "nextTopicToRevise": "Algebra"
+    },
+    {
+      "subjectId": "gcse-english-language",
+      "name": "GCSE English Language",
+      "qualificationType": "GCSE",
+      "examBoards": ["Edexcel", "AQA", "Eduqas"],
+      "description": "Reading, inference, language analysis, structure, and writing craft.",
+      "topicCount": 2,
+      "revisionResourceCount": 8,
+      "examReadinessScore": 61,
+      "nextTopicToRevise": "Language Analysis"
+    },
+    {
+      "subjectId": "gcse-combined-science",
+      "name": "GCSE Combined Science",
+      "qualificationType": "GCSE",
+      "examBoards": ["AQA", "Edexcel", "OCR"],
+      "description": "Biology, chemistry, and physics concepts through exam-ready checkpoints.",
+      "topicCount": 2,
+      "revisionResourceCount": 8,
+      "examReadinessScore": 47,
+      "nextTopicToRevise": "Chemical Changes"
+    }
+  ],
+  "topics": [
+    {
+      "topicId": "maths-algebra",
+      "subjectId": "gcse-maths",
+      "name": "Algebra",
+      "summary": "Expressions, equations, rearranging formulae, and sequences.",
+      "confidenceScore": 58,
+      "practiceQuestionCount": 12,
+      "timedAssessmentAvailable": true,
+      "revision": {
+        "contentId": "rev-maths-algebra",
+        "title": "Algebra Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Algebra is a way to describe missing numbers and relationships using symbols."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Expand brackets step by step, then combine like terms carefully."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Dropping minus signs and mixing unlike terms are the fastest ways to lose marks."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Show one clean line of working for every transformation so follow-through marks stay available."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-maths-algebra-1",
+        "prompt": "Which expression is equivalent to 5(x + 2) - x?",
+        "options": [
+          { "optionId": "a", "label": "A", "text": "4x + 2" },
+          { "optionId": "b", "label": "B", "text": "4x + 10" },
+          { "optionId": "c", "label": "C", "text": "5x + 2" },
+          { "optionId": "d", "label": "D", "text": "6x + 10" }
+        ],
+        "correctOptionId": "b"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "seeded",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+      }
+    },
+    {
+      "topicId": "maths-ratio",
+      "subjectId": "gcse-maths",
+      "name": "Ratio",
+      "summary": "Scale factors, proportion, rates, and direct comparison.",
+      "confidenceScore": 49,
+      "practiceQuestionCount": 8,
+      "timedAssessmentAvailable": true,
+      "revision": {
+        "contentId": "rev-maths-ratio",
+        "title": "Ratio Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Ratio compares parts and helps you scale one quantity against another accurately."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Write the total number of parts first, then divide the full amount before multiplying back up."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Students often reverse the ratio order or forget to simplify before comparing."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Label units carefully, especially when ratio appears inside a map scale or recipe question."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-maths-ratio-1",
+        "prompt": "A ratio is 2:3. If the total is 20, what is the larger part?",
+        "options": [
+          { "optionId": "a", "label": "A", "text": "8" },
+          { "optionId": "b", "label": "B", "text": "10" },
+          { "optionId": "c", "label": "C", "text": "12" },
+          { "optionId": "d", "label": "D", "text": "15" }
+        ],
+        "correctOptionId": "c"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "seeded",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+      }
+    },
+    {
+      "topicId": "english-language-analysis",
+      "subjectId": "gcse-english-language",
+      "name": "Language Analysis",
+      "summary": "Selecting quotations and explaining word-level effects clearly.",
+      "confidenceScore": 63,
+      "practiceQuestionCount": 10,
+      "timedAssessmentAvailable": true,
+      "revision": {
+        "contentId": "rev-english-language-analysis",
+        "title": "Language Analysis Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Language analysis is about what the writer chose and why it affects the reader."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Start with a short quotation, identify a method, then explain its effect in context."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Retelling the extract instead of analysing the wording keeps answers stuck at low marks."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Use precise verbs like suggests, emphasises, and highlights rather than vague comments."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-english-language-analysis-1",
+        "prompt": "What is the strongest opening move in a language analysis paragraph?",
+        "options": [
+          { "optionId": "a", "label": "A", "text": "Summarise the plot" },
+          { "optionId": "b", "label": "B", "text": "Choose a short quotation and identify the writer's method" },
+          { "optionId": "c", "label": "C", "text": "State your final judgement only" },
+          { "optionId": "d", "label": "D", "text": "List every adjective in the extract" }
+        ],
+        "correctOptionId": "b"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "seeded",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+      }
+    },
+    {
+      "topicId": "english-structure",
+      "subjectId": "gcse-english-language",
+      "name": "Structure",
+      "summary": "Tracking viewpoint, shifts in focus, and structural impact.",
+      "confidenceScore": 54,
+      "practiceQuestionCount": 7,
+      "timedAssessmentAvailable": true,
+      "revision": {
+        "contentId": "rev-english-structure",
+        "title": "Structure Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Structure is about how the writer organises attention, not just what the text says."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Track where the focus begins, what shifts in the middle, and what the ending leaves behind."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Listing techniques without linking them to the reader's experience keeps answers vague."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Use movement language like zooms in, shifts, narrows, and returns to show structural control."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-english-structure-1",
+        "prompt": "What should you track first in a structure answer?",
+        "options": [
+          { "optionId": "a", "label": "A", "text": "Every adjective in the extract" },
+          { "optionId": "b", "label": "B", "text": "How the focus of the text moves" },
+          { "optionId": "c", "label": "C", "text": "The writer's favourite punctuation mark" },
+          { "optionId": "d", "label": "D", "text": "The exact number of paragraphs only" }
+        ],
+        "correctOptionId": "b"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "seeded",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+      }
+    },
+    {
+      "topicId": "science-chemical-changes",
+      "subjectId": "gcse-combined-science",
+      "name": "Chemical Changes",
+      "summary": "Reactivity, electrolysis, and acid-metal reactions.",
+      "confidenceScore": 42,
+      "practiceQuestionCount": 11,
+      "timedAssessmentAvailable": true,
+      "revision": {
+        "contentId": "rev-science-chemical-changes",
+        "title": "Chemical Changes Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Chemical changes create new substances, often through reactions that transfer energy."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Compare metals using reactivity rules before predicting what will happen in a displacement reaction."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Mixing up ions, atoms, and molecules can scramble electrolysis answers quickly."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Name the products clearly and use the reactivity series to justify the answer, not just guess it."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-science-chemical-changes-1",
+        "prompt": "What helps you decide if a displacement reaction will happen?",
+        "options": [
+          { "optionId": "a", "label": "A", "text": "The colour of the solution" },
+          { "optionId": "b", "label": "B", "text": "The reactivity series" },
+          { "optionId": "c", "label": "C", "text": "The mass number only" },
+          { "optionId": "d", "label": "D", "text": "The test tube size" }
+        ],
+        "correctOptionId": "b"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "seeded",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+      }
+    },
+    {
+      "topicId": "science-energy",
+      "subjectId": "gcse-combined-science",
+      "name": "Energy",
+      "summary": "Stores, transfers, efficiency, and required practical links.",
+      "confidenceScore": 51,
+      "practiceQuestionCount": 9,
+      "timedAssessmentAvailable": false,
+      "revision": {
+        "contentId": "rev-science-energy",
+        "title": "Energy Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Energy moves between stores and pathways, even though it cannot be created or destroyed."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Start by naming the initial store, then explain the transfer pathway and the final useful output."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Mixing up transfer pathways with stores is one of the most common mark-dropping errors."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "In efficiency questions, keep the calculation tidy and always include the final unit or percentage."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-science-energy-1",
+        "prompt": "In an efficiency question, what should you compare?",
+        "options": [
+          { "optionId": "a", "label": "A", "text": "Useful output against total input" },
+          { "optionId": "b", "label": "B", "text": "Only the wasted output" },
+          { "optionId": "c", "label": "C", "text": "Mass against temperature" },
+          { "optionId": "d", "label": "D", "text": "Voltage against colour" }
+        ],
+        "correctOptionId": "a"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "seeded",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+      }
+    }
+  ]
+}

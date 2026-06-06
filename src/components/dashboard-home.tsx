@@ -39,6 +39,18 @@ function getSessionKindClasses(kind: DashboardSessionCard["kind"]): string {
     : "border-emerald-300 bg-emerald-50 text-emerald-900";
 }
 
+function getProgressBarClasses(score: number): string {
+  if (score >= 75) {
+    return "bg-emerald-500";
+  }
+
+  if (score >= 55) {
+    return "bg-amber-500";
+  }
+
+  return "bg-rose-500";
+}
+
 export function DashboardHome({ data, mode }: DashboardHomeProps) {
   const isHome = mode === "home";
   const heroEyebrow = isHome ? "The Switch Mark 3.2" : "Student Dashboard";
@@ -173,6 +185,238 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
 
               <p className="text-sm leading-7 text-stone-300">{data.supportSnapshotSummary}</p>
             </aside>
+          </section>
+
+          <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,24rem)]">
+            <article className="overflow-hidden border border-stone-200 bg-white shadow-sm">
+              <div className="border-b border-stone-200 bg-stone-950 px-5 py-3 text-stone-50 sm:px-6">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  </div>
+                  <p className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                    Website preview
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-6 p-5 sm:p-6">
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+                  <div className="rounded-3xl bg-[linear-gradient(135deg,_#0f766e,_#0f172a)] p-5 text-white">
+                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-100/90">
+                      Student launchpad
+                    </p>
+                    <h2 className="mt-3 max-w-xl text-2xl font-semibold tracking-tight sm:text-3xl">
+                      See everything that matters before a session starts.
+                    </h2>
+                    <p className="mt-3 max-w-2xl text-sm leading-7 text-teal-50/85">
+                      The website preview keeps dashboard guidance, saved progress, accessibility-aware support, and exam routes in one place without moving business rules into the UI.
+                    </p>
+
+                    <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                      {data.metrics.slice(0, 3).map((metric) => (
+                        <div
+                          key={metric.label}
+                          className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"
+                        >
+                          <p className="text-xs uppercase tracking-[0.2em] text-teal-100/70">
+                            {metric.label}
+                          </p>
+                          <p className="mt-3 text-2xl font-semibold tracking-tight">
+                            {metric.value}
+                          </p>
+                          <p className="mt-2 text-sm text-teal-50/80">{metric.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 rounded-3xl border border-stone-200 bg-stone-50 p-4">
+                    <div className="rounded-2xl bg-white p-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                        Next action
+                      </p>
+                      <p className="mt-3 text-lg font-semibold text-stone-950">
+                        {data.recommendedAction}
+                      </p>
+                    </div>
+                    <div className="rounded-2xl bg-stone-950 p-4 text-stone-50">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+                        Live support state
+                      </p>
+                      <p className="mt-3 text-sm leading-7 text-stone-200">
+                        {data.supportSnapshotSummary}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+                  <section className="rounded-3xl border border-stone-200 bg-stone-50 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                          Website modules
+                        </p>
+                        <h3 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">
+                          Key routes available from the first screen
+                        </h3>
+                      </div>
+                      <span className="rounded-full border border-stone-300 bg-white px-3 py-1 text-xs font-medium text-stone-700">
+                        Mobile-first
+                      </span>
+                    </div>
+
+                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                      {data.routeCards.slice(0, 6).map((card) => (
+                        <div key={card.href} className="rounded-2xl border border-stone-200 bg-white p-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                            {card.eyebrow}
+                          </p>
+                          <h4 className="mt-2 text-base font-semibold text-stone-950">
+                            {card.title}
+                          </h4>
+                          <p className="mt-2 text-sm leading-6 text-stone-600">
+                            {card.description}
+                          </p>
+                          <p className="mt-4 text-sm font-medium text-stone-900">
+                            {card.stat}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section className="rounded-3xl border border-stone-200 bg-white p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
+                      Readiness by subject
+                    </p>
+                    <div className="mt-4 space-y-4">
+                      {data.focusCards.slice(0, 4).map((focus) => (
+                        <div key={focus.subject} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                          <div className="flex items-center justify-between gap-3">
+                            <h4 className="text-sm font-semibold text-stone-950">{focus.subject}</h4>
+                            <span className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                              {focus.level}
+                            </span>
+                          </div>
+                          <div className="mt-3 h-2 overflow-hidden rounded-full bg-stone-200">
+                            <div
+                              className={`h-full rounded-full ${getProgressBarClasses(focus.readinessScore)}`}
+                              style={{ width: `${focus.readinessScore}%` }}
+                            />
+                          </div>
+                          <div className="mt-3 flex items-center justify-between gap-3 text-sm">
+                            <span className="font-medium text-stone-900">
+                              {focus.readinessScore} / 100
+                            </span>
+                            <span className="capitalize text-stone-500">{focus.trend}</span>
+                          </div>
+                          <p className="mt-3 text-sm leading-6 text-stone-600">
+                            {focus.recommendedFocus}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </article>
+
+            <article className="relative overflow-hidden border border-stone-200 bg-[linear-gradient(180deg,_#111827,_#0f172a)] p-5 text-white shadow-sm sm:p-6">
+              <div className="absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.3),_transparent_55%)]" />
+              <div className="relative">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-200">
+                  App mockup
+                </p>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight">
+                  A future mobile shell built from the same module contracts.
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  This mockup stays faithful to the platform rules: autosave, clean API boundaries, and support settings that move with the learner across routes.
+                </p>
+
+                <div className="mx-auto mt-8 w-full max-w-[19rem] rounded-[2.5rem] border border-white/10 bg-stone-950 p-3 shadow-[0_30px_80px_rgba(15,23,42,0.6)]">
+                  <div className="rounded-[2rem] bg-[linear-gradient(180deg,_#ecfeff,_#f8fafc_28%,_#f8fafc)] p-4 text-stone-950">
+                    <div className="mx-auto h-1.5 w-16 rounded-full bg-stone-300" />
+                    <div className="mt-4 flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                          The Switch
+                        </p>
+                        <h3 className="mt-1 text-xl font-semibold tracking-tight">
+                          Study today
+                        </h3>
+                      </div>
+                      <div className="rounded-2xl bg-teal-600 px-3 py-2 text-right text-white">
+                        <p className="text-[0.65rem] uppercase tracking-[0.18em] text-teal-50/80">
+                          Readiness
+                        </p>
+                        <p className="text-lg font-semibold">
+                          {data.summary.examReadinessScore}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 rounded-3xl bg-stone-950 p-4 text-white">
+                      <p className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                        Resume now
+                      </p>
+                      <h4 className="mt-2 text-lg font-semibold">
+                        {data.examSessions[0]?.title ?? "Exam session ready"}
+                      </h4>
+                      <p className="mt-2 text-sm text-stone-300">
+                        {data.examSessions[0]?.timeLabel ?? "Timing available"}
+                      </p>
+                      <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+                        <div
+                          className="h-full rounded-full bg-teal-400"
+                          style={{ width: `${data.examSessions[0]?.completionPercentage ?? 0}%` }}
+                        />
+                      </div>
+                      <p className="mt-3 text-sm text-teal-200">
+                        {data.examSessions[0]?.statusLabel ?? "Flags and timing sync here"}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 grid gap-3">
+                      <div className="rounded-2xl border border-stone-200 bg-white p-4">
+                        <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                          Access support
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-stone-700">
+                          {data.supportSnapshotSummary}
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border border-stone-200 bg-white p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                              Quick routes
+                            </p>
+                            <p className="mt-2 text-sm font-medium text-stone-900">
+                              Dashboard, exams, progress, saved
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-800">
+                            Synced
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-4 gap-2 rounded-3xl bg-stone-100 p-2 text-center text-[0.7rem] font-medium text-stone-600">
+                      <span className="rounded-2xl bg-white px-2 py-2 text-stone-950">Home</span>
+                      <span className="rounded-2xl px-2 py-2">Exams</span>
+                      <span className="rounded-2xl px-2 py-2">Grid</span>
+                      <span className="rounded-2xl px-2 py-2">Saved</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
           </section>
 
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">

@@ -336,6 +336,7 @@ The current build is a working website MVP with modular services underneath it. 
 - `/api/support/resources`
 - `/api/support/exam-guides`
 - `/api/support/urgent-help`
+- `/api/content/catalog`
 
 ### Architecture foundations already in code
 
@@ -372,6 +373,7 @@ The current build is a working website MVP with modular services underneath it. 
 - Thin API route handlers that expose modular auth and account data without moving business logic into the frontend
 - Thin API route handlers that expose modular product data across the main MVP routes
 - CMS and past-paper provider boundaries for future content updates and paper ingestion
+- A master structured content catalog for all current MVP topics
 - Read aloud, accessibility, and recommendations modules with real working foundations
 
 ## Route-by-Route Explanation
@@ -623,6 +625,19 @@ Current work:
 - locale preference contract
 - route copy catalog
 - recommendation copy metadata
+
+### `content`
+
+Purpose:
+
+- owns the master structured content catalog for subjects, topics, revision material, and quiz prompts
+
+Current work:
+
+- seed JSON catalog for all current MVP topics
+- repository boundary for content retrieval
+- review and publication metadata fields for future editorial workflow
+- framework-neutral content catalog contract
 
 ### `support`
 

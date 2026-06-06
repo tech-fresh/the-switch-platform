@@ -10,5 +10,6 @@ Current foundations in this module:
 - Exam session creation helpers
 - Access arrangement aware official duration handling
 - Resume hydration through the Saved Progress module
+- Framework-neutral contracts for paper lists and session delivery
 
 This module should not own long-term persistence. It asks Saved Progress to store and restore session state.

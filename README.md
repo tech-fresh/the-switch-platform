@@ -49,8 +49,10 @@ The platform must be:
 The easiest way to understand the project is like this:
 
 - `src/app` is the visible website
+- `src/app/api` is the thin delivery layer for API-style route handlers
 - `src/modules` is where the actual feature rules live
 - the page asks the modules for data
+- the API handlers ask the same modules for data
 - the modules decide the logic
 - later, an API can sit in front of those modules
 - later still, a mobile app can reuse the same logic
@@ -63,6 +65,7 @@ For example:
 - saved progress rules should belong to saved progress
 - progress calculations should belong to power grid
 - support settings should belong to access arrangements and accessibility
+- account and session identity should belong to auth
 
 ## Visual Overview
 
@@ -71,10 +74,13 @@ For example:
 ```mermaid
 flowchart TD
     A["Student"] --> B["Dashboard / Home"]
+    A --> B2["Account"]
     B --> C["Subjects"]
     B --> D["Timed Assessments"]
     B --> E["Exams"]
     B --> F["Progress"]
+    B --> M["Recommendations"]
+    B2 --> N["Auth Module"]
     C --> G["Revision Content"]
     C --> H["Quick Quiz"]
     D --> I["Timed Assessment Module"]
@@ -83,6 +89,8 @@ flowchart TD
     J --> K
     K --> L["Power Grid"]
     L --> F
+    L --> M
+    N --> K
 ```
 
 ### Architecture layers
@@ -94,9 +102,48 @@ flowchart TD
     C --> D["Module Types / Contracts"]
     C --> E["Saved Progress / Aggregated State"]
     C --> F["Access Arrangements"]
+    C --> J["Auth / Account Boundaries"]
     E --> G["Future API Layer"]
     G --> H["Future Database"]
     G --> I["Future Mobile App"]
+```
+
+### Delivery architecture
+
+```mermaid
+flowchart LR
+    A["Website UI Routes"] --> B["Thin Route Components"]
+    B --> C["Module Services"]
+    C --> D["Framework-neutral Types and Contracts"]
+    C --> E["Thin API Route Handlers"]
+    E --> F["Website Client"]
+    E --> G["Future Mobile App Client"]
+    E --> H["Future External Services / Storage"]
+```
+
+### Account flow
+
+```mermaid
+flowchart LR
+    A["Student opens account"] --> B["Account Route"]
+    B --> C["Auth Module"]
+    C --> D["Signed-in Session"]
+    C --> E["Account Overview"]
+    E --> F["Saved Progress Summary"]
+    E --> G["Recommendations"]
+    E --> H["Accessibility Snapshot"]
+    E --> I["Quick Links back into product"]
+```
+
+### API delivery flow
+
+```mermaid
+flowchart LR
+    A["Website Route"] --> B["Module Service"]
+    C["API Route Handler"] --> B
+    B --> D["Framework-neutral Contracts"]
+    C --> E["Future Mobile App"]
+    C --> F["Future External Client"]
 ```
 
 ### Current student flow
@@ -165,8 +212,9 @@ flowchart LR
 7. Accessibility
 8. Read Aloud
 9. Language Ready Structure
-10. CMS/Admin Placeholder
-11. Access Arrangements
+10. Auth and Account Foundation
+11. CMS/Admin Placeholder
+12. Access Arrangements
 
 ### Launch subjects
 
@@ -244,25 +292,64 @@ Modes:
 
 This is no longer just a scaffold. The repo now contains several connected MVP slices.
 
+The current build is a working website MVP with modular services underneath it. The architecture is deliberately set up so the same modules can later power:
+
+- the current website routes
+- thin API handlers
+- a future mobile app client
+- future persistent storage without rewriting frontend business rules
+
 ### Built routes
 
 - `/`
+- `/account`
 - `/dashboard`
 - `/subjects`
 - `/assessments`
 - `/exams`
 - `/progress`
 - `/saved-progress`
+- `/recommendations`
 - `/accessibility`
 - `/results`
 
+### Built API route handlers
+
+- `/api/auth/session`
+- `/api/auth/providers`
+- `/api/account/overview`
+- `/api/dashboard/home`
+- `/api/progress/summary`
+- `/api/saved-progress/overview`
+- `/api/recommendations`
+- `/api/recommendations/page`
+- `/api/accessibility/snapshot`
+- `/api/results/overview`
+- `/api/exams/papers`
+- `/api/exams/session/:examId`
+- `/api/assessments/definitions`
+- `/api/assessments/seed/:assessmentId`
+- `/api/cms/overview`
+- `/api/past-papers/catalog`
+
+### Architecture foundations already in code
+
+- Route components that stay thin and mostly render prepared module data
+- Service modules that own business logic and cross-module orchestration
+- Type and contract files that keep boundaries explicit
+- Thin API route handlers that can be reused by future app clients
+- Language-ready copy structures for future localisation
+- Account, support, progress, and recommendation flows connected through service boundaries
+- API delivery coverage across account, dashboard, progress, saved progress, recommendations, accessibility, results, exams, timed assessments, CMS, and past papers
+
 ### Placeholder routes still waiting for fuller product work
 
-- `/admin`
+- `/admin` is now an architecture route, but not yet a full management tool
 
 ### Working product slices
 
 - A live dashboard aggregation layer
+- A student account route with signed-in identity, account-linked support, and quick recovery paths into the product
 - A subject entry route with topic selection
 - Topic revision content rendered from the revision module
 - Topic quick quiz prompts rendered from the quiz module
@@ -270,10 +357,15 @@ This is no longer just a scaffold. The repo now contains several connected MVP s
 - A full exam experience with mock GCSE papers, progress map, flags, and autosave-backed resume state
 - A Power Grid progress route using calculated subject summaries
 - A Saved Progress route that brings exam and timed assessment autosaves into one shared resume surface
+- A Recommendations route that converts progress, support, results, and saved-session signals into ordered next actions
 - An accessibility and support route with settings, read aloud preview, and support-aware recommendation cards
 - A results route that turns exam and timed assessment attempts into outcome summaries
+- An admin architecture route that explains content update and past-paper source planning in-product
 - Access arrangement contracts and services integrated into exam and timed assessment flows
 - Saved progress services for both exam sessions and timed assessment attempts, including shared overview summaries
+- Thin API route handlers that expose modular auth and account data without moving business logic into the frontend
+- Thin API route handlers that expose modular product data across the main MVP routes
+- CMS and past-paper provider boundaries for future content updates and paper ingestion
 - Read aloud, accessibility, and recommendations modules with real working foundations
 
 ## Route-by-Route Explanation
@@ -294,6 +386,22 @@ It uses the dashboard aggregation layer to present:
 Learning note:
 
 This route is a good example of composition. It does not calculate exam logic itself. It asks another module for a ready-made dashboard view model.
+
+### `/account`
+
+This is the student account route.
+
+It currently shows:
+
+- signed-in student identity
+- account-linked product metrics
+- sign-in options for MVP and future expansion
+- quick links back into dashboard, saved progress, recommendations, and accessibility
+- support carry-over summary tied to the current account
+
+Learning note:
+
+This route gives the MVP a real account option without trapping identity logic inside the page. The auth module owns the session and account overview model, which keeps the website ready for future app and API reuse.
 
 ### `/dashboard`
 
@@ -399,6 +507,22 @@ Learning note:
 
 This route proves that save and resume logic can stay in its own module while still serving multiple student experiences. The route reads a shared overview instead of rebuilding exam or assessment logic in the UI.
 
+### `/recommendations`
+
+This is the student next-step route.
+
+It currently shows:
+
+- ordered recommendation cards
+- priority signals
+- linked next actions into working routes
+- readiness, results, and saved-progress insight summaries
+- language-ready route metadata flowing from the language module
+
+Learning note:
+
+This route keeps recommendation logic in its own module while allowing the website to render a product-ready action list. That matters for future API and mobile reuse because the decision layer is not trapped inside React components.
+
 ### `/accessibility`
 
 This is now a real support route rather than a placeholder.
@@ -435,7 +559,49 @@ Learning note:
 
 This route closes the student loop. It proves that outcome interpretation can live in its own module rather than being bolted onto exam or assessment screens.
 
+### `/admin`
+
+This is the current admin architecture route.
+
+It currently shows:
+
+- content source providers
+- seeded content coverage
+- future CMS provider planning
+- past paper source providers
+- paper catalog update strategy
+- the current truth about what is still seeded versus what is not live yet
+
+Learning note:
+
+This route does not try to be a full CMS yet. Instead, it makes the architecture for content updates and past-paper sourcing explicit in the MVP so the website can later connect to real provider adapters without rewriting the student product routes.
+
 ## Module-by-Module Explanation
+
+### `auth`
+
+Purpose:
+
+- owns authentication contracts, session identity, and account overview boundaries
+
+Current work:
+
+- mock signed-in student session
+- sign-in provider metadata
+- student account overview model
+- framework-neutral auth/account contracts
+
+### `language`
+
+Purpose:
+
+- owns language-ready copy boundaries and future localisation structures
+
+Current work:
+
+- locale preference contract
+- route copy catalog
+- recommendation copy metadata
 
 ### `dashboard`
 
@@ -701,9 +867,10 @@ Right now the project uses:
 - mock data
 - in-memory saved progress
 - no real database
-- no real authentication
-- no real API routes yet
+- mock signed-in account data
+- real thin API routes over module services
 - no real CMS data entry yet
+- no live external paper ingestion yet
 
 That means the current build is a functional MVP-shaped prototype, not a production system yet.
 
@@ -764,14 +931,14 @@ Then move on to:
 
 Important MVP work still ahead:
 
-- admin/CMS route and module slice
 - stronger real saved persistence beyond in-memory state
-- API layer
-- authentication flow
+- write-side API layer
+- fuller authentication flow
 - CMS content management tools
+- repository-backed content and paper ingestion adapters
 - deeper results workflows with more detailed marking logic
 - language-ready route support
-- broader past paper coverage
+- broader past paper coverage and source validation
 
 ## Summary
 

@@ -10,5 +10,6 @@ Current foundations in this module:
 - Autosave helper functions for exam and timed assessment state
 - In-memory repository for local prototype flows
 - Saved Progress overview service for shared resume surfaces across modules
+- Framework-neutral overview contract for thin API delivery
 
 This module owns persistence contracts, not UI behaviour.

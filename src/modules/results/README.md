@@ -8,3 +8,4 @@ Current foundations in this module:
 - Overall score aggregation
 - Trend mapping for outcome screens
 - Next-step guidance for post-session review
+- Framework-neutral overview contract for website and future app clients

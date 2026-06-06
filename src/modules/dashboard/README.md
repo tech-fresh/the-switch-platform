@@ -15,5 +15,6 @@ Current foundations in this module:
 - Route launch cards
 - Live exam and timed assessment session summaries
 - Subject focus cards built from Power Grid data
+- Dashboard API-ready response shape for future clients
 
 This keeps page components simple and prevents dashboard composition logic from being trapped inside the frontend route files.

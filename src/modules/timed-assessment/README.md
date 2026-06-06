@@ -10,3 +10,4 @@ Current foundations in this module:
 - Attempt lifecycle types
 - Manual duration selection with official duration caps
 - Access arrangement aware adjusted duration creation
+- Framework-neutral contracts for assessment definitions and resume seeds

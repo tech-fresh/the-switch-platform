@@ -65,6 +65,14 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       tone: "teal",
     },
     {
+      href: "/account",
+      eyebrow: "Account",
+      title: "Open your student account",
+      description: "See signed-in identity, account-linked support, and quick routes back into study.",
+      stat: "Account-linked MVP",
+      tone: "sky",
+    },
+    {
       href: "/progress",
       eyebrow: "Power Grid",
       title: "Inspect revision momentum",
@@ -95,6 +103,14 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       description: "See every in-progress exam and checkpoint record in one resume surface.",
       stat: `${savedProgress.activeCount} active resumes`,
       tone: "amber",
+    },
+    {
+      href: "/recommendations",
+      eyebrow: "Recommendations",
+      title: "Follow the next best move",
+      description: "See ordered student actions built from readiness, support, results, and saved activity.",
+      stat: summary.nextBestAction,
+      tone: "rose",
     },
     {
       href: "/accessibility",

@@ -1,3 +1,10 @@
 # CMS Module
 
-Placeholder for future content management contracts.
+Owns content-source boundaries and update architecture for the student-facing content stack.
+
+Current foundations in this module:
+
+- CMS provider definitions
+- content reference manifests for subjects, topics, revision, and quiz content
+- sync-status overview for current and future content sources
+- framework-neutral contract for CMS overview delivery

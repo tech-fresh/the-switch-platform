@@ -105,6 +105,14 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       tone: "amber",
     },
     {
+      href: "/support",
+      eyebrow: "Support Hub",
+      title: "Open trusted student support",
+      description: "Find reputable UK support links, urgent help routes, and exam stress guides.",
+      stat: "NHS + charity signposting",
+      tone: "sky",
+    },
+    {
       href: "/recommendations",
       eyebrow: "Recommendations",
       title: "Follow the next best move",

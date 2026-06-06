@@ -309,6 +309,7 @@ The current build is a working website MVP with modular services underneath it. 
 - `/exams`
 - `/progress`
 - `/saved-progress`
+- `/support`
 - `/recommendations`
 - `/accessibility`
 - `/results`
@@ -330,8 +331,11 @@ The current build is a working website MVP with modular services underneath it. 
 - `/api/assessments/definitions`
 - `/api/assessments/seed/:assessmentId`
 - `/api/cms/overview`
-- `/api/cms/content-packages`
 - `/api/past-papers/catalog`
+- `/api/support/hub`
+- `/api/support/resources`
+- `/api/support/exam-guides`
+- `/api/support/urgent-help`
 
 ### Architecture foundations already in code
 
@@ -340,8 +344,8 @@ The current build is a working website MVP with modular services underneath it. 
 - Type and contract files that keep boundaries explicit
 - Thin API route handlers that can be reused by future app clients
 - Language-ready copy structures for future localisation
-- Account, support, progress, and recommendation flows connected through service boundaries
-- API delivery coverage across account, dashboard, progress, saved progress, recommendations, accessibility, results, exams, timed assessments, CMS, and past papers
+- Account, accessibility, progress, support, and recommendation flows connected through service boundaries
+- API delivery coverage across account, dashboard, progress, saved progress, support, recommendations, accessibility, results, exams, timed assessments, CMS, and past papers
 
 ### Placeholder routes still waiting for fuller product work
 
@@ -358,8 +362,9 @@ The current build is a working website MVP with modular services underneath it. 
 - A full exam experience with mock GCSE papers, progress map, flags, and autosave-backed resume state
 - A Power Grid progress route using calculated subject summaries
 - A Saved Progress route that brings exam and timed assessment autosaves into one shared resume surface
+- A Support Hub route with trusted UK support links, urgent-help routes, and exam stress guides for young people
 - A Recommendations route that converts progress, support, results, and saved-session signals into ordered next actions
-- An accessibility and support route with settings, read aloud preview, and support-aware recommendation cards
+- An accessibility route with settings, read aloud preview, and support-aware recommendation cards
 - A results route that turns exam and timed assessment attempts into outcome summaries
 - An admin architecture route that explains content update and past-paper source planning in-product
 - Access arrangement contracts and services integrated into exam and timed assessment flows
@@ -367,7 +372,6 @@ The current build is a working website MVP with modular services underneath it. 
 - Thin API route handlers that expose modular auth and account data without moving business logic into the frontend
 - Thin API route handlers that expose modular product data across the main MVP routes
 - CMS and past-paper provider boundaries for future content updates and paper ingestion
-- JSON topic content packages that can add reading material, questions, and clickable free official resource links
 - Read aloud, accessibility, and recommendations modules with real working foundations
 
 ## Route-by-Route Explanation
@@ -509,6 +513,21 @@ Learning note:
 
 This route proves that save and resume logic can stay in its own module while still serving multiple student experiences. The route reads a shared overview instead of rebuilding exam or assessment logic in the UI.
 
+### `/support`
+
+This is the student support route.
+
+It currently shows:
+
+- urgent help routes
+- trusted UK support organisations
+- exam stress guide links from reputable organisations
+- clear boundaries explaining that the route is signposting, not counselling
+
+Learning note:
+
+This route keeps support signposting modular and safe for young people. The website renders trusted external resources from structured data, so future app clients can use the same route contracts without adding a chatbot or storing sensitive support disclosures.
+
 ### `/recommendations`
 
 This is the student next-step route.
@@ -604,6 +623,19 @@ Current work:
 - locale preference contract
 - route copy catalog
 - recommendation copy metadata
+
+### `support`
+
+Purpose:
+
+- owns trusted signposting for young people, including urgent-help routes and exam stress support links
+
+Current work:
+
+- support resource registry
+- urgent-help route data
+- exam stress guide link data
+- framework-neutral support contracts
 
 ### `dashboard`
 
@@ -822,13 +854,19 @@ That gives you:
 ```text
 src/
   app/
+    account/
     accessibility/
     admin/
+    api/
     assessments/
     dashboard/
     exams/
     progress/
+    recommendations/
+    results/
+    saved-progress/
     subjects/
+    support/
   components/
   data/
   lib/
@@ -848,6 +886,7 @@ src/
     revision/
     saved-progress/
     subjects/
+    support/
     timed-assessment/
     topics/
   types/
@@ -856,6 +895,7 @@ src/
 ### Simple folder explanation
 
 - `src/app`: page routes
+- `src/app/api`: thin API route handlers
 - `src/components`: reusable UI
 - `src/modules`: product features and business rules
 - `src/lib`: shared utilities
@@ -873,6 +913,8 @@ Right now the project uses:
 - real thin API routes over module services
 - no real CMS data entry yet
 - no live external paper ingestion yet
+- no owned in-app support content for young people
+- trusted external support links instead of a wellbeing assistant
 
 That means the current build is a functional MVP-shaped prototype, not a production system yet.
 
@@ -941,6 +983,7 @@ Important MVP work still ahead:
 - deeper results workflows with more detailed marking logic
 - language-ready route support
 - broader past paper coverage and source validation
+- possible owned structured learning content later, only after rigorous factual review and publication workflow are defined
 
 ## Summary
 

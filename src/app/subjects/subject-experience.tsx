@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import type { TopicContentPackage } from "@/modules/cms/content-package-types";
 import type { QuizQuestion } from "@/modules/quiz/types";
 import type { RevisionContent } from "@/modules/revision/types";
 import type { Subject } from "@/modules/subjects/types";
@@ -12,7 +11,6 @@ interface SubjectExperienceProps {
   topicsBySubject: Record<string, Topic[]>;
   revisionByTopic: Record<string, RevisionContent>;
   quizByTopic: Record<string, QuizQuestion>;
-  contentPackagesByTopic: Record<string, TopicContentPackage | null>;
 }
 
 export function SubjectExperience({
@@ -20,7 +18,6 @@ export function SubjectExperience({
   topicsBySubject,
   revisionByTopic,
   quizByTopic,
-  contentPackagesByTopic,
 }: SubjectExperienceProps) {
   const [selectedSubjectId, setSelectedSubjectId] = useState(subjects[0]?.subjectId ?? "");
   const selectedSubject =
@@ -31,7 +28,6 @@ export function SubjectExperience({
     topics.find((topic) => topic.topicId === selectedTopicId) ?? topics[0];
   const revision = revisionByTopic[selectedTopic.topicId];
   const quiz = quizByTopic[selectedTopic.topicId];
-  const contentPackage = contentPackagesByTopic[selectedTopic.topicId];
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -187,28 +183,6 @@ export function SubjectExperience({
                   ))}
                 </div>
 
-                {contentPackage ? (
-                  <div className="space-y-4 border-t border-stone-200 pt-5">
-                    <div className="space-y-2">
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
-                        JSON content package
-                      </p>
-                      <h3 className="text-xl font-semibold tracking-tight text-stone-950">
-                        Topic to read: {contentPackage.readingTopic}
-                      </h3>
-                      <p className="text-sm leading-6 text-stone-600">{contentPackage.summary}</p>
-                    </div>
-
-                    <div className="grid gap-4 lg:grid-cols-3">
-                      {contentPackage.materialSections.map((section) => (
-                        <div key={section.title} className="border border-stone-200 bg-stone-50 p-4">
-                          <p className="text-sm font-semibold text-stone-950">{section.title}</p>
-                          <p className="mt-3 text-sm leading-6 text-stone-600">{section.body}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
               </div>
             </article>
           </section>
@@ -230,53 +204,6 @@ export function SubjectExperience({
               </div>
             </section>
 
-            {contentPackage ? (
-              <section className="space-y-3 border border-stone-200 bg-white p-4">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                  Answer-focus questions
-                </h2>
-                <div className="space-y-3">
-                  {contentPackage.questions.map((question) => (
-                    <div key={question.questionId} className="border border-stone-200 bg-stone-50 p-3">
-                      <p className="text-sm font-medium text-stone-950">{question.prompt}</p>
-                      <p className="mt-2 text-sm leading-6 text-stone-600">
-                        Focus: {question.answerFocus}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {contentPackage ? (
-              <section className="space-y-3 border border-stone-200 bg-white p-4">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                  Free official links
-                </h2>
-                <div className="space-y-3">
-                  {contentPackage.externalResources.map((resource) => (
-                    <a
-                      key={resource.resourceId}
-                      href={resource.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block border border-stone-200 bg-stone-50 p-4 transition hover:bg-white"
-                    >
-                      <p className="text-sm font-semibold text-stone-950">{resource.label}</p>
-                      <p className="mt-2 text-sm leading-6 text-stone-600">{resource.note}</p>
-                      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-stone-500">
-                        {resource.sourceName} • {resource.access}
-                      </p>
-                    </a>
-                  ))}
-                </div>
-                <p className="text-sm leading-6 text-stone-600">
-                  These links come from a topic JSON package, so future mobile and web clients can
-                  render the same resource list through the API layer.
-                </p>
-              </section>
-            ) : null}
-
             <section className="space-y-3 border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 What this route proves
@@ -285,7 +212,6 @@ export function SubjectExperience({
                 <li>Subjects can drive topic and content selection through module services.</li>
                 <li>Revision structure is now visible in-product instead of only in docs.</li>
                 <li>Quick practice can sit beside revision without mixing quiz rules into the page.</li>
-                <li>JSON content packages can add reading topics, questions, and external links without UI rewrites.</li>
               </ul>
             </section>
           </aside>

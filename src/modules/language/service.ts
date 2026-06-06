@@ -42,6 +42,10 @@ const appCopyCatalogs: Record<SupportedLocale, AppCopyCatalog> = {
         label: "Saved Progress",
         description: "Return to any saved exam or timed assessment session.",
       },
+      "/support": {
+        label: "Support Hub",
+        description: "Find trusted UK support links and exam stress guidance for young people.",
+      },
       "/recommendations": {
         label: "Recommendations",
         description: "Follow the next best actions built from student signals.",

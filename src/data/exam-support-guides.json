@@ -1,0 +1,38 @@
+[
+  {
+    "guideId": "nhs-exam-prep",
+    "title": "NHS: Tips on preparing for exams",
+    "organisation": "NHS",
+    "url": "https://www.nhs.uk/mental-health/children-and-young-adults/help-for-teenagers-young-adults-and-students/tips-on-preparing-for-exams/",
+    "summary": "Covers realistic revision planning, finding a revision style that suits you, and asking for support when pressure builds.",
+    "topicsCovered": ["revision planning", "study routines", "asking for support"],
+    "lastReviewedAt": "2026-06-06"
+  },
+  {
+    "guideId": "childline-exam-stress",
+    "title": "Childline: Exam stress and pressure",
+    "organisation": "Childline",
+    "url": "https://www.childline.org.uk/info-advice/school-college-and-work/school-college/exam-stress/",
+    "summary": "Explains signs of exam stress, how to talk about pressure, and where to find more help if stress is getting too much.",
+    "topicsCovered": ["signs of stress", "taking breaks", "sleep", "talking to someone"],
+    "lastReviewedAt": "2026-06-06"
+  },
+  {
+    "guideId": "youngminds-exam-stress",
+    "title": "YoungMinds: Exam stress",
+    "organisation": "YoungMinds",
+    "url": "https://www.youngminds.org.uk/young-person/coping-with-life/exam-stress/",
+    "summary": "Young-person-focused guide to coping with exam pressure and knowing when to reach out for help.",
+    "topicsCovered": ["exam pressure", "coping", "mental health", "getting help"],
+    "lastReviewedAt": "2026-06-06"
+  },
+  {
+    "guideId": "samaritans-exam-stress",
+    "title": "Samaritans: Exam stress coping strategies",
+    "organisation": "Samaritans",
+    "url": "https://www.samaritans.org/how-we-can-help/schools/deal/deal-resources/coping-strategies/exam-stress-coping-strategies/",
+    "summary": "School-focused coping strategies material that can help students recognise stress and think about healthier ways to respond.",
+    "topicsCovered": ["coping strategies", "recognising stress", "support options"],
+    "lastReviewedAt": "2026-06-06"
+  }
+]

@@ -4,4 +4,5 @@ Seed data and static content fixtures live here.
 
 Current additions:
 
-- `content-packs/` for JSON topic packages that can carry reading topics, answer-focus questions, and free external resource links
+- `support-resources.json` for trusted support organisations and urgent help links
+- `exam-support-guides.json` for reputable exam stress guide links

@@ -2,6 +2,10 @@
 
 ## Mark 3.2 MVP
 
+This README is now meant to be cumulative.
+
+New product work, requested additions, previews, mockups, routes, modules, and architecture notes should be added to this file without removing the earlier record unless something is genuinely obsolete or incorrect.
+
 ## Website Preview And App Mockup
 
 The current homepage now presents both the website-first preview and the future app direction from the same modular dashboard data model.
@@ -13,6 +17,234 @@ The current homepage now presents both the website-first preview and the future 
 ### App mockup
 
 ![The Switch app mockup](public/readme/app-mockup.svg)
+
+## Ordered Build Record
+
+This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 1. Mark 3.2 modular MVP foundation
+
+The project was established around these core rules:
+
+- website first
+- future mobile app ready
+- API first
+- modular services
+- accessibility first
+- mobile-first UI
+- no business logic living only in the frontend
+
+This foundation is still the rule that everything else in the repo follows.
+
+### 2. MVP architecture expansion
+
+The README and repo were expanded to document the product architecture in more detail, including:
+
+- dashboard
+- Power Grid
+- timed assessments
+- full exam engine
+- saved progress
+- recommendations
+- accessibility
+- read aloud
+- language-ready structure
+- auth and account foundations
+- CMS/admin placeholder
+- access arrangements foundation
+
+This stage also made the service-layer separation clearer so the website, API routes, and future mobile client can all reuse the same product logic.
+
+### 3. Structured topic and revision content foundations
+
+The repo was then expanded to support structured subject and topic content, including:
+
+- subject metadata
+- topic mapping
+- revision content structures
+- quiz prompt structures
+- launch-subject coverage for the GCSE MVP
+
+This is the foundation that supports the current `/subjects` learning route.
+
+### 4. JSON content package architecture
+
+The content layer was pushed further into a more explicit structured package shape so the product can work from seeded content rather than scattered page-level copy.
+
+That includes:
+
+- structured content catalog thinking
+- clearer topic content packaging
+- revision and quiz content organisation
+- a more reusable content-serving direction for future CMS or provider updates
+
+### 5. Support architecture with trusted signposting
+
+The product gained a clearer support model that avoids pretending to be counselling or AI wellbeing support.
+
+That work added:
+
+- trusted UK support resources
+- urgent-help links
+- exam stress guides
+- a modular support route
+- a safer signposting-first architecture for young users
+
+### 6. Content catalog module and API delivery
+
+The repo now includes a proper content catalog module and delivery route.
+
+Added work includes:
+
+- `src/modules/content`
+- `src/data/mvp-content-catalog.json`
+- `/api/content/catalog`
+- framework-neutral content contracts
+- subject, topic, revision, and quiz content being shaped through shared catalog structures
+
+This is a major architecture step because content now has a clearer module boundary instead of being implied across multiple feature files.
+
+### 7. Homepage website preview and app mockup
+
+The homepage was upgraded from a simple dashboard entry to a stronger product-preview surface.
+
+Added work includes:
+
+- a more polished website preview section on the homepage
+- a future mobile app mockup panel on the homepage
+- the same dashboard-backed data model feeding both surfaces
+- a clearer visual demonstration that the product is web first and app ready
+
+This work lives primarily in the shared homepage component and is already part of the running app at `/`.
+
+### 8. README preview images
+
+The README now includes the requested visuals so the repository itself shows what has been built.
+
+Added assets:
+
+- `public/readme/website-preview.svg`
+- `public/readme/app-mockup.svg`
+
+Added README showcase sections:
+
+- Website Preview
+- App Mockup
+
+These were added so the repo can communicate the current MVP direction even outside the running local app.
+
+## What You Asked To Be Added And Is Now Present
+
+This is the direct checklist version.
+
+### Added to the product
+
+- dashboard-backed homepage
+- website preview section
+- app mockup section
+- content catalog module
+- content API route
+- support signposting route
+- saved progress route
+- accessibility route
+- recommendations route
+- results route
+- account route
+- assessments route
+- exams route
+- progress route
+- subjects route
+
+### Added to the README
+
+- architecture explanation
+- product flows
+- route-by-route explanation
+- module-by-module explanation
+- folder structure
+- development state
+- learning order
+- build commands
+- website preview image
+- app mockup image
+- ordered build record
+
+### Added as images
+
+- website preview image in the README
+- app mockup image in the README
+
+## Everything Currently Present In This MVP
+
+If you want one place that lists the full current state without replacing earlier notes, this is it.
+
+### Student-facing routes currently present
+
+- `/`
+- `/account`
+- `/dashboard`
+- `/subjects`
+- `/assessments`
+- `/exams`
+- `/progress`
+- `/saved-progress`
+- `/support`
+- `/recommendations`
+- `/accessibility`
+- `/results`
+- `/admin`
+
+### API routes currently present
+
+- `/api/auth/session`
+- `/api/auth/providers`
+- `/api/account/overview`
+- `/api/dashboard/home`
+- `/api/progress/summary`
+- `/api/saved-progress/overview`
+- `/api/recommendations`
+- `/api/recommendations/page`
+- `/api/accessibility/snapshot`
+- `/api/results/overview`
+- `/api/exams/papers`
+- `/api/exams/session/:examId`
+- `/api/assessments/definitions`
+- `/api/assessments/seed/:assessmentId`
+- `/api/cms/overview`
+- `/api/past-papers/catalog`
+- `/api/support/hub`
+- `/api/support/resources`
+- `/api/support/exam-guides`
+- `/api/support/urgent-help`
+- `/api/content/catalog`
+
+### Modules currently present
+
+- `auth`
+- `language`
+- `content`
+- `support`
+- `dashboard`
+- `subjects`
+- `topics`
+- `revision`
+- `quiz`
+- `accessibility`
+- `read-aloud`
+- `recommendations`
+- `timed-assessment`
+- `exam-engine`
+- `saved-progress`
+- `access-arrangements`
+- `power-grid`
+- `results`
+- `cms`
+- `past-papers`
+
+### Visual assets currently present in the README
+
+- `public/readme/website-preview.svg`
+- `public/readme/app-mockup.svg`
 
 The Switch Platform is a GCSE revision, timed practice, progress tracking, and exam-readiness product.
 

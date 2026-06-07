@@ -6,6 +6,13 @@ This README is now meant to be cumulative.
 
 New product work, requested additions, previews, mockups, routes, modules, and architecture notes should be added to this file without removing the earlier record unless something is genuinely obsolete or incorrect.
 
+### README update rule
+
+- Keep the main product overview and learning outline in place.
+- Add new work as appended sections or build-record entries.
+- Do not let a new feature section interrupt the opening product explanation.
+- Only replace earlier README content when that older content is genuinely wrong or obsolete.
+
 ## Mark 3.2 Product Spec
 
 This repository follows the current The Switch Platform Mark 3.2 product spec.
@@ -81,154 +88,6 @@ This is the order the MVP should be pushed forward in unless a new instruction o
 - Read Aloud should appear inside real student flows, not only in isolated previews.
 - Dashboard should aggregate the higher-priority modules rather than invent separate logic.
 - CMS/Admin should stay architectural and placeholder-focused during MVP unless reprioritised.
-
-## Exam Freshness And Learning Repetition
-
-This section explains the newer paper-variation rule in plain English.
-
-The goal is not to remove repetition.
-
-The goal is to keep the right kind of repetition:
-
-- repeat `topics` and `skills` so students keep learning
-- vary exact `question instances` so papers do not feel stale
-- keep official exam timing and paper structure stable
-- keep generated paper state inside the API and service layer, not only in the frontend
-
-### The rule
-
-The exam engine now follows a `topic-repeat-question-rotate` strategy.
-
-That means:
-
-- the paper blueprint still decides the topic slots
-- each slot has multiple valid question variants
-- a new attempt prefers variants the student has not seen recently
-- resume always restores the exact saved question set from that attempt
-- submitted attempts can lead to a fresh next attempt instead of endlessly reopening the same mix
-
-### Why this helps learning
-
-If we removed repetition entirely, learning would get weaker because students need to revisit core ideas.
-
-If we repeated exact papers too often, the product would feel fake and students could end up remembering paper order instead of building real exam readiness.
-
-So the product should:
-
-- repeat Algebra if the paper needs Algebra
-- not keep serving the exact same Algebra question every time
-- preserve structure
-- vary instances
-
-### Current implementation
-
-The first implementation is now built into the Exam Engine.
-
-It does these things:
-
-- stores exam papers as blueprints with question slots and variants
-- generates a session-owned question set for each attempt
-- stores that generated question set inside Saved Progress
-- restores the exact saved question set when resuming
-- lets a submitted paper start a fresh attempt through the API layer
-- keeps results tied to the exact questions that were actually shown
-
-### Architecture flow
-
-```mermaid
-flowchart LR
-    A["Exam route"] --> B["/api/exams/session/:examId"]
-    B --> C["Exam Engine service"]
-    C --> D["Paper blueprint"]
-    C --> E["Saved Progress history"]
-    D --> F["Question slots"]
-    E --> G["Recent exposure signals"]
-    F --> H["Variant selector"]
-    G --> H
-    H --> I["Generated question set"]
-    I --> J["Saved Progress snapshot"]
-    J --> K["Resume / review / results"]
-```
-
-### Attempt lifecycle
-
-```mermaid
-flowchart TD
-    A["Open exam"] --> B{"Saved attempt exists?"}
-    B -- "Yes, active" --> C["Restore exact saved question set"]
-    B -- "Yes, submitted" --> D["Show submitted attempt"]
-    B -- "No" --> E["Generate first attempt"]
-    D --> F["Start fresh attempt"]
-    F --> G["Rotate question variants"]
-    E --> H["Save session snapshot"]
-    G --> H
-    C --> I["Continue work"]
-    H --> I
-    I --> J["Review"]
-    J --> K["Submit"]
-    K --> L["Results + next fresh attempt available"]
-```
-
-### Data ownership
-
-This split matters for future mobile migration.
-
-- `Exam Engine` owns exam structure, attempt generation, official timing, and question rotation.
-- `Saved Progress` owns autosave snapshots and resume state.
-- `Results` owns scoring and review summaries.
-- `Frontend routes` only render the returned contract and trigger actions.
-
-That means the website and a future mobile client can both ask the same API for:
-
-- the current exam attempt
-- the saved generated question set
-- a submitted state
-- a fresh next attempt
-
-### What is fresh and what still repeats
-
-Fresh:
-
-- exact wording
-- exact option combinations
-- exact question variant IDs
-- the next attempt after submission
-
-Still repeated on purpose:
-
-- subject coverage
-- exam board and tier
-- skill focus
-- official duration
-- exam-style structure
-
-### Why the generated question set is saved
-
-This is one of the most important architecture decisions.
-
-If we only saved answers and rebuilt questions later, the selector might produce a different mix and the student could resume into the wrong paper.
-
-So Saved Progress now stores:
-
-- the chosen question set
-- the responses
-- the current question
-- timing
-- support snapshot
-
-That keeps resume and results trustworthy.
-
-### Current MVP limit
-
-This is the first freshness layer, not the final one.
-
-It already solves the main product issue of stale repeated papers better than a fixed mock paper list, but later we can still add:
-
-- larger question banks
-- board-specific paper balancing
-- weak-topic-aware reappearance rules
-- better exposure scoring across longer student history
-- fuller multi-attempt result history views
 
 ## Website Preview And App Mockup
 
@@ -356,6 +215,21 @@ Added README showcase sections:
 - App Mockup
 
 These were added so the repo can communicate the current MVP direction even outside the running local app.
+
+### 9. API-first MVP connections and fresh exam attempts
+
+The next pushed stage connected more of the product through internal API delivery and deepened the exam flow.
+
+Added work includes:
+
+- API-first page delivery across dashboard, exams, assessments, results, recommendations, accessibility, support, subjects, account, admin, and saved progress surfaces
+- new internal routes for read aloud session and subject experience data
+- smarter resume links across Saved Progress and Dashboard
+- submitted-state handling for exams and timed assessments
+- result and recommendation logic that now distinguishes active work from submitted work
+- first-pass exam freshness logic that preserves learning repetition while rotating exact question variants between attempts
+
+This stage matters because it moved more business logic behind shared contracts while also making full exam work feel less stale for active students.
 
 ## What You Asked To Be Added And Is Now Present
 
@@ -844,6 +718,84 @@ The current build is a working website MVP with modular services underneath it. 
 - A master structured content catalog for all current MVP topics
 - Read aloud, accessibility, and recommendations modules with real working foundations
 
+## Recent Additions
+
+This section is where newer pushed work should be appended without interrupting the main product outline above.
+
+### API-first delivery expansion
+
+Recent work extended the internal API-first delivery layer across more of the student product.
+
+That includes:
+
+- shared server-side API helpers
+- more page routes consuming thin internal API routes instead of pulling module logic directly
+- subject experience and read-aloud session API routes
+- stronger consistency between website rendering and service-layer contracts
+
+### Exam freshness and learning repetition
+
+The exam flow now uses a first-pass freshness model that protects learning repetition while reducing stale repeated papers.
+
+The goal is:
+
+- repeat `topics` and `skills`
+- rotate exact `question variants`
+- keep official structure and timing stable
+- preserve the actual generated paper through autosave and results
+
+How it works:
+
+- the exam engine stores paper blueprints with question slots
+- each slot has multiple valid variants
+- a fresh attempt prefers variants the student has not seen recently
+- the generated question set is saved into Saved Progress
+- resume restores the exact same generated set
+- results score against the exact questions that were actually shown
+
+Architecture flow:
+
+```mermaid
+flowchart LR
+    A["Exam route"] --> B["/api/exams/session/:examId"]
+    B --> C["Exam Engine service"]
+    C --> D["Paper blueprint"]
+    C --> E["Saved Progress history"]
+    D --> F["Question slots"]
+    E --> G["Recent exposure signals"]
+    F --> H["Variant selector"]
+    G --> H
+    H --> I["Generated question set"]
+    I --> J["Saved Progress snapshot"]
+    J --> K["Resume / review / results"]
+```
+
+Attempt lifecycle:
+
+```mermaid
+flowchart TD
+    A["Open exam"] --> B{"Saved attempt exists?"}
+    B -- "Yes, active" --> C["Restore exact saved question set"]
+    B -- "Yes, submitted" --> D["Show submitted attempt"]
+    B -- "No" --> E["Generate first attempt"]
+    D --> F["Start fresh attempt"]
+    F --> G["Rotate question variants"]
+    E --> H["Save session snapshot"]
+    G --> H
+    C --> I["Continue work"]
+    H --> I
+    I --> J["Review"]
+    J --> K["Submit"]
+    K --> L["Results + next fresh attempt available"]
+```
+
+Current MVP limit:
+
+- this is the first freshness layer, not the final exam-generation system
+- question banks can grow later
+- weak-topic-aware reappearance rules can deepen later
+- longer-term exposure history can deepen later
+
 ## Route-by-Route Explanation
 
 ### `/`
@@ -942,6 +894,8 @@ It currently shows:
 - question flagging
 - completion percentage
 - resumed session state
+- fresh-attempt support after submission
+- rotating question variants across attempts
 - access-arrangement-aware timing
 
 Learning note:
@@ -1242,10 +1196,14 @@ Purpose:
 Current work:
 
 - mock paper definitions
+- paper blueprints with question slots
 - question structures
 - exam session creation
+- rotating question variants
+- fresh attempt generation
 - seeded answers and flags
 - resume hydration from saved progress
+- session-owned generated question sets
 - access-arrangement-aware official duration handling
 
 ### `saved-progress`

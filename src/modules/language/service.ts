@@ -22,6 +22,10 @@ const appCopyCatalogs: Record<SupportedLocale, AppCopyCatalog> = {
         label: "Dashboard",
         description: "See readiness, active sessions, and next-step guidance.",
       },
+      "/how-it-works": {
+        label: "How It Works",
+        description: "Follow a guided click-through explanation of the website routes and meanings.",
+      },
       "/subjects": {
         label: "Subjects",
         description: "Revise by subject and move into topic-level practice.",

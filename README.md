@@ -247,6 +247,19 @@ That means one of the next important content-side stages should include:
 
 This matters because student trust depends on content quality, not only on product flow and interface quality.
 
+### 11. Guided website walkthrough
+
+The MVP now includes a dedicated guided walkthrough route so students and collaborators can understand how the website is meant to be used.
+
+Added work includes:
+
+- a step-by-step route guide
+- clickable actions into the core student flows
+- glossary explanations for terms such as autosave, Power Grid, support snapshot, and recommendations
+- a standalone API-delivered module so the same guide can later be reused by other clients
+
+This matters because understanding the product flow should not depend on guessing what route names or study signals mean.
+
 ## What You Asked To Be Added And Is Now Present
 
 This is the direct checklist version.
@@ -297,6 +310,7 @@ If you want one place that lists the full current state without replacing earlie
 - `/`
 - `/account`
 - `/dashboard`
+- `/how-it-works`
 - `/subjects`
 - `/assessments`
 - `/exams`
@@ -314,6 +328,7 @@ If you want one place that lists the full current state without replacing earlie
 - `/api/auth/providers`
 - `/api/account/overview`
 - `/api/dashboard/home`
+- `/api/website-guide`
 - `/api/progress/summary`
 - `/api/saved-progress/overview`
 - `/api/recommendations`
@@ -339,6 +354,7 @@ If you want one place that lists the full current state without replacing earlie
 - `content`
 - `support`
 - `dashboard`
+- `website-guide`
 - `subjects`
 - `topics`
 - `revision`
@@ -662,6 +678,7 @@ The current build is a working website MVP with modular services underneath it. 
 - `/`
 - `/account`
 - `/dashboard`
+- `/how-it-works`
 - `/subjects`
 - `/assessments`
 - `/exams`
@@ -678,6 +695,7 @@ The current build is a working website MVP with modular services underneath it. 
 - `/api/auth/providers`
 - `/api/account/overview`
 - `/api/dashboard/home`
+- `/api/website-guide`
 - `/api/progress/summary`
 - `/api/saved-progress/overview`
 - `/api/recommendations`
@@ -725,6 +743,7 @@ The current build is a working website MVP with modular services underneath it. 
 - A Recommendations route that converts progress, support, results, and saved-session signals into ordered next actions
 - An accessibility route with settings, read aloud preview, and support-aware recommendation cards
 - A results route that turns exam and timed assessment attempts into outcome summaries
+- A guided website walkthrough route that explains how the main product routes work step by step
 - An admin architecture route that explains content update and past-paper source planning in-product
 - Access arrangement contracts and services integrated into exam and timed assessment flows
 - Saved progress services for both exam sessions and timed assessment attempts, including shared overview summaries
@@ -733,84 +752,6 @@ The current build is a working website MVP with modular services underneath it. 
 - CMS and past-paper provider boundaries for future content updates and paper ingestion
 - A master structured content catalog for all current MVP topics
 - Read aloud, accessibility, and recommendations modules with real working foundations
-
-## Recent Additions
-
-This section is where newer pushed work should be appended without interrupting the main product outline above.
-
-### API-first delivery expansion
-
-Recent work extended the internal API-first delivery layer across more of the student product.
-
-That includes:
-
-- shared server-side API helpers
-- more page routes consuming thin internal API routes instead of pulling module logic directly
-- subject experience and read-aloud session API routes
-- stronger consistency between website rendering and service-layer contracts
-
-### Exam freshness and learning repetition
-
-The exam flow now uses a first-pass freshness model that protects learning repetition while reducing stale repeated papers.
-
-The goal is:
-
-- repeat `topics` and `skills`
-- rotate exact `question variants`
-- keep official structure and timing stable
-- preserve the actual generated paper through autosave and results
-
-How it works:
-
-- the exam engine stores paper blueprints with question slots
-- each slot has multiple valid variants
-- a fresh attempt prefers variants the student has not seen recently
-- the generated question set is saved into Saved Progress
-- resume restores the exact same generated set
-- results score against the exact questions that were actually shown
-
-Architecture flow:
-
-```mermaid
-flowchart LR
-    A["Exam route"] --> B["/api/exams/session/:examId"]
-    B --> C["Exam Engine service"]
-    C --> D["Paper blueprint"]
-    C --> E["Saved Progress history"]
-    D --> F["Question slots"]
-    E --> G["Recent exposure signals"]
-    F --> H["Variant selector"]
-    G --> H
-    H --> I["Generated question set"]
-    I --> J["Saved Progress snapshot"]
-    J --> K["Resume / review / results"]
-```
-
-Attempt lifecycle:
-
-```mermaid
-flowchart TD
-    A["Open exam"] --> B{"Saved attempt exists?"}
-    B -- "Yes, active" --> C["Restore exact saved question set"]
-    B -- "Yes, submitted" --> D["Show submitted attempt"]
-    B -- "No" --> E["Generate first attempt"]
-    D --> F["Start fresh attempt"]
-    F --> G["Rotate question variants"]
-    E --> H["Save session snapshot"]
-    G --> H
-    C --> I["Continue work"]
-    H --> I
-    I --> J["Review"]
-    J --> K["Submit"]
-    K --> L["Results + next fresh attempt available"]
-```
-
-Current MVP limit:
-
-- this is the first freshness layer, not the final exam-generation system
-- question banks can grow later
-- weak-topic-aware reappearance rules can deepen later
-- longer-term exposure history can deepen later
 
 ## Route-by-Route Explanation
 
@@ -862,6 +803,21 @@ It currently shows:
 Learning note:
 
 This is what “aggregation” means in a codebase. One route combines outputs from several modules into one student-facing screen.
+
+### `/how-it-works`
+
+This is the guided walkthrough route.
+
+It currently shows:
+
+- a step-by-step explanation of the main student journey
+- clickable route actions into the core pages
+- short explanations of why each route matters
+- glossary meanings for key website terms
+
+Learning note:
+
+This route helps both students and collaborators understand the product without needing to infer what route labels or status signals mean.
 
 ### `/subjects`
 
@@ -1103,6 +1059,19 @@ Current work:
 - exam session cards
 - timed assessment cards
 - subject focus cards
+
+### `website-guide`
+
+Purpose:
+
+- owns the guided explanation of how the website works
+
+Current work:
+
+- step-by-step route walkthrough data
+- click-through study journey guidance
+- glossary explanations for key website terms
+- framework-neutral delivery contract
 
 ### `subjects`
 
@@ -1517,6 +1486,105 @@ What still needs to be true before this project can be launched with confidence?
 6. accessibility and mobile QA
 7. deployment, security, and monitoring
 8. final content and paper coverage pass
+
+## Recent Additions
+
+This section is kept near the bottom on purpose so the README can read as a full project guide first and a latest-changes log second.
+
+### API-first delivery expansion
+
+Recent work extended the internal API-first delivery layer across more of the student product.
+
+That includes:
+
+- shared server-side API helpers
+- more page routes consuming thin internal API routes instead of pulling module logic directly
+- subject experience and read-aloud session API routes
+- stronger consistency between website rendering and service-layer contracts
+
+### Exam freshness and learning repetition
+
+The exam flow now uses a first-pass freshness model that protects learning repetition while reducing stale repeated papers.
+
+The goal is:
+
+- repeat `topics` and `skills`
+- rotate exact `question variants`
+- keep official structure and timing stable
+- preserve the actual generated paper through autosave and results
+
+How it works:
+
+- the exam engine stores paper blueprints with question slots
+- each slot has multiple valid variants
+- a fresh attempt prefers variants the student has not seen recently
+- the generated question set is saved into Saved Progress
+- resume restores the exact same generated set
+- results score against the exact questions that were actually shown
+
+Architecture flow:
+
+```mermaid
+flowchart LR
+    A["Exam route"] --> B["/api/exams/session/:examId"]
+    B --> C["Exam Engine service"]
+    C --> D["Paper blueprint"]
+    C --> E["Saved Progress history"]
+    D --> F["Question slots"]
+    E --> G["Recent exposure signals"]
+    F --> H["Variant selector"]
+    G --> H
+    H --> I["Generated question set"]
+    I --> J["Saved Progress snapshot"]
+    J --> K["Resume / review / results"]
+```
+
+Attempt lifecycle:
+
+```mermaid
+flowchart TD
+    A["Open exam"] --> B{"Saved attempt exists?"}
+    B -- "Yes, active" --> C["Restore exact saved question set"]
+    B -- "Yes, submitted" --> D["Show submitted attempt"]
+    B -- "No" --> E["Generate first attempt"]
+    D --> F["Start fresh attempt"]
+    F --> G["Rotate question variants"]
+    E --> H["Save session snapshot"]
+    G --> H
+    C --> I["Continue work"]
+    H --> I
+    I --> J["Review"]
+    J --> K["Submit"]
+    K --> L["Results + next fresh attempt available"]
+```
+
+Current MVP limit:
+
+- this is the first freshness layer, not the final exam-generation system
+- question banks can grow later
+- weak-topic-aware reappearance rules can deepen later
+- longer-term exposure history can deepen later
+
+### Guided website walkthrough
+
+The website now includes a dedicated `How It Works` route so students can understand the main journey without guessing what route names or website signals mean.
+
+That includes:
+
+- a step-by-step click-through walkthrough
+- direct links into Dashboard, Subjects, Assessments, Exams, Progress, Saved Progress, Accessibility, and Support
+- glossary explanations for terms such as autosave, Power Grid, support snapshot, submitted, and recommendations
+- a standalone API-delivered module that can later be reused by other clients
+
+Guide flow:
+
+```mermaid
+flowchart LR
+    A["Open /how-it-works"] --> B["Read guided step"]
+    B --> C["Click linked route"]
+    C --> D["Compare live page with guide explanation"]
+    D --> E["Return for next step or glossary"]
+```
 
 ## Summary
 

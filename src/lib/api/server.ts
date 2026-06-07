@@ -16,6 +16,7 @@ import type { Subject } from "@/modules/subjects/types";
 import type { SupportHubData } from "@/modules/support/types";
 import type { TimedAssessmentAttemptSeed, TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
 import type { Topic } from "@/modules/topics/types";
+import type { WebsiteGuideData } from "@/modules/website-guide/types";
 
 export interface SubjectsExperienceData {
   subjects: Subject[];
@@ -181,4 +182,10 @@ export async function getSubjectsExperienceApiData(): Promise<SubjectsExperience
   );
 
   return response.experience;
+}
+
+export async function getWebsiteGuideApiData(): Promise<WebsiteGuideData> {
+  const response = await fetchApiJson<{ guide: WebsiteGuideData }>("/api/website-guide");
+
+  return response.guide;
 }

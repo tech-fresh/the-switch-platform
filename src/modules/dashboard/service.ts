@@ -71,6 +71,14 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       tone: "teal",
     },
     {
+      href: "/how-it-works",
+      eyebrow: "Website guide",
+      title: "Learn how the website works",
+      description: "Follow the student journey step by step and click into each core route.",
+      stat: "Step-by-step walkthrough",
+      tone: "sky",
+    },
+    {
       href: "/account",
       eyebrow: "Account",
       title: "Open your student account",

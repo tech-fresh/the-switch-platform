@@ -19,6 +19,9 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
   const strongestSubject = [...summary.subjectProgress].sort(
     (left, right) => right.readinessScore - left.readinessScore,
   )[0];
+  const activeSavedSession = savedProgress.sessions.find((session) => session.status !== "submitted");
+  const submittedSavedSession = savedProgress.sessions.find((session) => session.status === "submitted");
+  const hasReviewReadyResults = results.readyForReviewCount > 0;
 
   return [
     {
@@ -30,21 +33,35 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
       description:
         lowestSubject?.recommendedFocus ??
         "Open a subject route and continue with the next recommended topic.",
-      actionLabel: routeCopy["/subjects"].label,
-      href: "/subjects",
-      priority: "high",
+      actionLabel:
+        lowestSubject?.subjectHref && lowestSubject.recommendedTopicId
+          ? "Open revision topic"
+          : routeCopy["/subjects"].label,
+      href: lowestSubject?.subjectHref ?? "/subjects",
+      priority: activeSavedSession ? "medium" : "high",
     },
     {
-      recommendationId: "rec-timed-practice",
+      recommendationId: "rec-resume-saved",
       userId,
-      category: "timed-practice",
-      eyebrow: "Timed practice",
-      title: "Use a short timed checkpoint to lock in the topic",
-      description:
-        "Timed assessments now carry duration rules, saved progress, and access arrangement support.",
-      actionLabel: routeCopy["/assessments"].label,
-      href: "/assessments",
-      priority: "high",
+      category: "resume-saved",
+      eyebrow: "Saved progress",
+      title: activeSavedSession
+        ? `Resume ${activeSavedSession.title} next`
+        : submittedSavedSession
+          ? `Review ${submittedSavedSession.title} next`
+          : "No saved sessions yet",
+      description: activeSavedSession
+        ? savedProgress.recommendedAction
+        : submittedSavedSession
+          ? "Your latest completed session is ready to review through the results flow."
+          : "As soon as a student starts an exam or assessment, autosave records will appear here.",
+      actionLabel: activeSavedSession
+        ? routeCopy["/saved-progress"].label
+        : submittedSavedSession
+          ? routeCopy["/results"].label
+          : routeCopy["/saved-progress"].label,
+      href: activeSavedSession?.href ?? submittedSavedSession?.href ?? "/saved-progress",
+      priority: activeSavedSession ? "high" : submittedSavedSession ? "medium" : "low",
     },
     {
       recommendationId: "rec-exam-readiness",
@@ -56,7 +73,19 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
         "Resume a paper while your strongest subject is still moving upward, then use the Power Grid to compare confidence and completion.",
       actionLabel: routeCopy["/exams"].label,
       href: "/exams",
-      priority: "medium",
+      priority: hasReviewReadyResults ? "low" : "medium",
+    },
+    {
+      recommendationId: "rec-timed-practice",
+      userId,
+      category: "timed-practice",
+      eyebrow: "Timed practice",
+      title: "Use a short timed checkpoint to lock in the topic",
+      description:
+        "Timed assessments now carry duration rules, saved progress, and access arrangement support.",
+      actionLabel: routeCopy["/assessments"].label,
+      href: "/assessments",
+      priority: activeSavedSession ? "medium" : "high",
     },
     {
       recommendationId: "rec-access-support",
@@ -74,32 +103,19 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
       priority: "medium",
     },
     {
-      recommendationId: "rec-resume-saved",
-      userId,
-      category: "resume-saved",
-      eyebrow: "Saved progress",
-      title:
-        savedProgress.activeCount > 0
-          ? `Resume one of ${savedProgress.activeCount} active saved sessions`
-          : "No saved sessions yet",
-      description:
-        savedProgress.activeCount > 0
-          ? savedProgress.recommendedAction
-          : "As soon as a student starts an exam or assessment, autosave records will appear here.",
-      actionLabel: routeCopy["/saved-progress"].label,
-      href: "/saved-progress",
-      priority: savedProgress.activeCount > 0 ? "high" : "low",
-    },
-    {
       recommendationId: "rec-review-results",
       userId,
       category: "review-results",
       eyebrow: "Review results",
-      title: `Use results to protect your strongest area: ${results.strongestArea}`,
-      description: results.nextPriority,
+      title: hasReviewReadyResults
+        ? `Review ${results.readyForReviewCount} submitted session${results.readyForReviewCount === 1 ? "" : "s"}`
+        : `Use results to protect your strongest area: ${results.strongestArea}`,
+      description: hasReviewReadyResults
+        ? "Submitted exam and timed assessment work is now ready for review in the results route."
+        : results.nextPriority,
       actionLabel: routeCopy["/results"].label,
       href: "/results",
-      priority: "medium",
+      priority: hasReviewReadyResults ? "high" : "medium",
     },
   ];
 }
@@ -128,12 +144,22 @@ export async function getRecommendationsPageData(userId: string): Promise<Recomm
       {
         label: "Saved sessions",
         value: String(savedProgress.activeCount),
-        detail: `${savedProgress.accessSnapshotCount} support snapshots already captured`,
+        detail:
+          savedProgress.submittedCount > 0
+            ? `${savedProgress.submittedCount} completed session${
+                savedProgress.submittedCount === 1 ? "" : "s"
+              } ready for review`
+            : `${savedProgress.accessSnapshotCount} support snapshots already captured`,
       },
       {
         label: "Strongest area",
         value: results.strongestArea,
-        detail: results.nextPriority,
+        detail:
+          results.readyForReviewCount > 0
+            ? `${results.readyForReviewCount} submitted result${
+                results.readyForReviewCount === 1 ? "" : "s"
+              } ready to open`
+            : results.nextPriority,
       },
     ],
     recommendations,

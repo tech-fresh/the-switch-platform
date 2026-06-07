@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
+import { getSavedProgressOverviewApiData } from "@/lib/api/server";
 import type { SavedProgressStatus } from "@/modules/saved-progress/types";
 
 function formatLastActivity(timestamp?: string): string {
@@ -28,7 +28,7 @@ function getStatusClasses(status: SavedProgressStatus): string {
 }
 
 export default async function SavedProgressPage() {
-  const overview = await getSavedProgressOverview();
+  const overview = await getSavedProgressOverviewApiData();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -132,7 +132,7 @@ export default async function SavedProgressPage() {
                     href={session.href}
                     className="inline-flex items-center justify-center border border-teal-700 bg-teal-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-teal-800"
                   >
-                    Open and resume
+                    {session.actionLabel}
                   </Link>
                 </div>
               </article>

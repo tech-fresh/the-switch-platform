@@ -133,7 +133,7 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                     Open student dashboard
                   </Link>
                   <Link
-                    href="/exams"
+                    href={data.examSessions[0]?.href ?? "/exams"}
                     className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:bg-stone-50"
                   >
                     Resume exam sessions
@@ -450,13 +450,20 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                       Full paper work that can be resumed immediately
                     </h2>
                   </div>
-                  <Link href="/exams" className="text-sm font-medium text-teal-700 hover:text-teal-800">
+                  <Link
+                    href={data.examSessions[0]?.href ?? "/exams"}
+                    className="text-sm font-medium text-teal-700 hover:text-teal-800"
+                  >
                     Open exam route
                   </Link>
                 </div>
                 <div className="mt-5 grid gap-4 lg:grid-cols-2">
                   {data.examSessions.map((session) => (
-                    <div key={session.sessionId} className="border border-stone-200 bg-stone-50 p-4">
+                    <Link
+                      key={session.sessionId}
+                      href={session.href}
+                      className="block border border-stone-200 bg-stone-50 p-4 transition hover:border-stone-300 hover:bg-white"
+                    >
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSessionKindClasses(session.kind)}`}>
                           {session.kind}
@@ -473,7 +480,7 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                         <p>Primary focus: {session.focusLabel}</p>
                         <p>{session.supportLabel}</p>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </article>
@@ -488,13 +495,20 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                       Shorter checkpoints with capped duration and saved resume state
                     </h2>
                   </div>
-                  <Link href="/assessments" className="text-sm font-medium text-emerald-700 hover:text-emerald-800">
+                  <Link
+                    href={data.assessmentSessions[0]?.href ?? "/assessments"}
+                    className="text-sm font-medium text-emerald-700 hover:text-emerald-800"
+                  >
                     Open assessment route
                   </Link>
                 </div>
                 <div className="mt-5 grid gap-4 lg:grid-cols-2">
                   {data.assessmentSessions.map((session) => (
-                    <div key={session.sessionId} className="border border-stone-200 bg-stone-50 p-4">
+                    <Link
+                      key={session.sessionId}
+                      href={session.href}
+                      className="block border border-stone-200 bg-stone-50 p-4 transition hover:border-stone-300 hover:bg-white"
+                    >
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSessionKindClasses(session.kind)}`}>
                           {session.kind}
@@ -511,7 +525,7 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                         <p>{session.focusLabel}</p>
                         <p>{session.supportLabel}</p>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </article>

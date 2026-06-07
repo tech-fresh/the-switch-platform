@@ -1,5 +1,4 @@
-import { getCmsOverview } from "@/modules/cms/service";
-import { getPastPaperCatalogOverview } from "@/modules/past-papers/service";
+import { getCmsOverviewApiData, getPastPaperCatalogApiData } from "@/lib/api/server";
 
 function getSyncClasses(status: "healthy" | "warning" | "planned"): string {
   if (status === "healthy") {
@@ -15,8 +14,8 @@ function getSyncClasses(status: "healthy" | "warning" | "planned"): string {
 
 export default async function AdminPage() {
   const [cms, papers] = await Promise.all([
-    getCmsOverview(),
-    getPastPaperCatalogOverview(),
+    getCmsOverviewApiData(),
+    getPastPaperCatalogApiData(),
   ]);
 
   return (

@@ -13,11 +13,14 @@ export type PowerGridTrend = "improving" | "stable" | "declining";
 
 export interface PowerGridSubjectProgress {
   subject: string;
+  subjectId?: string;
   level: PowerGridLevel;
   trend: PowerGridTrend;
   readinessScore: number;
   completionScore: number;
   recommendedFocus: string;
+  recommendedTopicId?: string;
+  subjectHref?: string;
   evidence: string;
 }
 
@@ -28,5 +31,6 @@ export interface PowerGridSummary {
   completedSessionCount: number;
   activeSessionCount: number;
   nextBestAction: string;
+  nextBestActionHref?: string;
   subjectProgress: PowerGridSubjectProgress[];
 }

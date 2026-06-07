@@ -55,6 +55,12 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
     },
   ];
 
+  const resumeExamSession = savedProgress.sessions.find((session) => session.entityType === "exam-session");
+  const resumeAssessmentSession = savedProgress.sessions.find(
+    (session) => session.entityType === "timed-assessment-attempt",
+  );
+  const resumeAnySession = savedProgress.sessions[0];
+
   const routeCards: DashboardRouteCard[] = [
     {
       href: "/dashboard",
@@ -81,23 +87,23 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       tone: "sky",
     },
     {
-      href: "/exams",
+      href: resumeExamSession?.href ?? "/exams",
       eyebrow: "Exam Engine",
       title: "Resume a full paper",
       description: "Continue a paper with autosave state, flags, and adjusted exam timing.",
-      stat: `${examSessions.length} mock papers ready`,
+      stat: resumeExamSession?.currentQuestionLabel ?? `${examSessions.length} mock papers ready`,
       tone: "teal",
     },
     {
-      href: "/assessments",
+      href: resumeAssessmentSession?.href ?? "/assessments",
       eyebrow: "Timed practice",
       title: "Start a short checkpoint",
       description: "Choose a capped duration and jump back into a saved assessment attempt.",
-      stat: `${assessmentSessions.length} timed checkpoints`,
+      stat: resumeAssessmentSession?.currentQuestionLabel ?? `${assessmentSessions.length} timed checkpoints`,
       tone: "emerald",
     },
     {
-      href: "/saved-progress",
+      href: resumeAnySession?.href ?? "/saved-progress",
       eyebrow: "Saved Progress",
       title: "Resume from autosave",
       description: "See every in-progress exam and checkpoint record in one resume surface.",
@@ -141,18 +147,21 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
   const examSessionCards: DashboardSessionCard[] = examSessions.map(({ paper, session }) => {
     const answeredCount = session.questionResponses.filter((response) => response.selectedOptionId).length;
     const flaggedCount = session.questionResponses.filter((response) => response.flagged).length;
-    const completionPercentage = Math.round((answeredCount / Math.max(paper.questions.length, 1)) * 100);
+    const completionPercentage = Math.round((answeredCount / Math.max(session.questions.length, 1)) * 100);
     const supportCount =
       session.accessArrangements?.accessArrangementApplication.activeAccessArrangements.length ?? 0;
     const readAloudEnabled =
       session.accessArrangements?.accessArrangementApplication.readAloud.enabled ?? false;
+    const matchingSavedSession = savedProgress.sessions.find(
+      (savedSession) => savedSession.entityType === "exam-session" && savedSession.entityId === session.examSessionId,
+    );
 
     return {
       sessionId: session.examSessionId,
-      href: "/exams",
+      href: matchingSavedSession?.href ?? "/exams",
       kind: "exam",
       title: paper.title,
-      subtitle: `${paper.board} ${paper.paperName} • ${paper.durationMinutes} mins official`,
+      subtitle: `${paper.board} ${paper.paperName} • attempt ${session.attemptNumber}`,
       completionPercentage,
       timeLabel: `${session.timeRemainingMinutes} mins remaining`,
       statusLabel: flaggedCount > 0 ? `${flaggedCount} flagged for review` : "No flagged questions",
@@ -172,10 +181,15 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       const completionPercentage = Math.round(
         (seed.selectedAnswerIds.length / Math.max(assessment.questionCount, 1)) * 100,
       );
+      const matchingSavedSession = savedProgress.sessions.find(
+        (savedSession) =>
+          savedSession.entityType === "timed-assessment-attempt" &&
+          savedSession.entityId === seed.attempt.attemptId,
+      );
 
       return {
         sessionId: seed.attempt.attemptId,
-        href: "/assessments",
+        href: matchingSavedSession?.href ?? "/assessments",
         kind: "assessment",
         title: assessment.title,
         subtitle: `${assessment.subject} • cap ${assessment.officialDurationMinutes} mins`,

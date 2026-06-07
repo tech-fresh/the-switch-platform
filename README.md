@@ -6,6 +6,230 @@ This README is now meant to be cumulative.
 
 New product work, requested additions, previews, mockups, routes, modules, and architecture notes should be added to this file without removing the earlier record unless something is genuinely obsolete or incorrect.
 
+## Mark 3.2 Product Spec
+
+This repository follows the current The Switch Platform Mark 3.2 product spec.
+
+### Architecture direction
+
+- Modular MVP
+- Website first
+- Future mobile app ready
+- API first
+
+### Core MVP scope
+
+1. Dashboard
+2. Power Grid
+3. Timed Assessments
+4. Exam Engine
+5. Saved Progress
+6. Recommendations
+7. Accessibility
+8. Read Aloud
+9. Access Arrangements foundation
+
+### Non-negotiable development rules
+
+- Keep modules independent.
+- Do not mix exam logic with progress logic.
+- Do not mix saved progress with content logic.
+- Keep Read Aloud separate from revision and quiz logic.
+- All student progress must auto-save.
+- Full GCSE exams must use official durations.
+- Manual assessments must not exceed official durations.
+- Mobile-first UI is required.
+- Accessibility-first design is required.
+- Build for future mobile app migration.
+- No business logic should live only in the website frontend.
+- Use an API layer between frontend experiences and backend services.
+- Preserve a language-ready structure before translation is implemented.
+- Treat CMS/Admin as a placeholder MVP module unless it is explicitly prioritised.
+- Keep Access Arrangements independent from Exam Engine, Timed Assessment, Saved Progress, Read Aloud, and Accessibility modules.
+- Full GCSE Exam Mode must support future access arrangements.
+- Timed Assessments must support future access arrangements.
+- Read Aloud must integrate with Access Arrangements.
+- Accessibility settings must integrate with Access Arrangements.
+- Saved Progress must store active access arrangement settings.
+- Do not build complex SEND UI until explicitly prioritised.
+- Do not build AI support until explicitly prioritised.
+- Do not build school administration tools until explicitly prioritised.
+- Access Arrangements API contracts must stay framework-neutral until the app stack is chosen.
+- Website and future mobile clients must consume Access Arrangements through the API layer rather than duplicating the rules.
+
+### Active build priority order
+
+This is the order the MVP should be pushed forward in unless a new instruction overrides it:
+
+1. Exam Engine
+2. Power Grid
+3. Saved Progress
+4. Read Aloud
+5. Dashboard
+6. Timed Assessments
+7. Full GCSE Exams
+8. Results
+9. Recommendations
+10. Accessibility
+11. Access Arrangements foundation
+
+### What this means for current work
+
+- Exam Engine remains the highest-priority product slice.
+- Power Grid should turn exam and assessment activity into actionable next steps.
+- Saved Progress should behave like a real cross-module autosave and resume system.
+- Read Aloud should appear inside real student flows, not only in isolated previews.
+- Dashboard should aggregate the higher-priority modules rather than invent separate logic.
+- CMS/Admin should stay architectural and placeholder-focused during MVP unless reprioritised.
+
+## Exam Freshness And Learning Repetition
+
+This section explains the newer paper-variation rule in plain English.
+
+The goal is not to remove repetition.
+
+The goal is to keep the right kind of repetition:
+
+- repeat `topics` and `skills` so students keep learning
+- vary exact `question instances` so papers do not feel stale
+- keep official exam timing and paper structure stable
+- keep generated paper state inside the API and service layer, not only in the frontend
+
+### The rule
+
+The exam engine now follows a `topic-repeat-question-rotate` strategy.
+
+That means:
+
+- the paper blueprint still decides the topic slots
+- each slot has multiple valid question variants
+- a new attempt prefers variants the student has not seen recently
+- resume always restores the exact saved question set from that attempt
+- submitted attempts can lead to a fresh next attempt instead of endlessly reopening the same mix
+
+### Why this helps learning
+
+If we removed repetition entirely, learning would get weaker because students need to revisit core ideas.
+
+If we repeated exact papers too often, the product would feel fake and students could end up remembering paper order instead of building real exam readiness.
+
+So the product should:
+
+- repeat Algebra if the paper needs Algebra
+- not keep serving the exact same Algebra question every time
+- preserve structure
+- vary instances
+
+### Current implementation
+
+The first implementation is now built into the Exam Engine.
+
+It does these things:
+
+- stores exam papers as blueprints with question slots and variants
+- generates a session-owned question set for each attempt
+- stores that generated question set inside Saved Progress
+- restores the exact saved question set when resuming
+- lets a submitted paper start a fresh attempt through the API layer
+- keeps results tied to the exact questions that were actually shown
+
+### Architecture flow
+
+```mermaid
+flowchart LR
+    A["Exam route"] --> B["/api/exams/session/:examId"]
+    B --> C["Exam Engine service"]
+    C --> D["Paper blueprint"]
+    C --> E["Saved Progress history"]
+    D --> F["Question slots"]
+    E --> G["Recent exposure signals"]
+    F --> H["Variant selector"]
+    G --> H
+    H --> I["Generated question set"]
+    I --> J["Saved Progress snapshot"]
+    J --> K["Resume / review / results"]
+```
+
+### Attempt lifecycle
+
+```mermaid
+flowchart TD
+    A["Open exam"] --> B{"Saved attempt exists?"}
+    B -- "Yes, active" --> C["Restore exact saved question set"]
+    B -- "Yes, submitted" --> D["Show submitted attempt"]
+    B -- "No" --> E["Generate first attempt"]
+    D --> F["Start fresh attempt"]
+    F --> G["Rotate question variants"]
+    E --> H["Save session snapshot"]
+    G --> H
+    C --> I["Continue work"]
+    H --> I
+    I --> J["Review"]
+    J --> K["Submit"]
+    K --> L["Results + next fresh attempt available"]
+```
+
+### Data ownership
+
+This split matters for future mobile migration.
+
+- `Exam Engine` owns exam structure, attempt generation, official timing, and question rotation.
+- `Saved Progress` owns autosave snapshots and resume state.
+- `Results` owns scoring and review summaries.
+- `Frontend routes` only render the returned contract and trigger actions.
+
+That means the website and a future mobile client can both ask the same API for:
+
+- the current exam attempt
+- the saved generated question set
+- a submitted state
+- a fresh next attempt
+
+### What is fresh and what still repeats
+
+Fresh:
+
+- exact wording
+- exact option combinations
+- exact question variant IDs
+- the next attempt after submission
+
+Still repeated on purpose:
+
+- subject coverage
+- exam board and tier
+- skill focus
+- official duration
+- exam-style structure
+
+### Why the generated question set is saved
+
+This is one of the most important architecture decisions.
+
+If we only saved answers and rebuilt questions later, the selector might produce a different mix and the student could resume into the wrong paper.
+
+So Saved Progress now stores:
+
+- the chosen question set
+- the responses
+- the current question
+- timing
+- support snapshot
+
+That keeps resume and results trustworthy.
+
+### Current MVP limit
+
+This is the first freshness layer, not the final one.
+
+It already solves the main product issue of stale repeated papers better than a fixed mock paper list, but later we can still add:
+
+- larger question banks
+- board-specific paper balancing
+- weak-topic-aware reappearance rules
+- better exposure scoring across longer student history
+- fuller multi-attempt result history views
+
 ## Website Preview And App Mockup
 
 The current homepage now presents both the website-first preview and the future app direction from the same modular dashboard data model.

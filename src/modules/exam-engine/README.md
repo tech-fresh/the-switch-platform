@@ -8,8 +8,11 @@ Current foundations in this module:
 
 - Mock GCSE paper definitions
 - Exam session creation helpers
+- Question-slot blueprints with rotating variants
+- Fresh-attempt generation that keeps topic repetition while varying exact questions
 - Access arrangement aware official duration handling
 - Resume hydration through the Saved Progress module
+- Session-owned question-set snapshots for stable resume and results review
 - Framework-neutral contracts for paper lists and session delivery
 
 This module should not own long-term persistence. It asks Saved Progress to store and restore session state.

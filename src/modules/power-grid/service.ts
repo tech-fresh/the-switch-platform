@@ -1,5 +1,6 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
+import { listSeedContentSubjects, listSeedContentTopicsForSubject } from "@/modules/content/service";
 import type { PowerGridLevel, PowerGridSummary, PowerGridSubjectProgress, PowerGridTrend } from "./types";
 
 const powerGridLevels: PowerGridLevel[] = [
@@ -17,6 +18,7 @@ const powerGridLevels: PowerGridLevel[] = [
 export async function getMockPowerGridSummary(): Promise<PowerGridSummary> {
   const papers = getMockExamPapers();
   const assessments = getMockTimedAssessments();
+  const contentSubjects = listSeedContentSubjects();
 
   const examSessions = await Promise.all(
     papers.map((paper) => getMockExamSession(paper.examId)),
@@ -26,6 +28,10 @@ export async function getMockPowerGridSummary(): Promise<PowerGridSummary> {
   );
 
   const subjectProgress = papers.map((paper) => {
+    const matchingSubject = findMatchingContentSubject(paper.subject, contentSubjects);
+    const matchingTopics = matchingSubject
+      ? listSeedContentTopicsForSubject(matchingSubject.subjectId)
+      : [];
     const matchingExamSession = examSessions.find((session) => session.examId === paper.examId);
     const matchingAssessments = assessmentSeeds.filter(
       (seed) =>
@@ -36,7 +42,7 @@ export async function getMockPowerGridSummary(): Promise<PowerGridSummary> {
     const examCompletion = matchingExamSession
       ? calculateCompletionScore(
           matchingExamSession.questionResponses.filter((response) => response.selectedOptionId).length,
-          paper.questions.length,
+          matchingExamSession.questions.length,
         )
       : 0;
 
@@ -58,15 +64,21 @@ export async function getMockPowerGridSummary(): Promise<PowerGridSummary> {
 
     const readinessScore = Math.round(examCompletion * 0.6 + assessmentCompletion * 0.4);
     const trend = getTrendFromScore(readinessScore);
+    const recommendedFocus = paper.skillsFocus[0] ?? "Revision practice";
+    const recommendedTopic = matchingTopics.find(
+      (topic) => normalizeLabel(topic.name) === normalizeLabel(recommendedFocus),
+    );
 
     return {
       subject: paper.subject,
+      subjectId: matchingSubject?.subjectId,
       level: getLevelFromScore(readinessScore),
       trend,
       readinessScore,
       completionScore: Math.round((examCompletion + assessmentCompletion) / 2),
-      recommendedFocus:
-        paper.skillsFocus[0] ?? "Revision practice",
+      recommendedFocus,
+      recommendedTopicId: recommendedTopic?.topicId,
+      subjectHref: buildSubjectHref(matchingSubject?.subjectId, recommendedTopic?.topicId),
       evidence:
         matchingExamSession && matchingExamSession.questionResponses.some((response) => response.flagged)
           ? "Flagged review points still open in the latest session."
@@ -88,6 +100,7 @@ export async function getMockPowerGridSummary(): Promise<PowerGridSummary> {
     ).length,
     activeSessionCount: examSessions.length + assessmentSeeds.length,
     nextBestAction: getNextBestAction(subjectProgress),
+    nextBestActionHref: getNextBestActionHref(subjectProgress),
     subjectProgress,
   };
 }
@@ -125,4 +138,37 @@ function getNextBestAction(subjectProgress: PowerGridSubjectProgress[]): string 
   }
 
   return `Revise ${lowest.subject} next, starting with ${lowest.recommendedFocus}.`;
+}
+
+function getNextBestActionHref(subjectProgress: PowerGridSubjectProgress[]): string {
+  const lowest = [...subjectProgress].sort((left, right) => left.readinessScore - right.readinessScore)[0];
+
+  return lowest?.subjectHref ?? "/subjects";
+}
+
+function findMatchingContentSubject(
+  subjectName: string,
+  subjects: ReturnType<typeof listSeedContentSubjects>,
+) {
+  return subjects.find((subject) => normalizeLabel(subject.name).includes(normalizeLabel(subjectName)));
+}
+
+function normalizeLabel(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+function buildSubjectHref(subjectId?: string, topicId?: string): string {
+  if (!subjectId) {
+    return "/subjects";
+  }
+
+  const searchParams = new URLSearchParams({
+    subjectId,
+  });
+
+  if (topicId) {
+    searchParams.set("topicId", topicId);
+  }
+
+  return `/subjects?${searchParams.toString()}`;
 }

@@ -1,7 +1,7 @@
-import { getSupportHubData } from "@/modules/support/service";
+import { getSupportHubApiData } from "@/lib/api/server";
 
 export default async function SupportPage() {
-  const support = await getSupportHubData();
+  const support = await getSupportHubApiData();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">

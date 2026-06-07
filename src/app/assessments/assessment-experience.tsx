@@ -6,6 +6,8 @@ import type { TimedAssessmentAttemptSeed, TimedAssessmentDefinition } from "@/mo
 interface AssessmentExperienceProps {
   assessments: TimedAssessmentDefinition[];
   attemptSeeds: Record<string, Record<string, TimedAssessmentAttemptSeed>>;
+  initialAssessmentId?: string;
+  initialDurationKey?: string;
 }
 
 function formatTimer(totalMinutes: number): string {
@@ -25,13 +27,31 @@ function formatSavedAt(timestamp: string): string {
 export function AssessmentExperience({
   assessments,
   attemptSeeds,
+  initialAssessmentId,
+  initialDurationKey,
 }: AssessmentExperienceProps) {
+  const startingAssessmentId =
+    (initialAssessmentId && attemptSeeds[initialAssessmentId] ? initialAssessmentId : undefined) ??
+    assessments[0]?.assessmentId ??
+    "";
+  const startingDurationKey =
+    (initialDurationKey && attemptSeeds[startingAssessmentId]?.[initialDurationKey]
+      ? initialDurationKey
+      : undefined) ??
+    Object.keys(attemptSeeds[startingAssessmentId] ?? {})[0] ??
+    "";
   const [selectedAssessmentId, setSelectedAssessmentId] = useState(
-    assessments[0]?.assessmentId ?? "",
+    startingAssessmentId,
   );
   const [selectedDurationKey, setSelectedDurationKey] = useState(
-    Object.keys(attemptSeeds[assessments[0]?.assessmentId ?? ""] ?? {})[0] ?? "",
+    startingDurationKey,
   );
+  const [viewMode, setViewMode] = useState<"summary" | "review" | "submitted">(
+    attemptSeeds[startingAssessmentId]?.[startingDurationKey]?.attempt.status === "submitted"
+      ? "submitted"
+      : "summary",
+  );
+  const [submitState, setSubmitState] = useState<"idle" | "submitting" | "error">("idle");
 
   const assessment =
     assessments.find((item) => item.assessmentId === selectedAssessmentId) ?? assessments[0];
@@ -42,6 +62,31 @@ export function AssessmentExperience({
 
   const answeredCount = seed.selectedAnswerIds.length;
   const completion = Math.round((answeredCount / assessment.questionCount) * 100);
+
+  const handleSubmitAttempt = async () => {
+    setSubmitState("submitting");
+
+    try {
+      const response = await fetch(
+        `/api/assessments/seed/${encodeURIComponent(selectedAssessmentId)}?durationMinutes=${encodeURIComponent(
+          selectedDurationKey,
+        )}`,
+        {
+          method: "POST",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Timed assessment submission request failed.");
+      }
+
+      seed.attempt.status = "submitted";
+      setViewMode("submitted");
+      setSubmitState("idle");
+    } catch {
+      setSubmitState("error");
+    }
+  };
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -108,6 +153,13 @@ export function AssessmentExperience({
                         setSelectedDurationKey(
                           Object.keys(attemptSeeds[item.assessmentId] ?? {})[0] ?? "",
                         );
+                        setViewMode(
+                          attemptSeeds[item.assessmentId]?.[Object.keys(attemptSeeds[item.assessmentId] ?? {})[0] ?? ""]
+                            ?.attempt.status === "submitted"
+                            ? "submitted"
+                            : "summary",
+                        );
+                        setSubmitState("idle");
                       }}
                       className={`flex w-full flex-col gap-2 px-4 py-4 text-left transition ${
                         isSelected
@@ -151,7 +203,16 @@ export function AssessmentExperience({
                     <button
                       key={duration}
                       type="button"
-                      onClick={() => setSelectedDurationKey(String(duration))}
+                      onClick={() => {
+                        const nextDurationKey = String(duration);
+                        setSelectedDurationKey(nextDurationKey);
+                        setViewMode(
+                          attemptSeeds[assessment.assessmentId]?.[nextDurationKey]?.attempt.status === "submitted"
+                            ? "submitted"
+                            : "summary",
+                        );
+                        setSubmitState("idle");
+                      }}
                       className={`border px-3 py-3 text-sm font-medium transition ${
                         isSelected
                           ? "border-emerald-700 bg-emerald-700 text-white"
@@ -177,8 +238,17 @@ export function AssessmentExperience({
               <span className="border border-stone-300 bg-white px-2 py-1">
                 {assessment.questionCount} checkpoint questions
               </span>
+              <button
+                type="button"
+                onClick={() => setViewMode("review")}
+                disabled={seed.attempt.status === "submitted"}
+                className="border border-stone-300 bg-white px-2 py-1 text-stone-700 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Review screen
+              </button>
             </div>
 
+            {viewMode === "summary" ? (
             <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
               <div className="grid gap-4 border-b border-stone-200 pb-5 md:grid-cols-3">
                 <div>
@@ -256,6 +326,150 @@ export function AssessmentExperience({
                 attempt without forcing the UI to calculate the logic itself.
               </div>
             </article>
+            ) : null}
+
+            {viewMode === "review" ? (
+              <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
+                <div className="flex flex-col gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                      End of checkpoint review
+                    </p>
+                    <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
+                      Check saved answers, bookmarks, and notes before submitting this attempt.
+                    </h2>
+                  </div>
+                  <div className="grid gap-2 text-sm text-stone-700">
+                    <div className="border border-stone-200 bg-stone-50 px-3 py-2">
+                      {seed.selectedAnswerIds.length}/{assessment.questionCount} answered
+                    </div>
+                    <div className="border border-stone-200 bg-stone-50 px-3 py-2">
+                      {seed.bookmarkedQuestionIds.length} bookmarked
+                    </div>
+                    <div className="border border-stone-200 bg-stone-50 px-3 py-2">
+                      {Object.keys(seed.notes).length} notes saved
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                      Attempt coverage
+                    </p>
+                    <div className="mt-4 space-y-2 text-sm text-stone-700">
+                      <p>Current question: {seed.currentQuestionId ?? "Not started"}</p>
+                      <p>Selected answers: {seed.selectedAnswerIds.length}</p>
+                      <p>Written answers: {Object.keys(seed.writtenAnswers).length}</p>
+                      <p>Time remaining: {seed.attempt.timeRemainingMinutes} mins</p>
+                    </div>
+                  </div>
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                      Support carry-over
+                    </p>
+                    <div className="mt-4 space-y-2 text-sm text-stone-700">
+                      <p>
+                        Read aloud:{" "}
+                        {seed.attempt.accessArrangements?.accessArrangementApplication.readAloud.enabled
+                          ? "enabled"
+                          : "not enabled"}
+                      </p>
+                      <p>
+                        Access snapshot:{" "}
+                        {seed.attempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot
+                          ? "saved"
+                          : "not saved"}
+                      </p>
+                      <p>Attempt status: {seed.attempt.status}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 border-t border-stone-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="space-y-1 text-sm text-stone-600">
+                    <p>{assessment.questionCount - seed.selectedAnswerIds.length} unanswered questions remain.</p>
+                    <p>Submission here is a real saved-progress state change for the MVP prototype.</p>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setViewMode("summary")}
+                      className="border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+                    >
+                      Back to summary
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSubmitAttempt}
+                      disabled={submitState === "submitting"}
+                      className="border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      {submitState === "submitting" ? "Submitting..." : "Submit attempt"}
+                    </button>
+                  </div>
+                </div>
+                {submitState === "error" ? (
+                  <p className="text-sm text-rose-700">
+                    The timed assessment could not be submitted just yet. Try again.
+                  </p>
+                ) : null}
+              </article>
+            ) : null}
+
+            {viewMode === "submitted" ? (
+              <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
+                <div className="space-y-3 border-b border-stone-200 pb-5">
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                    Checkpoint submitted
+                  </p>
+                  <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
+                    This timed assessment is now marked as completed in the saved-progress flow.
+                  </h2>
+                  <p className="text-sm leading-6 text-stone-600">
+                    The MVP can now move a timed assessment from active work into a completed review state,
+                    just like the exam route.
+                  </p>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Answered</p>
+                    <p className="mt-2 text-2xl font-semibold text-stone-950">
+                      {seed.selectedAnswerIds.length}/{assessment.questionCount}
+                    </p>
+                  </div>
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Bookmarked</p>
+                    <p className="mt-2 text-2xl font-semibold text-stone-950">
+                      {seed.bookmarkedQuestionIds.length}
+                    </p>
+                  </div>
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Notes</p>
+                    <p className="mt-2 text-2xl font-semibold text-stone-950">
+                      {Object.keys(seed.notes).length}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("review")}
+                    className="border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+                  >
+                    Reopen review
+                  </button>
+                  <a
+                    href="/results"
+                    className="inline-flex items-center justify-center border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
+                  >
+                    Open results route
+                  </a>
+                </div>
+              </article>
+            ) : null}
           </section>
 
           <aside className="space-y-6">

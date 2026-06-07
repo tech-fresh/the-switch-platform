@@ -46,6 +46,7 @@ export async function saveExamProgress(
     accessArrangementSnapshot: input.accessArrangementSnapshot,
     examProgress: {
       currentQuestionId: input.currentQuestionId,
+      questionSet: input.questionSet,
       questionResponses: input.questionResponses,
       flaggedQuestionIds,
       timeRemainingMinutes: input.timeRemainingMinutes,
@@ -67,6 +68,7 @@ export async function saveTimedAssessmentProgress(
     accessArrangementSnapshot: input.accessArrangementSnapshot,
     timedAssessmentProgress: {
       currentQuestionId: input.currentQuestionId,
+      selectedDurationMinutes: input.selectedDurationMinutes,
       selectedAnswerIds: input.selectedAnswerIds,
       writtenAnswers: input.writtenAnswers,
       notes: input.notes,

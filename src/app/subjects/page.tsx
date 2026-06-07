@@ -1,28 +1,37 @@
 import { SubjectExperience } from "./subject-experience";
-import { getMockQuizQuestion } from "@/modules/quiz/service";
-import { getMockRevisionContent } from "@/modules/revision/service";
-import { getMockSubjects } from "@/modules/subjects/service";
-import { getMockTopicsForSubject } from "@/modules/topics/service";
+import { getSubjectsExperienceApiData } from "@/lib/api/server";
 
-export default function SubjectsPage() {
-  const subjects = getMockSubjects();
-  const topicsBySubject = Object.fromEntries(
-    subjects.map((subject) => [subject.subjectId, getMockTopicsForSubject(subject.subjectId)]),
-  );
-  const allTopics = Object.values(topicsBySubject).flat();
-  const revisionByTopic = Object.fromEntries(
-    allTopics.map((topic) => [topic.topicId, getMockRevisionContent(topic.topicId)]),
-  );
-  const quizByTopic = Object.fromEntries(
-    allTopics.map((topic) => [topic.topicId, getMockQuizQuestion(topic.topicId)]),
-  );
+interface SubjectsPageProps {
+  searchParams?: Promise<{
+    subjectId?: string;
+    topicId?: string;
+  }>;
+}
+
+export default async function SubjectsPage({ searchParams }: SubjectsPageProps) {
+  const experience = await getSubjectsExperienceApiData();
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const initialSubjectId =
+    resolvedSearchParams?.subjectId &&
+    experience.subjects.some((subject) => subject.subjectId === resolvedSearchParams.subjectId)
+      ? resolvedSearchParams.subjectId
+      : experience.subjects[0]?.subjectId;
+  const initialTopicId =
+    resolvedSearchParams?.topicId &&
+    experience.topicsBySubject[initialSubjectId ?? ""]?.some(
+      (topic) => topic.topicId === resolvedSearchParams.topicId,
+    )
+      ? resolvedSearchParams.topicId
+      : undefined;
 
   return (
     <SubjectExperience
-      subjects={subjects}
-      topicsBySubject={topicsBySubject}
-      revisionByTopic={revisionByTopic}
-      quizByTopic={quizByTopic}
+      subjects={experience.subjects}
+      topicsBySubject={experience.topicsBySubject}
+      revisionByTopic={experience.revisionByTopic}
+      quizByTopic={experience.quizByTopic}
+      initialSubjectId={initialSubjectId}
+      initialTopicId={initialTopicId}
     />
   );
 }

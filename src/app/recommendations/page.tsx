@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getRecommendationsPageData } from "@/modules/recommendations/service";
+import { getRecommendationsPageApiData } from "@/lib/api/server";
 
 function getPriorityClasses(priority: "high" | "medium" | "low"): string {
   if (priority === "high") {
@@ -14,7 +14,7 @@ function getPriorityClasses(priority: "high" | "medium" | "low"): string {
 }
 
 export default async function RecommendationsPage() {
-  const data = await getRecommendationsPageData("student-demo");
+  const data = await getRecommendationsPageApiData();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">

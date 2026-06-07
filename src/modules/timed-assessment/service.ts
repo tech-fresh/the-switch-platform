@@ -36,6 +36,13 @@ export function getMockTimedAssessments(): TimedAssessmentDefinition[] {
   return mockTimedAssessments;
 }
 
+export function getMockTimedAssessmentAttemptId(
+  assessmentId: string,
+  userId = "student-demo",
+): string {
+  return `${assessmentId}-attempt-${userId}`;
+}
+
 export async function createTimedAssessmentAttempt(
   input: CreateTimedAssessmentAttemptInput,
   accessProfileRepository?: StudentAccessProfileRepository,
@@ -56,7 +63,7 @@ export async function createTimedAssessmentAttempt(
   const now = new Date().toISOString();
 
   return {
-    attemptId: `${input.assessment.assessmentId}-attempt-${input.userId}`,
+    attemptId: getMockTimedAssessmentAttemptId(input.assessment.assessmentId, input.userId),
     assessmentId: input.assessment.assessmentId,
     userId: input.userId,
     selectedDurationMinutes: arrangementApplication.durationMinutes,
@@ -112,6 +119,7 @@ export async function getMockTimedAssessmentAttemptSeed(
       userId: resumedAttempt.attempt.userId,
       assessmentAttemptId: resumedAttempt.attempt.attemptId,
       currentQuestionId: effectiveState.currentQuestionId,
+      selectedDurationMinutes: resumedAttempt.attempt.selectedDurationMinutes,
       selectedAnswerIds: effectiveState.selectedAnswerIds,
       writtenAnswers: effectiveState.writtenAnswers,
       notes: effectiveState.notes,

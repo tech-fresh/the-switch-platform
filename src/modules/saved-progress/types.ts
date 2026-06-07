@@ -1,5 +1,5 @@
 import type { SavedProgressAccessArrangementSnapshot } from "@/modules/access-arrangements";
-import type { ExamQuestionResponse } from "@/modules/exam-engine/types";
+import type { ExamQuestion, ExamQuestionResponse } from "@/modules/exam-engine/types";
 
 export type SavedProgressEntityType = "exam-session" | "timed-assessment-attempt";
 
@@ -7,6 +7,7 @@ export type SavedProgressStatus = "in-progress" | "paused" | "submitted";
 
 export interface SavedExamProgressPayload {
   currentQuestionId: string;
+  questionSet: ExamQuestion[];
   questionResponses: ExamQuestionResponse[];
   flaggedQuestionIds: string[];
   timeRemainingMinutes: number;
@@ -14,6 +15,7 @@ export interface SavedExamProgressPayload {
 
 export interface SavedTimedAssessmentProgressPayload {
   currentQuestionId?: string;
+  selectedDurationMinutes: number;
   selectedAnswerIds: string[];
   writtenAnswers: Record<string, string>;
   notes: Record<string, string>;
@@ -48,6 +50,7 @@ export interface SaveExamProgressInput {
   userId: string;
   examSessionId: string;
   currentQuestionId: string;
+  questionSet: ExamQuestion[];
   questionResponses: ExamQuestionResponse[];
   timeRemainingMinutes: number;
   accessArrangementSnapshot?: SavedProgressAccessArrangementSnapshot;
@@ -59,6 +62,7 @@ export interface SaveTimedAssessmentProgressInput {
   userId: string;
   assessmentAttemptId: string;
   currentQuestionId?: string;
+  selectedDurationMinutes: number;
   selectedAnswerIds: string[];
   writtenAnswers: Record<string, string>;
   notes: Record<string, string>;
@@ -75,6 +79,7 @@ export interface SavedProgressSessionSummary {
   title: string;
   subtitle: string;
   href: string;
+  actionLabel: string;
   status: SavedProgressStatus;
   lastActivityAt: string;
   completionPercentage: number;

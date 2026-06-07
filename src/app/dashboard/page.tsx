@@ -1,8 +1,8 @@
 import { DashboardHome } from "@/components/dashboard-home";
-import { getDashboardHomeData } from "@/modules/dashboard/service";
+import { getDashboardHomeApiData } from "@/lib/api/server";
 
 export default async function DashboardPage() {
-  const data = await getDashboardHomeData();
+  const data = await getDashboardHomeApiData();
 
   return <DashboardHome data={data} mode="dashboard" />;
 }

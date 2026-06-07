@@ -1,4 +1,5 @@
-import { getMockPowerGridSummary } from "@/modules/power-grid/service";
+import Link from "next/link";
+import { getProgressSummaryApiData } from "@/lib/api/server";
 
 function getTrendTone(trend: "improving" | "stable" | "declining"): string {
   if (trend === "improving") {
@@ -13,7 +14,7 @@ function getTrendTone(trend: "improving" | "stable" | "declining"): string {
 }
 
 export default async function ProgressPage() {
-  const summary = await getMockPowerGridSummary();
+  const summary = await getProgressSummaryApiData();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -82,6 +83,20 @@ export default async function ProgressPage() {
                   <div className="border border-dashed border-stone-300 bg-stone-50 px-4 py-3 text-sm text-stone-700">
                     Recommended next focus: {subject.recommendedFocus}
                   </div>
+                  <div className="flex flex-wrap gap-3 pt-1">
+                    <Link
+                      href={subject.subjectHref ?? "/subjects"}
+                      className="inline-flex items-center justify-center border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-800"
+                    >
+                      Open subject route
+                    </Link>
+                    <Link
+                      href="/assessments"
+                      className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+                    >
+                      Start timed practice
+                    </Link>
+                  </div>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
@@ -108,6 +123,12 @@ export default async function ProgressPage() {
                 Next best action
               </h2>
               <p className="text-sm leading-6 text-stone-700">{summary.nextBestAction}</p>
+              <Link
+                href={summary.nextBestActionHref ?? "/subjects"}
+                className="inline-flex items-center justify-center border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-800"
+              >
+                Open next revision route
+              </Link>
             </section>
 
             <section className="space-y-3 border border-stone-200 bg-white p-4">

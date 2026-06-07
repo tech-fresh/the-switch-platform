@@ -9,6 +9,8 @@ export type ExamQuestionType = "multiple-choice" | "short-answer";
 
 export type ExamQuestionStatus = "not-started" | "in-progress" | "answered";
 
+export type ExamSessionStatus = "in-progress" | "submitted";
+
 export interface ExamQuestionOption {
   optionId: string;
   label: string;
@@ -24,6 +26,8 @@ export interface ExamQuestion {
   type: ExamQuestionType;
   options?: ExamQuestionOption[];
   guidance?: string;
+  correctOptionId?: string;
+  sourceQuestionKey?: string;
 }
 
 export interface ExamPaper {
@@ -49,14 +53,25 @@ export interface ExamQuestionResponse {
   flagged: boolean;
 }
 
+export interface ExamSessionGenerationSummary {
+  strategy: "topic-repeat-question-rotate";
+  reusedQuestionCount: number;
+  repeatedTopicCount: number;
+  questionSourceKeys: string[];
+}
+
 export interface ExamSession {
   examSessionId: string;
   examId: string;
   userId: string;
+  attemptNumber: number;
+  status: ExamSessionStatus;
   startedAt: string;
   lastSavedAt: string;
   durationMinutes: number;
   timeRemainingMinutes: number;
   accessArrangements?: ExamWithAccessArrangements;
+  questions: ExamQuestion[];
   questionResponses: ExamQuestionResponse[];
+  generationSummary: ExamSessionGenerationSummary;
 }

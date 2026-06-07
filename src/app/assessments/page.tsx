@@ -1,11 +1,18 @@
 import { AssessmentExperience } from "./assessment-experience";
 import {
-  getMockTimedAssessmentAttemptSeed,
-  getMockTimedAssessments,
-} from "@/modules/timed-assessment/service";
+  getTimedAssessmentDefinitionsApiData,
+  getTimedAssessmentSeedApiData,
+} from "@/lib/api/server";
 
-export default async function AssessmentsPage() {
-  const assessments = getMockTimedAssessments();
+interface AssessmentsPageProps {
+  searchParams?: Promise<{
+    assessmentId?: string;
+    durationMinutes?: string;
+  }>;
+}
+
+export default async function AssessmentsPage({ searchParams }: AssessmentsPageProps) {
+  const assessments = await getTimedAssessmentDefinitionsApiData();
   const attemptEntries = await Promise.all(
     assessments.map(async (assessment) => {
       const durations = Array.from(
@@ -19,20 +26,26 @@ export default async function AssessmentsPage() {
       const seeds = await Promise.all(
         durations.map(async (duration) => [
           String(duration),
-          await getMockTimedAssessmentAttemptSeed(assessment.assessmentId, {
-            selectedDurationMinutes: duration,
-          }),
+          await getTimedAssessmentSeedApiData(assessment.assessmentId, duration),
         ] as const),
       );
 
       return [assessment.assessmentId, Object.fromEntries(seeds)] as const;
     }),
   );
+  const attemptSeeds = Object.fromEntries(attemptEntries);
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const initialAssessmentId =
+    resolvedSearchParams?.assessmentId && attemptSeeds[resolvedSearchParams.assessmentId]
+      ? resolvedSearchParams.assessmentId
+      : assessments[0]?.assessmentId;
 
   return (
     <AssessmentExperience
       assessments={assessments}
-      attemptSeeds={Object.fromEntries(attemptEntries)}
+      attemptSeeds={attemptSeeds}
+      initialAssessmentId={initialAssessmentId}
+      initialDurationKey={resolvedSearchParams?.durationMinutes}
     />
   );
 }

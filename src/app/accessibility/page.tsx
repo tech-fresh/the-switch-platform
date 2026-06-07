@@ -1,14 +1,15 @@
 import { AccessibilityExperience } from "./accessibility-experience";
-import { getAccessibilitySnapshot } from "@/modules/accessibility/service";
-import { getReadAloudSession } from "@/modules/read-aloud/service";
-import { getStudentRecommendations } from "@/modules/recommendations/service";
+import {
+  getAccessibilitySnapshotApiData,
+  getReadAloudSessionApiData,
+  getStudentRecommendationsApiData,
+} from "@/lib/api/server";
 
 export default async function AccessibilityPage() {
-  const userId = "student-demo";
   const [snapshot, readAloudSession, recommendations] = await Promise.all([
-    getAccessibilitySnapshot(userId),
-    getReadAloudSession(userId, "revision-notes"),
-    getStudentRecommendations(userId),
+    getAccessibilitySnapshotApiData(),
+    getReadAloudSessionApiData("revision-notes"),
+    getStudentRecommendationsApiData(),
   ]);
 
   return (

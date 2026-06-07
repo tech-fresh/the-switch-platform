@@ -68,6 +68,9 @@ function buildSessionSummary(
       (response) => response.selectedOptionId,
     ).length;
     const flaggedCount = record.examProgress.flaggedQuestionIds.length;
+    const noteCount = record.examProgress.questionResponses.filter(
+      (response) => response.workingNotes?.trim(),
+    ).length;
     const supportCount = record.accessArrangementSnapshot?.activeAccessArrangements.length ?? 0;
 
     return {
@@ -75,13 +78,23 @@ function buildSessionSummary(
       entityId: record.entityId,
       entityType: record.entityType,
       title: paper.title,
-      subtitle: `${paper.board} ${paper.paperName} • ${paper.durationMinutes} mins official`,
-      href: "/exams",
+      subtitle: `${paper.board} ${paper.paperName} • attempt ${record.entityId.match(/-session-(\d+)$/)?.[1] ?? "001"}`,
+      href:
+        record.status === "submitted"
+          ? "/results"
+          : buildExamResumeHref(record.entityId, record.examProgress.currentQuestionId),
+      actionLabel: record.status === "submitted" ? "Open results" : "Open and resume",
       status: record.status,
       lastActivityAt: record.lastActivityAt,
-      completionPercentage: toPercentage(answeredCount, paper.questions.length),
-      currentQuestionLabel: `Resume from ${record.examProgress.currentQuestionId}`,
-      timeRemainingLabel: `${record.examProgress.timeRemainingMinutes} mins remaining`,
+      completionPercentage: toPercentage(answeredCount, record.examProgress.questionSet.length),
+      currentQuestionLabel:
+        record.status === "submitted"
+          ? "Submitted and ready for review"
+          : `Resume from ${record.examProgress.currentQuestionId}`,
+      timeRemainingLabel:
+        record.status === "submitted"
+          ? "Timing closed for this paper"
+          : `${record.examProgress.timeRemainingMinutes} mins remaining`,
       supportSummary:
         supportCount > 0
           ? `${supportCount} access adjustments stored with this session`
@@ -89,7 +102,9 @@ function buildSessionSummary(
       reviewSummary:
         flaggedCount > 0
           ? `${flaggedCount} flagged questions waiting for review`
-          : "No flagged questions in the saved state",
+          : noteCount > 0
+            ? `${noteCount} working note${noteCount === 1 ? "" : "s"} saved in this session`
+            : "No flagged questions in the saved state",
     };
   }
 
@@ -111,17 +126,31 @@ function buildSessionSummary(
       entityType: record.entityType,
       title: assessment.title,
       subtitle: `${assessment.subject} • cap ${assessment.officialDurationMinutes} mins`,
-      href: "/assessments",
+      href:
+        record.status === "submitted"
+          ? "/results"
+          : buildAssessmentResumeHref(
+              assessment.assessmentId,
+              record.timedAssessmentProgress.selectedDurationMinutes,
+              record.timedAssessmentProgress.currentQuestionId,
+            ),
+      actionLabel: record.status === "submitted" ? "Open results" : "Open and resume",
       status: record.status,
       lastActivityAt: record.lastActivityAt,
       completionPercentage: toPercentage(
         record.timedAssessmentProgress.selectedAnswerIds.length,
         assessment.questionCount,
       ),
-      currentQuestionLabel: record.timedAssessmentProgress.currentQuestionId
-        ? `Resume from ${record.timedAssessmentProgress.currentQuestionId}`
-        : "Ready to start",
-      timeRemainingLabel: `${record.timedAssessmentProgress.timeRemainingMinutes} mins remaining`,
+      currentQuestionLabel:
+        record.status === "submitted"
+          ? "Submitted and ready for review"
+          : record.timedAssessmentProgress.currentQuestionId
+            ? `Resume from ${record.timedAssessmentProgress.currentQuestionId}`
+            : "Ready to start",
+      timeRemainingLabel:
+        record.status === "submitted"
+          ? "Timing closed for this checkpoint"
+          : `${record.timedAssessmentProgress.timeRemainingMinutes} mins remaining`,
       supportSummary:
         supportCount > 0
           ? `${supportCount} access adjustments stored with this attempt`
@@ -140,12 +169,48 @@ function toPercentage(answeredCount: number, totalCount: number): number {
   return Math.round((answeredCount / Math.max(totalCount, 1)) * 100);
 }
 
-function getRecommendedAction(sessions: SavedProgressSessionSummary[]): string {
-  const mostUrgent = [...sessions].sort((left, right) => left.completionPercentage - right.completionPercentage)[0];
+function buildExamResumeHref(entityId: string, currentQuestionId: string): string {
+  const examId = entityId.replace(/-session-\d+$/, "");
+  const searchParams = new URLSearchParams({
+    examId,
+    questionId: currentQuestionId,
+  });
 
-  if (!mostUrgent) {
-    return "Start a timed assessment or exam to create your first saved session.";
+  return `/exams?${searchParams.toString()}`;
+}
+
+function buildAssessmentResumeHref(
+  assessmentId: string,
+  durationMinutes: number,
+  currentQuestionId?: string,
+): string {
+  const searchParams = new URLSearchParams({
+    assessmentId,
+    durationMinutes: String(durationMinutes),
+  });
+
+  if (currentQuestionId) {
+    searchParams.set("questionId", currentQuestionId);
   }
 
-  return `Resume ${mostUrgent.title} next and pick up from the saved checkpoint.`;
+  return `/assessments?${searchParams.toString()}`;
+}
+
+function getRecommendedAction(sessions: SavedProgressSessionSummary[]): string {
+  const activeSessions = sessions.filter((session) => session.status !== "submitted");
+  const mostUrgent = [...activeSessions].sort(
+    (left, right) => left.completionPercentage - right.completionPercentage,
+  )[0];
+
+  if (mostUrgent) {
+    return `Resume ${mostUrgent.title} next and pick up from the saved checkpoint.`;
+  }
+
+  const mostRecentSubmitted = sessions.find((session) => session.status === "submitted");
+
+  if (mostRecentSubmitted) {
+    return `Review ${mostRecentSubmitted.title} next from the saved completed sessions.`;
+  }
+
+  return "Start a timed assessment or exam to create your first saved session.";
 }

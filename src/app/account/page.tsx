@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAccountOverview } from "@/modules/auth/service";
+import { getAccountOverviewApiData } from "@/lib/api/server";
 
 function formatSignedInAt(timestamp: string): string {
   return new Intl.DateTimeFormat("en-GB", {
@@ -11,7 +11,7 @@ function formatSignedInAt(timestamp: string): string {
 }
 
 export default async function AccountPage() {
-  const account = await getAccountOverview();
+  const account = await getAccountOverviewApiData();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">

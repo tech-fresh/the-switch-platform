@@ -1,4 +1,4 @@
-import { getResultsOverview } from "@/modules/results/service";
+import { getResultsOverviewApiData } from "@/lib/api/server";
 
 function getTrendTone(trend: "improving" | "stable" | "needs-attention"): string {
   if (trend === "improving") {
@@ -12,8 +12,14 @@ function getTrendTone(trend: "improving" | "stable" | "needs-attention"): string
   return "text-rose-700";
 }
 
+function getStatusClasses(status: "submitted" | "in-progress"): string {
+  return status === "submitted"
+    ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+    : "border-amber-300 bg-amber-50 text-amber-900";
+}
+
 export default async function ResultsPage() {
-  const results = await getResultsOverview();
+  const results = await getResultsOverviewApiData();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -34,7 +40,7 @@ export default async function ResultsPage() {
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-4">
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Overall score</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">
@@ -56,6 +62,11 @@ export default async function ResultsPage() {
               </p>
               <p className="mt-1 text-sm text-stone-600">{results.assessmentResults.length} checkpoint result views</p>
             </div>
+            <div className="border border-stone-200 bg-white p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Ready for review</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">{results.readyForReviewCount}</p>
+              <p className="mt-1 text-sm text-stone-600">{results.submittedCount} submitted through saved progress</p>
+            </div>
           </div>
         </section>
 
@@ -70,9 +81,14 @@ export default async function ResultsPage() {
                   <div key={result.resultId} className="border border-stone-200 bg-stone-50 p-4">
                     <div className="flex items-center justify-between gap-3">
                       <h2 className="text-lg font-semibold text-stone-950">{result.title}</h2>
-                      <span className={`text-sm font-medium capitalize ${getTrendTone(result.trend)}`}>
-                        {result.trend}
-                      </span>
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getStatusClasses(result.status)}`}>
+                          {result.status === "submitted" ? "submitted" : "in progress"}
+                        </span>
+                        <span className={`text-sm font-medium capitalize ${getTrendTone(result.trend)}`}>
+                          {result.trend}
+                        </span>
+                      </div>
                     </div>
                     <p className="mt-1 text-sm text-stone-600">{result.subtitle}</p>
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -96,6 +112,7 @@ export default async function ResultsPage() {
                     <p className="mt-4 text-sm leading-6 text-stone-700">
                       Strengths: {result.strengths.join(", ")}
                     </p>
+                    <p className="mt-2 text-sm leading-6 text-stone-700">{result.reviewLabel}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{result.nextStep}</p>
                   </div>
                 ))}
@@ -111,9 +128,14 @@ export default async function ResultsPage() {
                   <div key={result.resultId} className="border border-stone-200 bg-stone-50 p-4">
                     <div className="flex items-center justify-between gap-3">
                       <h2 className="text-lg font-semibold text-stone-950">{result.title}</h2>
-                      <span className={`text-sm font-medium capitalize ${getTrendTone(result.trend)}`}>
-                        {result.trend}
-                      </span>
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getStatusClasses(result.status)}`}>
+                          {result.status === "submitted" ? "submitted" : "in progress"}
+                        </span>
+                        <span className={`text-sm font-medium capitalize ${getTrendTone(result.trend)}`}>
+                          {result.trend}
+                        </span>
+                      </div>
                     </div>
                     <p className="mt-1 text-sm text-stone-600">{result.subtitle}</p>
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -137,6 +159,7 @@ export default async function ResultsPage() {
                     <p className="mt-4 text-sm leading-6 text-stone-700">
                       Strengths: {result.strengths.join(", ")}
                     </p>
+                    <p className="mt-2 text-sm leading-6 text-stone-700">{result.reviewLabel}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{result.nextStep}</p>
                   </div>
                 ))}

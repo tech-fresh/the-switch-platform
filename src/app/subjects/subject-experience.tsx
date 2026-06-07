@@ -11,6 +11,8 @@ interface SubjectExperienceProps {
   topicsBySubject: Record<string, Topic[]>;
   revisionByTopic: Record<string, RevisionContent>;
   quizByTopic: Record<string, QuizQuestion>;
+  initialSubjectId?: string;
+  initialTopicId?: string;
 }
 
 export function SubjectExperience({
@@ -18,12 +20,22 @@ export function SubjectExperience({
   topicsBySubject,
   revisionByTopic,
   quizByTopic,
+  initialSubjectId,
+  initialTopicId,
 }: SubjectExperienceProps) {
-  const [selectedSubjectId, setSelectedSubjectId] = useState(subjects[0]?.subjectId ?? "");
+  const startingSubjectId =
+    (initialSubjectId && subjects.some((subject) => subject.subjectId === initialSubjectId)
+      ? initialSubjectId
+      : undefined) ?? subjects[0]?.subjectId ?? "";
+  const [selectedSubjectId, setSelectedSubjectId] = useState(startingSubjectId);
   const selectedSubject =
     subjects.find((subject) => subject.subjectId === selectedSubjectId) ?? subjects[0];
   const topics = topicsBySubject[selectedSubject.subjectId] ?? [];
-  const [selectedTopicId, setSelectedTopicId] = useState(topics[0]?.topicId ?? "");
+  const startingTopicId =
+    (initialTopicId && topics.some((topic) => topic.topicId === initialTopicId)
+      ? initialTopicId
+      : undefined) ?? topics[0]?.topicId ?? "";
+  const [selectedTopicId, setSelectedTopicId] = useState(startingTopicId);
   const selectedTopic =
     topics.find((topic) => topic.topicId === selectedTopicId) ?? topics[0];
   const revision = revisionByTopic[selectedTopic.topicId];

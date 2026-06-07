@@ -75,10 +75,11 @@ This is the order the MVP should be pushed forward in unless a new instruction o
 5. Dashboard
 6. Timed Assessments
 7. Full GCSE Exams
-8. Results
-9. Recommendations
-10. Accessibility
-11. Access Arrangements foundation
+8. Content Fact-Checking And Editorial Workflow
+9. Results
+10. Recommendations
+11. Accessibility
+12. Access Arrangements foundation
 
 ### What this means for current work
 
@@ -87,6 +88,7 @@ This is the order the MVP should be pushed forward in unless a new instruction o
 - Saved Progress should behave like a real cross-module autosave and resume system.
 - Read Aloud should appear inside real student flows, not only in isolated previews.
 - Dashboard should aggregate the higher-priority modules rather than invent separate logic.
+- Content should not keep expanding toward student-facing publication without a real fact-check and editorial approval workflow.
 - CMS/Admin should stay architectural and placeholder-focused during MVP unless reprioritised.
 
 ## Website Preview And App Mockup
@@ -230,6 +232,20 @@ Added work includes:
 - first-pass exam freshness logic that preserves learning repetition while rotating exact question variants between attempts
 
 This stage matters because it moved more business logic behind shared contracts while also making full exam work feel less stale for active students.
+
+### 10. Content fact-checking and editorial workflow priority
+
+Content quality assurance is now being treated as an active project priority rather than only a later note.
+
+That means one of the next important content-side stages should include:
+
+- explicit fact-check statuses
+- internal review and approval stages
+- publish gating before student visibility
+- source attribution and provider traceability
+- a workflow that prevents unreviewed owned content from reaching students
+
+This matters because student trust depends on content quality, not only on product flow and interface quality.
 
 ## What You Asked To Be Added And Is Now Present
 
@@ -1353,11 +1369,16 @@ Right now the project uses:
 - mock signed-in account data
 - real thin API routes over module services
 - no real CMS data entry yet
+- no enforced editorial fact-check and approval workflow yet
 - no live external paper ingestion yet
 - no owned in-app support content for young people
 - trusted external support links instead of a wellbeing assistant
 
 That means the current build is a functional MVP-shaped prototype, not a production system yet.
+
+Current estimated project completion: `63%`
+
+This is an estimate of MVP progress, not production readiness.
 
 But it is already more than a mock layout because:
 
@@ -1419,12 +1440,83 @@ Important MVP work still ahead:
 - stronger real saved persistence beyond in-memory state
 - write-side API layer
 - fuller authentication flow
+- enforced fact-check, editorial review, and publish workflow for student-facing content
 - CMS content management tools
 - repository-backed content and paper ingestion adapters
 - deeper results workflows with more detailed marking logic
 - language-ready route support
 - broader past paper coverage and source validation
 - possible owned structured learning content later, only after rigorous factual review and publication workflow are defined
+
+## Launch Readiness Checklist
+
+This section is a launch-oriented version of the remaining work.
+
+It is meant to answer a practical question:
+
+What still needs to be true before this project can be launched with confidence?
+
+### Must-have before launch
+
+- real authentication end to end
+- real persistence instead of in-memory saved progress
+- write-side API coverage for important student actions
+- enforced fact-check, editorial review, and publish gating for student-facing content
+- CMS or controlled content update workflow
+- production-safe exam and assessment data handling
+- stronger results and marking logic
+- error handling and failure recovery across the main student journeys
+- basic security review for auth, API routes, and student data handling
+- accessibility QA across the real live flows
+- deployment and production environment setup
+
+### High-priority product gaps
+
+- fuller saved progress persistence and resume reliability
+- deeper exam paper and question-bank coverage
+- broader timed assessment coverage
+- stronger recommendations built from richer student history
+- more complete access arrangements workflow
+- real student account and profile settings
+- past paper ingestion and validation workflow
+- language-ready implementation beyond structure alone
+
+### Content and trust requirements
+
+- fact-check status per content item
+- internal review status per content item
+- approval step before publish
+- source attribution and provider traceability
+- rollback or unpublish path if content is wrong
+- clear ownership for who can create, review, approve, and publish content
+
+### Technical readiness
+
+- database schema and adapters
+- stable repository and provider adapters for content and papers
+- test coverage for core modules
+- API contract verification
+- monitoring and logging
+- backup and recovery approach for student progress
+
+### Operational launch checks
+
+- privacy and data handling review
+- terms, safeguarding, and support signposting review
+- admin or editor workflow for content updates
+- production QA on mobile
+- smoke testing across the core routes
+
+### Shortest realistic launch sequence
+
+1. real persistence
+2. real auth
+3. editorial fact-check and publish workflow
+4. write-side APIs
+5. results and marking hardening
+6. accessibility and mobile QA
+7. deployment, security, and monitoring
+8. final content and paper coverage pass
 
 ## Summary
 

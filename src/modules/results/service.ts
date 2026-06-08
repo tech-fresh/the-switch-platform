@@ -4,11 +4,6 @@ import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/mo
 import { listSavedProgressByUser } from "@/modules/saved-progress/service";
 import type { ResultTrend, ResultsOverview, SessionResultSummary } from "./types";
 
-const mockAssessmentCorrectAnswers: Record<string, string[]> = {
-  "aqa-maths-algebra-checkpoint": ["q1:a", "q2:c", "q3:b", "q4:b", "q5:d", "q6:a"],
-  "edexcel-english-inference-practice": ["q1:b", "q2:b", "q3:b", "q4:c"],
-};
-
 export async function getResultsOverview(): Promise<ResultsOverview> {
   const [papers, assessments, powerGrid] = await Promise.all([
     Promise.resolve(getMockExamPapers()),
@@ -46,6 +41,8 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
         title: paper.title,
         subtitle: `${paper.board} ${paper.paperName} • attempt ${session.attemptNumber}`,
         status,
+        href: buildExamResultHref(paper.examId, status, savedRecord?.examProgress?.currentQuestionId),
+        actionLabel: status === "submitted" ? "Reopen paper review" : "Resume paper",
         scorePercentage: toPercentage(correctCount, questions.length),
         answeredCount: questionResponses.filter((response) => response.selectedOptionId).length,
         totalCount: questions.length,
@@ -73,8 +70,15 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
         savedRecord?.timedAssessmentProgress?.selectedAnswerIds ?? seed.selectedAnswerIds;
       const bookmarkedQuestionIds =
         savedRecord?.timedAssessmentProgress?.bookmarkedQuestionIds ?? seed.bookmarkedQuestionIds;
-      const correctAnswers = mockAssessmentCorrectAnswers[assessment.assessmentId] ?? [];
-      const correctCount = selectedAnswerIds.filter((answerId) => correctAnswers.includes(answerId)).length;
+      const questions = savedRecord?.timedAssessmentProgress?.questionSet ?? seed.questions;
+      const answerKey = Object.fromEntries(
+        questions.map((question) => [question.questionId, question.correctOptionId]),
+      );
+      const correctCount = selectedAnswerIds.filter((answerId) => {
+        const [questionId, selectedOptionId] = answerId.split(":");
+
+        return selectedOptionId && answerKey[questionId] === selectedOptionId;
+      }).length;
       const status = savedRecord?.status === "submitted" ? "submitted" : "in-progress";
 
       return buildResultSummary({
@@ -83,9 +87,16 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
         title: assessment.title,
         subtitle: `${assessment.subject} timed checkpoint`,
         status,
-        scorePercentage: toPercentage(correctCount, correctAnswers.length || assessment.questionCount),
+        href: buildAssessmentResultHref(
+          assessment.assessmentId,
+          seed.attempt.selectedDurationMinutes,
+          status,
+          savedRecord?.timedAssessmentProgress?.currentQuestionId,
+        ),
+        actionLabel: status === "submitted" ? "Reopen checkpoint review" : "Resume checkpoint",
+        scorePercentage: toPercentage(correctCount, questions.length || assessment.questionCount),
         answeredCount: selectedAnswerIds.length,
-        totalCount: assessment.questionCount,
+        totalCount: questions.length || assessment.questionCount,
         flaggedCount: bookmarkedQuestionIds.length,
         reviewLabel:
           status === "submitted"
@@ -157,4 +168,38 @@ function getTrend(score: number): ResultTrend {
   }
 
   return "needs-attention";
+}
+
+function buildExamResultHref(
+  examId: string,
+  status: "submitted" | "in-progress",
+  currentQuestionId?: string,
+): string {
+  const searchParams = new URLSearchParams({
+    examId,
+  });
+
+  if (status !== "submitted" && currentQuestionId) {
+    searchParams.set("questionId", currentQuestionId);
+  }
+
+  return `/exams?${searchParams.toString()}`;
+}
+
+function buildAssessmentResultHref(
+  assessmentId: string,
+  durationMinutes: number,
+  status: "submitted" | "in-progress",
+  currentQuestionId?: string,
+): string {
+  const searchParams = new URLSearchParams({
+    assessmentId,
+    durationMinutes: String(durationMinutes),
+  });
+
+  if (status !== "submitted" && currentQuestionId) {
+    searchParams.set("questionId", currentQuestionId);
+  }
+
+  return `/assessments?${searchParams.toString()}`;
 }

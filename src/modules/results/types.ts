@@ -6,6 +6,8 @@ export interface SessionResultSummary {
   title: string;
   subtitle: string;
   status: "submitted" | "in-progress";
+  href: string;
+  actionLabel: string;
   scorePercentage: number;
   answeredCount: number;
   totalCount: number;

@@ -20,6 +20,7 @@ export interface DashboardSessionCard {
   sessionId: string;
   href: string;
   kind: "exam" | "assessment";
+  status: "submitted" | "in-progress";
   title: string;
   subtitle: string;
   completionPercentage: number;
@@ -28,6 +29,7 @@ export interface DashboardSessionCard {
   supportLabel: string;
   focusLabel: string;
   reviewCount: number;
+  actionLabel: string;
 }
 
 export interface DashboardFocusCard {

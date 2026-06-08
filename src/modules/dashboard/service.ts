@@ -163,16 +163,26 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
     const matchingSavedSession = savedProgress.sessions.find(
       (savedSession) => savedSession.entityType === "exam-session" && savedSession.entityId === session.examSessionId,
     );
+    const status = matchingSavedSession?.status === "submitted" ? "submitted" : "in-progress";
 
     return {
       sessionId: session.examSessionId,
       href: matchingSavedSession?.href ?? "/exams",
       kind: "exam",
+      status,
       title: paper.title,
       subtitle: `${paper.board} ${paper.paperName} • attempt ${session.attemptNumber}`,
       completionPercentage,
-      timeLabel: `${session.timeRemainingMinutes} mins remaining`,
-      statusLabel: flaggedCount > 0 ? `${flaggedCount} flagged for review` : "No flagged questions",
+      timeLabel:
+        status === "submitted"
+          ? "Paper submitted and ready for review"
+          : `${session.timeRemainingMinutes} mins remaining`,
+      statusLabel:
+        status === "submitted"
+          ? "Latest saved snapshot is now locked for review"
+          : flaggedCount > 0
+            ? `${flaggedCount} flagged for review`
+            : "No flagged questions",
       supportLabel:
         supportCount > 0
           ? `${supportCount} support adjustments active`
@@ -181,6 +191,7 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
             : "Support-ready through access profile layer",
       focusLabel: paper.skillsFocus[0] ?? "Exam focus available",
       reviewCount: flaggedCount,
+      actionLabel: status === "submitted" ? "Reopen review" : "Resume paper",
     };
   });
 
@@ -194,24 +205,38 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
           savedSession.entityType === "timed-assessment-attempt" &&
           savedSession.entityId === seed.attempt.attemptId,
       );
+      const status = matchingSavedSession?.status === "submitted" ? "submitted" : "in-progress";
 
       return {
         sessionId: seed.attempt.attemptId,
         href: matchingSavedSession?.href ?? "/assessments",
         kind: "assessment",
+        status,
         title: assessment.title,
         subtitle: `${assessment.subject} • cap ${assessment.officialDurationMinutes} mins`,
         completionPercentage,
-        timeLabel: `${seed.attempt.timeRemainingMinutes} mins remaining`,
-        statusLabel: `${seed.bookmarkedQuestionIds.length} bookmarked checkpoint items`,
+        timeLabel:
+          status === "submitted"
+            ? "Checkpoint submitted and ready for review"
+            : `${seed.attempt.timeRemainingMinutes} mins remaining`,
+        statusLabel:
+          status === "submitted"
+            ? `${seed.bookmarkedQuestionIds.length} bookmarked review item${
+                seed.bookmarkedQuestionIds.length === 1 ? "" : "s"
+              } saved with the attempt`
+            : `${seed.bookmarkedQuestionIds.length} bookmarked checkpoint items`,
         supportLabel: seed.attempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot
           ? "Access snapshot captured for resume"
           : "No access snapshot yet",
         focusLabel: seed.currentQuestionId ? `Resume from ${seed.currentQuestionId}` : "Ready to start",
         reviewCount: seed.bookmarkedQuestionIds.length,
+        actionLabel: status === "submitted" ? "Reopen review" : "Resume checkpoint",
       };
     },
   );
+
+  const sortedExamSessionCards = [...examSessionCards].sort(sortDashboardSessions);
+  const sortedAssessmentSessionCards = [...assessmentSessionCards].sort(sortDashboardSessions);
 
   const focusCards: DashboardFocusCard[] = summary.subjectProgress.map((subject) => ({
     subject: subject.subject,
@@ -236,8 +261,8 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
     summary,
     metrics,
     routeCards,
-    examSessions: examSessionCards,
-    assessmentSessions: assessmentSessionCards,
+    examSessions: sortedExamSessionCards,
+    assessmentSessions: sortedAssessmentSessionCards,
     focusCards,
     strongestSubject,
     weakestSubject,
@@ -247,4 +272,19 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
         ? `${readAloudReadyCount} active exam sessions already have read aloud enabled.`
         : "Saved progress already stores access snapshots, so future support settings can travel with the student session.",
   };
+}
+
+function sortDashboardSessions(
+  left: DashboardSessionCard,
+  right: DashboardSessionCard,
+): number {
+  if (left.status !== right.status) {
+    return left.status === "in-progress" ? -1 : 1;
+  }
+
+  if (left.completionPercentage !== right.completionPercentage) {
+    return right.completionPercentage - left.completionPercentage;
+  }
+
+  return left.title.localeCompare(right.title);
 }

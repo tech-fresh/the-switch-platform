@@ -69,6 +69,7 @@ export async function saveTimedAssessmentProgress(
     timedAssessmentProgress: {
       currentQuestionId: input.currentQuestionId,
       selectedDurationMinutes: input.selectedDurationMinutes,
+      questionSet: input.questionSet,
       selectedAnswerIds: input.selectedAnswerIds,
       writtenAnswers: input.writtenAnswers,
       notes: input.notes,

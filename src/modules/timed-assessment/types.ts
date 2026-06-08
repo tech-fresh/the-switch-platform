@@ -18,6 +18,25 @@ export interface TimedAssessmentDefinition {
   questionCount: number;
 }
 
+export type TimedAssessmentQuestionType = "multiple-choice";
+
+export interface TimedAssessmentQuestionOption {
+  optionId: string;
+  label: string;
+  text: string;
+}
+
+export interface TimedAssessmentQuestion {
+  questionId: string;
+  number: number;
+  topic: string;
+  prompt: string;
+  type: TimedAssessmentQuestionType;
+  options: TimedAssessmentQuestionOption[];
+  correctOptionId: string;
+  guidance?: string;
+}
+
 export interface TimedAssessmentAttempt {
   attemptId: string;
   assessmentId: string;
@@ -39,6 +58,7 @@ export interface CreateTimedAssessmentAttemptInput {
 
 export interface TimedAssessmentAttemptSeed {
   attempt: TimedAssessmentAttempt;
+  questions: TimedAssessmentQuestion[];
   selectedAnswerIds: string[];
   writtenAnswers: Record<string, string>;
   notes: Record<string, string>;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { ColourSchemePreference } from "@/modules/access-arrangements";
 import type { AccessibilitySnapshot } from "@/modules/accessibility/types";
 import type { Recommendation } from "@/modules/recommendations/types";
 import type { ReadAloudSession } from "@/modules/read-aloud/types";
@@ -24,9 +25,11 @@ export function AccessibilityExperience({
   recommendations,
 }: AccessibilityExperienceProps) {
   const [settings, setSettings] = useState(snapshot.settings);
+  const [accessProfile, setAccessProfile] = useState(snapshot.studentAccessProfile);
   const [speed, setSpeed] = useState(readAloudSession.speed);
   const [voiceId, setVoiceId] = useState(readAloudSession.selectedVoiceId);
   const [previewState, setPreviewState] = useState<"idle" | "playing" | "paused">("idle");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   const derivedPreview = useMemo(
     () => ({
@@ -36,12 +39,75 @@ export function AccessibilityExperience({
     }),
     [readAloudSession, speed, voiceId],
   );
+  const readAloudEnabled =
+    accessProfile.activeAccessArrangements.includes("READER") ||
+    accessProfile.activeAccessArrangements.includes("TEXT_TO_SPEECH") ||
+    settings.textToSpeechEnabled;
+  const readAloudSource = accessProfile.activeAccessArrangements.includes("READER") ||
+    accessProfile.activeAccessArrangements.includes("TEXT_TO_SPEECH")
+    ? "access-arrangement"
+    : settings.textToSpeechEnabled
+      ? "student-preference"
+      : "disabled";
 
   const toggleSetting = (key: ToggleKey) => {
+    setSaveState("idle");
     setSettings((current) => ({
       ...current,
       [key]: !current[key],
     }));
+  };
+
+  const updateColourScheme = (preferredColourScheme: ColourSchemePreference) => {
+    setSaveState("idle");
+    setSettings((current) => ({
+      ...current,
+      preferredColourScheme,
+    }));
+  };
+
+  const updateFontSize = (preferredFontSize: number) => {
+    setSaveState("idle");
+    setSettings((current) => ({
+      ...current,
+      preferredFontSize,
+    }));
+  };
+
+  const updateLineSpacing = (lineSpacing: "default" | "wide" | "extra-wide") => {
+    setSaveState("idle");
+    setSettings((current) => ({
+      ...current,
+      lineSpacing,
+    }));
+  };
+
+  const handleSaveSettings = async () => {
+    setSaveState("saving");
+
+    try {
+      const response = await fetch("/api/accessibility/snapshot", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          settings,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Accessibility save request failed.");
+      }
+
+      const payload = (await response.json()) as { snapshot: AccessibilitySnapshot };
+
+      setSettings(payload.snapshot.settings);
+      setAccessProfile(payload.snapshot.studentAccessProfile);
+      setSaveState("saved");
+    } catch {
+      setSaveState("error");
+    }
   };
 
   const handleReadAloudAction = (nextState: "playing" | "paused" | "idle") => {
@@ -93,21 +159,21 @@ export function AccessibilityExperience({
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Access profile</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">
-                {snapshot.studentAccessProfile.activeAccessArrangements.length || 0} active
+                {accessProfile.activeAccessArrangements.length || 0} active
               </p>
               <p className="mt-1 text-sm text-stone-600">
-                {snapshot.studentAccessProfile.activeAccessArrangements.length
-                  ? snapshot.studentAccessProfile.activeAccessArrangements.join(", ")
+                {accessProfile.activeAccessArrangements.length
+                  ? accessProfile.activeAccessArrangements.join(", ")
                   : "No formal arrangements applied yet"}
               </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Read aloud</p>
               <p className="mt-2 text-lg font-semibold text-stone-950 capitalize">
-                {readAloudSession.accessArrangementConfig?.source ?? "disabled"}
+                {readAloudSource}
               </p>
               <p className="mt-1 text-sm text-stone-600">
-                {readAloudSession.accessArrangementConfig?.enabled
+                {readAloudEnabled
                   ? "Support is available in the current profile."
                   : "Preview is ready even before formal support is enabled."}
               </p>
@@ -168,22 +234,70 @@ export function AccessibilityExperience({
               <div className="mt-5 grid gap-4 md:grid-cols-3">
                 <div className="border border-stone-200 bg-stone-50 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Font size</p>
+                  <input
+                    type="range"
+                    min="14"
+                    max="24"
+                    step="1"
+                    value={settings.preferredFontSize}
+                    onChange={(event) => updateFontSize(Number(event.target.value))}
+                    className="mt-4 w-full"
+                  />
                   <p className="mt-2 text-2xl font-semibold text-stone-950">
                     {settings.preferredFontSize}px
                   </p>
                 </div>
                 <div className="border border-stone-200 bg-stone-50 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Colour scheme</p>
+                  <select
+                    value={settings.preferredColourScheme}
+                    onChange={(event) => updateColourScheme(event.target.value as ColourSchemePreference)}
+                    className="mt-4 w-full border border-stone-300 bg-white px-3 py-3 text-sm text-stone-900"
+                  >
+                    <option value="default">Default</option>
+                    <option value="high-contrast">High contrast</option>
+                    <option value="cream">Cream</option>
+                    <option value="dark">Dark</option>
+                  </select>
                   <p className="mt-2 text-2xl font-semibold capitalize text-stone-950">
                     {settings.preferredColourScheme}
                   </p>
                 </div>
                 <div className="border border-stone-200 bg-stone-50 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Line spacing</p>
+                  <select
+                    value={settings.lineSpacing}
+                    onChange={(event) =>
+                      updateLineSpacing(event.target.value as "default" | "wide" | "extra-wide")
+                    }
+                    className="mt-4 w-full border border-stone-300 bg-white px-3 py-3 text-sm text-stone-900"
+                  >
+                    <option value="default">Default</option>
+                    <option value="wide">Wide</option>
+                    <option value="extra-wide">Extra wide</option>
+                  </select>
                   <p className="mt-2 text-2xl font-semibold capitalize text-stone-950">
                     {settings.lineSpacing}
                   </p>
                 </div>
+              </div>
+
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleSaveSettings}
+                  disabled={saveState === "saving"}
+                  className="border border-amber-700 bg-amber-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-amber-800 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {saveState === "saving" ? "Saving..." : "Save support settings"}
+                </button>
+                <p className="text-sm text-stone-600">
+                  {saveState === "saved"
+                    ? "Saved to the accessibility and access-profile layer."
+                    : saveState === "error"
+                      ? "Settings could not be saved just yet."
+                      : "Save these settings so future read-aloud and resume flows can reuse them."}
+                </p>
               </div>
             </article>
 

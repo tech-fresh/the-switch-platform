@@ -39,6 +39,12 @@ function getSessionKindClasses(kind: DashboardSessionCard["kind"]): string {
     : "border-emerald-300 bg-emerald-50 text-emerald-900";
 }
 
+function getSessionStatusClasses(status: DashboardSessionCard["status"]): string {
+  return status === "submitted"
+    ? "border-sky-300 bg-sky-50 text-sky-900"
+    : "border-amber-300 bg-amber-50 text-amber-900";
+}
+
 function getProgressBarClasses(score: number): string {
   if (score >= 75) {
     return "bg-emerald-500";
@@ -474,9 +480,14 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                       className="block border border-stone-200 bg-stone-50 p-4 transition hover:border-stone-300 hover:bg-white"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-3">
-                        <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSessionKindClasses(session.kind)}`}>
-                          {session.kind}
-                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSessionKindClasses(session.kind)}`}>
+                            {session.kind}
+                          </span>
+                          <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSessionStatusClasses(session.status)}`}>
+                            {session.status === "submitted" ? "submitted" : "live"}
+                          </span>
+                        </div>
                         <span className="text-sm font-medium text-stone-700">
                           {session.completionPercentage}% complete
                         </span>
@@ -489,6 +500,7 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                         <p>Primary focus: {session.focusLabel}</p>
                         <p>{session.supportLabel}</p>
                       </div>
+                      <p className="mt-4 text-sm font-medium text-teal-700">{session.actionLabel}</p>
                     </Link>
                   ))}
                 </div>
@@ -519,9 +531,14 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                       className="block border border-stone-200 bg-stone-50 p-4 transition hover:border-stone-300 hover:bg-white"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-3">
-                        <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSessionKindClasses(session.kind)}`}>
-                          {session.kind}
-                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSessionKindClasses(session.kind)}`}>
+                            {session.kind}
+                          </span>
+                          <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSessionStatusClasses(session.status)}`}>
+                            {session.status === "submitted" ? "submitted" : "live"}
+                          </span>
+                        </div>
                         <span className="text-sm font-medium text-stone-700">
                           {session.completionPercentage}% complete
                         </span>
@@ -534,6 +551,7 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                         <p>{session.focusLabel}</p>
                         <p>{session.supportLabel}</p>
                       </div>
+                      <p className="mt-4 text-sm font-medium text-emerald-700">{session.actionLabel}</p>
                     </Link>
                   ))}
                 </div>

@@ -1,5 +1,6 @@
 import type { SavedProgressAccessArrangementSnapshot } from "@/modules/access-arrangements";
 import type { ExamQuestion, ExamQuestionResponse } from "@/modules/exam-engine/types";
+import type { TimedAssessmentQuestion } from "@/modules/timed-assessment/types";
 
 export type SavedProgressEntityType = "exam-session" | "timed-assessment-attempt";
 
@@ -16,6 +17,7 @@ export interface SavedExamProgressPayload {
 export interface SavedTimedAssessmentProgressPayload {
   currentQuestionId?: string;
   selectedDurationMinutes: number;
+  questionSet: TimedAssessmentQuestion[];
   selectedAnswerIds: string[];
   writtenAnswers: Record<string, string>;
   notes: Record<string, string>;
@@ -63,6 +65,7 @@ export interface SaveTimedAssessmentProgressInput {
   assessmentAttemptId: string;
   currentQuestionId?: string;
   selectedDurationMinutes: number;
+  questionSet: TimedAssessmentQuestion[];
   selectedAnswerIds: string[];
   writtenAnswers: Record<string, string>;
   notes: Record<string, string>;

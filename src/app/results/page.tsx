@@ -1,4 +1,5 @@
 import { getResultsOverviewApiData } from "@/lib/api/server";
+import Link from "next/link";
 
 function getTrendTone(trend: "improving" | "stable" | "needs-attention"): string {
   if (trend === "improving") {
@@ -114,6 +115,14 @@ export default async function ResultsPage() {
                     </p>
                     <p className="mt-2 text-sm leading-6 text-stone-700">{result.reviewLabel}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{result.nextStep}</p>
+                    <div className="mt-4">
+                      <Link
+                        href={result.href}
+                        className="inline-flex items-center justify-center border border-rose-700 bg-rose-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-800"
+                      >
+                        {result.actionLabel}
+                      </Link>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -161,6 +170,14 @@ export default async function ResultsPage() {
                     </p>
                     <p className="mt-2 text-sm leading-6 text-stone-700">{result.reviewLabel}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{result.nextStep}</p>
+                    <div className="mt-4">
+                      <Link
+                        href={result.href}
+                        className="inline-flex items-center justify-center border border-rose-700 bg-rose-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-800"
+                      >
+                        {result.actionLabel}
+                      </Link>
+                    </div>
                   </div>
                 ))}
               </div>

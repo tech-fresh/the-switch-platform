@@ -1,13 +1,48 @@
 "use client";
 
-import { useState } from "react";
-import type { TimedAssessmentAttemptSeed, TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { ReadAloudSession } from "@/modules/read-aloud/types";
+import type {
+  TimedAssessmentAttemptSeed,
+  TimedAssessmentDefinition,
+  TimedAssessmentQuestion,
+} from "@/modules/timed-assessment/types";
 
 interface AssessmentExperienceProps {
   assessments: TimedAssessmentDefinition[];
   attemptSeeds: Record<string, Record<string, TimedAssessmentAttemptSeed>>;
+  readAloudSession: ReadAloudSession;
   initialAssessmentId?: string;
   initialDurationKey?: string;
+  initialQuestionId?: string;
+}
+
+function cloneSeed(seed: TimedAssessmentAttemptSeed): TimedAssessmentAttemptSeed {
+  return {
+    ...seed,
+    attempt: { ...seed.attempt },
+    questions: seed.questions.map((question) => ({
+      ...question,
+      options: question.options.map((option) => ({ ...option })),
+    })),
+    selectedAnswerIds: [...seed.selectedAnswerIds],
+    writtenAnswers: { ...seed.writtenAnswers },
+    notes: { ...seed.notes },
+    bookmarkedQuestionIds: [...seed.bookmarkedQuestionIds],
+  };
+}
+
+function cloneSeedWithInitialQuestion(
+  seed: TimedAssessmentAttemptSeed,
+  initialQuestionId?: string,
+): TimedAssessmentAttemptSeed {
+  const clonedSeed = cloneSeed(seed);
+
+  if (initialQuestionId && clonedSeed.questions.some((question) => question.questionId === initialQuestionId)) {
+    clonedSeed.currentQuestionId = initialQuestionId;
+  }
+
+  return clonedSeed;
 }
 
 function formatTimer(totalMinutes: number): string {
@@ -17,6 +52,21 @@ function formatTimer(totalMinutes: number): string {
   return hours > 0 ? `${hours}h ${minutes.toString().padStart(2, "0")}m` : `${minutes}m`;
 }
 
+function formatCountdown(totalSeconds: number): string {
+  const safeSeconds = Math.max(0, totalSeconds);
+  const hours = Math.floor(safeSeconds / 3600);
+  const minutes = Math.floor((safeSeconds % 3600) / 60);
+  const seconds = safeSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
+
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
 function formatSavedAt(timestamp: string): string {
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -24,69 +74,470 @@ function formatSavedAt(timestamp: string): string {
   }).format(new Date(timestamp));
 }
 
+function buildAutosaveSignature(seed: TimedAssessmentAttemptSeed): string {
+  return JSON.stringify({
+    attemptId: seed.attempt.attemptId,
+    status: seed.attempt.status,
+    currentQuestionId: seed.currentQuestionId,
+    selectedDurationMinutes: seed.attempt.selectedDurationMinutes,
+    selectedAnswerIds: seed.selectedAnswerIds,
+    writtenAnswers: seed.writtenAnswers,
+    notes: seed.notes,
+    bookmarkedQuestionIds: seed.bookmarkedQuestionIds,
+    timeRemainingMinutes: seed.attempt.timeRemainingMinutes,
+  });
+}
+
+function getQuestionIndex(seed: TimedAssessmentAttemptSeed): number {
+  if (!seed.currentQuestionId) {
+    return 0;
+  }
+
+  const explicitIndex = seed.questions.findIndex((question) => question.questionId === seed.currentQuestionId);
+
+  return explicitIndex >= 0 ? explicitIndex : 0;
+}
+
+function getQuestionIndexWithOverride(
+  seed: TimedAssessmentAttemptSeed,
+  initialQuestionId?: string,
+): number {
+  if (initialQuestionId) {
+    const explicitIndex = seed.questions.findIndex((question) => question.questionId === initialQuestionId);
+
+    if (explicitIndex >= 0) {
+      return explicitIndex;
+    }
+  }
+
+  return getQuestionIndex(seed);
+}
+
+function getSelectedOptionId(seed: TimedAssessmentAttemptSeed, questionId: string): string | undefined {
+  return seed.selectedAnswerIds.find((answerId) => answerId.startsWith(`${questionId}:`))?.split(":")[1];
+}
+
+function buildQuestionReadAloudText(
+  question: TimedAssessmentQuestion | undefined,
+  totalQuestions: number,
+): string {
+  if (!question) {
+    return "";
+  }
+
+  return `Question ${question.number} of ${totalQuestions}. ${question.prompt} Options. ${question.options
+    .map((option) => `${option.label}. ${option.text}`)
+    .join(" ")}${question.guidance ? ` Guidance. ${question.guidance}` : ""}`;
+}
+
 export function AssessmentExperience({
   assessments,
   attemptSeeds,
+  readAloudSession,
   initialAssessmentId,
   initialDurationKey,
+  initialQuestionId,
 }: AssessmentExperienceProps) {
+  const initialSeedCache: Record<string, Record<string, TimedAssessmentAttemptSeed>> = Object.fromEntries(
+    Object.entries(attemptSeeds).map(([assessmentId, seeds]) => [
+      assessmentId,
+      Object.fromEntries(
+        Object.entries(seeds).map(([durationKey, seed]) => [durationKey, cloneSeed(seed)]),
+      ),
+    ]),
+  );
   const startingAssessmentId =
-    (initialAssessmentId && attemptSeeds[initialAssessmentId] ? initialAssessmentId : undefined) ??
+    (initialAssessmentId && initialSeedCache[initialAssessmentId] ? initialAssessmentId : undefined) ??
     assessments[0]?.assessmentId ??
     "";
   const startingDurationKey =
-    (initialDurationKey && attemptSeeds[startingAssessmentId]?.[initialDurationKey]
+    (initialDurationKey && initialSeedCache[startingAssessmentId]?.[initialDurationKey]
       ? initialDurationKey
       : undefined) ??
-    Object.keys(attemptSeeds[startingAssessmentId] ?? {})[0] ??
+    Object.keys(initialSeedCache[startingAssessmentId] ?? {})[0] ??
     "";
-  const [selectedAssessmentId, setSelectedAssessmentId] = useState(
-    startingAssessmentId,
+  const fallbackSeed =
+    initialSeedCache[startingAssessmentId]?.[startingDurationKey] ??
+    Object.values(initialSeedCache[startingAssessmentId] ?? {})[0];
+  const [selectedAssessmentId, setSelectedAssessmentId] = useState(startingAssessmentId);
+  const [selectedDurationKey, setSelectedDurationKey] = useState(startingDurationKey);
+  const [seedCache, setSeedCache] = useState(initialSeedCache);
+  const [seed, setSeed] = useState(() => cloneSeedWithInitialQuestion(fallbackSeed, initialQuestionId));
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() =>
+    getQuestionIndexWithOverride(seed, initialQuestionId),
   );
-  const [selectedDurationKey, setSelectedDurationKey] = useState(
-    startingDurationKey,
+  const [viewMode, setViewMode] = useState<"question" | "review" | "submitted">(
+    seed.attempt.status === "submitted" ? "submitted" : "question",
   );
-  const [viewMode, setViewMode] = useState<"summary" | "review" | "submitted">(
-    attemptSeeds[startingAssessmentId]?.[startingDurationKey]?.attempt.status === "submitted"
-      ? "submitted"
-      : "summary",
-  );
+  const [voiceId, setVoiceId] = useState(readAloudSession.selectedVoiceId);
+  const [speed, setSpeed] = useState(readAloudSession.speed);
+  const [previewState, setPreviewState] = useState<"idle" | "playing" | "paused">("idle");
+  const [autosaveState, setAutosaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "error">("idle");
+  const [timeRemainingSeconds, setTimeRemainingSeconds] = useState(seed.attempt.timeRemainingMinutes * 60);
+  const autosaveSignatureRef = useRef(buildAutosaveSignature(seed));
+  const autoSubmitTriggeredRef = useRef(seed.attempt.status === "submitted");
 
   const assessment =
     assessments.find((item) => item.assessmentId === selectedAssessmentId) ?? assessments[0];
-  const availableDurations = Object.keys(attemptSeeds[assessment.assessmentId] ?? {}).map(Number);
-  const seed =
-    attemptSeeds[assessment.assessmentId]?.[selectedDurationKey] ??
-    attemptSeeds[assessment.assessmentId]?.[String(availableDurations[0])];
-
+  const availableDurations = useMemo(
+    () =>
+      Object.keys(seedCache[assessment.assessmentId] ?? {})
+        .map(Number)
+        .sort((left, right) => left - right),
+    [assessment.assessmentId, seedCache],
+  );
+  const currentQuestion = seed.questions[currentQuestionIndex] ?? seed.questions[0];
+  const currentSelectedOptionId = currentQuestion
+    ? getSelectedOptionId(seed, currentQuestion.questionId)
+    : undefined;
   const answeredCount = seed.selectedAnswerIds.length;
-  const completion = Math.round((answeredCount / assessment.questionCount) * 100);
+  const completion = Math.round((answeredCount / Math.max(seed.questions.length, 1)) * 100);
+  const noteCount = Object.values(seed.notes).filter((note) => note.trim()).length;
+  const readAloudEnabled =
+    seed.attempt.accessArrangements?.accessArrangementApplication.readAloud.enabled ??
+    readAloudSession.accessArrangementConfig?.enabled ??
+    false;
+  const readAloudSource =
+    seed.attempt.accessArrangements?.accessArrangementApplication.readAloud.source ??
+    readAloudSession.accessArrangementConfig?.source ??
+    "disabled";
+  const currentReadAloudText = buildQuestionReadAloudText(currentQuestion, seed.questions.length);
+  const timerAlertTone =
+    timeRemainingSeconds <= 300
+      ? "text-rose-700"
+      : timeRemainingSeconds <= 900
+        ? "text-amber-700"
+        : "text-stone-950";
 
-  const handleSubmitAttempt = async () => {
+  useEffect(() => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    setPreviewState("idle");
+  }, [selectedAssessmentId, selectedDurationKey, currentQuestionIndex]);
+
+  useEffect(() => {
+    setTimeRemainingSeconds(seed.attempt.timeRemainingMinutes * 60);
+    autoSubmitTriggeredRef.current = seed.attempt.status === "submitted";
+  }, [seed.attempt.attemptId, seed.attempt.status, seed.attempt.timeRemainingMinutes]);
+
+  useEffect(() => {
+    if (seed.attempt.status === "submitted") {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setTimeRemainingSeconds((previous) => Math.max(0, previous - 1));
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [seed.attempt.attemptId, seed.attempt.status]);
+
+  useEffect(() => {
+    if (seed.attempt.status === "submitted") {
+      return;
+    }
+
+    const nextTimeRemainingMinutes = Math.ceil(timeRemainingSeconds / 60);
+
+    if (nextTimeRemainingMinutes === seed.attempt.timeRemainingMinutes) {
+      return;
+    }
+
+    setSeed((previous) => {
+      const nextSeed = {
+        ...previous,
+        attempt: {
+          ...previous.attempt,
+          lastSavedAt: new Date().toISOString(),
+          timeRemainingMinutes: nextTimeRemainingMinutes,
+        },
+      };
+
+      setSeedCache((cache) => ({
+        ...cache,
+        [selectedAssessmentId]: {
+          ...(cache[selectedAssessmentId] ?? {}),
+          [selectedDurationKey]: nextSeed,
+        },
+      }));
+
+      return nextSeed;
+    });
+  }, [seed.attempt.status, seed.attempt.timeRemainingMinutes, selectedAssessmentId, selectedDurationKey, timeRemainingSeconds]);
+
+  useEffect(() => {
+    if (seed.attempt.status === "submitted") {
+      autosaveSignatureRef.current = buildAutosaveSignature(seed);
+      setAutosaveState("idle");
+      return;
+    }
+
+    const nextSignature = buildAutosaveSignature(seed);
+
+    if (nextSignature === autosaveSignatureRef.current) {
+      return;
+    }
+
+    setAutosaveState("saving");
+
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `/api/assessments/seed/${encodeURIComponent(selectedAssessmentId)}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              attemptId: seed.attempt.attemptId,
+              currentQuestionId: seed.currentQuestionId,
+              selectedDurationMinutes: seed.attempt.selectedDurationMinutes,
+              selectedAnswerIds: seed.selectedAnswerIds,
+              writtenAnswers: seed.writtenAnswers,
+              notes: seed.notes,
+              bookmarkedQuestionIds: seed.bookmarkedQuestionIds,
+              timeRemainingMinutes: seed.attempt.timeRemainingMinutes,
+            }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Timed assessment autosave request failed.");
+        }
+
+        autosaveSignatureRef.current = nextSignature;
+        setAutosaveState("saved");
+      } catch {
+        setAutosaveState("error");
+      }
+    }, 600);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [seed, selectedAssessmentId]);
+
+  useEffect(() => {
+    if (
+      timeRemainingSeconds > 0 ||
+      seed.attempt.status === "submitted" ||
+      submitState === "submitting" ||
+      autoSubmitTriggeredRef.current
+    ) {
+      return;
+    }
+
+    autoSubmitTriggeredRef.current = true;
+    void handleSubmitAttempt();
+  }, [seed.attempt.status, submitState, timeRemainingSeconds]);
+
+  function resetSeed(assessmentId: string, durationKey: string) {
+    const nextSeedSource =
+      seedCache[assessmentId]?.[durationKey] ?? Object.values(seedCache[assessmentId] ?? {})[0];
+
+    if (!nextSeedSource) {
+      return;
+    }
+
+    const nextSeed = cloneSeed(nextSeedSource);
+
+    setSelectedAssessmentId(assessmentId);
+    setSelectedDurationKey(durationKey);
+    setSeed(nextSeed);
+    setCurrentQuestionIndex(getQuestionIndex(nextSeed));
+    setViewMode(nextSeed.attempt.status === "submitted" ? "submitted" : "question");
+    setAutosaveState("idle");
+    setSubmitState("idle");
+    setTimeRemainingSeconds(nextSeed.attempt.timeRemainingMinutes * 60);
+    autosaveSignatureRef.current = buildAutosaveSignature(nextSeed);
+    autoSubmitTriggeredRef.current = nextSeed.attempt.status === "submitted";
+  }
+
+  function syncSeed(nextSeed: TimedAssessmentAttemptSeed, nextViewMode?: "question" | "review" | "submitted") {
+    const clonedSeed = cloneSeed(nextSeed);
+
+    setSeedCache((cache) => ({
+      ...cache,
+      [nextSeed.attempt.assessmentId]: {
+        ...(cache[nextSeed.attempt.assessmentId] ?? {}),
+        [String(nextSeed.attempt.selectedDurationMinutes)]: clonedSeed,
+      },
+    }));
+    setSeed(clonedSeed);
+    setSelectedAssessmentId(nextSeed.attempt.assessmentId);
+    setSelectedDurationKey(String(nextSeed.attempt.selectedDurationMinutes));
+    setCurrentQuestionIndex(getQuestionIndex(clonedSeed));
+    setViewMode(nextViewMode ?? (clonedSeed.attempt.status === "submitted" ? "submitted" : "question"));
+    setAutosaveState("idle");
+    setTimeRemainingSeconds(clonedSeed.attempt.timeRemainingMinutes * 60);
+    autosaveSignatureRef.current = buildAutosaveSignature(clonedSeed);
+    autoSubmitTriggeredRef.current = clonedSeed.attempt.status === "submitted";
+  }
+
+  function updateSeed(updater: (previous: TimedAssessmentAttemptSeed) => TimedAssessmentAttemptSeed) {
+    setSeed((previous) => {
+      const nextSeed = updater(previous);
+
+      setSeedCache((cache) => ({
+        ...cache,
+        [previous.attempt.assessmentId]: {
+          ...(cache[previous.attempt.assessmentId] ?? {}),
+          [String(previous.attempt.selectedDurationMinutes)]: nextSeed,
+        },
+      }));
+
+      return nextSeed;
+    });
+  }
+
+  function handleSelectOption(optionId: string) {
+    if (!currentQuestion) {
+      return;
+    }
+
+    updateSeed((previous) => ({
+      ...previous,
+      attempt: {
+        ...previous.attempt,
+        lastSavedAt: new Date().toISOString(),
+      },
+      currentQuestionId: currentQuestion.questionId,
+      selectedAnswerIds: [
+        ...previous.selectedAnswerIds.filter((answerId) => !answerId.startsWith(`${currentQuestion.questionId}:`)),
+        `${currentQuestion.questionId}:${optionId}`,
+      ],
+    }));
+  }
+
+  function handleToggleBookmark() {
+    if (!currentQuestion) {
+      return;
+    }
+
+    updateSeed((previous) => {
+      const bookmarked = previous.bookmarkedQuestionIds.includes(currentQuestion.questionId);
+
+      return {
+        ...previous,
+        attempt: {
+          ...previous.attempt,
+          lastSavedAt: new Date().toISOString(),
+        },
+        currentQuestionId: currentQuestion.questionId,
+        bookmarkedQuestionIds: bookmarked
+          ? previous.bookmarkedQuestionIds.filter((questionId) => questionId !== currentQuestion.questionId)
+          : [...previous.bookmarkedQuestionIds, currentQuestion.questionId],
+      };
+    });
+  }
+
+  function handleNotesChange(notes: string) {
+    if (!currentQuestion) {
+      return;
+    }
+
+    updateSeed((previous) => ({
+      ...previous,
+      attempt: {
+        ...previous.attempt,
+        lastSavedAt: new Date().toISOString(),
+      },
+      currentQuestionId: currentQuestion.questionId,
+      notes: {
+        ...previous.notes,
+        [currentQuestion.questionId]: notes,
+      },
+    }));
+  }
+
+  function moveQuestion(direction: -1 | 1) {
+    const nextIndex = currentQuestionIndex + direction;
+
+    if (nextIndex < 0 || nextIndex >= seed.questions.length) {
+      return;
+    }
+
+    const nextQuestion = seed.questions[nextIndex];
+
+    updateSeed((currentSeed) => ({
+      ...currentSeed,
+      currentQuestionId: nextQuestion.questionId,
+    }));
+    setCurrentQuestionIndex(nextIndex);
+  }
+
+  async function handleSubmitAttempt() {
     setSubmitState("submitting");
 
     try {
-      const response = await fetch(
-        `/api/assessments/seed/${encodeURIComponent(selectedAssessmentId)}?durationMinutes=${encodeURIComponent(
-          selectedDurationKey,
-        )}`,
-        {
-          method: "POST",
+      const response = await fetch(`/api/assessments/seed/${encodeURIComponent(selectedAssessmentId)}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          attemptId: seed.attempt.attemptId,
+          currentQuestionId: seed.currentQuestionId,
+          selectedDurationMinutes: seed.attempt.selectedDurationMinutes,
+          selectedAnswerIds: seed.selectedAnswerIds,
+          writtenAnswers: seed.writtenAnswers,
+          notes: seed.notes,
+          bookmarkedQuestionIds: seed.bookmarkedQuestionIds,
+          timeRemainingMinutes: seed.attempt.timeRemainingMinutes,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Timed assessment submission request failed.");
       }
 
-      seed.attempt.status = "submitted";
-      setViewMode("submitted");
+      syncSeed(
+        {
+          ...seed,
+          attempt: {
+            ...seed.attempt,
+            status: "submitted",
+            lastSavedAt: new Date().toISOString(),
+          },
+        },
+        "submitted",
+      );
       setSubmitState("idle");
     } catch {
       setSubmitState("error");
     }
-  };
+  }
+
+  function handleReadAloudAction(nextState: "playing" | "paused" | "idle") {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      if (nextState === "playing") {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(currentReadAloudText);
+        utterance.rate = speed;
+        utterance.lang =
+          readAloudSession.availableVoices.find((voice) => voice.voiceId === voiceId)?.language ??
+          "en-GB";
+        utterance.onend = () => setPreviewState("idle");
+        window.speechSynthesis.speak(utterance);
+      }
+
+      if (nextState === "paused") {
+        window.speechSynthesis.pause();
+      }
+
+      if (nextState === "idle") {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    setPreviewState(nextState);
+  }
+
+  if (!assessment || !currentQuestion) {
+    return null;
+  }
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -98,11 +549,11 @@ export function AssessmentExperience({
             </p>
             <div className="space-y-3">
               <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Manual timed assessment flow with capped duration, autosave state, and resume-ready progress.
+                Manual timed checkpoint with live countdown, autosave, resume, and read-aloud support.
               </h1>
               <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                This slice builds the student practice loop: choose a checkpoint, set a duration
-                within the official limit, and resume from the last saved state.
+                This route now behaves like a real checkpoint session. Students can move question by
+                question, save notes, bookmark review items, and submit from the same timed flow.
               </p>
             </div>
           </div>
@@ -116,17 +567,25 @@ export function AssessmentExperience({
               </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Session state</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Autosave</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">
                 Saved {formatSavedAt(seed.attempt.lastSavedAt)}
               </p>
-              <p className="mt-1 text-sm text-stone-600">Resume state comes from Saved Progress.</p>
+              <p className="mt-1 text-sm text-stone-600">
+                {autosaveState === "saving"
+                  ? "Saving latest checkpoint work now."
+                  : autosaveState === "error"
+                    ? "Autosave is temporarily stuck. Keep working and try again shortly."
+                    : autosaveState === "saved"
+                      ? "Latest answers, notes, and timer state are saved."
+                      : "Checkpoint state is ready for resume."}
+              </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Completion</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{completion}% complete</p>
               <p className="mt-1 text-sm text-stone-600">
-                {answeredCount} of {assessment.questionCount} checkpoint answers drafted
+                {answeredCount} of {seed.questions.length} checkpoint answers drafted
               </p>
             </div>
           </div>
@@ -143,24 +602,13 @@ export function AssessmentExperience({
               <div className="divide-y divide-stone-200">
                 {assessments.map((item) => {
                   const isSelected = item.assessmentId === assessment.assessmentId;
+                  const defaultDurationKey = Object.keys(seedCache[item.assessmentId] ?? {})[0] ?? "";
 
                   return (
                     <button
                       key={item.assessmentId}
                       type="button"
-                      onClick={() => {
-                        setSelectedAssessmentId(item.assessmentId);
-                        setSelectedDurationKey(
-                          Object.keys(attemptSeeds[item.assessmentId] ?? {})[0] ?? "",
-                        );
-                        setViewMode(
-                          attemptSeeds[item.assessmentId]?.[Object.keys(attemptSeeds[item.assessmentId] ?? {})[0] ?? ""]
-                            ?.attempt.status === "submitted"
-                            ? "submitted"
-                            : "summary",
-                        );
-                        setSubmitState("idle");
-                      }}
+                      onClick={() => resetSeed(item.assessmentId, defaultDurationKey)}
                       className={`flex w-full flex-col gap-2 px-4 py-4 text-left transition ${
                         isSelected
                           ? "bg-emerald-700 text-white"
@@ -197,22 +645,14 @@ export function AssessmentExperience({
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {availableDurations.map((duration) => {
-                  const isSelected = selectedDurationKey === String(duration);
+                  const durationKey = String(duration);
+                  const isSelected = selectedDurationKey === durationKey;
 
                   return (
                     <button
                       key={duration}
                       type="button"
-                      onClick={() => {
-                        const nextDurationKey = String(duration);
-                        setSelectedDurationKey(nextDurationKey);
-                        setViewMode(
-                          attemptSeeds[assessment.assessmentId]?.[nextDurationKey]?.attempt.status === "submitted"
-                            ? "submitted"
-                            : "summary",
-                        );
-                        setSubmitState("idle");
-                      }}
+                      onClick={() => resetSeed(assessment.assessmentId, durationKey)}
                       className={`border px-3 py-3 text-sm font-medium transition ${
                         isSelected
                           ? "border-emerald-700 bg-emerald-700 text-white"
@@ -225,9 +665,33 @@ export function AssessmentExperience({
                 })}
               </div>
               <p className="text-sm leading-6 text-stone-600">
-                Presets are created by the timed assessment service, so the UI never bypasses the
-                official duration rules.
+                Presets still come from the timed assessment service, so the UI never bypasses the
+                official duration rule.
               </p>
+            </section>
+
+            <section className="space-y-3 border border-stone-200 bg-white p-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                  Session facts
+                </h2>
+                <span className={`text-sm font-semibold ${timerAlertTone}`}>
+                  {formatCountdown(timeRemainingSeconds)}
+                </span>
+              </div>
+              <div className="space-y-2 text-sm text-stone-600">
+                <p>{assessment.title} keeps the chosen duration within the official assessment cap.</p>
+                <p>Adjusted duration still comes through the access-arrangements layer.</p>
+              </div>
+              <div className="border border-stone-200 bg-stone-50 px-3 py-3 text-sm text-stone-700">
+                {timeRemainingSeconds === 0
+                  ? "Time has expired. This checkpoint is being submitted automatically."
+                  : timeRemainingSeconds <= 300
+                    ? "Less than five minutes remain in this checkpoint."
+                    : timeRemainingSeconds <= 900
+                      ? "Final fifteen minutes: clear the bookmarked items if you can."
+                      : `Official cap: ${formatTimer(assessment.officialDurationMinutes)}.`}
+              </div>
             </section>
           </aside>
 
@@ -236,7 +700,7 @@ export function AssessmentExperience({
               <span className="border border-stone-300 bg-white px-2 py-1">{assessment.subject}</span>
               <span className="border border-stone-300 bg-white px-2 py-1">{assessment.examBoard}</span>
               <span className="border border-stone-300 bg-white px-2 py-1">
-                {assessment.questionCount} checkpoint questions
+                Question {currentQuestion.number} of {seed.questions.length}
               </span>
               <button
                 type="button"
@@ -248,84 +712,118 @@ export function AssessmentExperience({
               </button>
             </div>
 
-            {viewMode === "summary" ? (
-            <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
-              <div className="grid gap-4 border-b border-stone-200 pb-5 md:grid-cols-3">
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
-                    Chosen duration
-                  </p>
-                  <p className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
-                    {seed.attempt.selectedDurationMinutes}m
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-500">
-                    Adjusted duration
-                  </p>
-                  <p className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
-                    {formatTimer(seed.attempt.adjustedDurationMinutes)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-500">
-                    Time remaining
-                  </p>
-                  <p className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
-                    {formatTimer(seed.attempt.timeRemainingMinutes)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-3 border border-stone-200 bg-stone-50 p-4">
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                    Resume state
-                  </p>
-                  <div className="space-y-2 text-sm text-stone-700">
-                    <p>Current question: {seed.currentQuestionId ?? "Not started"}</p>
-                    <p>Saved answers: {seed.selectedAnswerIds.length}</p>
-                    <p>Bookmarked questions: {seed.bookmarkedQuestionIds.length}</p>
-                    <p>Working notes: {Object.keys(seed.notes).length}</p>
+            {viewMode === "question" ? (
+              <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
+                <div className="flex flex-col gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                      {currentQuestion.topic}
+                    </p>
+                    <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
+                      {currentQuestion.prompt}
+                    </h2>
                   </div>
                 </div>
 
+                <div className="space-y-3">
+                  {currentQuestion.options.map((option) => {
+                    const isSelected = currentSelectedOptionId === option.optionId;
+
+                    return (
+                      <button
+                        key={option.optionId}
+                        type="button"
+                        onClick={() => handleSelectOption(option.optionId)}
+                        className={`flex w-full items-start gap-3 border px-4 py-4 text-left transition ${
+                          isSelected
+                            ? "border-emerald-700 bg-emerald-700 text-white"
+                            : "border-stone-200 bg-white text-stone-900 hover:bg-stone-50"
+                        }`}
+                      >
+                        <span
+                          className={`mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center border text-sm font-semibold ${
+                            isSelected
+                              ? "border-white/40 bg-white/10 text-white"
+                              : "border-stone-300 bg-stone-50 text-stone-700"
+                          }`}
+                        >
+                          {option.label}
+                        </span>
+                        <span className="text-sm leading-6 sm:text-base">{option.text}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {currentQuestion.guidance ? (
+                  <div className="border border-dashed border-stone-300 bg-stone-50 px-4 py-3 text-sm text-stone-700">
+                    {currentQuestion.guidance}
+                  </div>
+                ) : null}
+
                 <div className="space-y-3 border border-stone-200 bg-stone-50 p-4">
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                    Access support
-                  </p>
-                  <div className="space-y-2 text-sm text-stone-700">
-                    <p>
-                      Active arrangements:{" "}
-                      {seed.attempt.accessArrangements?.accessArrangementApplication.activeAccessArrangements
-                        .length
-                        ? seed.attempt.accessArrangements.accessArrangementApplication.activeAccessArrangements.join(
-                            ", ",
-                          )
-                        : "None active in this seed"}
-                    </p>
-                    <p>
-                      Read aloud:{" "}
-                      {seed.attempt.accessArrangements?.accessArrangementApplication.readAloud.enabled
-                        ? "enabled"
-                        : "not enabled"}
-                    </p>
-                    <p>
-                      Snapshot ready for save/resume:{" "}
-                      {seed.attempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot
-                        ? "yes"
-                        : "no"}
-                    </p>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                        Working notes
+                      </p>
+                      <p className="mt-1 text-sm text-stone-600">
+                        Autosaved scratch space for quick reasoning, evidence, or reminders.
+                      </p>
+                    </div>
+                    <span className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                      {seed.notes[currentQuestion.questionId]?.trim() ? "Saved" : "Empty"}
+                    </span>
+                  </div>
+                  <textarea
+                    value={seed.notes[currentQuestion.questionId] ?? ""}
+                    onChange={(event) => handleNotesChange(event.target.value)}
+                    rows={4}
+                    className="w-full border border-stone-300 bg-white px-3 py-3 text-sm leading-6 text-stone-900 outline-none transition focus:border-emerald-700"
+                    placeholder="Capture quick reasoning, quotation choices, or checks here."
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3 border-t border-stone-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={handleToggleBookmark}
+                      className={`border px-4 py-2 text-sm font-medium transition ${
+                        seed.bookmarkedQuestionIds.includes(currentQuestion.questionId)
+                          ? "border-amber-400 bg-amber-100 text-amber-900"
+                          : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
+                      }`}
+                    >
+                      {seed.bookmarkedQuestionIds.includes(currentQuestion.questionId)
+                        ? "Bookmarked"
+                        : "Bookmark question"}
+                    </button>
+                    <div className="border border-stone-300 bg-stone-50 px-4 py-2 text-sm text-stone-700">
+                      Autosave updates every interaction
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => moveQuestion(-1)}
+                      disabled={currentQuestionIndex === 0}
+                      className="border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveQuestion(1)}
+                      disabled={currentQuestionIndex === seed.questions.length - 1}
+                      className="bg-stone-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+                    >
+                      Next question
+                    </button>
                   </div>
                 </div>
-              </div>
-
-              <div className="border border-dashed border-stone-300 bg-white px-4 py-4 text-sm leading-6 text-stone-700">
-                This route now proves the timed assessment module can own duration rules, pass
-                access arrangements through the service layer, and restore a student practice
-                attempt without forcing the UI to calculate the logic itself.
-              </div>
-            </article>
+              </article>
             ) : null}
 
             {viewMode === "review" ? (
@@ -336,68 +834,83 @@ export function AssessmentExperience({
                       End of checkpoint review
                     </p>
                     <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
-                      Check saved answers, bookmarks, and notes before submitting this attempt.
+                      Check answers, bookmarks, and notes before submitting this attempt.
                     </h2>
                   </div>
                   <div className="grid gap-2 text-sm text-stone-700">
                     <div className="border border-stone-200 bg-stone-50 px-3 py-2">
-                      {seed.selectedAnswerIds.length}/{assessment.questionCount} answered
+                      {answeredCount}/{seed.questions.length} answered
                     </div>
                     <div className="border border-stone-200 bg-stone-50 px-3 py-2">
                       {seed.bookmarkedQuestionIds.length} bookmarked
                     </div>
                     <div className="border border-stone-200 bg-stone-50 px-3 py-2">
-                      {Object.keys(seed.notes).length} notes saved
+                      {noteCount} notes saved
                     </div>
                   </div>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="border border-stone-200 bg-stone-50 p-4">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                      Attempt coverage
-                    </p>
-                    <div className="mt-4 space-y-2 text-sm text-stone-700">
-                      <p>Current question: {seed.currentQuestionId ?? "Not started"}</p>
-                      <p>Selected answers: {seed.selectedAnswerIds.length}</p>
-                      <p>Written answers: {Object.keys(seed.writtenAnswers).length}</p>
-                      <p>Time remaining: {seed.attempt.timeRemainingMinutes} mins</p>
-                    </div>
-                  </div>
-                  <div className="border border-stone-200 bg-stone-50 p-4">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                      Support carry-over
-                    </p>
-                    <div className="mt-4 space-y-2 text-sm text-stone-700">
-                      <p>
-                        Read aloud:{" "}
-                        {seed.attempt.accessArrangements?.accessArrangementApplication.readAloud.enabled
-                          ? "enabled"
-                          : "not enabled"}
-                      </p>
-                      <p>
-                        Access snapshot:{" "}
-                        {seed.attempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot
-                          ? "saved"
-                          : "not saved"}
-                      </p>
-                      <p>Attempt status: {seed.attempt.status}</p>
-                    </div>
-                  </div>
+                  {seed.questions.map((question, index) => {
+                    const selectedOptionId = getSelectedOptionId(seed, question.questionId);
+                    const hasNotes = Boolean(seed.notes[question.questionId]?.trim());
+                    const bookmarked = seed.bookmarkedQuestionIds.includes(question.questionId);
+
+                    return (
+                      <button
+                        key={question.questionId}
+                        type="button"
+                        onClick={() => {
+                          setCurrentQuestionIndex(index);
+                          updateSeed((previous) => ({
+                            ...previous,
+                            currentQuestionId: question.questionId,
+                          }));
+                          setViewMode("question");
+                        }}
+                        className="border border-stone-200 bg-stone-50 p-4 text-left transition hover:border-stone-300 hover:bg-white"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                              Question {question.number}
+                            </p>
+                            <h3 className="mt-2 text-base font-semibold text-stone-950">
+                              {question.topic}
+                            </h3>
+                          </div>
+                          <span
+                            className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+                              selectedOptionId
+                                ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                                : "border-rose-300 bg-rose-50 text-rose-900"
+                            }`}
+                          >
+                            {selectedOptionId ? "answered" : "needs answer"}
+                          </span>
+                        </div>
+                        <div className="mt-4 space-y-2 text-sm text-stone-700">
+                          <p>{bookmarked ? "Bookmarked for review" : "Not bookmarked"}</p>
+                          <p>{hasNotes ? "Working note saved" : "No working note saved"}</p>
+                          <p>{selectedOptionId ? `Selected option ${selectedOptionId.toUpperCase()}` : "No answer selected yet"}</p>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <div className="flex flex-col gap-3 border-t border-stone-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
                   <div className="space-y-1 text-sm text-stone-600">
-                    <p>{assessment.questionCount - seed.selectedAnswerIds.length} unanswered questions remain.</p>
-                    <p>Submission here is a real saved-progress state change for the MVP prototype.</p>
+                    <p>{seed.questions.length - answeredCount} unanswered questions remain.</p>
+                    <p>Submission moves this checkpoint into the same saved review flow used by the results route.</p>
                   </div>
                   <div className="flex flex-wrap gap-3">
                     <button
                       type="button"
-                      onClick={() => setViewMode("summary")}
+                      onClick={() => setViewMode("question")}
                       className="border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
                     >
-                      Back to summary
+                      Back to questions
                     </button>
                     <button
                       type="button"
@@ -427,8 +940,7 @@ export function AssessmentExperience({
                     This timed assessment is now marked as completed in the saved-progress flow.
                   </h2>
                   <p className="text-sm leading-6 text-stone-600">
-                    The MVP can now move a timed assessment from active work into a completed review state,
-                    just like the exam route.
+                    Results and Power Grid can now treat this checkpoint as finished work instead of a live session.
                   </p>
                 </div>
 
@@ -436,7 +948,7 @@ export function AssessmentExperience({
                   <div className="border border-stone-200 bg-stone-50 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Answered</p>
                     <p className="mt-2 text-2xl font-semibold text-stone-950">
-                      {seed.selectedAnswerIds.length}/{assessment.questionCount}
+                      {answeredCount}/{seed.questions.length}
                     </p>
                   </div>
                   <div className="border border-stone-200 bg-stone-50 p-4">
@@ -447,9 +959,7 @@ export function AssessmentExperience({
                   </div>
                   <div className="border border-stone-200 bg-stone-50 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Notes</p>
-                    <p className="mt-2 text-2xl font-semibold text-stone-950">
-                      {Object.keys(seed.notes).length}
-                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-stone-950">{noteCount}</p>
                   </div>
                 </div>
 
@@ -474,13 +984,80 @@ export function AssessmentExperience({
 
           <aside className="space-y-6">
             <section className="space-y-3 border border-stone-200 bg-white p-4">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                  Read aloud
+                </h2>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                  {readAloudSource}
+                </span>
+              </div>
+              <p className="text-sm leading-6 text-stone-600">
+                {readAloudEnabled
+                  ? "This checkpoint can read the current question aloud through the access-arrangements layer."
+                  : "Read aloud preview is available here even before formal support is switched on."}
+              </p>
+              <label className="space-y-2">
+                <span className="text-sm font-medium text-stone-700">Voice</span>
+                <select
+                  value={voiceId}
+                  onChange={(event) => setVoiceId(event.target.value)}
+                  className="w-full border border-stone-300 bg-white px-3 py-3 text-sm text-stone-900"
+                >
+                  {readAloudSession.availableVoices.map((voice) => (
+                    <option key={voice.voiceId} value={voice.voiceId}>
+                      {voice.label} ({voice.language})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="space-y-2">
+                <span className="text-sm font-medium text-stone-700">Speed</span>
+                <input
+                  type="range"
+                  min="0.8"
+                  max="1.6"
+                  step="0.1"
+                  value={speed}
+                  onChange={(event) => setSpeed(Number(event.target.value))}
+                  className="w-full"
+                />
+                <p className="text-sm text-stone-600">{speed.toFixed(1)}x</p>
+              </label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleReadAloudAction("playing")}
+                  className="border border-emerald-700 bg-emerald-700 px-3 py-2 text-sm font-medium text-white"
+                >
+                  Play
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleReadAloudAction("paused")}
+                  className="border border-stone-300 bg-white px-3 py-2 text-sm font-medium text-stone-700"
+                >
+                  Pause
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleReadAloudAction("idle")}
+                  className="border border-stone-300 bg-white px-3 py-2 text-sm font-medium text-stone-700"
+                >
+                  Stop
+                </button>
+              </div>
+              <p className="text-sm text-stone-600 capitalize">{previewState}</p>
+            </section>
+
+            <section className="space-y-3 border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 Checkpoint signals
               </h2>
               <div className="space-y-2 text-sm text-stone-600">
-                <p>Selected answers: {seed.selectedAnswerIds.length}</p>
-                <p>Written answers: {Object.keys(seed.writtenAnswers).length}</p>
-                <p>Notes captured: {Object.keys(seed.notes).length}</p>
+                <p>Selected answers: {answeredCount}</p>
+                <p>Notes captured: {noteCount}</p>
+                <p>Bookmarks: {seed.bookmarkedQuestionIds.length}</p>
                 <p>Attempt status: {seed.attempt.status}</p>
               </div>
             </section>
@@ -492,8 +1069,8 @@ export function AssessmentExperience({
               <ul className="space-y-2 text-sm leading-6 text-stone-600">
                 <li>Manual timing is capped by official assessment duration.</li>
                 <li>Access arrangements can extend the allowed session length.</li>
-                <li>Saved progress is a module concern, not just a UI indicator.</li>
-                <li>Checkpoint practice can feed later Power Grid progress summaries.</li>
+                <li>Saved progress is now a live timed-checkpoint capability, not just a summary card.</li>
+                <li>Read aloud can sit inside an active checkpoint without moving its rules into the page.</li>
               </ul>
             </section>
           </aside>

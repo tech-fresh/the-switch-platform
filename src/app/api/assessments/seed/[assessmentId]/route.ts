@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import {
-  getMockTimedAssessmentAttemptId,
   getMockTimedAssessmentAttemptSeed,
+  saveMockTimedAssessmentAttempt,
+  submitMockTimedAssessmentAttempt,
 } from "@/modules/timed-assessment/service";
-import { markSavedProgressStatus } from "@/modules/saved-progress/service";
+import type {
+  SaveTimedAssessmentAttemptRequest,
+  SubmitTimedAssessmentRequest,
+} from "@/modules/timed-assessment/contracts";
 
 export async function GET(
   request: Request,
@@ -70,27 +74,38 @@ export async function POST(
   }
 
   try {
-    const seed = await getMockTimedAssessmentAttemptSeed(assessmentId, {
-      selectedDurationMinutes: parsedDurationMinutes,
-    });
-    const submittedRecord = await markSavedProgressStatus(
-      seed.attempt.userId,
-      "timed-assessment-attempt",
-      getMockTimedAssessmentAttemptId(assessmentId, seed.attempt.userId),
-      "submitted",
-    );
+    const payload = (await request.json()) as Partial<SubmitTimedAssessmentRequest>;
 
-    if (!submittedRecord) {
+    if (
+      !payload.attemptId ||
+      typeof payload.selectedDurationMinutes !== "number" ||
+      !payload.selectedAnswerIds ||
+      !payload.writtenAnswers ||
+      !payload.notes ||
+      !payload.bookmarkedQuestionIds ||
+      typeof payload.timeRemainingMinutes !== "number"
+    ) {
       return NextResponse.json(
         {
-          error: "Unable to submit timed assessment attempt.",
+          error: "Incomplete timed assessment submit payload.",
         },
-        { status: 404 },
+        { status: 400 },
       );
     }
 
+    const seed = await submitMockTimedAssessmentAttempt(assessmentId, {
+      attemptId: payload.attemptId,
+      currentQuestionId: payload.currentQuestionId,
+      selectedDurationMinutes: payload.selectedDurationMinutes,
+      selectedAnswerIds: payload.selectedAnswerIds,
+      writtenAnswers: payload.writtenAnswers,
+      notes: payload.notes,
+      bookmarkedQuestionIds: payload.bookmarkedQuestionIds,
+      timeRemainingMinutes: payload.timeRemainingMinutes,
+    });
+
     return NextResponse.json({
-      attemptId: submittedRecord.entityId,
+      attemptId: seed.attempt.attemptId,
       status: "submitted" as const,
     });
   } catch (error) {
@@ -99,6 +114,56 @@ export async function POST(
         error: error instanceof Error ? error.message : "Unknown timed assessment submission error",
       },
       { status: 404 },
+    );
+  }
+}
+
+export async function PATCH(
+  request: Request,
+  context: { params: Promise<{ assessmentId: string }> },
+) {
+  const { assessmentId } = await context.params;
+
+  try {
+    const payload = (await request.json()) as Partial<SaveTimedAssessmentAttemptRequest>;
+
+    if (
+      !payload.attemptId ||
+      typeof payload.selectedDurationMinutes !== "number" ||
+      !payload.selectedAnswerIds ||
+      !payload.writtenAnswers ||
+      !payload.notes ||
+      !payload.bookmarkedQuestionIds ||
+      typeof payload.timeRemainingMinutes !== "number"
+    ) {
+      return NextResponse.json(
+        {
+          error: "Incomplete timed assessment save payload.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const seed = await saveMockTimedAssessmentAttempt(assessmentId, {
+      attemptId: payload.attemptId,
+      currentQuestionId: payload.currentQuestionId,
+      selectedDurationMinutes: payload.selectedDurationMinutes,
+      selectedAnswerIds: payload.selectedAnswerIds,
+      writtenAnswers: payload.writtenAnswers,
+      notes: payload.notes,
+      bookmarkedQuestionIds: payload.bookmarkedQuestionIds,
+      timeRemainingMinutes: payload.timeRemainingMinutes,
+    });
+
+    return NextResponse.json({
+      seed,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Unknown timed assessment save error",
+      },
+      { status: 400 },
     );
   }
 }

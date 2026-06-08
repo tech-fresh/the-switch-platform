@@ -1,5 +1,6 @@
 import { AssessmentExperience } from "./assessment-experience";
 import {
+  getReadAloudSessionApiData,
   getTimedAssessmentDefinitionsApiData,
   getTimedAssessmentSeedApiData,
 } from "@/lib/api/server";
@@ -8,11 +9,15 @@ interface AssessmentsPageProps {
   searchParams?: Promise<{
     assessmentId?: string;
     durationMinutes?: string;
+    questionId?: string;
   }>;
 }
 
 export default async function AssessmentsPage({ searchParams }: AssessmentsPageProps) {
-  const assessments = await getTimedAssessmentDefinitionsApiData();
+  const [assessments, readAloudSession] = await Promise.all([
+    getTimedAssessmentDefinitionsApiData(),
+    getReadAloudSessionApiData("question"),
+  ]);
   const attemptEntries = await Promise.all(
     assessments.map(async (assessment) => {
       const durations = Array.from(
@@ -44,8 +49,10 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
     <AssessmentExperience
       assessments={assessments}
       attemptSeeds={attemptSeeds}
+      readAloudSession={readAloudSession}
       initialAssessmentId={initialAssessmentId}
       initialDurationKey={resolvedSearchParams?.durationMinutes}
+      initialQuestionId={resolvedSearchParams?.questionId}
     />
   );
 }

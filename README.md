@@ -1680,6 +1680,171 @@ This matters because official-duration exam behaviour should feel trustworthy,
 and downstream progress or results logic should reflect the actual final session
 state rather than a stale autosave snapshot.
 
+### 14. Timed assessment session parity
+
+The timed assessment route has now moved beyond a summary-only checkpoint and
+into a real saved session flow.
+
+Added work includes:
+
+- live question-by-question timed checkpoint interaction
+- seeded timed assessment question sets instead of only aggregate counters
+- timed assessment autosave through its own API save path
+- timed assessment submission saving the latest browser snapshot before completion
+- live countdown behaviour with automatic submission at time expiry
+- bookmark and notes support inside the timed checkpoint session
+- read-aloud controls inside the active timed assessment flow
+- question counts now matching the mock scored answer sets used by Results
+
+This matters because timed practice now behaves more like a real student
+workflow and no longer sits behind the exam route as a lighter placeholder.
+
+### 15. Accessibility settings persistence
+
+The accessibility route now saves support settings through the API and module
+layer instead of behaving like a page-only preview.
+
+Added work includes:
+
+- `PATCH /api/accessibility/snapshot` for profile-backed accessibility updates
+- accessibility settings now saving into the shared access-profile and preference model
+- saved accessibility state feeding the live accessibility route immediately after save
+- read aloud status on the accessibility page now reflecting the newly saved support state
+- adjustable font size, colour scheme, and line spacing controls on the student-facing route
+
+This matters because support settings now behave more like real student
+preferences that can travel into future read-aloud and saved-session flows.
+
+### 16. Timed assessment result-source consistency
+
+Timed assessment results now score from the saved checkpoint question set rather
+than from a separate hardcoded answer map.
+
+Added work includes:
+
+- timed assessment question sets now being stored in Saved Progress snapshots
+- Results reading timed checkpoint scoring data from the saved question set first
+- removal of duplicate timed assessment answer-key assumptions from the results flow
+- stronger parity between the live timed checkpoint route and the results route
+
+This matters because scoring should come from the same module-owned session data
+that the student actually used, not from a second disconnected result-only map.
+
+### 17. Actionable results routing
+
+The results route now links students back into the right study flow instead of
+only summarising what happened.
+
+Added work includes:
+
+- exam result items now linking back into full-paper review or resume routes
+- timed assessment result items now linking back into checkpoint review or resume routes
+- result summaries now carrying action labels and route targets from the results module itself
+
+This matters because outcome screens should help students act on their work,
+not just read a score and stop there.
+
+### 18. Dashboard session priority and state clarity
+
+The dashboard now prioritises the most relevant active session first and shows
+clearer session state on the student home surface.
+
+Added work includes:
+
+- dashboard session cards now distinguishing live work from submitted review work
+- dashboard session ordering now prioritising active sessions ahead of submitted ones
+- dashboard session cards now carrying explicit action labels such as resume or reopen review
+- home and dashboard surfaces now using more reliable “next session” ordering instead of defaulting to the first seeded item
+
+This matters because the student home surface should guide the next real action,
+not accidentally treat completed work as the primary resume target.
+
+### 19. Timed assessment deep-link resume reliability
+
+Timed assessment resume links now reopen the intended question instead of only
+the intended assessment and duration.
+
+Added work includes:
+
+- assessments page now reading `questionId` from route search params
+- timed assessment experience now honouring a deep-linked initial question on load
+- resume links from saved progress, Power Grid, and results now landing more reliably in the correct checkpoint state
+
+This matters because an autosave resume flow is not fully trustworthy if it
+reopens the right session but the wrong question.
+
+## MVP Quality Checklist
+
+This is the current product-quality checklist for the MVP. It should stay
+cumulative and be updated as items move from in progress to complete.
+
+### 1. Make every core student flow end-to-end reliable
+
+Status: complete for the current MVP pass.
+
+Covered in this pass:
+
+- exams can start, resume, autosave, submit, reopen review, and route into results
+- timed assessments can start, resume, autosave, submit, reopen review, and route into results
+- saved progress now links back into the correct session routes with question-level resume support
+- results now link back into the correct exam or timed assessment follow-up route
+- dashboard now prioritises active work ahead of submitted review work
+- accessibility settings now persist through the API layer instead of staying page-local
+
+### 2. Treat saved progress as a critical system, not a feature
+
+Status: next priority.
+
+Focus:
+
+- strengthen persistence behaviour across all module flows
+- tighten saved-state recovery assumptions
+- make saved progress the source of truth for more cross-route decisions
+
+### 3. Keep one source of truth for scoring, timing, and support rules
+
+Status: in progress.
+
+Progress already made:
+
+- exam results score from saved exam snapshots
+- timed assessment results now score from saved checkpoint question sets
+- exam and timed checkpoint timing rules live in their own modules
+- accessibility and support settings are moving into shared profile-backed state
+
+### 4. Raise content quality before expanding content volume
+
+Status: in progress.
+
+Progress already made:
+
+- editorial-gated student content delivery
+- source attribution
+- draft and review-status handling
+- internal audit route and admin visibility
+
+### 5. Make accessibility real, not decorative
+
+Status: in progress.
+
+Progress already made:
+
+- persisted accessibility settings
+- read aloud in active exam and timed checkpoint flows
+- support snapshots travelling with saved progress
+
+### 6. Use a release checklist for every priority module
+
+Status: active working rule.
+
+Each priority slice should now be checked for:
+
+- start/resume/submit/review continuity
+- saved-progress correctness
+- results consistency
+- dashboard and recommendation consistency
+- support-setting carry-over
+
 ## Summary
 
 The Switch is no longer just a blueprint sitting in a README.

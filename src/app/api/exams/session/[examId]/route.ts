@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getMockExamSession } from "@/modules/exam-engine/service";
+import { getMockExamSession, saveMockExamSession } from "@/modules/exam-engine/service";
+import type { SaveExamSessionRequest } from "@/modules/exam-engine/contracts";
 import { markSavedProgressStatus } from "@/modules/saved-progress/service";
 
 export async function GET(
@@ -58,6 +59,49 @@ export async function POST(
         error: error instanceof Error ? error.message : "Unknown exam submission error",
       },
       { status: 404 },
+    );
+  }
+}
+
+export async function PATCH(
+  request: Request,
+  context: { params: Promise<{ examId: string }> },
+) {
+  const { examId } = await context.params;
+
+  try {
+    const payload = (await request.json()) as Partial<SaveExamSessionRequest>;
+
+    if (
+      !payload.examSessionId ||
+      !payload.currentQuestionId ||
+      !payload.questionResponses ||
+      typeof payload.timeRemainingMinutes !== "number"
+    ) {
+      return NextResponse.json(
+        {
+          error: "Incomplete exam session save payload.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const session = await saveMockExamSession(examId, {
+      examSessionId: payload.examSessionId,
+      currentQuestionId: payload.currentQuestionId,
+      questionResponses: payload.questionResponses,
+      timeRemainingMinutes: payload.timeRemainingMinutes,
+    });
+
+    return NextResponse.json({
+      session,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Unknown exam autosave error",
+      },
+      { status: 400 },
     );
   }
 }

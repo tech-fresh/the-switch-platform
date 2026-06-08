@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ExamPaper, ExamQuestion, ExamQuestionResponse, ExamSession } from "@/modules/exam-engine/types";
 import type { ReadAloudSession } from "@/modules/read-aloud/types";
 
@@ -101,6 +101,28 @@ function getInitialQuestionIndex(
   return firstActiveIndex >= 0 ? firstActiveIndex : 0;
 }
 
+function getCurrentQuestionId(session: ExamSession | undefined): string {
+  if (!session) {
+    return "";
+  }
+
+  const firstActiveResponse = session.questionResponses.find(
+    (response) => response.status !== "not-started" || response.selectedOptionId,
+  );
+
+  return firstActiveResponse?.questionId ?? session.questionResponses[0]?.questionId ?? "";
+}
+
+function buildAutosaveSignature(session: ExamSession, currentQuestionId: string): string {
+  return JSON.stringify({
+    examSessionId: session.examSessionId,
+    status: session.status,
+    currentQuestionId,
+    timeRemainingMinutes: session.timeRemainingMinutes,
+    questionResponses: session.questionResponses,
+  });
+}
+
 export function ExamExperience({
   papers,
   sessionSeeds,
@@ -132,6 +154,13 @@ export function ExamExperience({
   );
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "error">("idle");
   const [freshAttemptState, setFreshAttemptState] = useState<"idle" | "starting" | "error">("idle");
+  const [autosaveState, setAutosaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const autosaveSignatureRef = useRef(
+    buildAutosaveSignature(
+      initialSessionCache[startingExamId] ?? fallbackSession,
+      getCurrentQuestionId(initialSessionCache[startingExamId] ?? fallbackSession),
+    ),
+  );
 
   const paper = useMemo(
     () => papers.find((item) => item.examId === selectedExamId) ?? papers[0],
@@ -167,6 +196,57 @@ export function ExamExperience({
     setPreviewState("idle");
   }, [selectedExamId, currentQuestionIndex]);
 
+  useEffect(() => {
+    if (session.status === "submitted" || !currentQuestion) {
+      autosaveSignatureRef.current = buildAutosaveSignature(
+        session,
+        currentQuestion?.questionId ?? "",
+      );
+      setAutosaveState("idle");
+      return;
+    }
+
+    const nextSignature = buildAutosaveSignature(session, currentQuestion.questionId);
+
+    if (nextSignature === autosaveSignatureRef.current) {
+      return;
+    }
+
+    setAutosaveState("saving");
+
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const response = await fetch(`/api/exams/session/${encodeURIComponent(selectedExamId)}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            examSessionId: session.examSessionId,
+            currentQuestionId: currentQuestion.questionId,
+            questionResponses: session.questionResponses,
+            timeRemainingMinutes: session.timeRemainingMinutes,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Exam autosave request failed.");
+        }
+
+        autosaveSignatureRef.current = nextSignature;
+        setAutosaveState("saved");
+      } catch {
+        setAutosaveState("error");
+      }
+    }, 600);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [
+    currentQuestion,
+    selectedExamId,
+    session,
+  ]);
+
   const resetSession = (examId: string) => {
     const nextSession = cloneSession(sessionCache[examId] ?? sessionSeeds[examId] ?? fallbackSession);
 
@@ -175,7 +255,9 @@ export function ExamExperience({
     setViewMode(nextSession.status === "submitted" ? "submitted" : "question");
     setSubmitState("idle");
     setFreshAttemptState("idle");
+    setAutosaveState("idle");
     setCurrentQuestionIndex(getInitialQuestionIndex(nextSession));
+    autosaveSignatureRef.current = buildAutosaveSignature(nextSession, getCurrentQuestionId(nextSession));
   };
 
   const syncSession = (
@@ -195,6 +277,11 @@ export function ExamExperience({
     setSelectedExamId(nextSession.examId);
     setViewMode(options?.nextViewMode ?? (clonedSession.status === "submitted" ? "submitted" : "question"));
     setCurrentQuestionIndex(getInitialQuestionIndex(clonedSession, options?.nextQuestionId));
+    setAutosaveState("idle");
+    autosaveSignatureRef.current = buildAutosaveSignature(
+      clonedSession,
+      options?.nextQuestionId ?? getCurrentQuestionId(clonedSession),
+    );
   };
 
   const updateResponse = (
@@ -380,7 +467,15 @@ export function ExamExperience({
               <p className="mt-2 text-lg font-semibold text-stone-950">
                 Saved {formatSavedAt(session.lastSavedAt)}
               </p>
-              <p className="mt-1 text-sm text-stone-600">Generated question mix is stored with the session.</p>
+              <p className="mt-1 text-sm text-stone-600">
+                {autosaveState === "saving"
+                  ? "Saving latest changes now."
+                  : autosaveState === "error"
+                    ? "Autosave is temporarily stuck. Keep working and try again shortly."
+                    : autosaveState === "saved"
+                      ? "Latest question mix and responses are saved with this session."
+                      : "Generated question mix is stored with the session."}
+              </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Completion</p>

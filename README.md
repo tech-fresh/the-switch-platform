@@ -1,5 +1,20 @@
 # The Switch Platform
 
+## Local Restore Notes
+
+If project information appears to have disappeared after switching to local
+mode, open these files first:
+
+- `PROJECT_RECOVERY.md`
+- `RESTORED_CHATS.md`
+
+The active local project folder is:
+
+`/Users/lloydnwagbara/Documents/THE SWITCH 2`
+
+The local project has been checked against GitHub `origin/main`, and the local
+website has been verified with a successful production build.
+
 ## Mark 3.2 MVP
 
 This README is now meant to be cumulative.

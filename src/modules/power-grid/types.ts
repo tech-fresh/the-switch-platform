@@ -18,9 +18,15 @@ export interface PowerGridSubjectProgress {
   trend: PowerGridTrend;
   readinessScore: number;
   completionScore: number;
+  activeSessionCount: number;
+  completedSessionCount: number;
+  reviewItemCount: number;
+  accessSnapshotCount: number;
   recommendedFocus: string;
   recommendedTopicId?: string;
   subjectHref?: string;
+  resumeHref?: string;
+  lastActivityAt?: string;
   evidence: string;
 }
 
@@ -30,6 +36,11 @@ export interface PowerGridSummary {
   examReadinessScore: number;
   completedSessionCount: number;
   activeSessionCount: number;
+  trackedSubjectCount: number;
+  subjectsNeedingAttentionCount: number;
+  accessSnapshotCoverage: number;
+  latestActivityAt?: string;
+  resumeHref?: string;
   nextBestAction: string;
   nextBestActionHref?: string;
   subjectProgress: PowerGridSubjectProgress[];

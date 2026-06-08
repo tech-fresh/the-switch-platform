@@ -558,6 +558,54 @@ export async function getMockExamSession(
   return session;
 }
 
+export async function saveMockExamSession(
+  examId: string,
+  input: {
+    examSessionId: string;
+    currentQuestionId: string;
+    questionResponses: ExamQuestionResponse[];
+    timeRemainingMinutes: number;
+    userId?: string;
+    savedProgressRepository?: SavedProgressRepository;
+  },
+): Promise<ExamSession> {
+  const session = await getMockExamSession(examId, {
+    userId: input.userId,
+    savedProgressRepository: input.savedProgressRepository,
+  });
+
+  if (session.examSessionId !== input.examSessionId) {
+    throw new Error("Exam session mismatch while saving progress.");
+  }
+
+  const nextSession: ExamSession = {
+    ...session,
+    lastSavedAt: new Date().toISOString(),
+    timeRemainingMinutes: Math.max(
+      0,
+      Math.min(input.timeRemainingMinutes, session.durationMinutes),
+    ),
+    questionResponses: input.questionResponses,
+  };
+
+  await saveExamProgress(
+    {
+      userId: nextSession.userId,
+      examSessionId: nextSession.examSessionId,
+      currentQuestionId: input.currentQuestionId,
+      questionSet: nextSession.questions,
+      questionResponses: nextSession.questionResponses,
+      timeRemainingMinutes: nextSession.timeRemainingMinutes,
+      status: nextSession.status,
+      accessArrangementSnapshot:
+        nextSession.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
+    },
+    input.savedProgressRepository,
+  );
+
+  return nextSession;
+}
+
 async function buildSessionFromRecord(
   blueprint: ExamPaperBlueprint,
   record: SavedProgressRecord,

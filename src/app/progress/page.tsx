@@ -13,6 +13,17 @@ function getTrendTone(trend: "improving" | "stable" | "declining"): string {
   return "text-rose-700";
 }
 
+function formatActivityTimestamp(value?: string): string {
+  if (!value) {
+    return "No saved activity yet";
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
 export default async function ProgressPage() {
   const summary = await getProgressSummaryApiData();
 
@@ -57,6 +68,15 @@ export default async function ProgressPage() {
                 {summary.completedSessionCount} completed, the rest still in motion
               </p>
             </div>
+            <div className="border border-stone-200 bg-white p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Access snapshots</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">
+                {summary.accessSnapshotCoverage}%
+              </p>
+              <p className="mt-1 text-sm text-stone-600">
+                Saved progress is carrying support settings across study routes
+              </p>
+            </div>
           </div>
         </section>
 
@@ -83,6 +103,21 @@ export default async function ProgressPage() {
                   <div className="border border-dashed border-stone-300 bg-stone-50 px-4 py-3 text-sm text-stone-700">
                     Recommended next focus: {subject.recommendedFocus}
                   </div>
+                  <div className="grid gap-3 text-sm text-stone-600 sm:grid-cols-2">
+                    <div className="border border-stone-200 bg-stone-50 px-4 py-3">
+                      {subject.activeSessionCount} active session
+                      {subject.activeSessionCount === 1 ? "" : "s"} and {subject.completedSessionCount}{" "}
+                      completed
+                    </div>
+                    <div className="border border-stone-200 bg-stone-50 px-4 py-3">
+                      {subject.reviewItemCount} review item{subject.reviewItemCount === 1 ? "" : "s"} and{" "}
+                      {subject.accessSnapshotCount} support snapshot
+                      {subject.accessSnapshotCount === 1 ? "" : "s"}
+                    </div>
+                  </div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                    Last activity: {formatActivityTimestamp(subject.lastActivityAt)}
+                  </p>
                   <div className="flex flex-wrap gap-3 pt-1">
                     <Link
                       href={subject.subjectHref ?? "/subjects"}
@@ -90,6 +125,14 @@ export default async function ProgressPage() {
                     >
                       Open subject route
                     </Link>
+                    {subject.resumeHref ? (
+                      <Link
+                        href={subject.resumeHref}
+                        className="inline-flex items-center justify-center border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
+                      >
+                        Resume saved work
+                      </Link>
+                    ) : null}
                     <Link
                       href="/assessments"
                       className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
@@ -133,12 +176,31 @@ export default async function ProgressPage() {
 
             <section className="space-y-3 border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                Autosave health
+              </h2>
+              <ul className="space-y-2 text-sm leading-6 text-stone-600">
+                <li>{summary.trackedSubjectCount} tracked subjects are contributing evidence.</li>
+                <li>{summary.subjectsNeedingAttentionCount} subjects currently need extra focus.</li>
+                <li>Latest activity: {formatActivityTimestamp(summary.latestActivityAt)}.</li>
+              </ul>
+              {summary.resumeHref ? (
+                <Link
+                  href={summary.resumeHref}
+                  className="inline-flex items-center justify-center border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
+                >
+                  Resume most recent session
+                </Link>
+              ) : null}
+            </section>
+
+            <section className="space-y-3 border border-stone-200 bg-white p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 What this route proves
               </h2>
               <ul className="space-y-2 text-sm leading-6 text-stone-600">
                 <li>Progress calculations can live in the Power Grid module.</li>
-                <li>Exam and assessment activity can feed one readiness summary.</li>
-                <li>Students can be told what to revise next in product language.</li>
+                <li>Saved Progress now feeds the readiness summary instead of page-only state.</li>
+                <li>Access snapshot coverage can travel with the same progress evidence.</li>
               </ul>
             </section>
           </aside>

@@ -42,7 +42,7 @@ export default async function AdminPage() {
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Content items</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{cms.content.length}</p>
-              <p className="mt-1 text-sm text-stone-600">{cms.publishedCount} published in the seed layer</p>
+              <p className="mt-1 text-sm text-stone-600">{cms.studentVisibleCount} visible to students</p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Paper catalog</p>
@@ -80,6 +80,55 @@ export default async function AdminPage() {
               </div>
               <div className="mt-5 border border-dashed border-stone-300 bg-stone-50 p-4 text-sm leading-7 text-stone-700">
                 {cms.nextUpdatePlan}
+              </div>
+            </article>
+
+            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+              <div className="border-b border-stone-200 pb-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                  Editorial gate
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  What can safely reach student routes
+                </h2>
+              </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Topics</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">
+                    {cms.editorialAudit.totalTopicCount}
+                  </p>
+                </div>
+                <div className="border border-emerald-200 bg-emerald-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">Student visible</p>
+                  <p className="mt-2 text-lg font-semibold text-emerald-950">
+                    {cms.editorialAudit.studentVisibleTopicCount}
+                  </p>
+                </div>
+                <div className="border border-amber-200 bg-amber-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-amber-700">Blocked</p>
+                  <p className="mt-2 text-lg font-semibold text-amber-950">
+                    {cms.editorialAudit.blockedTopicCount}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-5 space-y-3">
+                {cms.editorialAudit.gateDecisions
+                  .filter((decision) => !decision.studentVisible)
+                  .map((decision) => (
+                    <article key={decision.topicId} className="border border-amber-200 bg-amber-50 p-4">
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-800">
+                        <span>{decision.publicationStatus}</span>
+                        <span>{decision.reviewStatus}</span>
+                      </div>
+                      <h3 className="mt-3 text-lg font-semibold text-stone-950">{decision.title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-stone-700">{decision.reason}</p>
+                      <p className="mt-2 text-sm leading-6 text-stone-700">{decision.nextStep}</p>
+                    </article>
+                  ))}
+              </div>
+              <div className="mt-5 border border-dashed border-stone-300 bg-stone-50 p-4 text-sm leading-7 text-stone-700">
+                {cms.editorialAudit.nextEditorialPriority}
               </div>
             </article>
 

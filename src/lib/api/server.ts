@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import type { AccessibilitySnapshot } from "@/modules/accessibility/types";
 import type { AccountOverview } from "@/modules/auth/types";
 import type { CmsOverview } from "@/modules/cms/types";
+import type { ContentEditorialAudit, MvpContentCatalog } from "@/modules/content/types";
 import type { DashboardHomeData } from "@/modules/dashboard/types";
 import type { ExamPaper, ExamSession } from "@/modules/exam-engine/types";
 import type { PastPaperCatalogOverview } from "@/modules/past-papers/types";
@@ -174,6 +175,22 @@ export async function getPastPaperCatalogApiData(): Promise<PastPaperCatalogOver
   );
 
   return response.catalog;
+}
+
+export async function getStudentContentCatalogApiData(): Promise<MvpContentCatalog> {
+  const response = await fetchApiJson<{ catalog: MvpContentCatalog }>(
+    "/api/content/catalog?audience=student",
+  );
+
+  return response.catalog;
+}
+
+export async function getContentEditorialAuditApiData(): Promise<ContentEditorialAudit> {
+  const response = await fetchApiJson<{ audit: ContentEditorialAudit }>(
+    "/api/content/editorial-audit",
+  );
+
+  return response.audit;
 }
 
 export async function getSubjectsExperienceApiData(): Promise<SubjectsExperienceData> {

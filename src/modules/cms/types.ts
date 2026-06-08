@@ -1,3 +1,5 @@
+import type { ContentEditorialAudit, ContentReviewStatus } from "@/modules/content/types";
+
 export type CmsProviderType = "seed-content" | "headless-cms" | "manual-upload";
 
 export type CmsContentKind = "subject" | "topic" | "revision" | "quiz";
@@ -13,6 +15,9 @@ export interface CmsContentReference {
   subjectId?: string;
   topicId?: string;
   status: ContentPublicationStatus;
+  reviewStatus?: ContentReviewStatus;
+  studentVisible: boolean;
+  sourceReference?: string;
   updatedAt: string;
   sourceProviderId: string;
 }
@@ -32,5 +37,8 @@ export interface CmsOverview {
   content: CmsContentReference[];
   publishedCount: number;
   draftCount: number;
+  studentVisibleCount: number;
+  blockedCount: number;
+  editorialAudit: ContentEditorialAudit;
   nextUpdatePlan: string;
 }

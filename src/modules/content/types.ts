@@ -12,11 +12,19 @@ export type ContentReviewStatus =
 
 export type ContentSourceModel = "seed-json" | "cms-adapter" | "future-editorial";
 
+export interface ContentSourceAttribution {
+  providerId: string;
+  providerName: string;
+  sourceReference: string;
+  checkedAgainst?: string;
+}
+
 export interface ContentReviewMetadata {
   publicationStatus: ContentPublicationStatus;
   reviewStatus: ContentReviewStatus;
   sourceModel: ContentSourceModel;
   lastUpdatedAt: string;
+  sourceAttribution: ContentSourceAttribution;
 }
 
 export interface MvpCatalogSubject {
@@ -58,6 +66,27 @@ export interface MvpContentCatalog {
   lastUpdatedAt: string;
   subjects: MvpCatalogSubject[];
   topics: MvpCatalogTopic[];
+}
+
+export interface ContentGateDecision {
+  topicId: string;
+  title: string;
+  publicationStatus: ContentPublicationStatus;
+  reviewStatus: ContentReviewStatus;
+  studentVisible: boolean;
+  reason: string;
+  nextStep: string;
+}
+
+export interface ContentEditorialAudit {
+  catalogVersion: string;
+  totalTopicCount: number;
+  studentVisibleTopicCount: number;
+  blockedTopicCount: number;
+  publicationStatusCounts: Record<ContentPublicationStatus, number>;
+  reviewStatusCounts: Record<ContentReviewStatus, number>;
+  gateDecisions: ContentGateDecision[];
+  nextEditorialPriority: string;
 }
 
 export interface ContentRepository {

@@ -1,7 +1,4 @@
-import { getMockQuizQuestion } from "@/modules/quiz/service";
-import { getMockRevisionContent } from "@/modules/revision/service";
-import { getMockSubjects } from "@/modules/subjects/service";
-import { getMockTopicsForSubject } from "@/modules/topics/service";
+import { getContentEditorialAudit, getMvpContentCatalog, isTopicStudentVisible } from "@/modules/content/service";
 import type { CmsContentReference, CmsOverview, CmsProvider } from "./types";
 
 const cmsProviders: CmsProvider[] = [
@@ -33,57 +30,70 @@ const cmsProviders: CmsProvider[] = [
 ];
 
 export async function getCmsOverview(): Promise<CmsOverview> {
-  const subjects = getMockSubjects();
+  const [catalog, editorialAudit] = await Promise.all([
+    getMvpContentCatalog(),
+    getContentEditorialAudit(),
+  ]);
   const content: CmsContentReference[] = [];
 
-  for (const subject of subjects) {
+  for (const subject of catalog.subjects) {
+    const subjectTopics = catalog.topics.filter((topic) => topic.subjectId === subject.subjectId);
+    const subjectVisible = subjectTopics.some(isTopicStudentVisible);
+
     content.push({
       contentId: `subject-${subject.subjectId}`,
       kind: "subject",
       title: subject.name,
       subjectId: subject.subjectId,
-      status: "published",
+      status: subjectVisible ? "published" : "draft",
+      studentVisible: subjectVisible,
       updatedAt: "2026-06-06T08:45:00.000Z",
       sourceProviderId: "seed-content-provider",
     });
 
-    const topics = getMockTopicsForSubject(subject.subjectId);
+    for (const topic of subjectTopics) {
+      const studentVisible = isTopicStudentVisible(topic);
 
-    for (const topic of topics) {
       content.push({
         contentId: `topic-${topic.topicId}`,
         kind: "topic",
         title: topic.name,
         subjectId: topic.subjectId,
         topicId: topic.topicId,
-        status: "published",
-        updatedAt: "2026-06-06T08:50:00.000Z",
-        sourceProviderId: "seed-content-provider",
+        status: topic.metadata.publicationStatus,
+        reviewStatus: topic.metadata.reviewStatus,
+        studentVisible,
+        sourceReference: topic.metadata.sourceAttribution.sourceReference,
+        updatedAt: topic.metadata.lastUpdatedAt,
+        sourceProviderId: topic.metadata.sourceAttribution.providerId,
       });
 
-      const revision = getMockRevisionContent(topic.topicId);
-      const quiz = getMockQuizQuestion(topic.topicId);
-
       content.push({
-        contentId: revision.contentId,
+        contentId: topic.revision.contentId,
         kind: "revision",
-        title: revision.title,
+        title: topic.revision.title,
         subjectId: topic.subjectId,
         topicId: topic.topicId,
-        status: "published",
-        updatedAt: "2026-06-06T08:55:00.000Z",
-        sourceProviderId: "seed-content-provider",
+        status: topic.metadata.publicationStatus,
+        reviewStatus: topic.metadata.reviewStatus,
+        studentVisible,
+        sourceReference: topic.metadata.sourceAttribution.sourceReference,
+        updatedAt: topic.metadata.lastUpdatedAt,
+        sourceProviderId: topic.metadata.sourceAttribution.providerId,
       });
 
       content.push({
-        contentId: `quiz-${quiz.questionId}`,
+        contentId: `quiz-${topic.quiz.questionId}`,
         kind: "quiz",
         title: `Quiz prompt for ${topic.name}`,
         subjectId: topic.subjectId,
         topicId: topic.topicId,
-        status: "published",
-        updatedAt: "2026-06-06T09:00:00.000Z",
-        sourceProviderId: "seed-content-provider",
+        status: topic.metadata.publicationStatus,
+        reviewStatus: topic.metadata.reviewStatus,
+        studentVisible,
+        sourceReference: topic.metadata.sourceAttribution.sourceReference,
+        updatedAt: topic.metadata.lastUpdatedAt,
+        sourceProviderId: topic.metadata.sourceAttribution.providerId,
       });
     }
   }
@@ -93,7 +103,10 @@ export async function getCmsOverview(): Promise<CmsOverview> {
     content,
     publishedCount: content.filter((item) => item.status === "published").length,
     draftCount: content.filter((item) => item.status === "draft").length,
+    studentVisibleCount: content.filter((item) => item.studentVisible).length,
+    blockedCount: content.filter((item) => !item.studentVisible).length,
+    editorialAudit,
     nextUpdatePlan:
-      "Keep the website on seed content now, then add a headless CMS adapter and publishing workflow without changing the student routes.",
+      "Keep the website on reviewed seed content now, then add a headless CMS adapter and approval workflow without changing student routes.",
   };
 }

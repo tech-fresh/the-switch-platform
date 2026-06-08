@@ -36,6 +36,21 @@ function formatTimer(totalMinutes: number): string {
     : `${minutes}m`;
 }
 
+function formatCountdown(totalSeconds: number): string {
+  const safeSeconds = Math.max(0, totalSeconds);
+  const hours = Math.floor(safeSeconds / 3600);
+  const minutes = Math.floor((safeSeconds % 3600) / 60);
+  const seconds = safeSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
+
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
 function formatSavedAt(timestamp: string): string {
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -155,6 +170,10 @@ export function ExamExperience({
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "error">("idle");
   const [freshAttemptState, setFreshAttemptState] = useState<"idle" | "starting" | "error">("idle");
   const [autosaveState, setAutosaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [timeRemainingSeconds, setTimeRemainingSeconds] = useState(
+    () => (initialSessionCache[startingExamId] ?? fallbackSession).timeRemainingMinutes * 60,
+  );
+  const autoSubmitTriggeredRef = useRef(false);
   const autosaveSignatureRef = useRef(
     buildAutosaveSignature(
       initialSessionCache[startingExamId] ?? fallbackSession,
@@ -187,6 +206,17 @@ export function ExamExperience({
   const currentReadAloudText = buildQuestionReadAloudText(sessionQuestions, currentQuestionIndex);
   const unansweredCount = sessionQuestions.length - answeredCount;
   const noteCount = session.questionResponses.filter((response) => response.workingNotes?.trim()).length;
+  const timerAlertTone =
+    timeRemainingSeconds <= 300
+      ? "text-rose-700"
+      : timeRemainingSeconds <= 900
+        ? "text-amber-700"
+        : "text-stone-950";
+
+  useEffect(() => {
+    setTimeRemainingSeconds(session.timeRemainingMinutes * 60);
+    autoSubmitTriggeredRef.current = session.status === "submitted";
+  }, [session.examSessionId, session.status, session.timeRemainingMinutes]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
@@ -195,6 +225,45 @@ export function ExamExperience({
 
     setPreviewState("idle");
   }, [selectedExamId, currentQuestionIndex]);
+
+  useEffect(() => {
+    if (session.status === "submitted") {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setTimeRemainingSeconds((previous) => Math.max(0, previous - 1));
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [session.examSessionId, session.status]);
+
+  useEffect(() => {
+    if (session.status === "submitted") {
+      return;
+    }
+
+    const nextTimeRemainingMinutes = Math.ceil(timeRemainingSeconds / 60);
+
+    if (nextTimeRemainingMinutes === session.timeRemainingMinutes) {
+      return;
+    }
+
+    setSession((previous) => {
+      const nextSession = {
+        ...previous,
+        lastSavedAt: new Date().toISOString(),
+        timeRemainingMinutes: nextTimeRemainingMinutes,
+      };
+
+      setSessionCache((cache) => ({
+        ...cache,
+        [previous.examId]: nextSession,
+      }));
+
+      return nextSession;
+    });
+  }, [session.status, session.timeRemainingMinutes, timeRemainingSeconds]);
 
   useEffect(() => {
     if (session.status === "submitted" || !currentQuestion) {
@@ -247,6 +316,20 @@ export function ExamExperience({
     session,
   ]);
 
+  useEffect(() => {
+    if (
+      timeRemainingSeconds > 0 ||
+      session.status === "submitted" ||
+      submitState === "submitting" ||
+      autoSubmitTriggeredRef.current
+    ) {
+      return;
+    }
+
+    autoSubmitTriggeredRef.current = true;
+    void handleSubmitExam();
+  }, [session.status, submitState, timeRemainingSeconds]);
+
   const resetSession = (examId: string) => {
     const nextSession = cloneSession(sessionCache[examId] ?? sessionSeeds[examId] ?? fallbackSession);
 
@@ -256,8 +339,10 @@ export function ExamExperience({
     setSubmitState("idle");
     setFreshAttemptState("idle");
     setAutosaveState("idle");
+    setTimeRemainingSeconds(nextSession.timeRemainingMinutes * 60);
     setCurrentQuestionIndex(getInitialQuestionIndex(nextSession));
     autosaveSignatureRef.current = buildAutosaveSignature(nextSession, getCurrentQuestionId(nextSession));
+    autoSubmitTriggeredRef.current = nextSession.status === "submitted";
   };
 
   const syncSession = (
@@ -365,6 +450,15 @@ export function ExamExperience({
     try {
       const response = await fetch(`/api/exams/session/${encodeURIComponent(selectedExamId)}`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          examSessionId: session.examSessionId,
+          currentQuestionId: currentQuestion.questionId,
+          questionResponses: session.questionResponses,
+          timeRemainingMinutes: session.timeRemainingMinutes,
+        }),
       });
 
       if (!response.ok) {
@@ -534,13 +628,22 @@ export function ExamExperience({
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Session facts
                 </h2>
-                <span className="text-sm font-semibold text-rose-700">
-                  {formatTimer(session.timeRemainingMinutes)}
+                <span className={`text-sm font-semibold ${timerAlertTone}`}>
+                  {formatCountdown(timeRemainingSeconds)}
                 </span>
               </div>
               <div className="space-y-2 text-sm text-stone-600">
                 <p>{paper.year} exam paper preview with a generated question mix for this attempt.</p>
                 <p>Official duration stays locked to the exam while questions rotate inside topic coverage.</p>
+              </div>
+              <div className="border border-stone-200 bg-stone-50 px-3 py-3 text-sm text-stone-700">
+                {timeRemainingSeconds === 0
+                  ? "Time has expired. This attempt is being submitted automatically."
+                  : timeRemainingSeconds <= 300
+                    ? "Less than five minutes remain in this paper."
+                    : timeRemainingSeconds <= 900
+                      ? "Final fifteen minutes: wrap up any unanswered questions."
+                      : `Official duration: ${formatTimer(session.durationMinutes)}.`}
               </div>
               <div className="flex flex-wrap gap-2 pt-1">
                 {paper.skillsFocus.map((skill) => (

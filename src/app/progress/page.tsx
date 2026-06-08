@@ -170,7 +170,7 @@ export default async function ProgressPage() {
                 href={summary.nextBestActionHref ?? "/subjects"}
                 className="inline-flex items-center justify-center border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-800"
               >
-                Open next revision route
+                Open next step
               </Link>
             </section>
 

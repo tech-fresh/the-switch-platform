@@ -1,8 +1,8 @@
 import type { RevisionContent } from "./types";
-import { getSeedContentTopic } from "@/modules/content/service";
+import { getStudentVisibleContentTopic } from "@/modules/content/service";
 
 export function getMockRevisionContent(topicId: string): RevisionContent {
-  const topic = getSeedContentTopic(topicId);
+  const topic = getStudentVisibleContentTopic(topicId);
 
   if (!topic) {
     throw new Error(`Unknown mock revision content for topic: ${topicId}`);

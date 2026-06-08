@@ -26,6 +26,8 @@ export interface SaveExamSessionResponse {
   session: ExamSession;
 }
 
+export type SubmitExamSessionRequest = SaveExamSessionRequest;
+
 export interface SubmitExamSessionResponse {
   sessionId: string;
   status: "submitted";

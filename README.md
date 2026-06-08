@@ -361,6 +361,7 @@ If you want one place that lists the full current state without replacing earlie
 - `/api/support/exam-guides`
 - `/api/support/urgent-help`
 - `/api/content/catalog`
+- `/api/content/editorial-audit`
 
 ### Modules currently present
 
@@ -1600,6 +1601,84 @@ flowchart LR
     C --> D["Compare live page with guide explanation"]
     D --> E["Return for next step or glossary"]
 ```
+
+### Exam submission snapshot integrity
+
+The Exam Engine submission flow now posts the current browser session snapshot through
+the API before marking the attempt as submitted.
+
+This protects the autosave rule when a student answers a question and immediately
+submits before the debounce save finishes.
+
+The flow is:
+
+- the website sends the current question id, responses, and time remaining to `/api/exams/session/:examId`
+- the Exam Engine service saves that latest snapshot through Saved Progress
+- the same service marks the saved record as submitted
+- Results and Saved Progress read the final submitted answer set, not a stale autosave
+
+Results now seeds or refreshes the relevant sessions first, then reads Saved
+Progress, and scores exam outcomes from the saved generated question set and
+saved response payload.
+
+Power Grid now follows the same saved-progress state when choosing next actions:
+active saved work is resumed first, review-marked work goes back through the
+review path, and submitted work routes to Results rather than reopening a
+finished attempt.
+
+### Content editorial gate foundation
+
+The content catalog now has a first-pass editorial workflow foundation before
+the MVP grows more student-facing content.
+
+That includes:
+
+- source attribution on seed catalog topics
+- reviewed, draft, and fact-check-needed content states
+- `/api/content/catalog` returning a student-visible catalog by default
+- `/api/content/catalog?audience=internal` returning the full internal catalog
+- `/api/content/editorial-audit` returning review counts, blocked topics, and next editorial priority
+- Admin showing which content is student-visible and which topic is blocked from publication
+
+This keeps the CMS/Admin module as a placeholder while still enforcing the
+important rule: unreviewed or draft content should not silently reach student
+clients.
+
+### 12. Editorial-gated subject delivery and admin visibility
+
+The next implemented stage pushed the content workflow further into the live
+student and admin routes rather than leaving it only as a catalog-side idea.
+
+Added work includes:
+
+- subject, topic, revision, and quiz services now reading only student-visible reviewed content
+- the `/subjects` route showing a real empty-state when reviewed learning content is not yet available
+- content topic metadata now carrying publication status, review status, last-updated timing, and source attribution
+- Admin exposing content provider boundaries, blocked topic visibility, and student-visible content counts
+- CMS overview records now distinguishing subject, topic, revision, and quiz content references from the same seed source
+
+This matters because the website now behaves like a product with publication
+rules, not just a set of routes reading any seeded content that happens to
+exist in the repo.
+
+### 13. Saved-state scoring and live exam countdown
+
+The exam, results, and Power Grid flow now follows saved session state more
+closely, and the exam route now behaves more like a real timed paper.
+
+Added work includes:
+
+- Results reading saved generated question sets and saved responses before scoring an exam attempt
+- Power Grid next-action logic separating active work, submitted work, and review-ready work more clearly
+- exam submission saving the final browser snapshot before marking the attempt as submitted
+- the exam route now running a real countdown instead of only showing a static remaining-time label
+- countdown-driven session syncing so remaining time is kept aligned with the existing autosave model
+- automatic exam submission when the countdown reaches zero
+- clearer in-product time warnings for the final fifteen and five minutes of a paper
+
+This matters because official-duration exam behaviour should feel trustworthy,
+and downstream progress or results logic should reflect the actual final session
+state rather than a stale autosave snapshot.
 
 ## Summary
 

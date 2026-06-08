@@ -23,6 +23,27 @@ export function SubjectExperience({
   initialSubjectId,
   initialTopicId,
 }: SubjectExperienceProps) {
+  if (subjects.length === 0) {
+    return (
+      <main className="min-h-screen bg-stone-100 text-stone-950">
+        <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-center gap-6 px-4 py-10 sm:px-6 lg:px-8">
+          <section className="border border-stone-200 bg-white p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-violet-700">
+              Subjects
+            </p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
+              Reviewed learning content is not available to students yet.
+            </h1>
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
+              This route now follows the editorial gate, so draft or unchecked topics stay hidden
+              until they are reviewed and published through the content workflow.
+            </p>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
   const startingSubjectId =
     (initialSubjectId && subjects.some((subject) => subject.subjectId === initialSubjectId)
       ? initialSubjectId

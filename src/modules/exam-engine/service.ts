@@ -606,6 +606,42 @@ export async function saveMockExamSession(
   return nextSession;
 }
 
+export async function submitMockExamSession(
+  examId: string,
+  input: {
+    examSessionId: string;
+    currentQuestionId: string;
+    questionResponses: ExamQuestionResponse[];
+    timeRemainingMinutes: number;
+    userId?: string;
+    savedProgressRepository?: SavedProgressRepository;
+  },
+): Promise<ExamSession> {
+  const session = await saveMockExamSession(examId, input);
+  const submittedSession: ExamSession = {
+    ...session,
+    status: "submitted",
+    lastSavedAt: new Date().toISOString(),
+  };
+
+  await saveExamProgress(
+    {
+      userId: submittedSession.userId,
+      examSessionId: submittedSession.examSessionId,
+      currentQuestionId: input.currentQuestionId,
+      questionSet: submittedSession.questions,
+      questionResponses: submittedSession.questionResponses,
+      timeRemainingMinutes: submittedSession.timeRemainingMinutes,
+      status: submittedSession.status,
+      accessArrangementSnapshot:
+        submittedSession.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
+    },
+    input.savedProgressRepository,
+  );
+
+  return submittedSession;
+}
+
 async function buildSessionFromRecord(
   blueprint: ExamPaperBlueprint,
   record: SavedProgressRecord,

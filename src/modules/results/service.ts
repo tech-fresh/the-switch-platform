@@ -10,12 +10,18 @@ const mockAssessmentCorrectAnswers: Record<string, string[]> = {
 };
 
 export async function getResultsOverview(): Promise<ResultsOverview> {
-  const [papers, assessments, powerGrid, savedProgress] = await Promise.all([
+  const [papers, assessments, powerGrid] = await Promise.all([
     Promise.resolve(getMockExamPapers()),
     Promise.resolve(getMockTimedAssessments()),
     getMockPowerGridSummary(),
-    listSavedProgressByUser("student-demo"),
   ]);
+
+  await Promise.all([
+    ...papers.map((paper) => getMockExamSession(paper.examId)),
+    ...assessments.map((assessment) => getMockTimedAssessmentAttemptSeed(assessment.assessmentId)),
+  ]);
+
+  const savedProgress = await listSavedProgressByUser("student-demo");
 
   const examResults = await Promise.all(
     papers.map(async (paper) => {
@@ -23,13 +29,15 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
       const savedRecord = savedProgress.find(
         (record) => record.entityType === "exam-session" && record.entityId === session.examSessionId,
       );
+      const questions = savedRecord?.examProgress?.questionSet ?? session.questions;
+      const questionResponses = savedRecord?.examProgress?.questionResponses ?? session.questionResponses;
       const answerKey = Object.fromEntries(
-        session.questions.map((question) => [question.questionId, question.correctOptionId]),
+        questions.map((question) => [question.questionId, question.correctOptionId]),
       );
-      const correctCount = session.questionResponses.filter(
+      const correctCount = questionResponses.filter(
         (response) => response.selectedOptionId && response.selectedOptionId === answerKey[response.questionId],
       ).length;
-      const noteCount = session.questionResponses.filter((response) => response.workingNotes?.trim()).length;
+      const noteCount = questionResponses.filter((response) => response.workingNotes?.trim()).length;
       const status = savedRecord?.status === "submitted" ? "submitted" : "in-progress";
 
       return buildResultSummary({
@@ -38,10 +46,10 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
         title: paper.title,
         subtitle: `${paper.board} ${paper.paperName} • attempt ${session.attemptNumber}`,
         status,
-        scorePercentage: toPercentage(correctCount, session.questions.length),
-        answeredCount: session.questionResponses.filter((response) => response.selectedOptionId).length,
-        totalCount: session.questions.length,
-        flaggedCount: session.questionResponses.filter((response) => response.flagged).length,
+        scorePercentage: toPercentage(correctCount, questions.length),
+        answeredCount: questionResponses.filter((response) => response.selectedOptionId).length,
+        totalCount: questions.length,
+        flaggedCount: questionResponses.filter((response) => response.flagged).length,
         reviewLabel:
           status === "submitted"
             ? "Submitted and ready for review"
@@ -61,8 +69,12 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
         (record) =>
           record.entityType === "timed-assessment-attempt" && record.entityId === seed.attempt.attemptId,
       );
+      const selectedAnswerIds =
+        savedRecord?.timedAssessmentProgress?.selectedAnswerIds ?? seed.selectedAnswerIds;
+      const bookmarkedQuestionIds =
+        savedRecord?.timedAssessmentProgress?.bookmarkedQuestionIds ?? seed.bookmarkedQuestionIds;
       const correctAnswers = mockAssessmentCorrectAnswers[assessment.assessmentId] ?? [];
-      const correctCount = seed.selectedAnswerIds.filter((answerId) => correctAnswers.includes(answerId)).length;
+      const correctCount = selectedAnswerIds.filter((answerId) => correctAnswers.includes(answerId)).length;
       const status = savedRecord?.status === "submitted" ? "submitted" : "in-progress";
 
       return buildResultSummary({
@@ -72,15 +84,15 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
         subtitle: `${assessment.subject} timed checkpoint`,
         status,
         scorePercentage: toPercentage(correctCount, correctAnswers.length || assessment.questionCount),
-        answeredCount: seed.selectedAnswerIds.length,
+        answeredCount: selectedAnswerIds.length,
         totalCount: assessment.questionCount,
-        flaggedCount: seed.bookmarkedQuestionIds.length,
+        flaggedCount: bookmarkedQuestionIds.length,
         reviewLabel:
           status === "submitted"
             ? "Submitted and ready for review"
-            : seed.bookmarkedQuestionIds.length > 0
-              ? `${seed.bookmarkedQuestionIds.length} bookmarked item${
-                  seed.bookmarkedQuestionIds.length === 1 ? "" : "s"
+            : bookmarkedQuestionIds.length > 0
+              ? `${bookmarkedQuestionIds.length} bookmarked item${
+                  bookmarkedQuestionIds.length === 1 ? "" : "s"
                 } still open`
               : "Still active in the checkpoint flow",
         strengths: [assessment.subject, "Timed recall"],

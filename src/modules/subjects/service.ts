@@ -1,8 +1,8 @@
 import type { Subject } from "./types";
-import { listSeedContentSubjects } from "@/modules/content/service";
+import { listStudentVisibleContentSubjects } from "@/modules/content/service";
 
 export function getMockSubjects(): Subject[] {
-  return listSeedContentSubjects();
+  return listStudentVisibleContentSubjects();
 }
 
 export function getMockSubject(subjectId: string): Subject {

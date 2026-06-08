@@ -4,7 +4,10 @@ import { listSavedProgressByUser } from "@/modules/saved-progress/service";
 import type { SavedProgressRecord, SavedProgressRepository } from "@/modules/saved-progress/types";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import type { TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
-import { listSeedContentSubjects, listSeedContentTopicsForSubject } from "@/modules/content/service";
+import {
+  listStudentVisibleContentSubjects,
+  listStudentVisibleContentTopicsForSubject,
+} from "@/modules/content/service";
 import type { MvpCatalogSubject, MvpCatalogTopic } from "@/modules/content/types";
 import type { PowerGridLevel, PowerGridSummary, PowerGridSubjectProgress, PowerGridTrend } from "./types";
 
@@ -36,7 +39,7 @@ export async function getMockPowerGridSummary(options?: {
   const repository = options?.savedProgressRepository;
   const papers = getMockExamPapers();
   const assessments = getMockTimedAssessments();
-  const contentSubjects = listSeedContentSubjects();
+  const contentSubjects = listStudentVisibleContentSubjects();
 
   await Promise.all(
     papers.map((paper) =>
@@ -103,7 +106,9 @@ function buildTrackedSubjects(
     trackedSubjects.set(key, {
       subject: paper.subject,
       subjectId: matchingSubject?.subjectId ?? existing?.subjectId,
-      topics: existing?.topics ?? (matchingSubject ? listSeedContentTopicsForSubject(matchingSubject.subjectId) : []),
+      topics:
+        existing?.topics ??
+        (matchingSubject ? listStudentVisibleContentTopicsForSubject(matchingSubject.subjectId) : []),
       papers: [...(existing?.papers ?? []), paper],
       assessments: existing?.assessments ?? [],
     });
@@ -117,7 +122,9 @@ function buildTrackedSubjects(
     trackedSubjects.set(key, {
       subject: existing?.subject ?? assessment.subject,
       subjectId: existing?.subjectId ?? matchingSubject?.subjectId,
-      topics: existing?.topics ?? (matchingSubject ? listSeedContentTopicsForSubject(matchingSubject.subjectId) : []),
+      topics:
+        existing?.topics ??
+        (matchingSubject ? listStudentVisibleContentTopicsForSubject(matchingSubject.subjectId) : []),
       papers: existing?.papers ?? [],
       assessments: [...(existing?.assessments ?? []), assessment],
     });
@@ -276,6 +283,22 @@ function getTrendFromSubject(
 }
 
 function getNextBestAction(subjectProgress: PowerGridSubjectProgress[]): string {
+  const activeLowest = [...subjectProgress]
+    .filter((subject) => subject.activeSessionCount > 0)
+    .sort((left, right) => left.readinessScore - right.readinessScore)[0];
+
+  if (activeLowest) {
+    return `Resume ${activeLowest.subject} next and finish the saved work already in progress.`;
+  }
+
+  const reviewLowest = [...subjectProgress]
+    .filter((subject) => subject.reviewItemCount > 0)
+    .sort((left, right) => left.readinessScore - right.readinessScore)[0];
+
+  if (reviewLowest) {
+    return `Review ${reviewLowest.subject} next, starting with the saved questions marked for attention.`;
+  }
+
   const lowest = [...subjectProgress].sort((left, right) => left.readinessScore - right.readinessScore)[0];
 
   if (!lowest) {
@@ -286,6 +309,22 @@ function getNextBestAction(subjectProgress: PowerGridSubjectProgress[]): string 
 }
 
 function getNextBestActionHref(subjectProgress: PowerGridSubjectProgress[]): string {
+  const activeLowest = [...subjectProgress]
+    .filter((subject) => subject.activeSessionCount > 0)
+    .sort((left, right) => left.readinessScore - right.readinessScore)[0];
+
+  if (activeLowest?.resumeHref) {
+    return activeLowest.resumeHref;
+  }
+
+  const reviewLowest = [...subjectProgress]
+    .filter((subject) => subject.reviewItemCount > 0)
+    .sort((left, right) => left.readinessScore - right.readinessScore)[0];
+
+  if (reviewLowest?.resumeHref) {
+    return reviewLowest.resumeHref;
+  }
+
   const lowest = [...subjectProgress].sort((left, right) => left.readinessScore - right.readinessScore)[0];
 
   return lowest?.resumeHref ?? lowest?.subjectHref ?? "/subjects";
@@ -293,7 +332,7 @@ function getNextBestActionHref(subjectProgress: PowerGridSubjectProgress[]): str
 
 function findMatchingContentSubject(
   subjectName: string,
-  subjects: ReturnType<typeof listSeedContentSubjects>,
+  subjects: ReturnType<typeof listStudentVisibleContentSubjects>,
 ) {
   return subjects.find((subject) => normalizeLabel(subject.name).includes(normalizeLabel(subjectName)));
 }
@@ -366,6 +405,10 @@ function getResumeHref(records: SavedProgressRecord[]): string | undefined {
 function buildResumeHref(record?: SavedProgressRecord): string | undefined {
   if (!record) {
     return undefined;
+  }
+
+  if (record.status === "submitted") {
+    return "/results";
   }
 
   if (record.entityType === "exam-session" && record.examProgress) {

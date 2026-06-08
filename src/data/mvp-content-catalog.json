@@ -80,9 +80,15 @@
       },
       "metadata": {
         "publicationStatus": "published",
-        "reviewStatus": "seeded",
+        "reviewStatus": "reviewed",
         "sourceModel": "seed-json",
-        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:maths-algebra",
+          "checkedAgainst": "GCSE algebra topic outline"
+        }
       }
     },
     {
@@ -128,9 +134,15 @@
       },
       "metadata": {
         "publicationStatus": "published",
-        "reviewStatus": "seeded",
+        "reviewStatus": "reviewed",
         "sourceModel": "seed-json",
-        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:maths-ratio",
+          "checkedAgainst": "GCSE ratio and proportion topic outline"
+        }
       }
     },
     {
@@ -176,9 +188,15 @@
       },
       "metadata": {
         "publicationStatus": "published",
-        "reviewStatus": "seeded",
+        "reviewStatus": "reviewed",
         "sourceModel": "seed-json",
-        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:english-language-analysis",
+          "checkedAgainst": "GCSE English Language analysis topic outline"
+        }
       }
     },
     {
@@ -224,9 +242,15 @@
       },
       "metadata": {
         "publicationStatus": "published",
-        "reviewStatus": "seeded",
+        "reviewStatus": "reviewed",
         "sourceModel": "seed-json",
-        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:english-structure",
+          "checkedAgainst": "GCSE English Language structure topic outline"
+        }
       }
     },
     {
@@ -272,9 +296,15 @@
       },
       "metadata": {
         "publicationStatus": "published",
-        "reviewStatus": "seeded",
+        "reviewStatus": "reviewed",
         "sourceModel": "seed-json",
-        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:science-chemical-changes",
+          "checkedAgainst": "GCSE chemistry chemical changes topic outline"
+        }
       }
     },
     {
@@ -319,10 +349,16 @@
         "correctOptionId": "a"
       },
       "metadata": {
-        "publicationStatus": "published",
-        "reviewStatus": "seeded",
+        "publicationStatus": "draft",
+        "reviewStatus": "fact-check-needed",
         "sourceModel": "seed-json",
-        "lastUpdatedAt": "2026-06-06T12:00:00.000Z"
+        "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:science-energy",
+          "checkedAgainst": "Pending GCSE physics energy topic check"
+        }
       }
     }
   ]

@@ -1,8 +1,8 @@
 import type { QuizQuestion } from "./types";
-import { getSeedContentTopic } from "@/modules/content/service";
+import { getStudentVisibleContentTopic } from "@/modules/content/service";
 
 export function getMockQuizQuestion(topicId: string): QuizQuestion {
-  const topic = getSeedContentTopic(topicId);
+  const topic = getStudentVisibleContentTopic(topicId);
 
   if (!topic) {
     throw new Error(`Unknown mock quiz question for topic: ${topicId}`);

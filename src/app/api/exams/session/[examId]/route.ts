@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { getMockExamSession, saveMockExamSession } from "@/modules/exam-engine/service";
-import type { SaveExamSessionRequest } from "@/modules/exam-engine/contracts";
-import { markSavedProgressStatus } from "@/modules/saved-progress/service";
+import { getMockExamSession, saveMockExamSession, submitMockExamSession } from "@/modules/exam-engine/service";
+import type { SaveExamSessionRequest, SubmitExamSessionRequest } from "@/modules/exam-engine/contracts";
 
 export async function GET(
   _request: Request,
@@ -26,31 +25,37 @@ export async function GET(
 }
 
 export async function POST(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ examId: string }> },
 ) {
   const { examId } = await context.params;
 
   try {
-    const session = await getMockExamSession(examId);
-    const submittedRecord = await markSavedProgressStatus(
-      session.userId,
-      "exam-session",
-      session.examSessionId,
-      "submitted",
-    );
+    const payload = (await request.json()) as Partial<SubmitExamSessionRequest>;
 
-    if (!submittedRecord) {
+    if (
+      !payload.examSessionId ||
+      !payload.currentQuestionId ||
+      !payload.questionResponses ||
+      typeof payload.timeRemainingMinutes !== "number"
+    ) {
       return NextResponse.json(
         {
-          error: "Unable to submit exam session.",
+          error: "Incomplete exam session submit payload.",
         },
-        { status: 404 },
+        { status: 400 },
       );
     }
 
+    const session = await submitMockExamSession(examId, {
+      examSessionId: payload.examSessionId,
+      currentQuestionId: payload.currentQuestionId,
+      questionResponses: payload.questionResponses,
+      timeRemainingMinutes: payload.timeRemainingMinutes,
+    });
+
     return NextResponse.json({
-      sessionId: submittedRecord.entityId,
+      sessionId: session.examSessionId,
       status: "submitted" as const,
     });
   } catch (error) {
@@ -58,7 +63,7 @@ export async function POST(
       {
         error: error instanceof Error ? error.message : "Unknown exam submission error",
       },
-      { status: 404 },
+      { status: 400 },
     );
   }
 }

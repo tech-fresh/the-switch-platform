@@ -11,6 +11,7 @@ Current foundations in this module:
 - student-visible catalog filtering so draft or unreviewed topics do not leak into client delivery
 - editorial audit output for review status, source attribution, and blocked-topic decisions
 - fact-check status tracking and audit totals for student visibility decisions
+- trusted source-attribution enforcement so published content still stays blocked when evidence is incomplete or pending
 - Year 10 end-of-year and GCSE-preparation context at subject and topic level
 - Year 10, Year 11, GCSE, and iGCSE curriculum coverage notes at topic and subject level
 - generated study visual metadata that follows the same review and fact-check expectations as other content

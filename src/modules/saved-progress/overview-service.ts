@@ -1,5 +1,6 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
+import { getSavedProgressSessionInsights } from "./insights-service";
 import { listSavedProgressByUser } from "./service";
 import type {
   SavedProgressOverview,
@@ -39,14 +40,22 @@ export async function getSavedProgressOverview(
   const activeCount = records.filter((record) => record.status !== "submitted").length;
   const submittedCount = records.filter((record) => record.status === "submitted").length;
   const accessSnapshotCount = records.filter((record) => record.accessArrangementSnapshot).length;
+  const resumeSession = sessions.find((session) => session.recoveryState === "resume-ready");
+  const reviewSession = sessions.find((session) => session.recoveryState === "review-ready");
 
   return {
     sessionCount: sessions.length,
     activeCount,
     submittedCount,
+    recoveryReadyCount: sessions.filter((session) => session.recoveryState === "resume-ready").length,
+    reviewReadyCount: sessions.filter((session) => session.recoveryState === "review-ready").length,
     accessSnapshotCount,
     latestActivityAt,
     recommendedAction: getRecommendedAction(sessions),
+    recommendedActionHref: getRecommendedActionHref(sessions),
+    resumeSessionHref: resumeSession?.href,
+    reviewSessionHref: reviewSession?.href,
+    latestSessionHref: sessions[0]?.href,
     sessions,
   };
 }
@@ -61,17 +70,13 @@ function buildSessionSummary(
     const paper = papers.find((candidate) => candidate.examId === examId);
 
     if (!paper) {
-      return null;
+      return buildFallbackSessionSummary(record);
     }
 
-    const answeredCount = record.examProgress.questionResponses.filter(
-      (response) => response.selectedOptionId,
-    ).length;
-    const flaggedCount = record.examProgress.flaggedQuestionIds.length;
+    const insights = getSavedProgressSessionInsights(record);
     const noteCount = record.examProgress.questionResponses.filter(
       (response) => response.workingNotes?.trim(),
     ).length;
-    const supportCount = record.accessArrangementSnapshot?.activeAccessArrangements.length ?? 0;
 
     return {
       progressId: record.progressId,
@@ -79,14 +84,12 @@ function buildSessionSummary(
       entityType: record.entityType,
       title: paper.title,
       subtitle: `${paper.board} ${paper.paperName} • attempt ${record.entityId.match(/-session-(\d+)$/)?.[1] ?? "001"}`,
-      href:
-        record.status === "submitted"
-          ? "/results"
-          : buildExamResumeHref(record.entityId, record.examProgress.currentQuestionId),
+      href: buildSavedProgressHref(record),
       actionLabel: record.status === "submitted" ? "Open results" : "Open and resume",
       status: record.status,
+      recoveryState: record.status === "submitted" ? "review-ready" : "resume-ready",
       lastActivityAt: record.lastActivityAt,
-      completionPercentage: toPercentage(answeredCount, record.examProgress.questionSet.length),
+      completionPercentage: insights.completionPercentage,
       currentQuestionLabel:
         record.status === "submitted"
           ? "Submitted and ready for review"
@@ -94,14 +97,14 @@ function buildSessionSummary(
       timeRemainingLabel:
         record.status === "submitted"
           ? "Timing closed for this paper"
-          : `${record.examProgress.timeRemainingMinutes} mins remaining`,
+          : `${insights.timeRemainingMinutes} mins remaining`,
       supportSummary:
-        supportCount > 0
-          ? `${supportCount} access adjustments stored with this session`
+        insights.supportCount > 0
+          ? `${insights.supportCount} access adjustments stored with this session`
           : "Support snapshot ready for future access needs",
       reviewSummary:
-        flaggedCount > 0
-          ? `${flaggedCount} flagged questions waiting for review`
+        insights.reviewItemCount > 0
+          ? `${insights.reviewItemCount} flagged questions waiting for review`
           : noteCount > 0
             ? `${noteCount} working note${noteCount === 1 ? "" : "s"} saved in this session`
             : "No flagged questions in the saved state",
@@ -114,11 +117,10 @@ function buildSessionSummary(
     );
 
     if (!assessment) {
-      return null;
+      return buildFallbackSessionSummary(record);
     }
 
-    const bookmarkedCount = record.timedAssessmentProgress.bookmarkedQuestionIds.length;
-    const supportCount = record.accessArrangementSnapshot?.activeAccessArrangements.length ?? 0;
+    const insights = getSavedProgressSessionInsights(record);
 
     return {
       progressId: record.progressId,
@@ -126,21 +128,12 @@ function buildSessionSummary(
       entityType: record.entityType,
       title: assessment.title,
       subtitle: `${assessment.subject} • cap ${assessment.officialDurationMinutes} mins`,
-      href:
-        record.status === "submitted"
-          ? "/results"
-          : buildAssessmentResumeHref(
-              assessment.assessmentId,
-              record.timedAssessmentProgress.selectedDurationMinutes,
-              record.timedAssessmentProgress.currentQuestionId,
-            ),
+      href: buildSavedProgressHref(record),
       actionLabel: record.status === "submitted" ? "Open results" : "Open and resume",
       status: record.status,
+      recoveryState: record.status === "submitted" ? "review-ready" : "resume-ready",
       lastActivityAt: record.lastActivityAt,
-      completionPercentage: toPercentage(
-        record.timedAssessmentProgress.selectedAnswerIds.length,
-        assessment.questionCount,
-      ),
+      completionPercentage: insights.completionPercentage,
       currentQuestionLabel:
         record.status === "submitted"
           ? "Submitted and ready for review"
@@ -150,19 +143,19 @@ function buildSessionSummary(
       timeRemainingLabel:
         record.status === "submitted"
           ? "Timing closed for this checkpoint"
-          : `${record.timedAssessmentProgress.timeRemainingMinutes} mins remaining`,
+          : `${insights.timeRemainingMinutes} mins remaining`,
       supportSummary:
-        supportCount > 0
-          ? `${supportCount} access adjustments stored with this attempt`
+        insights.supportCount > 0
+          ? `${insights.supportCount} access adjustments stored with this attempt`
           : "Snapshot ready for future support-aware resume",
       reviewSummary:
-        bookmarkedCount > 0
-          ? `${bookmarkedCount} bookmarked questions to revisit`
+        insights.reviewItemCount > 0
+          ? `${insights.reviewItemCount} bookmarked questions to revisit`
           : "No bookmarked questions in the saved state",
     };
   }
 
-  return null;
+  return buildFallbackSessionSummary(record);
 }
 
 function toPercentage(answeredCount: number, totalCount: number): number {
@@ -213,4 +206,90 @@ function getRecommendedAction(sessions: SavedProgressSessionSummary[]): string {
   }
 
   return "Start a timed assessment or exam to create your first saved session.";
+}
+
+function getRecommendedActionHref(sessions: SavedProgressSessionSummary[]): string {
+  const activeSession = sessions.find((session) => session.recoveryState === "resume-ready");
+
+  if (activeSession) {
+    return activeSession.href;
+  }
+
+  const reviewSession = sessions.find((session) => session.recoveryState === "review-ready");
+
+  if (reviewSession) {
+    return reviewSession.href;
+  }
+
+  return "/saved-progress";
+}
+
+export function buildSavedProgressHref(record: SavedProgressRecord): string {
+  if (record.status === "submitted") {
+    return "/results";
+  }
+
+  if (record.entityType === "exam-session" && record.examProgress) {
+    return buildExamResumeHref(record.entityId, record.examProgress.currentQuestionId);
+  }
+
+  if (record.entityType === "timed-assessment-attempt" && record.timedAssessmentProgress) {
+    const assessmentId = record.entityId.replace(/-attempt-.+$/, "");
+
+    return buildAssessmentResumeHref(
+      assessmentId,
+      record.timedAssessmentProgress.selectedDurationMinutes,
+      record.timedAssessmentProgress.currentQuestionId,
+    );
+  }
+
+  return "/saved-progress";
+}
+
+export function findSavedProgressSessionSummary(
+  sessions: SavedProgressSessionSummary[],
+  entityType: SavedProgressRecord["entityType"],
+  entityId: string,
+): SavedProgressSessionSummary | undefined {
+  return sessions.find((session) => session.entityType === entityType && session.entityId === entityId);
+}
+
+function buildFallbackSessionSummary(record: SavedProgressRecord): SavedProgressSessionSummary {
+  const isSubmitted = record.status === "submitted";
+  const examQuestionCount = record.examProgress?.questionSet.length ?? 0;
+  const examAnsweredCount =
+    record.examProgress?.questionResponses.filter((response) => response.selectedOptionId).length ?? 0;
+  const assessmentQuestionCount = record.timedAssessmentProgress?.questionSet.length ?? 0;
+  const assessmentAnsweredCount = record.timedAssessmentProgress?.selectedAnswerIds.length ?? 0;
+  const completionPercentage =
+    record.entityType === "exam-session"
+      ? toPercentage(examAnsweredCount, examQuestionCount)
+      : toPercentage(assessmentAnsweredCount, assessmentQuestionCount);
+
+  const insights = getSavedProgressSessionInsights(record);
+
+  return {
+    progressId: record.progressId,
+    entityId: record.entityId,
+    entityType: record.entityType,
+    title: record.entityType === "exam-session" ? "Unavailable exam session" : "Unavailable timed assessment",
+    subtitle: "Saved progress still exists, even though the linked source record is currently unavailable.",
+    href: buildSavedProgressHref(record),
+    actionLabel: isSubmitted ? "Open results" : "Open saved session",
+    status: record.status,
+    recoveryState: isSubmitted ? "review-ready" : "resume-ready",
+    lastActivityAt: record.lastActivityAt,
+    completionPercentage: completionPercentage || insights.completionPercentage,
+    currentQuestionLabel: isSubmitted
+      ? "Submitted and still available for review"
+      : "Resume from the safest saved checkpoint",
+    timeRemainingLabel: isSubmitted
+      ? "Timing closed for this saved session"
+      : `${insights.timeRemainingMinutes} mins remaining`,
+    supportSummary: insights.hasAccessSnapshot
+      ? `${insights.supportCount} access adjustments are still attached to this saved record`
+      : "No support snapshot stored with this record",
+    reviewSummary:
+      `${insights.reviewItemCount} review item${insights.reviewItemCount === 1 ? "" : "s"} still stored`,
+  };
 }

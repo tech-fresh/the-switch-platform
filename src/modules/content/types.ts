@@ -128,6 +128,7 @@ export interface ContentGateDecision {
   publicationStatus: ContentPublicationStatus;
   reviewStatus: ContentReviewStatus;
   studentVisible: boolean;
+  hasTrustedSourceAttribution: boolean;
   reason: string;
   nextStep: string;
 }
@@ -140,6 +141,8 @@ export interface ContentEditorialAudit {
   publicationStatusCounts: Record<ContentPublicationStatus, number>;
   reviewStatusCounts: Record<ContentReviewStatus, number>;
   factCheckStatusCounts: Record<ContentFactCheckStatus, number>;
+  sourceAttributionCompleteCount: number;
+  sourceAttributionBlockedCount: number;
   gateDecisions: ContentGateDecision[];
   nextEditorialPriority: string;
 }

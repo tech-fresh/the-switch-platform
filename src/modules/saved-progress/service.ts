@@ -6,6 +6,8 @@ import type {
   SavedProgressRepository,
   SavedProgressStatus,
 } from "./types";
+import type { ExamQuestion, ExamQuestionResponse } from "@/modules/exam-engine/types";
+import type { TimedAssessmentQuestion } from "@/modules/timed-assessment/types";
 
 const inMemorySavedProgress = new Map<string, SavedProgressRecord>();
 
@@ -32,24 +34,37 @@ export async function saveExamProgress(
   input: SaveExamProgressInput,
   repository: SavedProgressRepository = defaultRepository,
 ): Promise<SavedProgressRecord> {
-  const flaggedQuestionIds = input.questionResponses
-    .filter((response) => response.flagged)
-    .map((response) => response.questionId);
+  const existing = await repository.getByEntityId(input.userId, "exam-session", input.examSessionId);
+  const questionSet = input.questionSet.length > 0 ? input.questionSet : existing?.examProgress?.questionSet ?? [];
+  const questionResponses = buildNormalizedExamResponses(
+    questionSet,
+    input.questionResponses,
+    existing?.examProgress?.questionResponses,
+  );
+  const flaggedQuestionIds = unique(
+    questionResponses.filter((response) => response.flagged).map((response) => response.questionId),
+  );
+  const currentQuestionId = getSafeCurrentQuestionId(
+    input.currentQuestionId,
+    questionSet,
+    questionResponses,
+    existing?.examProgress?.currentQuestionId,
+  );
 
   return repository.save({
-    progressId: input.progressId ?? `saved-${input.examSessionId}`,
+    progressId: input.progressId ?? existing?.progressId ?? `saved-${input.examSessionId}`,
     userId: input.userId,
     entityId: input.examSessionId,
     entityType: "exam-session",
-    status: input.status ?? "in-progress",
+    status: getNextSavedProgressStatus(existing?.status, input.status),
     lastActivityAt: new Date().toISOString(),
-    accessArrangementSnapshot: input.accessArrangementSnapshot,
+    accessArrangementSnapshot: input.accessArrangementSnapshot ?? existing?.accessArrangementSnapshot,
     examProgress: {
-      currentQuestionId: input.currentQuestionId,
-      questionSet: input.questionSet,
-      questionResponses: input.questionResponses,
+      currentQuestionId,
+      questionSet,
+      questionResponses,
       flaggedQuestionIds,
-      timeRemainingMinutes: input.timeRemainingMinutes,
+      timeRemainingMinutes: Math.max(0, input.timeRemainingMinutes),
     },
   });
 }
@@ -58,23 +73,43 @@ export async function saveTimedAssessmentProgress(
   input: SaveTimedAssessmentProgressInput,
   repository: SavedProgressRepository = defaultRepository,
 ): Promise<SavedProgressRecord> {
+  const existing = await repository.getByEntityId(
+    input.userId,
+    "timed-assessment-attempt",
+    input.assessmentAttemptId,
+  );
+  const questionSet =
+    input.questionSet.length > 0 ? input.questionSet : existing?.timedAssessmentProgress?.questionSet ?? [];
+  const validQuestionIds = new Set(questionSet.map((question) => question.questionId));
+  const selectedAnswerIds = unique(
+    input.selectedAnswerIds.filter((answerId) => validQuestionIds.has(answerId.split(":")[0] ?? "")),
+  );
+  const bookmarkedQuestionIds = unique(
+    input.bookmarkedQuestionIds.filter((questionId) => validQuestionIds.has(questionId)),
+  );
+  const currentQuestionId = getSafeOptionalCurrentQuestionId(
+    input.currentQuestionId,
+    questionSet,
+    existing?.timedAssessmentProgress?.currentQuestionId,
+  );
+
   return repository.save({
-    progressId: input.progressId ?? `saved-${input.assessmentAttemptId}`,
+    progressId: input.progressId ?? existing?.progressId ?? `saved-${input.assessmentAttemptId}`,
     userId: input.userId,
     entityId: input.assessmentAttemptId,
     entityType: "timed-assessment-attempt",
-    status: input.status ?? "in-progress",
+    status: getNextSavedProgressStatus(existing?.status, input.status),
     lastActivityAt: new Date().toISOString(),
-    accessArrangementSnapshot: input.accessArrangementSnapshot,
+    accessArrangementSnapshot: input.accessArrangementSnapshot ?? existing?.accessArrangementSnapshot,
     timedAssessmentProgress: {
-      currentQuestionId: input.currentQuestionId,
-      selectedDurationMinutes: input.selectedDurationMinutes,
-      questionSet: input.questionSet,
-      selectedAnswerIds: input.selectedAnswerIds,
-      writtenAnswers: input.writtenAnswers,
-      notes: input.notes,
-      bookmarkedQuestionIds: input.bookmarkedQuestionIds,
-      timeRemainingMinutes: input.timeRemainingMinutes,
+      currentQuestionId,
+      selectedDurationMinutes: Math.max(0, input.selectedDurationMinutes),
+      questionSet,
+      selectedAnswerIds,
+      writtenAnswers: filterRecordByQuestionIds(input.writtenAnswers, validQuestionIds),
+      notes: filterRecordByQuestionIds(input.notes, validQuestionIds),
+      bookmarkedQuestionIds,
+      timeRemainingMinutes: Math.max(0, input.timeRemainingMinutes),
     },
   });
 }
@@ -121,4 +156,102 @@ function buildRepositoryKey(
   entityId: string,
 ): string {
   return `${userId}:${entityType}:${entityId}`;
+}
+
+function getNextSavedProgressStatus(
+  existingStatus?: SavedProgressStatus,
+  incomingStatus?: SavedProgressStatus,
+): SavedProgressStatus {
+  if (existingStatus === "submitted") {
+    return "submitted";
+  }
+
+  return incomingStatus ?? existingStatus ?? "in-progress";
+}
+
+function buildNormalizedExamResponses(
+  questionSet: ExamQuestion[],
+  incomingResponses: ExamQuestionResponse[],
+  existingResponses?: ExamQuestionResponse[],
+): ExamQuestionResponse[] {
+  const incomingByQuestionId = new Map(
+    incomingResponses.map((response) => [response.questionId, response] as const),
+  );
+  const existingByQuestionId = new Map(
+    (existingResponses ?? []).map((response) => [response.questionId, response] as const),
+  );
+
+  return questionSet.map((question) => {
+    const source = incomingByQuestionId.get(question.questionId) ?? existingByQuestionId.get(question.questionId);
+
+    if (!source) {
+      return {
+        questionId: question.questionId,
+        status: "not-started",
+        flagged: false,
+      };
+    }
+
+    return {
+      questionId: question.questionId,
+      status: source.selectedOptionId ? "answered" : source.status,
+      selectedOptionId: source.selectedOptionId,
+      workingNotes: source.workingNotes,
+      flagged: source.flagged,
+    };
+  });
+}
+
+function getSafeCurrentQuestionId(
+  incomingQuestionId: string | undefined,
+  questionSet: ExamQuestion[],
+  questionResponses: ExamQuestionResponse[],
+  existingQuestionId?: string,
+): string {
+  const validQuestionIds = new Set(questionSet.map((question) => question.questionId));
+
+  if (incomingQuestionId && validQuestionIds.has(incomingQuestionId)) {
+    return incomingQuestionId;
+  }
+
+  if (existingQuestionId && validQuestionIds.has(existingQuestionId)) {
+    return existingQuestionId;
+  }
+
+  const firstIncompleteResponse = questionResponses.find(
+    (response) => response.status !== "answered" || response.flagged,
+  );
+
+  return firstIncompleteResponse?.questionId ?? questionSet[0]?.questionId ?? "";
+}
+
+function getSafeOptionalCurrentQuestionId(
+  incomingQuestionId: string | undefined,
+  questionSet: TimedAssessmentQuestion[],
+  existingQuestionId?: string,
+): string | undefined {
+  const validQuestionIds = new Set(questionSet.map((question) => question.questionId));
+
+  if (incomingQuestionId && validQuestionIds.has(incomingQuestionId)) {
+    return incomingQuestionId;
+  }
+
+  if (existingQuestionId && validQuestionIds.has(existingQuestionId)) {
+    return existingQuestionId;
+  }
+
+  return questionSet[0]?.questionId;
+}
+
+function filterRecordByQuestionIds(
+  value: Record<string, string>,
+  validQuestionIds: Set<string>,
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(value).filter(([questionId]) => validQuestionIds.has(questionId)),
+  );
+}
+
+function unique<T>(values: T[]): T[] {
+  return [...new Set(values)];
 }

@@ -1,6 +1,9 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
-import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
+import {
+  findSavedProgressSessionSummary,
+  getSavedProgressOverview,
+} from "@/modules/saved-progress/overview-service";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import type {
   DashboardFocusCard,
@@ -59,7 +62,8 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
   const resumeAssessmentSession = savedProgress.sessions.find(
     (session) => session.entityType === "timed-assessment-attempt",
   );
-  const resumeAnySession = savedProgress.sessions[0];
+  const resumeAnySessionHref =
+    savedProgress.resumeSessionHref ?? savedProgress.reviewSessionHref ?? savedProgress.latestSessionHref;
 
   const routeCards: DashboardRouteCard[] = [
     {
@@ -111,7 +115,7 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       tone: "emerald",
     },
     {
-      href: resumeAnySession?.href ?? "/saved-progress",
+      href: resumeAnySessionHref ?? "/saved-progress",
       eyebrow: "Saved Progress",
       title: "Resume from autosave",
       description: "See every in-progress exam and checkpoint record in one resume surface.",
@@ -160,8 +164,10 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       session.accessArrangements?.accessArrangementApplication.activeAccessArrangements.length ?? 0;
     const readAloudEnabled =
       session.accessArrangements?.accessArrangementApplication.readAloud.enabled ?? false;
-    const matchingSavedSession = savedProgress.sessions.find(
-      (savedSession) => savedSession.entityType === "exam-session" && savedSession.entityId === session.examSessionId,
+    const matchingSavedSession = findSavedProgressSessionSummary(
+      savedProgress.sessions,
+      "exam-session",
+      session.examSessionId,
     );
     const status = matchingSavedSession?.status === "submitted" ? "submitted" : "in-progress";
 
@@ -200,10 +206,10 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       const completionPercentage = Math.round(
         (seed.selectedAnswerIds.length / Math.max(assessment.questionCount, 1)) * 100,
       );
-      const matchingSavedSession = savedProgress.sessions.find(
-        (savedSession) =>
-          savedSession.entityType === "timed-assessment-attempt" &&
-          savedSession.entityId === seed.attempt.attemptId,
+      const matchingSavedSession = findSavedProgressSessionSummary(
+        savedProgress.sessions,
+        "timed-assessment-attempt",
+        seed.attempt.attemptId,
       );
       const status = matchingSavedSession?.status === "submitted" ? "submitted" : "in-progress";
 

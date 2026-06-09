@@ -1,5 +1,10 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import type { ExamPaper } from "@/modules/exam-engine/types";
+import { getSavedProgressSessionInsights } from "@/modules/saved-progress/insights-service";
+import {
+  findSavedProgressSessionSummary,
+  getSavedProgressOverview,
+} from "@/modules/saved-progress/overview-service";
 import { listSavedProgressByUser } from "@/modules/saved-progress/service";
 import type { SavedProgressRecord, SavedProgressRepository } from "@/modules/saved-progress/types";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
@@ -55,10 +60,16 @@ export async function getMockPowerGridSummary(options?: {
     ),
   );
   const records = await listSavedProgressByUser(userId, repository);
+  const savedProgressOverview = await getSavedProgressOverview({
+    userId,
+    savedProgressRepository: repository,
+  });
   const trackedSubjects = buildTrackedSubjects(papers, assessments, contentSubjects);
 
   const subjectProgress = trackedSubjects
-    .map((trackedSubject) => buildSubjectProgress(trackedSubject, records))
+    .map((trackedSubject) =>
+      buildSubjectProgress(trackedSubject, records, savedProgressOverview.sessions),
+    )
     .filter((subject): subject is PowerGridSubjectProgress => Boolean(subject));
 
   const overallReadinessScore = Math.round(
@@ -84,7 +95,7 @@ export async function getMockPowerGridSummary(options?: {
     subjectsNeedingAttentionCount: subjectProgress.filter((subject) => subject.readinessScore < 50).length,
     accessSnapshotCoverage,
     latestActivityAt,
-    resumeHref: getResumeHref(records),
+    resumeHref: savedProgressOverview.resumeSessionHref ?? savedProgressOverview.reviewSessionHref,
     nextBestAction: getNextBestAction(subjectProgress),
     nextBestActionHref,
     subjectProgress,
@@ -136,6 +147,7 @@ function buildTrackedSubjects(
 function buildSubjectProgress(
   trackedSubject: TrackedSubject,
   records: SavedProgressRecord[],
+  sessions: Awaited<ReturnType<typeof getSavedProgressOverview>>["sessions"],
 ): PowerGridSubjectProgress | null {
   const subjectRecords = records.filter((record) => belongsToTrackedSubject(record, trackedSubject));
 
@@ -156,40 +168,23 @@ function buildSubjectProgress(
   );
 
   const examCompletion = getAverageScore(
-    examRecords.map((record) =>
-      calculateCompletionScore(
-        record.examProgress.questionResponses.filter((response) => response.selectedOptionId).length,
-        record.examProgress.questionSet.length,
-      ),
-    ),
+    examRecords.map((record) => getSavedProgressSessionInsights(record).completionPercentage),
   );
   const assessmentCompletion = getAverageScore(
-    assessmentRecords.map((record) => {
-      const assessment = trackedSubject.assessments.find((candidate) =>
-        record.entityId.startsWith(`${candidate.assessmentId}-attempt-`),
-      );
-
-      return calculateCompletionScore(
-        record.timedAssessmentProgress.selectedAnswerIds.length,
-        assessment?.questionCount ?? 1,
-      );
-    }),
+    assessmentRecords.map((record) => getSavedProgressSessionInsights(record).completionPercentage),
   );
   const completionScore = getAverageScore(
     [examCompletion, assessmentCompletion].filter((score) => score > 0),
   );
   const completedSessionCount = subjectRecords.filter((record) => record.status === "submitted").length;
   const activeSessionCount = subjectRecords.length - completedSessionCount;
-  const reviewItemCount =
-    examRecords.reduce(
-      (total, record) => total + record.examProgress.flaggedQuestionIds.length,
-      0,
-    ) +
-    assessmentRecords.reduce(
-      (total, record) => total + record.timedAssessmentProgress.bookmarkedQuestionIds.length,
-      0,
-    );
-  const accessSnapshotCount = subjectRecords.filter((record) => record.accessArrangementSnapshot).length;
+  const reviewItemCount = subjectRecords.reduce(
+    (total, record) => total + getSavedProgressSessionInsights(record).reviewItemCount,
+    0,
+  );
+  const accessSnapshotCount = subjectRecords.filter(
+    (record) => getSavedProgressSessionInsights(record).hasAccessSnapshot,
+  ).length;
   const completionCoverage = calculateCompletionScore(completedSessionCount, subjectRecords.length);
   const accessCoverage = calculateCompletionScore(accessSnapshotCount, subjectRecords.length);
   const reviewStabilityScore = Math.max(0, 100 - Math.min(reviewItemCount * 15, 80));
@@ -206,6 +201,9 @@ function buildSubjectProgress(
     (topic) => normalizeLabel(topic.name) === normalizeLabel(recommendedFocus),
   );
   const resumeRecord = subjectRecords.find((record) => record.status !== "submitted") ?? subjectRecords[0];
+  const resumeSession = resumeRecord
+    ? findSavedProgressSessionSummary(sessions, resumeRecord.entityType, resumeRecord.entityId)
+    : undefined;
   const lastActivityAt = subjectRecords[0]?.lastActivityAt;
 
   return {
@@ -222,7 +220,7 @@ function buildSubjectProgress(
     recommendedFocus,
     recommendedTopicId: recommendedTopic?.topicId,
     subjectHref: buildSubjectHref(trackedSubject.subjectId, recommendedTopic?.topicId),
-    resumeHref: resumeRecord ? buildResumeHref(resumeRecord) : undefined,
+    resumeHref: resumeSession?.href,
     lastActivityAt,
     evidence: buildSubjectEvidence({
       activeSessionCount,
@@ -396,44 +394,4 @@ function buildSubjectEvidence(input: {
   return input.accessSnapshotCount > 0
     ? "Saved access snapshots are already attached to this subject activity."
     : "Activity is seeded and ready to build stronger evidence.";
-}
-
-function getResumeHref(records: SavedProgressRecord[]): string | undefined {
-  return buildResumeHref(records.find((record) => record.status !== "submitted") ?? records[0]);
-}
-
-function buildResumeHref(record?: SavedProgressRecord): string | undefined {
-  if (!record) {
-    return undefined;
-  }
-
-  if (record.status === "submitted") {
-    return "/results";
-  }
-
-  if (record.entityType === "exam-session" && record.examProgress) {
-    const examId = record.entityId.replace(/-session-\d+$/, "");
-    const searchParams = new URLSearchParams({
-      examId,
-      questionId: record.examProgress.currentQuestionId,
-    });
-
-    return `/exams?${searchParams.toString()}`;
-  }
-
-  if (record.entityType === "timed-assessment-attempt" && record.timedAssessmentProgress) {
-    const assessmentId = record.entityId.replace(/-attempt-.+$/, "");
-    const searchParams = new URLSearchParams({
-      assessmentId,
-      durationMinutes: String(record.timedAssessmentProgress.selectedDurationMinutes),
-    });
-
-    if (record.timedAssessmentProgress.currentQuestionId) {
-      searchParams.set("questionId", record.timedAssessmentProgress.currentQuestionId);
-    }
-
-    return `/assessments?${searchParams.toString()}`;
-  }
-
-  return undefined;
 }

@@ -26,4 +26,10 @@ export interface Topic {
     generatedImagePrompt: string;
     altText: string;
   };
+  editorial: {
+    sourceProviderName: string;
+    sourceReference: string;
+    checkedAgainst?: string;
+    lastUpdatedAt: string;
+  };
 }

@@ -55,7 +55,7 @@ export default async function SavedProgressPage() {
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Saved sessions</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{overview.sessionCount}</p>
               <p className="mt-1 text-sm text-stone-600">
-                {overview.activeCount} still active across the student flow
+                {overview.recoveryReadyCount} resume-ready across the student flow
               </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
@@ -67,8 +67,8 @@ export default async function SavedProgressPage() {
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Submitted</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">{overview.submittedCount}</p>
-              <p className="mt-1 text-sm text-stone-600">Completed records remain visible here</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">{overview.reviewReadyCount}</p>
+              <p className="mt-1 text-sm text-stone-600">Completed records stay review-ready here</p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Latest activity</p>
@@ -145,6 +145,12 @@ export default async function SavedProgressPage() {
                 Next best action
               </h2>
               <p className="text-sm leading-6 text-stone-700">{overview.recommendedAction}</p>
+              <Link
+                href={overview.recommendedActionHref}
+                className="inline-flex items-center justify-center border border-teal-700 bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-800"
+              >
+                Open next saved step
+              </Link>
             </section>
 
             <section className="space-y-3 border border-stone-200 bg-white p-4">
@@ -153,7 +159,7 @@ export default async function SavedProgressPage() {
               </h2>
               <ul className="space-y-2 text-sm leading-6 text-stone-600">
                 <li>Autosave is now a student-facing capability, not just background plumbing.</li>
-                <li>Exam and timed assessment records can be resumed from one shared module.</li>
+                <li>Exam and timed assessment records now share one recovery and review routing layer.</li>
                 <li>Access arrangement snapshots travel with saved progress across modules.</li>
               </ul>
             </section>

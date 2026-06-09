@@ -265,6 +265,34 @@ export function SubjectExperience({
                 </div>
 
                 <div className="grid gap-4 lg:grid-cols-2">
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                      Source attribution
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-stone-700">
+                      {selectedTopic.editorial.sourceProviderName}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">
+                      {selectedTopic.editorial.sourceReference}
+                    </p>
+                  </div>
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                      Checked against
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-stone-700">
+                      {selectedTopic.editorial.checkedAgainst ?? "Editorial verification required"}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">
+                      Last updated:{" "}
+                      {new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(
+                        new Date(selectedTopic.editorial.lastUpdatedAt),
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-2">
                   {revision.sections.map((section) => (
                     <div key={section.title} className="border border-stone-200 bg-white p-4">
                       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">

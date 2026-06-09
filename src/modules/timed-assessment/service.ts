@@ -357,7 +357,7 @@ export async function saveMockTimedAssessmentAttempt(
       timeRemainingMinutes: nextAttempt.timeRemainingMinutes,
       accessArrangementSnapshot:
         nextAttempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
-      status: nextAttempt.status,
+      status: "in-progress",
     },
     input.savedProgressRepository,
   );
@@ -409,7 +409,7 @@ export async function submitMockTimedAssessmentAttempt(
       timeRemainingMinutes: submittedAttempt.timeRemainingMinutes,
       accessArrangementSnapshot:
         submittedAttempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
-      status: submittedAttempt.status,
+      status: "submitted",
     },
     input.savedProgressRepository,
   );

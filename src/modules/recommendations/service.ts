@@ -60,7 +60,7 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
         : submittedSavedSession
           ? routeCopy["/results"].label
           : routeCopy["/saved-progress"].label,
-      href: activeSavedSession?.href ?? submittedSavedSession?.href ?? "/saved-progress",
+      href: savedProgress.recommendedActionHref,
       priority: activeSavedSession ? "high" : submittedSavedSession ? "medium" : "low",
     },
     {
@@ -149,7 +149,9 @@ export async function getRecommendationsPageData(userId: string): Promise<Recomm
             ? `${savedProgress.submittedCount} completed session${
                 savedProgress.submittedCount === 1 ? "" : "s"
               } ready for review`
-            : `${savedProgress.accessSnapshotCount} support snapshots already captured`,
+            : `${savedProgress.recoveryReadyCount} resume-ready session${
+                savedProgress.recoveryReadyCount === 1 ? "" : "s"
+              } already captured`,
       },
       {
         label: "Strongest area",

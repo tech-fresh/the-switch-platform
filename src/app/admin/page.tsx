@@ -92,7 +92,7 @@ export default async function AdminPage() {
                   What can safely reach student routes
                 </h2>
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="mt-5 grid gap-3 sm:grid-cols-4">
                 <div className="border border-stone-200 bg-stone-50 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Topics</p>
                   <p className="mt-2 text-lg font-semibold text-stone-950">
@@ -111,6 +111,12 @@ export default async function AdminPage() {
                     {cms.editorialAudit.blockedTopicCount}
                   </p>
                 </div>
+                <div className="border border-sky-200 bg-sky-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-sky-700">Trusted sources</p>
+                  <p className="mt-2 text-lg font-semibold text-sky-950">
+                    {cms.editorialAudit.sourceAttributionCompleteCount}
+                  </p>
+                </div>
               </div>
               <div className="mt-5 space-y-3">
                 {cms.editorialAudit.gateDecisions
@@ -120,6 +126,7 @@ export default async function AdminPage() {
                       <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-800">
                         <span>{decision.publicationStatus}</span>
                         <span>{decision.reviewStatus}</span>
+                        <span>{decision.hasTrustedSourceAttribution ? "trusted-source" : "source-check-needed"}</span>
                       </div>
                       <h3 className="mt-3 text-lg font-semibold text-stone-950">{decision.title}</h3>
                       <p className="mt-2 text-sm leading-6 text-stone-700">{decision.reason}</p>

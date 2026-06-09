@@ -22,8 +22,16 @@ export function getMockTopic(topicId: string): Topic {
 function mapCatalogTopicToTopic({
   revision: _revision,
   quiz: _quiz,
-  metadata: _metadata,
+  metadata,
   ...topic
 }: MvpCatalogTopic): Topic {
-  return { ...topic };
+  return {
+    ...topic,
+    editorial: {
+      sourceProviderName: metadata.sourceAttribution.providerName,
+      sourceReference: metadata.sourceAttribution.sourceReference,
+      checkedAgainst: metadata.sourceAttribution.checkedAgainst,
+      lastUpdatedAt: metadata.lastUpdatedAt,
+    },
+  };
 }

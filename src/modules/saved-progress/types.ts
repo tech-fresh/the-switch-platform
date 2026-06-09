@@ -6,6 +6,8 @@ export type SavedProgressEntityType = "exam-session" | "timed-assessment-attempt
 
 export type SavedProgressStatus = "in-progress" | "paused" | "submitted";
 
+export type SavedProgressRecoveryState = "resume-ready" | "review-ready";
+
 export interface SavedExamProgressPayload {
   currentQuestionId: string;
   questionSet: ExamQuestion[];
@@ -84,6 +86,7 @@ export interface SavedProgressSessionSummary {
   href: string;
   actionLabel: string;
   status: SavedProgressStatus;
+  recoveryState: SavedProgressRecoveryState;
   lastActivityAt: string;
   completionPercentage: number;
   currentQuestionLabel: string;
@@ -96,8 +99,14 @@ export interface SavedProgressOverview {
   sessionCount: number;
   activeCount: number;
   submittedCount: number;
+  recoveryReadyCount: number;
+  reviewReadyCount: number;
   accessSnapshotCount: number;
   latestActivityAt?: string;
   recommendedAction: string;
+  recommendedActionHref: string;
+  resumeSessionHref?: string;
+  reviewSessionHref?: string;
+  latestSessionHref?: string;
   sessions: SavedProgressSessionSummary[];
 }

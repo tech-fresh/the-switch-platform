@@ -152,6 +152,9 @@ export async function getContentEditorialAudit(
   const catalog = await repository.getCatalog();
   const gateDecisions = catalog.topics.map(buildContentGateDecision);
   const blockedTopicCount = gateDecisions.filter((decision) => !decision.studentVisible).length;
+  const sourceAttributionCompleteCount = gateDecisions.filter(
+    (decision) => decision.hasTrustedSourceAttribution,
+  ).length;
 
   return {
     catalogVersion: catalog.catalogVersion,
@@ -173,10 +176,12 @@ export async function getContentEditorialAudit(
       "in-progress": countTopicsByFactCheckStatus(catalog.topics, "in-progress"),
       verified: countTopicsByFactCheckStatus(catalog.topics, "verified"),
     },
+    sourceAttributionCompleteCount,
+    sourceAttributionBlockedCount: gateDecisions.length - sourceAttributionCompleteCount,
     gateDecisions,
     nextEditorialPriority:
       blockedTopicCount > 0
-        ? "Resolve blocked topic checks before publishing more owned content to students. Reviewed-only visibility is not enough without fact-check verification."
+        ? "Resolve blocked topic checks before publishing more owned content to students. Reviewed-only visibility is not enough without verified fact checks and trusted source attribution."
         : "Keep adding source attribution, fact-check evidence, and review notes as the content catalog grows.",
   };
 }
@@ -185,12 +190,14 @@ export function isTopicStudentVisible(topic: MvpCatalogTopic): boolean {
   return (
     topic.metadata.publicationStatus === "published" &&
     topic.metadata.reviewStatus === "reviewed" &&
-    topic.metadata.factCheckStatus === "verified"
+    topic.metadata.factCheckStatus === "verified" &&
+    hasTrustedSourceAttribution(topic)
   );
 }
 
 function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
   const studentVisible = isTopicStudentVisible(topic);
+  const trustedSourceAttribution = hasTrustedSourceAttribution(topic);
 
   if (studentVisible) {
     return {
@@ -199,6 +206,7 @@ function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
       publicationStatus: topic.metadata.publicationStatus,
       reviewStatus: topic.metadata.reviewStatus,
       studentVisible,
+      hasTrustedSourceAttribution: trustedSourceAttribution,
       reason: "Published content has passed review, source checks, and fact-check verification before reaching student clients.",
       nextStep: "Keep source attribution and fact-check evidence current when this topic changes.",
     };
@@ -211,8 +219,22 @@ function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
       publicationStatus: topic.metadata.publicationStatus,
       reviewStatus: topic.metadata.reviewStatus,
       studentVisible,
+      hasTrustedSourceAttribution: trustedSourceAttribution,
       reason: "Draft content is blocked from student-facing catalog delivery.",
       nextStep: "Complete editorial review, fact-checking, year-group context checks, and publish approval.",
+    };
+  }
+
+  if (!trustedSourceAttribution) {
+    return {
+      topicId: topic.topicId,
+      title: topic.name,
+      publicationStatus: topic.metadata.publicationStatus,
+      reviewStatus: topic.metadata.reviewStatus,
+      studentVisible,
+      hasTrustedSourceAttribution: trustedSourceAttribution,
+      reason: "Content is blocked because trusted source attribution is incomplete or still marked as pending.",
+      nextStep: "Add named source attribution and checked-against evidence before student release.",
     };
   }
 
@@ -223,6 +245,7 @@ function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
       publicationStatus: topic.metadata.publicationStatus,
       reviewStatus: topic.metadata.reviewStatus,
       studentVisible,
+      hasTrustedSourceAttribution: trustedSourceAttribution,
       reason: "Reviewed content is still blocked because fact-check verification has not been completed.",
       nextStep: "Verify the topic against trusted curriculum references before student release.",
     };
@@ -233,10 +256,24 @@ function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
     title: topic.name,
     publicationStatus: topic.metadata.publicationStatus,
     reviewStatus: topic.metadata.reviewStatus,
-      studentVisible,
+    studentVisible,
+    hasTrustedSourceAttribution: trustedSourceAttribution,
     reason: "Published flag alone is not enough; reviewed status and verified fact-checking are required for student visibility.",
     nextStep: "Move the topic through internal review and fact-checking before release.",
   };
+}
+
+export function hasTrustedSourceAttribution(topic: MvpCatalogTopic): boolean {
+  const attribution = topic.metadata.sourceAttribution;
+  const checkedAgainst = attribution.checkedAgainst?.trim() ?? "";
+
+  return (
+    attribution.providerId.trim().length > 0 &&
+    attribution.providerName.trim().length > 0 &&
+    attribution.sourceReference.trim().length > 0 &&
+    checkedAgainst.length > 0 &&
+    !checkedAgainst.toLowerCase().startsWith("pending")
+  );
 }
 
 function countTopicsByReviewStatus(

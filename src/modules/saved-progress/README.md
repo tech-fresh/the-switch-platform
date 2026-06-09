@@ -10,6 +10,10 @@ Current foundations in this module:
 - Autosave helper functions for exam and timed assessment state
 - In-memory repository for local prototype flows
 - Saved Progress overview service for shared resume surfaces across modules
+- Shared recovery and review routing decisions for cross-route resume behaviour
+- Shared session-insights derivation for score, completion, review, timing, and support signals
+- Save-time normalization protecting against stale status changes and invalid resume pointers
+- Safe fallback summaries when linked session metadata is unavailable
 - Framework-neutral overview contract for thin API delivery
 
 This module owns persistence contracts, not UI behaviour.

@@ -1861,6 +1861,12 @@ reopens the right session but the wrong question.
 This is the current product-quality checklist for the MVP. It should stay
 cumulative and be updated as items move from in progress to complete.
 
+Priority rule:
+
+- focus on trust, continuity, and data safety before adding lots of new routes
+- treat autosave quality as product quality
+- use this list as the working priority order for MVP hardening
+
 ### 1. Make every core student flow end-to-end reliable
 
 Status: complete for the current MVP pass.
@@ -1876,35 +1882,159 @@ Covered in this pass:
 
 ### 2. Treat saved progress as a critical system, not a feature
 
-Status: next priority.
+Status: complete for the current MVP pass.
 
-Focus:
+Covered in this pass:
 
-- strengthen persistence behaviour across all module flows
-- tighten saved-state recovery assumptions
-- make saved progress the source of truth for more cross-route decisions
+- saved progress now exposes resume-ready and review-ready recovery state
+- shared saved-progress routing now decides whether students resume live work or open results
+- dashboard, Power Grid, recommendations, results, and the saved-progress route now read those shared recovery decisions
+- save-time normalization now filters invalid resume pointers and rebuilds safe checkpoint state
+- stale follow-up saves can no longer overwrite a submitted saved-progress record back into active work
+- saved-progress summaries now fail safely when linked exam or assessment metadata is unavailable
+
+This remains one of the strictest quality areas in the MVP because lost, stale,
+duplicated, or wrongly resumed progress would break student trust quickly.
 
 ### 3. Keep one source of truth for scoring, timing, and support rules
 
-Status: in progress.
+Status: complete for the current MVP pass.
 
-Progress already made:
+Covered in this pass:
 
 - exam results score from saved exam snapshots
 - timed assessment results now score from saved checkpoint question sets
 - exam and timed checkpoint timing rules live in their own modules
 - accessibility and support settings are moving into shared profile-backed state
+- saved progress now exposes one shared session-insights layer for score, completion, review, timing, and support signals
+- results, Power Grid, and saved-progress summaries now read those shared derived session signals instead of recalculating them separately
+- recommendations now inherit those aligned signals through the results and Power Grid modules
+
+### Source-of-Truth Explainer
+
+What changed:
+
+- saved progress is no longer only a storage layer
+- it now also provides shared derived session insights
+- those insights carry scoring, completion, review counts, timing state, and support state in one place
+
+Why this matters:
+
+- results should not score one way while Power Grid interprets the same session another way
+- recommendations should not point a student somewhere based on different numbers from the results page
+- support and timing details should follow the same saved session evidence across routes
+
+```mermaid
+flowchart TD
+    A["Exam Engine session"] --> C["Saved Progress normalization"]
+    B["Timed Assessment attempt"] --> C
+    C --> D["Saved session record"]
+    D --> E["Shared session insights"]
+    E --> F["Saved Progress route"]
+    E --> G["Results"]
+    E --> H["Power Grid"]
+    H --> I["Recommendations"]
+```
+
+Plain-English rule:
+
+- live session state is saved once
+- saved progress normalizes that state into a safe session record
+- shared session insights derive meaning from that saved record
+- student routes consume those same derived signals instead of each inventing their own version
+
+### Resume And Review Explainer
+
+The saved-progress system now makes one routing decision for the whole product:
+
+- if the session is still active, resume the live route
+- if the session is submitted, open results or review
+
+```mermaid
+flowchart TD
+    A["Saved session record"] --> B{"Status"}
+    B -->|"in-progress / paused"| C["Resume-ready state"]
+    B -->|"submitted"| D["Review-ready state"]
+    C --> E["Exam or assessment route"]
+    D --> F["Results route"]
+    C --> G["Dashboard / Saved Progress / Power Grid"]
+    D --> G
+```
+
+That keeps the student journey consistent:
+
+- dashboard uses it
+- saved progress uses it
+- Power Grid uses it
+- results uses it
+- recommendations inherit it through those modules
+
+### Timing And Support Explainer
+
+Timing and support rules now travel with the same saved-session evidence instead of being treated as page-only details.
+
+```mermaid
+flowchart LR
+    A["Access Arrangements"] --> B["Adjusted duration"]
+    A --> C["Support snapshot"]
+    B --> D["Live exam / assessment session"]
+    C --> D
+    D --> E["Saved Progress"]
+    E --> F["Shared session insights"]
+    F --> G["Results"]
+    F --> H["Power Grid"]
+    F --> I["Saved Progress summaries"]
+```
+
+This means:
+
+- timing shown during the live attempt lines up with timing stored in saved progress
+- support snapshots remain attached to the saved evidence
+- downstream routes read the same support-aware session picture
 
 ### 4. Raise content quality before expanding content volume
 
-Status: in progress.
+Status: complete for the current MVP pass.
 
-Progress already made:
+Covered in this pass:
 
 - editorial-gated student content delivery
 - source attribution
 - draft and review-status handling
 - internal audit route and admin visibility
+- trusted source attribution is now enforced in the student visibility gate instead of being a docs-only expectation
+- blocked editorial audit decisions now explain when source evidence is incomplete or still pending
+- student subject routes now show source attribution and checked-against evidence for visible topics
+
+### Content Quality Explainer
+
+What changed:
+
+- published content is still blocked unless it is reviewed, fact-checked, and backed by trusted source attribution
+- admin audit views can now show whether a topic is blocked by source evidence, not just by draft or review state
+- student topic surfaces now show where the visible content came from and what it was checked against
+
+```mermaid
+flowchart TD
+    A["Seed or future CMS topic"] --> B{"Publication status"}
+    B -->|"draft"| X["Blocked from student routes"]
+    B -->|"published"| C{"Review status"}
+    C -->|"not reviewed"| X
+    C -->|"reviewed"| D{"Fact check verified"}
+    D -->|"no"| X
+    D -->|"yes"| E{"Trusted source attribution"}
+    E -->|"missing or pending"| X
+    E -->|"complete"| F["Student-visible content catalog"]
+    F --> G["Subjects route"]
+    F --> H["Revision and quiz services"]
+```
+
+Plain-English rule:
+
+- draft content stays out
+- reviewed but unverified content stays out
+- verified content without trusted attribution still stays out
+- only fully gated topics can reach student routes
 
 ### 5. Make accessibility real, not decorative
 
@@ -1927,6 +2057,7 @@ Each priority slice should now be checked for:
 - results consistency
 - dashboard and recommendation consistency
 - support-setting carry-over
+- safe fallback behaviour when saved or linked data is missing
 
 ## Summary
 

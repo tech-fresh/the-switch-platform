@@ -6,6 +6,15 @@ import type {
 } from "@/modules/access-arrangements";
 
 export type ExamQuestionType = "multiple-choice" | "short-answer";
+export type ExamPaperMode =
+  | "full-gcse"
+  | "year-10-end-of-year"
+  | "year-10-gcse-bridge"
+  | "year-11-mock"
+  | "igcse-full-course";
+export type ExamStudentStage = "gcse" | "year-10" | "year-11";
+export type ExamYearGroup = "Year 10" | "Year 11";
+export type ExamAccessSupportLevel = "core-supported" | "send-ready-foundation";
 
 export type ExamQuestionStatus = "not-started" | "in-progress" | "answered";
 
@@ -34,6 +43,8 @@ export interface ExamPaper {
   examId: string;
   title: string;
   subject: string;
+  paperMode: ExamPaperMode;
+  studentStage: ExamStudentStage;
   board: ExamBoard;
   qualificationType: QualificationType;
   tier: ExamTier;
@@ -41,7 +52,14 @@ export interface ExamPaper {
   year: number;
   durationMinutes: number;
   totalMarks: number;
+  yearGroups: ExamYearGroup[];
+  curriculumTags: string[];
+  boardTopicCoverage: string;
+  accessSupportLevel: ExamAccessSupportLevel;
+  sourceProviderId: string;
   skillsFocus: string[];
+  studentContextSummary: string;
+  gcsePreparationSummary: string;
   questions: ExamQuestion[];
 }
 

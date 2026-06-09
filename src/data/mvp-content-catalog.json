@@ -1,6 +1,57 @@
 {
   "catalogVersion": "0.1.0",
   "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+  "contentOperations": {
+    "generation": [
+      {
+        "sourceId": "seed-content-provider",
+        "name": "Seed Content Provider",
+        "handles": ["subject metadata", "topic metadata", "revision stacks", "quiz prompts", "generated image prompts"],
+        "updateMode": "manual MVP authoring",
+        "nextStep": "Keep owned MVP content in seed form while curriculum coverage and editorial gates are still stabilising."
+      },
+      {
+        "sourceId": "future-editorial-pipeline",
+        "name": "Future Editorial Pipeline",
+        "handles": ["reviewed content updates", "board-specific variants", "Year 10 and Year 11 refreshes"],
+        "updateMode": "planned editorial workflow",
+        "nextStep": "Connect reviewed content generation to CMS tooling without bypassing source attribution or fact-check gates."
+      }
+    ],
+    "supply": [
+      {
+        "sourceId": "content-catalog-module",
+        "name": "Content Catalog Module",
+        "handles": ["student content delivery", "internal editorial audit", "subject and topic selection"],
+        "updateMode": "API and service delivery",
+        "nextStep": "Remain the single source of truth for structured student content across website and future mobile clients."
+      },
+      {
+        "sourceId": "cms-provider-boundary",
+        "name": "CMS Provider Boundary",
+        "handles": ["future admin editing", "provider sync visibility", "internal publishing controls"],
+        "updateMode": "planned provider integration",
+        "nextStep": "Attach real CMS adapters only when they respect the existing review and verification workflow."
+      }
+    ],
+    "updates": [
+      {
+        "sourceId": "editorial-audit",
+        "name": "Editorial Audit",
+        "handles": ["publication checks", "fact-check status", "source attribution traceability"],
+        "updateMode": "internal workflow review",
+        "nextStep": "Use blocked-topic decisions and fact-check counts to control what reaches students."
+      },
+      {
+        "sourceId": "past-paper-provider-plan",
+        "name": "Past Paper Provider Plan",
+        "handles": ["exam-paper metadata updates", "board release checks", "licensed source planning"],
+        "updateMode": "manual during MVP",
+        "nextStep": "Feed future exam paper updates through provider adapters rather than hard-coding them into page routes."
+      }
+    ],
+    "visibilityRule": "Only reviewed, source-attributed, and fact-check-verified content can become student visible."
+  },
   "subjects": [
     {
       "subjectId": "gcse-maths",
@@ -11,7 +62,12 @@
       "topicCount": 2,
       "revisionResourceCount": 8,
       "examReadinessScore": 56,
-      "nextTopicToRevise": "Algebra"
+      "nextTopicToRevise": "Algebra",
+      "studentStudyStage": "year-10-end-of-year",
+      "endOfYearExamContext": "Built for Year 10 students preparing for end-of-year internal exams that already begin to use GCSE command words, timings, and mark-style expectations.",
+      "gcsePreparationGoal": "Move students from Year 10 end-of-year confidence into stronger GCSE paper readiness by using progression questions and exam-style routines early.",
+      "yearGroups": ["Year 10", "Year 11"],
+      "boardCoverageNote": "Maths coverage is shaped around common AQA, Edexcel, and OCR Year 10 and Year 11 topic sequencing, with room for board-specific paper variants."
     },
     {
       "subjectId": "gcse-english-language",
@@ -22,7 +78,12 @@
       "topicCount": 2,
       "revisionResourceCount": 8,
       "examReadinessScore": 61,
-      "nextTopicToRevise": "Language Analysis"
+      "nextTopicToRevise": "Language Analysis",
+      "studentStudyStage": "year-10-end-of-year",
+      "endOfYearExamContext": "Built for Year 10 students who need end-of-year English assessments to feel like a bridge into GCSE extract work, inference, and analytical writing.",
+      "gcsePreparationGoal": "Prepare students for GCSE English Language expectations by introducing the same habits of evidence selection, analysis, and timed response structure before Year 11.",
+      "yearGroups": ["Year 10", "Year 11"],
+      "boardCoverageNote": "English coverage follows shared Year 10 and Year 11 reading-analysis expectations across Edexcel, AQA, and Eduqas before more specific paper wording is layered in."
     },
     {
       "subjectId": "gcse-combined-science",
@@ -33,7 +94,28 @@
       "topicCount": 2,
       "revisionResourceCount": 8,
       "examReadinessScore": 47,
-      "nextTopicToRevise": "Chemical Changes"
+      "nextTopicToRevise": "Chemical Changes",
+      "studentStudyStage": "year-10-end-of-year",
+      "endOfYearExamContext": "Built for Year 10 end-of-year science exams where students are expected to answer increasingly GCSE-style explanation and practical-method questions.",
+      "gcsePreparationGoal": "Use Year 10 science revision and progression checks to make the jump into GCSE-style application and required-practical questions feel familiar.",
+      "yearGroups": ["Year 10", "Year 11"],
+      "boardCoverageNote": "Science coverage is organised around Year 10 foundations and Year 11 application work common to AQA, Edexcel, and OCR combined science courses."
+    },
+    {
+      "subjectId": "igcse-maths",
+      "name": "iGCSE Mathematics",
+      "qualificationType": "IGCSE",
+      "examBoards": ["Cambridge IGCSE", "Edexcel International GCSE"],
+      "description": "iGCSE maths coverage for students bridging from advanced Year 10 work into international GCSE paper styles.",
+      "topicCount": 1,
+      "revisionResourceCount": 4,
+      "examReadinessScore": 52,
+      "nextTopicToRevise": "Linear Graphs",
+      "studentStudyStage": "year-10-gcse-bridge",
+      "endOfYearExamContext": "Built for advanced Year 10 students whose end-of-year work is already beginning to resemble iGCSE algebra and graph interpretation questions.",
+      "gcsePreparationGoal": "Bridge strong Year 10 maths students into iGCSE command words, graph reasoning, and paper expectations before full Year 11 exam pressure.",
+      "yearGroups": ["Year 10", "Year 11"],
+      "boardCoverageNote": "iGCSE maths coverage begins with shared Cambridge and Edexcel International GCSE foundations, then expands into board-specific paper variants."
     }
   ],
   "topics": [
@@ -45,6 +127,23 @@
       "confidenceScore": 58,
       "practiceQuestionCount": 12,
       "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-end-of-year",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic for Year 10 end-of-year algebra papers that start to mirror GCSE working and method-mark expectations.",
+        "gcsePreparationBridge": "These questions build fluency first, then bridge students into the style and precision expected in full GCSE algebra items."
+      },
+      "curriculumCoverage": {
+        "yearGroups": ["Year 10", "Year 11"],
+        "qualificationTypes": ["GCSE"],
+        "boardFocus": ["AQA", "Edexcel", "OCR"],
+        "year10CoverageNote": "In Year 10 this topic supports expansion, simplification, and early equation fluency used in end-of-year papers.",
+        "year11CoverageNote": "In Year 11 the same topic feeds directly into higher-mark GCSE algebra manipulation and problem solving."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A clean study visual for Year 10 algebra revision showing brackets expanding into like terms, equation steps, and sequence patterns with GCSE-style annotations.",
+        "altText": "Year 10 algebra progression visual showing worked algebra steps and GCSE-style method cues."
+      },
       "revision": {
         "contentId": "rev-maths-algebra",
         "title": "Algebra Revision Stack",
@@ -81,6 +180,7 @@
       "metadata": {
         "publicationStatus": "published",
         "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
         "sourceModel": "seed-json",
         "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
         "sourceAttribution": {
@@ -99,6 +199,23 @@
       "confidenceScore": 49,
       "practiceQuestionCount": 8,
       "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-end-of-year",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic in Year 10 end-of-year maths papers where ratio starts to appear in map-scale, recipe, and multi-step GCSE-style contexts.",
+        "gcsePreparationBridge": "Students move from straightforward ratio methods into more layered GCSE-style reasoning and unit-control questions."
+      },
+      "curriculumCoverage": {
+        "yearGroups": ["Year 10", "Year 11"],
+        "qualificationTypes": ["GCSE"],
+        "boardFocus": ["AQA", "Edexcel", "OCR"],
+        "year10CoverageNote": "In Year 10 this topic supports proportional reasoning and scale work commonly introduced before mock-paper difficulty.",
+        "year11CoverageNote": "In Year 11 the same topic supports more complex GCSE multi-step ratio, rates, and scale interpretation."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A Year 10 ratio study visual with bar-model parts, map scale conversions, recipe scaling, and GCSE-style unit labels.",
+        "altText": "Year 10 ratio progression visual showing parts, scale conversions, and GCSE-style ratio reasoning."
+      },
       "revision": {
         "contentId": "rev-maths-ratio",
         "title": "Ratio Revision Stack",
@@ -135,6 +252,7 @@
       "metadata": {
         "publicationStatus": "published",
         "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
         "sourceModel": "seed-json",
         "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
         "sourceAttribution": {
@@ -153,6 +271,23 @@
       "confidenceScore": 63,
       "practiceQuestionCount": 10,
       "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-end-of-year",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic for Year 10 end-of-year English exams that begin to expect GCSE-style extract analysis and quotation selection.",
+        "gcsePreparationBridge": "Students build the habit of precise quotation choice and analytical explanation before full GCSE language analysis questions become high stakes."
+      },
+      "curriculumCoverage": {
+        "yearGroups": ["Year 10", "Year 11"],
+        "qualificationTypes": ["GCSE"],
+        "boardFocus": ["Edexcel", "AQA", "Eduqas"],
+        "year10CoverageNote": "In Year 10 this topic supports extract analysis habits and evidence selection for end-of-year English assessments.",
+        "year11CoverageNote": "In Year 11 it feeds directly into GCSE language-analysis paragraphs under timed conditions."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A Year 10 English Language analysis visual showing quotation selection, method spotting, and effect explanation with GCSE-style paragraph cues.",
+        "altText": "Year 10 English language analysis progression visual showing quotation, method, and effect structure."
+      },
       "revision": {
         "contentId": "rev-english-language-analysis",
         "title": "Language Analysis Revision Stack",
@@ -189,6 +324,7 @@
       "metadata": {
         "publicationStatus": "published",
         "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
         "sourceModel": "seed-json",
         "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
         "sourceAttribution": {
@@ -207,6 +343,23 @@
       "confidenceScore": 54,
       "practiceQuestionCount": 7,
       "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-end-of-year",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic in Year 10 end-of-year English papers where students must explain how a text shifts focus in ways that resemble GCSE structure questions.",
+        "gcsePreparationBridge": "Students practise tracking movement and focus now so GCSE structure answers feel like a continuation rather than a brand-new demand."
+      },
+      "curriculumCoverage": {
+        "yearGroups": ["Year 10", "Year 11"],
+        "qualificationTypes": ["GCSE"],
+        "boardFocus": ["Edexcel", "AQA", "Eduqas"],
+        "year10CoverageNote": "In Year 10 this topic helps students track shifts in focus and sequence before higher-pressure papers.",
+        "year11CoverageNote": "In Year 11 the same structure awareness supports clearer GCSE responses on how texts are organised."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A Year 10 English structure visual showing text focus shifting from opening to ending, with arrows and GCSE-style structure verbs.",
+        "altText": "Year 10 English structure progression visual showing how focus shifts across a text."
+      },
       "revision": {
         "contentId": "rev-english-structure",
         "title": "Structure Revision Stack",
@@ -243,6 +396,7 @@
       "metadata": {
         "publicationStatus": "published",
         "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
         "sourceModel": "seed-json",
         "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
         "sourceAttribution": {
@@ -261,6 +415,23 @@
       "confidenceScore": 42,
       "practiceQuestionCount": 11,
       "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-end-of-year",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic in Year 10 science exams that begin to test GCSE-style explanation, prediction, and practical-knowledge responses.",
+        "gcsePreparationBridge": "Students use Year 10 chemistry revision to step into the command words and application style they will meet in GCSE Combined Science."
+      },
+      "curriculumCoverage": {
+        "yearGroups": ["Year 10", "Year 11"],
+        "qualificationTypes": ["GCSE"],
+        "boardFocus": ["AQA", "Edexcel", "OCR"],
+        "year10CoverageNote": "In Year 10 this topic supports core reactivity and electrolysis knowledge before heavier exam application.",
+        "year11CoverageNote": "In Year 11 it feeds into required-practical thinking and longer GCSE chemistry explanations."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A Year 10 chemistry revision visual showing reactivity series, displacement reactions, and electrolysis cues with GCSE-style annotation.",
+        "altText": "Year 10 chemical changes progression visual showing reactivity and electrolysis links."
+      },
       "revision": {
         "contentId": "rev-science-chemical-changes",
         "title": "Chemical Changes Revision Stack",
@@ -297,6 +468,7 @@
       "metadata": {
         "publicationStatus": "published",
         "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
         "sourceModel": "seed-json",
         "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
         "sourceAttribution": {
@@ -315,6 +487,23 @@
       "confidenceScore": 51,
       "practiceQuestionCount": 9,
       "timedAssessmentAvailable": false,
+      "studentContext": {
+        "studentStudyStage": "gcse-preparation",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "This topic is planned for Year 10 end-of-year and early GCSE-preparation science papers but is still blocked pending verification.",
+        "gcsePreparationBridge": "It is intended to bridge Year 10 energy models into GCSE-style practical and efficiency questions once fact-checking is complete."
+      },
+      "curriculumCoverage": {
+        "yearGroups": ["Year 10", "Year 11"],
+        "qualificationTypes": ["GCSE"],
+        "boardFocus": ["AQA", "Edexcel", "OCR"],
+        "year10CoverageNote": "In Year 10 this topic supports foundational energy stores and transfer ideas that appear in end-of-year science papers.",
+        "year11CoverageNote": "In Year 11 it should support more formal GCSE efficiency, practical, and energy-transfer application once verification is complete."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A planned Year 10 energy revision visual showing energy stores, transfer arrows, and efficiency calculations with GCSE-style labels.",
+        "altText": "Planned Year 10 energy progression visual showing stores, transfers, and efficiency."
+      },
       "revision": {
         "contentId": "rev-science-energy",
         "title": "Energy Revision Stack",
@@ -351,6 +540,7 @@
       "metadata": {
         "publicationStatus": "draft",
         "reviewStatus": "fact-check-needed",
+        "factCheckStatus": "in-progress",
         "sourceModel": "seed-json",
         "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
         "sourceAttribution": {
@@ -358,6 +548,78 @@
           "providerName": "Seed Content Provider",
           "sourceReference": "mvp-content-catalog:science-energy",
           "checkedAgainst": "Pending GCSE physics energy topic check"
+        }
+      }
+    },
+    {
+      "topicId": "igcse-maths-linear-graphs",
+      "subjectId": "igcse-maths",
+      "name": "Linear Graphs",
+      "summary": "Gradient, intercepts, and graph interpretation for advanced Year 10 and iGCSE preparation.",
+      "confidenceScore": 54,
+      "practiceQuestionCount": 9,
+      "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-gcse-bridge",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic for advanced Year 10 maths students whose end-of-year papers already include graph interpretation and equation links in iGCSE style.",
+        "gcsePreparationBridge": "This topic helps students move from classroom graph skills into iGCSE-style algebraic interpretation, coordinate reasoning, and direct equation-to-graph matching."
+      },
+      "curriculumCoverage": {
+        "yearGroups": ["Year 10", "Year 11"],
+        "qualificationTypes": ["IGCSE"],
+        "boardFocus": ["Cambridge IGCSE", "Edexcel International GCSE"],
+        "year10CoverageNote": "In Year 10 this topic supports advanced graph reading and line-equation fluency used in stronger end-of-year sets.",
+        "year11CoverageNote": "In Year 11 it becomes part of fuller iGCSE graph interpretation, transformation, and algebra linkage work."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "An iGCSE Year 10 maths visual showing linear graphs, gradient triangles, y-intercepts, and equation matching with clean exam-style labels.",
+        "altText": "Advanced Year 10 iGCSE linear graphs visual showing gradient and intercept links."
+      },
+      "revision": {
+        "contentId": "rev-igcse-maths-linear-graphs",
+        "title": "Linear Graphs Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "A linear graph shows a constant rate of change, so its line stays straight and its gradient stays the same."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Read the y-intercept first, then use two clear points to calculate the gradient before matching the equation."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Students often confuse the intercept with the gradient or read the scale incorrectly when points do not sit on every grid mark."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Label coordinates cleanly and write the gradient method line by line so marks are protected even if the final equation slips."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-igcse-maths-linear-graphs-1",
+        "prompt": "A line crosses the y-axis at 3 and has gradient 2. Which equation is correct?",
+        "options": [
+          { "optionId": "a", "label": "A", "text": "y = 3x + 2" },
+          { "optionId": "b", "label": "B", "text": "y = 2x + 3" },
+          { "optionId": "c", "label": "C", "text": "y = x + 5" },
+          { "optionId": "d", "label": "D", "text": "y = 2x - 3" }
+        ],
+        "correctOptionId": "b"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-09T10:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:igcse-maths-linear-graphs",
+          "checkedAgainst": "iGCSE linear graphs topic outline"
         }
       }
     }

@@ -50,6 +50,8 @@ This repository follows the current The Switch Platform Mark 3.2 product spec.
 7. Accessibility
 8. Read Aloud
 9. Access Arrangements foundation
+10. Year 10 end-of-year progression papers that prepare students for GCSE-style questions
+11. Qualification-aware content and exam coverage across GCSE and iGCSE routes
 
 ### Non-negotiable development rules
 
@@ -78,6 +80,11 @@ This repository follows the current The Switch Platform Mark 3.2 product spec.
 - Do not build school administration tools until explicitly prioritised.
 - Access Arrangements API contracts must stay framework-neutral until the app stack is chosen.
 - Website and future mobile clients must consume Access Arrangements through the API layer rather than duplicating the rules.
+- Reviewed-only student visibility is required for structured learning content.
+- Source attribution is required for structured learning content and generated study visuals.
+- Fact-check gates are required before draft content becomes student visible.
+- Draft content must never be silently published to students.
+- Content generation, supply, and updates must have an explicit module boundary before scale.
 
 ### Active build priority order
 
@@ -104,6 +111,7 @@ This is the order the MVP should be pushed forward in unless a new instruction o
 - Read Aloud should appear inside real student flows, not only in isolated previews.
 - Dashboard should aggregate the higher-priority modules rather than invent separate logic.
 - Content should not keep expanding toward student-facing publication without a real fact-check and editorial approval workflow.
+- Year 10 end-of-year work should prepare students for GCSE expectations rather than acting like a disconnected lower-stakes mode.
 - CMS/Admin should stay architectural and placeholder-focused during MVP unless reprioritised.
 
 ## Website Preview And App Mockup
@@ -258,11 +266,36 @@ That means one of the next important content-side stages should include:
 - internal review and approval stages
 - publish gating before student visibility
 - source attribution and provider traceability
+
+### 11. Year 10 end-of-year exam context and GCSE bridge
+
+The MVP now also needs to support students who are still in Year 10 and preparing for end-of-year exams before they step into full GCSE papers.
+
+That includes:
+
+- subject-level context that explains how revision supports Year 10 end-of-year exams
+- topic-level context showing how each topic bridges into GCSE-style command words and questions
+- progression papers that let students practise GCSE-style questions before full GCSE paper timing
+- a clear rule that Year 10 assessments should prepare for GCSE rather than run as a separate disconnected content track
+
+### 12. Main quality principle for content before scale
+
+Content quality must now stay ahead of content volume.
+
+That means:
+
+- reviewed-only student visibility
+- source attribution
+- fact-check gates
+- no silent publishing of draft content
+- generated study visuals following the same review and fact-check workflow as other student content
 - a workflow that prevents unreviewed owned content from reaching students
+
+This principle is being put in place because bad or unchecked learning content would damage trust faster than missing features.
 
 This matters because student trust depends on content quality, not only on product flow and interface quality.
 
-### 11. Guided website walkthrough
+### 13. Guided website walkthrough
 
 The MVP now includes a dedicated guided walkthrough route so students and collaborators can understand how the website is meant to be used.
 
@@ -274,6 +307,56 @@ Added work includes:
 - a standalone API-delivered module so the same guide can later be reused by other clients
 
 This matters because understanding the product flow should not depend on guessing what route names or study signals mean.
+
+### 14. Qualification-aware exam and content expansion
+
+The MVP now has a clearer architecture for widening beyond a tiny GCSE-only sample.
+
+That includes:
+
+- Year 10 end-of-year papers and advanced Year 10 GCSE-bridge papers
+- full GCSE foundation and higher examples
+- iGCSE subject and paper coverage foundations
+- shared access-arrangement support flowing through every exam paper type
+- explicit content generation, supply, and update paths in the catalog model
+
+## Mermaid Learning Diagrams
+
+These diagrams are here to make the MVP easier to understand quickly while the project keeps growing.
+
+### Year 10 to GCSE progression
+
+```mermaid
+flowchart LR
+  A["Year 10 topic revision"] --> B["Quick practice"]
+  B --> C["Year 10 end-of-year progression paper"]
+  C --> D["Saved progress and review"]
+  D --> E["GCSE-style question confidence"]
+  E --> F["Full GCSE paper practice"]
+```
+
+### Content quality gate
+
+```mermaid
+flowchart TD
+  A["Draft content"] --> B["Source attribution added"]
+  B --> C["Editorial review"]
+  C --> D["Fact-check verification"]
+  D --> E{"Approved for students?"}
+  E -- "Yes" --> F["Published and student visible"]
+  E -- "No" --> G["Blocked from student routes"]
+```
+
+### Content supply pipeline
+
+```mermaid
+flowchart LR
+  A["Seed or editorial content generation"] --> B["Content catalog module"]
+  B --> C["Editorial review and fact-check gate"]
+  C --> D["Student routes and APIs"]
+  C --> E["Internal admin and audit views"]
+  E --> F["Content updates and provider planning"]
+```
 
 ## What You Asked To Be Added And Is Now Present
 

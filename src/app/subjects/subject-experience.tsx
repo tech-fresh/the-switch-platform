@@ -35,8 +35,9 @@ export function SubjectExperience({
               Reviewed learning content is not available to students yet.
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-              This route now follows the editorial gate, so draft or unchecked topics stay hidden
-              until they are reviewed and published through the content workflow.
+              This route now follows the editorial gate, so draft, unreviewed, or unverified
+              topics stay hidden until they pass review, source checks, and fact-checking through
+              the content workflow.
             </p>
           </section>
         </div>
@@ -72,17 +73,18 @@ export function SubjectExperience({
             </p>
             <div className="space-y-3">
               <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Subject entry, topic selection, revision guidance, and quick practice in one route.
+                Subject entry, Year 10 context, revision guidance, and GCSE-preparation practice in one route.
               </h1>
               <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
                 This is the start of the learn-practise flow. A student can pick a subject, open a
-                topic, read the key revision guidance, and see the next practice question without
-                dropping into a dead-end placeholder.
+                topic, see how it supports Year 10 end-of-year exams, read the key revision
+                guidance, and step into GCSE-style practice without dropping into a dead-end
+                placeholder.
               </p>
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Subject</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{selectedSubject.name}</p>
@@ -100,12 +102,27 @@ export function SubjectExperience({
               </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Resources</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Year group</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">
-                {selectedSubject.revisionResourceCount}
+                {selectedTopic.studentContext.yearGroupLabel}
               </p>
               <p className="mt-1 text-sm text-stone-600">
-                {selectedSubject.topicCount} tracked topics in this subject
+                {selectedSubject.endOfYearExamContext}
+              </p>
+            </div>
+            <div className="border border-stone-200 bg-white p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">GCSE bridge</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">
+                {selectedSubject.revisionResourceCount} resources
+              </p>
+              <p className="mt-1 text-sm text-stone-600">
+                {selectedSubject.gcsePreparationGoal}
+              </p>
+            </div>
+            <div className="border border-stone-200 bg-white p-4 sm:col-span-2 lg:col-span-1 xl:col-span-2">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Board coverage</p>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                {selectedSubject.boardCoverageNote}
               </p>
             </div>
           </div>
@@ -206,6 +223,48 @@ export function SubjectExperience({
                 </div>
 
                 <div className="grid gap-4 lg:grid-cols-2">
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                      End-of-year exam context
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-stone-700">
+                      {selectedTopic.studentContext.endOfYearExamUse}
+                    </p>
+                  </div>
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                      GCSE preparation
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-stone-700">
+                      {selectedTopic.studentContext.gcsePreparationBridge}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                      Curriculum coverage
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-stone-700">
+                      {selectedTopic.curriculumCoverage.qualificationTypes.join(", ")} •{" "}
+                      {selectedTopic.curriculumCoverage.boardFocus.join(", ")}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">
+                      {selectedTopic.curriculumCoverage.year10CoverageNote}
+                    </p>
+                  </div>
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                      Year 11 continuation
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-stone-700">
+                      {selectedTopic.curriculumCoverage.year11CoverageNote}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-2">
                   {revision.sections.map((section) => (
                     <div key={section.title} className="border border-stone-200 bg-white p-4">
                       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
@@ -239,12 +298,28 @@ export function SubjectExperience({
 
             <section className="space-y-3 border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                Visual support
+              </h2>
+              <p className="text-sm leading-6 text-stone-700">
+                Generated study visuals follow the same review and fact-check workflow as other
+                student content before they become visible.
+              </p>
+              <div className="border border-stone-200 bg-stone-50 p-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Planned visual</p>
+                <p className="mt-2 text-sm leading-6 text-stone-700">
+                  {selectedTopic.visualSupport.altText}
+                </p>
+              </div>
+            </section>
+
+            <section className="space-y-3 border border-stone-200 bg-white p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 What this route proves
               </h2>
               <ul className="space-y-2 text-sm leading-6 text-stone-600">
-                <li>Subjects can drive topic and content selection through module services.</li>
+                <li>Subjects can drive Year 10 and GCSE-preparation context through module services.</li>
                 <li>Revision structure is now visible in-product instead of only in docs.</li>
-                <li>Quick practice can sit beside revision without mixing quiz rules into the page.</li>
+                <li>Quick practice and planned visuals can sit beside revision without mixing separate content rules into the page.</li>
               </ul>
             </section>
           </aside>

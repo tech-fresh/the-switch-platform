@@ -58,6 +58,38 @@ function formatSavedAt(timestamp: string): string {
   }).format(new Date(timestamp));
 }
 
+function getPaperModeLabel(mode: ExamPaper["paperMode"]): string {
+  if (mode === "year-10-end-of-year") {
+    return "Year 10 end-of-year";
+  }
+
+  if (mode === "year-10-gcse-bridge") {
+    return "Year 10 GCSE bridge";
+  }
+
+  if (mode === "year-11-mock") {
+    return "Year 11 mock";
+  }
+
+  if (mode === "igcse-full-course") {
+    return "Full iGCSE";
+  }
+
+  return "Full GCSE";
+}
+
+function getStudentStageLabel(stage: ExamPaper["studentStage"]): string {
+  if (stage === "year-10") {
+    return "Year 10";
+  }
+
+  if (stage === "year-11") {
+    return "Year 11";
+  }
+
+  return "GCSE";
+}
+
 function getResponseStatusTone(response: ExamQuestionResponse): string {
   if (response.selectedOptionId) {
     return "border-emerald-300 bg-emerald-50 text-emerald-900";
@@ -539,21 +571,22 @@ export function ExamExperience({
             </p>
             <div className="space-y-3">
               <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Initial exam session UI with mock GCSE papers, timing, autosave, and progress flow.
+                Exam session UI with Year 10 progression papers, full GCSE papers, timing, autosave, and progress flow.
               </h1>
               <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
                 This now keeps learning repetition at topic level while rotating question variants
-                between attempts so papers feel fresher for active students.
+                between attempts so papers feel fresher for active students while still showing a
+                clear bridge from Year 10 end-of-year work into GCSE-style papers.
               </p>
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Current paper</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{paper.title}</p>
               <p className="mt-1 text-sm text-stone-600">
-                {paper.board} {paper.paperName} • attempt {session.attemptNumber}
+                {paper.board} {paper.paperName} • {paper.qualificationType} • attempt {session.attemptNumber}
               </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
@@ -569,6 +602,15 @@ export function ExamExperience({
                     : autosaveState === "saved"
                       ? "Latest question mix and responses are saved with this session."
                       : "Generated question mix is stored with the session."}
+              </p>
+            </div>
+            <div className="border border-stone-200 bg-white p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Progression path</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">
+                {getStudentStageLabel(paper.studentStage)} • {getPaperModeLabel(paper.paperMode)}
+              </p>
+              <p className="mt-1 text-sm text-stone-600">
+                {paper.gcsePreparationSummary}
               </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
@@ -617,6 +659,9 @@ export function ExamExperience({
                       <p className={`text-sm ${isSelected ? "text-teal-50" : "text-stone-600"}`}>
                         {item.paperName} • {item.durationMinutes} mins • {item.totalMarks} marks
                       </p>
+                      <p className={`text-xs ${isSelected ? "text-teal-100" : "text-stone-500"}`}>
+                        {getStudentStageLabel(item.studentStage)} • {getPaperModeLabel(item.paperMode)}
+                      </p>
                     </button>
                   );
                 })}
@@ -634,7 +679,8 @@ export function ExamExperience({
               </div>
               <div className="space-y-2 text-sm text-stone-600">
                 <p>{paper.year} exam paper preview with a generated question mix for this attempt.</p>
-                <p>Official duration stays locked to the exam while questions rotate inside topic coverage.</p>
+                <p>{paper.studentContextSummary}</p>
+                <p>{paper.boardTopicCoverage}</p>
               </div>
               <div className="border border-stone-200 bg-stone-50 px-3 py-3 text-sm text-stone-700">
                 {timeRemainingSeconds === 0
@@ -643,7 +689,9 @@ export function ExamExperience({
                     ? "Less than five minutes remain in this paper."
                     : timeRemainingSeconds <= 900
                       ? "Final fifteen minutes: wrap up any unanswered questions."
-                      : `Official duration: ${formatTimer(session.durationMinutes)}.`}
+                      : paper.paperMode === "full-gcse"
+                        ? `Official GCSE duration: ${formatTimer(session.durationMinutes)}.`
+                        : `Year 10 progression duration: ${formatTimer(session.durationMinutes)}.`}
               </div>
               <div className="flex flex-wrap gap-2 pt-1">
                 {paper.skillsFocus.map((skill) => (
@@ -658,6 +706,14 @@ export function ExamExperience({
               <div className="border border-stone-200 bg-stone-50 px-3 py-3 text-sm text-stone-700">
                 Freshness rule: {session.generationSummary.reusedQuestionCount} reused exact question
                 {session.generationSummary.reusedQuestionCount === 1 ? "" : "s"} from earlier saved attempts.
+              </div>
+              <div className="border border-stone-200 bg-stone-50 px-3 py-3 text-sm text-stone-700">
+                GCSE bridge: {paper.gcsePreparationSummary}
+              </div>
+              <div className="border border-stone-200 bg-stone-50 px-3 py-3 text-sm text-stone-700">
+                Access support: {paper.accessSupportLevel === "send-ready-foundation"
+                  ? "Uses the shared access-arrangements layer and is ready for SEND-support expansion."
+                  : "Uses the core access-arrangements layer."}
               </div>
             </section>
 
@@ -732,7 +788,14 @@ export function ExamExperience({
           <section className="space-y-5">
             <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-stone-600">
               <span className="border border-stone-300 bg-white px-2 py-1">{paper.subject}</span>
+              <span className="border border-stone-300 bg-white px-2 py-1">{paper.qualificationType}</span>
               <span className="border border-stone-300 bg-white px-2 py-1">{paper.tier}</span>
+              <span className="border border-stone-300 bg-white px-2 py-1">
+                {getPaperModeLabel(paper.paperMode)}
+              </span>
+              <span className="border border-stone-300 bg-white px-2 py-1">
+                {paper.yearGroups.join(" / ")}
+              </span>
               <span className="border border-stone-300 bg-white px-2 py-1">
                 Question {currentQuestion.number} of {sessionQuestions.length}
               </span>
@@ -756,6 +819,7 @@ export function ExamExperience({
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
                       {currentQuestion.topic}
                     </p>
+                    <p className="text-sm leading-6 text-stone-600">{paper.studentContextSummary}</p>
                     <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
                       {currentQuestion.prompt}
                     </h2>
@@ -877,8 +941,9 @@ export function ExamExperience({
                       Check answers, flagged questions, and working notes before submission.
                     </h2>
                     <p className="text-sm leading-6 text-stone-600">
-                      Topic coverage stays familiar, but the exact question wording can rotate across
-                      attempts so review stays useful without turning stale.
+                      Topic coverage stays familiar, but the exact question wording can rotate
+                      across attempts so Year 10 progression and GCSE practice stay useful without
+                      turning stale.
                     </p>
                   </div>
                   <div className="grid gap-2 text-sm text-stone-700">

@@ -1,6 +1,7 @@
 import mvpContentCatalog from "@/data/mvp-content-catalog.json";
 import type {
   ContentEditorialAudit,
+  ContentFactCheckStatus,
   ContentGateDecision,
   ContentRepository,
   ContentReviewStatus,
@@ -167,16 +168,25 @@ export async function getContentEditorialAudit(
       "fact-check-needed": countTopicsByReviewStatus(catalog.topics, "fact-check-needed"),
       reviewed: countTopicsByReviewStatus(catalog.topics, "reviewed"),
     },
+    factCheckStatusCounts: {
+      "not-started": countTopicsByFactCheckStatus(catalog.topics, "not-started"),
+      "in-progress": countTopicsByFactCheckStatus(catalog.topics, "in-progress"),
+      verified: countTopicsByFactCheckStatus(catalog.topics, "verified"),
+    },
     gateDecisions,
     nextEditorialPriority:
       blockedTopicCount > 0
-        ? "Resolve blocked topic checks before publishing more owned content to students."
-        : "Keep adding source attribution and review notes as the content catalog grows.",
+        ? "Resolve blocked topic checks before publishing more owned content to students. Reviewed-only visibility is not enough without fact-check verification."
+        : "Keep adding source attribution, fact-check evidence, and review notes as the content catalog grows.",
   };
 }
 
 export function isTopicStudentVisible(topic: MvpCatalogTopic): boolean {
-  return topic.metadata.publicationStatus === "published" && topic.metadata.reviewStatus === "reviewed";
+  return (
+    topic.metadata.publicationStatus === "published" &&
+    topic.metadata.reviewStatus === "reviewed" &&
+    topic.metadata.factCheckStatus === "verified"
+  );
 }
 
 function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
@@ -189,8 +199,8 @@ function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
       publicationStatus: topic.metadata.publicationStatus,
       reviewStatus: topic.metadata.reviewStatus,
       studentVisible,
-      reason: "Published content has passed review and can be served to student clients.",
-      nextStep: "Keep source attribution current when this topic changes.",
+      reason: "Published content has passed review, source checks, and fact-check verification before reaching student clients.",
+      nextStep: "Keep source attribution and fact-check evidence current when this topic changes.",
     };
   }
 
@@ -202,7 +212,19 @@ function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
       reviewStatus: topic.metadata.reviewStatus,
       studentVisible,
       reason: "Draft content is blocked from student-facing catalog delivery.",
-      nextStep: "Complete editorial review, fact-checking, and publish approval.",
+      nextStep: "Complete editorial review, fact-checking, year-group context checks, and publish approval.",
+    };
+  }
+
+  if (topic.metadata.factCheckStatus !== "verified") {
+    return {
+      topicId: topic.topicId,
+      title: topic.name,
+      publicationStatus: topic.metadata.publicationStatus,
+      reviewStatus: topic.metadata.reviewStatus,
+      studentVisible,
+      reason: "Reviewed content is still blocked because fact-check verification has not been completed.",
+      nextStep: "Verify the topic against trusted curriculum references before student release.",
     };
   }
 
@@ -211,8 +233,8 @@ function buildContentGateDecision(topic: MvpCatalogTopic): ContentGateDecision {
     title: topic.name,
     publicationStatus: topic.metadata.publicationStatus,
     reviewStatus: topic.metadata.reviewStatus,
-    studentVisible,
-    reason: "Published flag alone is not enough; reviewed status is required for student visibility.",
+      studentVisible,
+    reason: "Published flag alone is not enough; reviewed status and verified fact-checking are required for student visibility.",
     nextStep: "Move the topic through internal review and fact-checking before release.",
   };
 }
@@ -222,4 +244,11 @@ function countTopicsByReviewStatus(
   status: ContentReviewStatus,
 ): number {
   return topics.filter((topic) => topic.metadata.reviewStatus === status).length;
+}
+
+function countTopicsByFactCheckStatus(
+  topics: MvpCatalogTopic[],
+  status: ContentFactCheckStatus,
+): number {
+  return topics.filter((topic) => topic.metadata.factCheckStatus === status).length;
 }

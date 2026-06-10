@@ -14,6 +14,16 @@ interface ExamExperienceProps {
   initialQuestionId?: string;
 }
 
+interface SubmittedQuestionReviewItem {
+  question: ExamQuestion;
+  response: ExamQuestionResponse;
+  selectedOptionLabel: string;
+  selectedOptionText: string;
+  correctOptionLabel: string;
+  correctOptionText: string;
+  isCorrect: boolean;
+}
+
 function cloneSession(session: ExamSession): ExamSession {
   return {
     ...session,
@@ -108,6 +118,26 @@ function getResponseStatusTone(response: ExamQuestionResponse): string {
   return "border-stone-200 bg-white text-stone-700";
 }
 
+function getQuestionOptionLabel(question: ExamQuestion, optionId: string | undefined): string {
+  if (!optionId) {
+    return "No answer";
+  }
+
+  const option = question.options?.find((candidate) => candidate.optionId === optionId);
+
+  return option?.label ?? optionId.toUpperCase();
+}
+
+function getQuestionOptionText(question: ExamQuestion, optionId: string | undefined): string {
+  if (!optionId) {
+    return "No answer selected for this question.";
+  }
+
+  const option = question.options?.find((candidate) => candidate.optionId === optionId);
+
+  return option?.text ?? "The selected answer option could not be recovered safely.";
+}
+
 function buildQuestionReadAloudText(questions: ExamQuestion[], currentQuestionIndex: number): string {
   const question = questions[currentQuestionIndex];
 
@@ -169,6 +199,34 @@ function buildAutosaveSignature(session: ExamSession, currentQuestionId: string)
     currentQuestionId,
     timeRemainingMinutes: session.timeRemainingMinutes,
     questionResponses: session.questionResponses,
+  });
+}
+
+function buildSubmittedQuestionReview(
+  questions: ExamQuestion[],
+  responses: ExamQuestionResponse[],
+): SubmittedQuestionReviewItem[] {
+  return questions.map((question) => {
+    const response =
+      responses.find((candidate) => candidate.questionId === question.questionId) ?? {
+        questionId: question.questionId,
+        status: "not-started" as const,
+        flagged: false,
+      };
+    const selectedOptionId = response.selectedOptionId;
+    const correctOptionId = question.correctOptionId;
+
+    return {
+      question,
+      response,
+      selectedOptionLabel: getQuestionOptionLabel(question, selectedOptionId),
+      selectedOptionText: getQuestionOptionText(question, selectedOptionId),
+      correctOptionLabel: getQuestionOptionLabel(question, correctOptionId),
+      correctOptionText: getQuestionOptionText(question, correctOptionId),
+      isCorrect: Boolean(
+        selectedOptionId && correctOptionId && selectedOptionId === correctOptionId,
+      ),
+    };
   });
 }
 
@@ -274,6 +332,11 @@ export function ExamExperience({
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "error">("idle");
   const [freshAttemptState, setFreshAttemptState] = useState<"idle" | "starting" | "error">("idle");
   const [autosaveState, setAutosaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(null);
+  const [freshAttemptErrorMessage, setFreshAttemptErrorMessage] = useState<string | null>(null);
+  const [autosaveErrorMessage, setAutosaveErrorMessage] = useState<string | null>(null);
+  const [sessionReloadState, setSessionReloadState] = useState<"idle" | "reloading" | "error">("idle");
+  const [sessionReloadErrorMessage, setSessionReloadErrorMessage] = useState<string | null>(null);
   const [timeRemainingSeconds, setTimeRemainingSeconds] = useState(
     () => (initialSessionCache[startingExamId] ?? fallbackSession).timeRemainingMinutes * 60,
   );
@@ -312,6 +375,11 @@ export function ExamExperience({
   const noteCount = session.questionResponses.filter((response) => response.workingNotes?.trim()).length;
   const supportSnapshot = session.accessArrangements?.accessArrangementApplication.savedProgressSnapshot;
   const supportPreferenceChips = buildAccessibilityPreferenceChips(supportSnapshot);
+  const submittedQuestionReview = useMemo(
+    () => buildSubmittedQuestionReview(sessionQuestions, session.questionResponses),
+    [session.questionResponses, sessionQuestions],
+  );
+  const correctAnswerCount = submittedQuestionReview.filter((item) => item.isCorrect).length;
   const adjustedDuration =
     session.accessArrangements?.accessArrangementApplication.duration.adjustedDurationMinutes ??
     session.durationMinutes;
@@ -383,6 +451,7 @@ export function ExamExperience({
         currentQuestion?.questionId ?? "",
       );
       setAutosaveState("idle");
+      setAutosaveErrorMessage(null);
       return;
     }
 
@@ -410,13 +479,21 @@ export function ExamExperience({
         });
 
         if (!response.ok) {
-          throw new Error("Exam autosave request failed.");
+          const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+
+          throw new Error(payload?.error ?? "Exam autosave request failed.");
         }
 
         autosaveSignatureRef.current = nextSignature;
         setAutosaveState("saved");
-      } catch {
+        setAutosaveErrorMessage(null);
+      } catch (error) {
         setAutosaveState("error");
+        setAutosaveErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Exam autosave request failed.",
+        );
       }
     }, 600);
 
@@ -450,6 +527,11 @@ export function ExamExperience({
     setSubmitState("idle");
     setFreshAttemptState("idle");
     setAutosaveState("idle");
+    setSubmitErrorMessage(null);
+    setFreshAttemptErrorMessage(null);
+    setAutosaveErrorMessage(null);
+    setSessionReloadState("idle");
+    setSessionReloadErrorMessage(null);
     setTimeRemainingSeconds(nextSession.timeRemainingMinutes * 60);
     setCurrentQuestionIndex(getInitialQuestionIndex(nextSession));
     autosaveSignatureRef.current = buildAutosaveSignature(nextSession, getCurrentQuestionId(nextSession));
@@ -474,6 +556,11 @@ export function ExamExperience({
     setViewMode(options?.nextViewMode ?? (clonedSession.status === "submitted" ? "submitted" : "question"));
     setCurrentQuestionIndex(getInitialQuestionIndex(clonedSession, options?.nextQuestionId));
     setAutosaveState("idle");
+    setAutosaveErrorMessage(null);
+    setSubmitErrorMessage(null);
+    setFreshAttemptErrorMessage(null);
+    setSessionReloadState("idle");
+    setSessionReloadErrorMessage(null);
     autosaveSignatureRef.current = buildAutosaveSignature(
       clonedSession,
       options?.nextQuestionId ?? getCurrentQuestionId(clonedSession),
@@ -553,6 +640,7 @@ export function ExamExperience({
   const handleSubmitExam = async () => {
     if (!currentQuestion) {
       setSubmitState("error");
+      setSubmitErrorMessage("The current exam question could not be recovered safely for submission.");
       return;
     }
 
@@ -562,6 +650,7 @@ export function ExamExperience({
 
     setPreviewState("idle");
     setSubmitState("submitting");
+    setSubmitErrorMessage(null);
 
     try {
       const response = await fetch(`/api/exams/session/${encodeURIComponent(selectedExamId)}`, {
@@ -578,7 +667,9 @@ export function ExamExperience({
       });
 
       if (!response.ok) {
-        throw new Error("Exam submission request failed.");
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+
+        throw new Error(payload?.error ?? "Exam submission request failed.");
       }
 
       const nextSession = {
@@ -589,13 +680,20 @@ export function ExamExperience({
 
       syncSession(nextSession, { nextViewMode: "submitted" });
       setSubmitState("idle");
-    } catch {
+      setSubmitErrorMessage(null);
+    } catch (error) {
       setSubmitState("error");
+      setSubmitErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "The exam could not be submitted just yet.",
+      );
     }
   };
 
   const handleStartFreshAttempt = async () => {
     setFreshAttemptState("starting");
+    setFreshAttemptErrorMessage(null);
 
     try {
       const response = await fetch(`/api/exams/session/${encodeURIComponent(selectedExamId)}`, {
@@ -603,7 +701,9 @@ export function ExamExperience({
       });
 
       if (!response.ok) {
-        throw new Error("Fresh exam attempt request failed.");
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+
+        throw new Error(payload?.error ?? "Fresh exam attempt request failed.");
       }
 
       const payload = (await response.json()) as { session: ExamSession };
@@ -611,8 +711,41 @@ export function ExamExperience({
       syncSession(payload.session, { nextViewMode: "question" });
       setFreshAttemptState("idle");
       setSubmitState("idle");
-    } catch {
+      setFreshAttemptErrorMessage(null);
+    } catch (error) {
       setFreshAttemptState("error");
+      setFreshAttemptErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "A fresh attempt could not be created just yet.",
+      );
+    }
+  };
+
+  const handleReloadSession = async () => {
+    setSessionReloadState("reloading");
+    setSessionReloadErrorMessage(null);
+
+    try {
+      const response = await fetch(`/api/exams/session/${encodeURIComponent(selectedExamId)}`);
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+
+        throw new Error(payload?.error ?? "The exam session could not be reloaded.");
+      }
+
+      const payload = (await response.json()) as { session: ExamSession };
+
+      syncSession(payload.session, {
+        nextViewMode: payload.session.status === "submitted" ? "submitted" : viewMode,
+      });
+      setSessionReloadState("idle");
+    } catch (error) {
+      setSessionReloadState("error");
+      setSessionReloadErrorMessage(
+        error instanceof Error ? error.message : "The exam session could not be reloaded.",
+      );
     }
   };
 
@@ -688,7 +821,7 @@ export function ExamExperience({
                 {autosaveState === "saving"
                   ? "Saving latest changes now."
                   : autosaveState === "error"
-                    ? "Autosave is temporarily stuck. Keep working and try again shortly."
+                    ? "Autosave is temporarily stuck. Use reload or saved progress if this keeps happening."
                     : autosaveState === "saved"
                       ? "Latest question mix and responses are saved with this session."
                       : "Generated question mix is stored with the session."}
@@ -933,6 +1066,50 @@ export function ExamExperience({
           </aside>
 
           <section className="space-y-5">
+            {autosaveState === "error" || submitState === "error" || freshAttemptState === "error" || sessionReloadState === "error" ? (
+              <section className="border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-800">
+                      Exam flow recovery
+                    </p>
+                    <p>
+                      {submitErrorMessage ??
+                        freshAttemptErrorMessage ??
+                        autosaveErrorMessage ??
+                        sessionReloadErrorMessage ??
+                        "Part of the live exam flow needs recovery."}
+                    </p>
+                    <p className="text-amber-900/80">
+                      The safest next step is to reload the session, reopen saved progress, or continue from review instead of assuming the last write succeeded.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={handleReloadSession}
+                      disabled={sessionReloadState === "reloading"}
+                      className="border border-amber-700 bg-amber-700 px-3 py-2 text-sm font-medium text-white transition hover:bg-amber-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {sessionReloadState === "reloading" ? "Reloading..." : "Reload session"}
+                    </button>
+                    <Link
+                      href="/saved-progress"
+                      className="inline-flex items-center justify-center border border-stone-300 bg-white px-3 py-2 text-sm font-medium text-stone-800 transition hover:bg-stone-50"
+                    >
+                      Open saved progress
+                    </Link>
+                    <Link
+                      href="/results"
+                      className="inline-flex items-center justify-center border border-stone-300 bg-white px-3 py-2 text-sm font-medium text-stone-800 transition hover:bg-stone-50"
+                    >
+                      Open results
+                    </Link>
+                  </div>
+                </div>
+              </section>
+            ) : null}
+
             <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-stone-600">
               <span className="border border-stone-300 bg-white px-2 py-1">{paper.subject}</span>
               <span className="border border-stone-300 bg-white px-2 py-1">{paper.qualificationType}</span>
@@ -1185,7 +1362,7 @@ export function ExamExperience({
                 </div>
                 {submitState === "error" ? (
                   <p className="text-sm text-rose-700">
-                    The exam could not be submitted just yet. Try again.
+                    {submitErrorMessage ?? "The exam could not be submitted just yet. Try again."}
                   </p>
                 ) : null}
               </article>
@@ -1206,7 +1383,7 @@ export function ExamExperience({
                   </p>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-4">
                   <div className="border border-stone-200 bg-stone-50 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Answered</p>
                     <p className="mt-2 text-2xl font-semibold text-stone-950">
@@ -1218,10 +1395,100 @@ export function ExamExperience({
                     <p className="mt-2 text-2xl font-semibold text-stone-950">{flaggedCount}</p>
                   </div>
                   <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Correct</p>
+                    <p className="mt-2 text-2xl font-semibold text-stone-950">
+                      {correctAnswerCount}/{sessionQuestions.length}
+                    </p>
+                  </div>
+                  <div className="border border-stone-200 bg-stone-50 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Working notes</p>
                     <p className="mt-2 text-2xl font-semibold text-stone-950">{noteCount}</p>
                   </div>
                 </div>
+
+                <section className="space-y-4">
+                  <div className="flex flex-col gap-3 border-b border-stone-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                        Post-submit review
+                      </p>
+                      <h3 className="mt-2 text-xl font-semibold text-stone-950">
+                        Review the exact answers, corrections, and saved notes from this attempt.
+                      </h3>
+                    </div>
+                    <p className="text-sm text-stone-600">
+                      Score preview: {Math.round((correctAnswerCount / Math.max(sessionQuestions.length, 1)) * 100)}%
+                    </p>
+                  </div>
+
+                  <div className="grid gap-4">
+                    {submittedQuestionReview.map((item) => (
+                      <article
+                        key={item.question.questionId}
+                        className="border border-stone-200 bg-stone-50 p-4"
+                      >
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                          <div className="space-y-2">
+                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                              Question {item.question.number} • {item.question.topic}
+                            </p>
+                            <h4 className="text-base font-semibold text-stone-950">
+                              {item.question.prompt}
+                            </h4>
+                          </div>
+                          <span
+                            className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+                              item.isCorrect
+                                ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                                : "border-rose-300 bg-rose-50 text-rose-900"
+                            }`}
+                          >
+                            {item.isCorrect ? "correct" : item.response.selectedOptionId ? "needs review" : "unanswered"}
+                          </span>
+                        </div>
+
+                        <div className="mt-4 grid gap-3 md:grid-cols-2">
+                          <div className="border border-stone-200 bg-white p-3">
+                            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Student answer</p>
+                            <p className="mt-2 text-sm font-semibold text-stone-950">
+                              {item.selectedOptionLabel}
+                            </p>
+                            <p className="mt-1 text-sm leading-6 text-stone-600">
+                              {item.selectedOptionText}
+                            </p>
+                          </div>
+                          <div className="border border-stone-200 bg-white p-3">
+                            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Correct answer</p>
+                            <p className="mt-2 text-sm font-semibold text-stone-950">
+                              {item.correctOptionLabel}
+                            </p>
+                            <p className="mt-1 text-sm leading-6 text-stone-600">
+                              {item.correctOptionText}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium uppercase tracking-[0.2em] text-stone-600">
+                          <span className="border border-stone-200 bg-white px-2 py-1">
+                            {item.question.marks} marks
+                          </span>
+                          <span className="border border-stone-200 bg-white px-2 py-1">
+                            {item.response.flagged ? "flagged in session" : "not flagged"}
+                          </span>
+                          <span className="border border-stone-200 bg-white px-2 py-1">
+                            {item.response.workingNotes?.trim() ? "working note saved" : "no working note"}
+                          </span>
+                        </div>
+
+                        {item.response.workingNotes?.trim() ? (
+                          <div className="mt-3 border border-dashed border-stone-300 bg-white px-3 py-3 text-sm leading-6 text-stone-700">
+                            {item.response.workingNotes}
+                          </div>
+                        ) : null}
+                      </article>
+                    ))}
+                  </div>
+                </section>
 
                 <div className="flex flex-wrap gap-3">
                   <button
@@ -1248,7 +1515,7 @@ export function ExamExperience({
                 </div>
                 {freshAttemptState === "error" ? (
                   <p className="text-sm text-rose-700">
-                    A fresh attempt could not be created just yet. Try again.
+                    {freshAttemptErrorMessage ?? "A fresh attempt could not be created just yet. Try again."}
                   </p>
                 ) : null}
               </article>

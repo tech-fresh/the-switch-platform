@@ -1958,10 +1958,10 @@ the modular architecture.
 Current roadmap snapshot:
 
 - MVP Quality Checklist: 6 of 6 complete for the current MVP pass (100%)
-- Phase 2 Roadmap: 3 completed, 1 partially hardened, 3 still upcoming (about 50% of phase 2 by roadmap count)
-- Main priority picture across the MVP checklist plus phase 2 roadmap: 9.5 of 13 major items completed or meaningfully hardened (about 73%)
+- Phase 2 Roadmap: 4 completed, 3 still upcoming (about 57% of phase 2 by roadmap count)
+- Main priority picture across the MVP checklist plus phase 2 roadmap: 10 of 13 major items completed (about 77%)
 
-### 1. Exam Engine hardening
+### 1. Exam Engine hardening (Completed)
 
 Priority reason:
 
@@ -1976,6 +1976,24 @@ Main goals:
 Current phase 2 progress:
 
 - `/exams` now has a recovery surface when paper or seeded session loading fails instead of assuming the live paper is always available
+- the live exam client now exposes stronger recovery messaging and reload paths when autosave, submit, or fresh-attempt writes fail
+- submitted exam attempts now have deeper post-submit review quality, including exact answer comparison against the saved question set and working-note carry-over per question
+
+### 29. Exam Engine full recovery and submitted review hardening (Completed)
+
+The highest-priority product slice now has safer live recovery behaviour and a
+deeper submitted review surface, instead of stopping at basic route fallbacks.
+
+Added work includes:
+
+- the live exam route now shows clearer recovery guidance when autosave, submit, fresh-attempt, or reload actions fail
+- recovery actions now let the student reload the current session or step safely into saved progress or results without pretending the last write definitely succeeded
+- submitted exam attempts now show per-question correctness, student answer, correct answer, flags, and saved working notes against the exact submitted paper mix
+- the Exam Engine module docs now describe the stronger post-submit review and live recovery behaviour
+
+This matters because the exam flow is the highest-risk student journey in the
+MVP, and it needs both safe failure handling during live work and trustworthy
+review quality after submission.
 - the live exam client now shows a recovery state when the current paper, question, or response payload is incomplete instead of failing to a blank screen
 - the exam session API now validates current question ids, response counts, and response-question alignment before accepting autosave or submit writes
 
@@ -2322,7 +2340,7 @@ And most importantly, the code is being shaped so that each part of the system h
 Current completion snapshot:
 
 - MVP quality pass: complete for the current checklist
-- Phase 2: roughly halfway complete by roadmap count, with Exam Engine already partially hardened and authentication plus saved-progress infrastructure now complete
-- Overall main-priority delivery in this README: about 73% complete based on the combined MVP checklist and current phase 2 roadmap items
+- Phase 2: more than halfway complete by roadmap count, with Exam Engine, authentication, Power Grid, and saved-progress infrastructure now completed
+- Overall main-priority delivery in this README: about 77% complete based on the combined MVP checklist and current phase 2 roadmap items
 
 That is one of the biggest differences between “a page that works” and “a product that can keep growing.”

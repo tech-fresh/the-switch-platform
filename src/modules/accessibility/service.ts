@@ -25,6 +25,7 @@ export async function updateAccessibilitySettings(
   const updatedProfile = await updateStudentAccessProfile(
     {
       ...currentProfile,
+      preferredReadingSpeed: settings.preferredReadingSpeed,
       preferredFontSize: settings.preferredFontSize,
       preferredColourScheme: settings.preferredColourScheme,
       textToSpeechEnabled: settings.textToSpeechEnabled,
@@ -51,6 +52,7 @@ function mapProfileToAccessibilitySettings(profile: AccessibilitySnapshot["stude
   return {
     userId: profile.userId,
     preferences: profile.accessibilityPreferences,
+    preferredReadingSpeed: profile.preferredReadingSpeed,
     preferredFontSize: profile.preferredFontSize,
     preferredColourScheme: profile.preferredColourScheme,
     focusModeEnabled: profile.accessibilityPreferences.focusModeEnabled ?? false,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ACCESSIBILITY_UPDATED_EVENT } from "@/components/accessibility-runtime";
 import type { ColourSchemePreference } from "@/modules/access-arrangements";
 import type { AccessibilitySnapshot } from "@/modules/accessibility/types";
 import type { Recommendation } from "@/modules/recommendations/types";
@@ -82,6 +83,15 @@ export function AccessibilityExperience({
     }));
   };
 
+  const updateReadingSpeed = (preferredReadingSpeed: number) => {
+    setSaveState("idle");
+    setSpeed(preferredReadingSpeed);
+    setSettings((current) => ({
+      ...current,
+      preferredReadingSpeed,
+    }));
+  };
+
   const handleSaveSettings = async () => {
     setSaveState("saving");
 
@@ -104,6 +114,11 @@ export function AccessibilityExperience({
 
       setSettings(payload.snapshot.settings);
       setAccessProfile(payload.snapshot.studentAccessProfile);
+      window.dispatchEvent(
+        new CustomEvent(ACCESSIBILITY_UPDATED_EVENT, {
+          detail: payload.snapshot,
+        }),
+      );
       setSaveState("saved");
     } catch {
       setSaveState("error");
@@ -257,7 +272,8 @@ export function AccessibilityExperience({
                     <option value="default">Default</option>
                     <option value="high-contrast">High contrast</option>
                     <option value="cream">Cream</option>
-                    <option value="dark">Dark</option>
+                    <option value="blue">Blue</option>
+                    <option value="yellow">Yellow</option>
                   </select>
                   <p className="mt-2 text-2xl font-semibold capitalize text-stone-950">
                     {settings.preferredColourScheme}
@@ -293,10 +309,10 @@ export function AccessibilityExperience({
                 </button>
                 <p className="text-sm text-stone-600">
                   {saveState === "saved"
-                    ? "Saved to the accessibility and access-profile layer."
+                    ? "Saved to the accessibility, access-profile, and read-aloud preference layer."
                     : saveState === "error"
                       ? "Settings could not be saved just yet."
-                      : "Save these settings so future read-aloud and resume flows can reuse them."}
+                      : "Save these settings so future read-aloud, exam, and resume flows can reuse them."}
                 </p>
               </div>
             </article>
@@ -343,12 +359,17 @@ export function AccessibilityExperience({
                       max="1.6"
                       step="0.1"
                       value={speed}
-                      onChange={(event) => setSpeed(Number(event.target.value))}
+                      onChange={(event) => updateReadingSpeed(Number(event.target.value))}
                       className="w-full"
                     />
                     <p className="text-sm text-stone-600">{speed.toFixed(1)}x</p>
                   </label>
                 </div>
+
+                <p className="text-sm leading-6 text-stone-600">
+                  Save this support profile to make the selected reading speed the default for
+                  future read-aloud sessions in exams and timed assessments.
+                </p>
 
                 <div className="flex flex-wrap gap-3">
                   <button

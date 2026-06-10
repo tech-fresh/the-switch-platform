@@ -10,6 +10,7 @@ export type PowerGridLevel =
   | "Switch Legend";
 
 export type PowerGridTrend = "improving" | "stable" | "declining";
+export type PowerGridDataState = "ready" | "degraded";
 
 export interface PowerGridSubjectProgress {
   subject: string;
@@ -31,6 +32,7 @@ export interface PowerGridSubjectProgress {
 }
 
 export interface PowerGridSummary {
+  dataState: PowerGridDataState;
   overallLevel: PowerGridLevel;
   overallTrend: PowerGridTrend;
   examReadinessScore: number;
@@ -43,5 +45,8 @@ export interface PowerGridSummary {
   resumeHref?: string;
   nextBestAction: string;
   nextBestActionHref?: string;
+  recoveryTitle?: string;
+  recoveryDescription?: string;
+  sourceWarnings: string[];
   subjectProgress: PowerGridSubjectProgress[];
 }

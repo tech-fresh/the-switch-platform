@@ -83,9 +83,39 @@ export async function getMockPowerGridSummary(options?: {
     records.length,
   );
   const latestActivityAt = records[0]?.lastActivityAt;
-  const nextBestActionHref = getNextBestActionHref(subjectProgress);
+  const subjectsWithoutEvidence = trackedSubjects.filter(
+    (trackedSubject) => !subjectProgress.some((subject) => normalizeLabel(subject.subject) === normalizeLabel(trackedSubject.subject)),
+  );
+  const sourceWarnings: string[] = [];
+
+  if (trackedSubjects.length === 0) {
+    sourceWarnings.push("No tracked subjects could be assembled from the current seeded papers and timed assessments.");
+  }
+
+  if (subjectsWithoutEvidence.length > 0) {
+    sourceWarnings.push(
+      `${subjectsWithoutEvidence.length} tracked subject${subjectsWithoutEvidence.length === 1 ? "" : "s"} do not yet have safe saved evidence in the Power Grid summary.`,
+    );
+  }
+
+  if (subjectProgress.length === 0) {
+    sourceWarnings.push("No subject progress summaries could be built from the current saved activity.");
+  }
+
+  const dataState = subjectProgress.length === 0 ? "degraded" : "ready";
+  const nextBestAction = getNextBestAction(
+    subjectProgress,
+    sourceWarnings,
+    savedProgressOverview.resumeSessionHref ?? savedProgressOverview.reviewSessionHref,
+  );
+  const nextBestActionHref = getNextBestActionHref(
+    subjectProgress,
+    sourceWarnings,
+    savedProgressOverview.resumeSessionHref ?? savedProgressOverview.reviewSessionHref,
+  );
 
   return {
+    dataState,
     overallLevel: getLevelFromScore(overallReadinessScore),
     overallTrend: getTrendFromScore(overallReadinessScore),
     examReadinessScore: overallReadinessScore,
@@ -96,8 +126,15 @@ export async function getMockPowerGridSummary(options?: {
     accessSnapshotCoverage,
     latestActivityAt,
     resumeHref: savedProgressOverview.resumeSessionHref ?? savedProgressOverview.reviewSessionHref,
-    nextBestAction: getNextBestAction(subjectProgress),
+    nextBestAction,
     nextBestActionHref,
+    recoveryTitle:
+      dataState === "degraded" ? "Power Grid does not have enough reliable saved evidence yet." : undefined,
+    recoveryDescription:
+      dataState === "degraded"
+        ? "The route loaded, but there is not enough safe subject evidence to present a trustworthy readiness breakdown. The safest next step is to resume saved work or start a fresh timed checkpoint to rebuild progress signals."
+        : undefined,
+    sourceWarnings,
     subjectProgress,
   };
 }
@@ -280,7 +317,29 @@ function getTrendFromSubject(
   return "stable";
 }
 
-function getNextBestAction(subjectProgress: PowerGridSubjectProgress[]): string {
+function getNextBestAction(
+  subjectProgress: PowerGridSubjectProgress[],
+  sourceWarnings: string[],
+  resumeHref?: string,
+): string {
+  if (subjectProgress.length === 0) {
+    return resumeHref
+      ? "Resume the latest saved session first so Power Grid can rebuild from a safe evidence trail."
+      : "Start a timed assessment to rebuild the first safe Power Grid signals.";
+  }
+
+  if (sourceWarnings.length > 0) {
+    const activeLowest = [...subjectProgress]
+      .filter((subject) => subject.activeSessionCount > 0)
+      .sort((left, right) => left.readinessScore - right.readinessScore)[0];
+
+    if (activeLowest?.resumeHref) {
+      return `Resume ${activeLowest.subject} first so Power Grid can rely on a stronger saved evidence trail before comparing subjects.`;
+    }
+
+    return "Open saved progress or start a fresh checkpoint before relying on this Power Grid comparison too heavily.";
+  }
+
   const activeLowest = [...subjectProgress]
     .filter((subject) => subject.activeSessionCount > 0)
     .sort((left, right) => left.readinessScore - right.readinessScore)[0];
@@ -306,7 +365,23 @@ function getNextBestAction(subjectProgress: PowerGridSubjectProgress[]): string 
   return `Revise ${lowest.subject} next, starting with ${lowest.recommendedFocus}.`;
 }
 
-function getNextBestActionHref(subjectProgress: PowerGridSubjectProgress[]): string {
+function getNextBestActionHref(
+  subjectProgress: PowerGridSubjectProgress[],
+  sourceWarnings: string[],
+  resumeHref?: string,
+): string {
+  if (subjectProgress.length === 0) {
+    return resumeHref ?? "/assessments";
+  }
+
+  if (sourceWarnings.length > 0) {
+    const activeLowest = [...subjectProgress]
+      .filter((subject) => subject.activeSessionCount > 0)
+      .sort((left, right) => left.readinessScore - right.readinessScore)[0];
+
+    return activeLowest?.resumeHref ?? resumeHref ?? "/saved-progress";
+  }
+
   const activeLowest = [...subjectProgress]
     .filter((subject) => subject.activeSessionCount > 0)
     .sort((left, right) => left.readinessScore - right.readinessScore)[0];

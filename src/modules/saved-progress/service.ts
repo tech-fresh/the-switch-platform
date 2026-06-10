@@ -6,25 +6,46 @@ import type {
   SavedProgressRepository,
   SavedProgressStatus,
 } from "./types";
+import { readSavedProgressRecords, writeSavedProgressRecords } from "@/lib/persistence/saved-progress-store";
 import type { ExamQuestion, ExamQuestionResponse } from "@/modules/exam-engine/types";
 import type { TimedAssessmentQuestion } from "@/modules/timed-assessment/types";
 
-const inMemorySavedProgress = new Map<string, SavedProgressRecord>();
-
 const defaultRepository: SavedProgressRepository = {
   async getByEntityId(userId, entityType, entityId) {
-    return inMemorySavedProgress.get(buildRepositoryKey(userId, entityType, entityId)) ?? null;
+    const records = await readSavedProgressRecords();
+
+    return (
+      records.find(
+        (record) =>
+          record.userId === userId &&
+          record.entityType === entityType &&
+          record.entityId === entityId,
+      ) ?? null
+    );
   },
   async listByUserId(userId) {
-    return [...inMemorySavedProgress.values()]
+    const records = await readSavedProgressRecords();
+
+    return records
       .filter((record) => record.userId === userId)
       .sort((left, right) => right.lastActivityAt.localeCompare(left.lastActivityAt));
   },
   async save(record) {
-    inMemorySavedProgress.set(
-      buildRepositoryKey(record.userId, record.entityType, record.entityId),
-      record,
-    );
+    const repositoryKey = buildRepositoryKey(record.userId, record.entityType, record.entityId);
+    const records = await readSavedProgressRecords();
+    const nextRecords = records
+      .filter(
+        (existingRecord) =>
+          buildRepositoryKey(
+            existingRecord.userId,
+            existingRecord.entityType,
+            existingRecord.entityId,
+          ) !== repositoryKey,
+      )
+      .concat(record)
+      .sort((left, right) => right.lastActivityAt.localeCompare(left.lastActivityAt));
+
+    await writeSavedProgressRecords(nextRecords);
 
     return record;
   },

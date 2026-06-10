@@ -47,6 +47,9 @@ export default async function RecommendationsPage() {
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{insight.label}</p>
               <p className="mt-2 text-2xl font-semibold text-stone-950">{insight.value}</p>
               <p className="mt-2 text-sm leading-6 text-stone-600">{insight.detail}</p>
+              {insight.supportSummary ? (
+                <p className="mt-2 text-sm leading-6 text-stone-700">{insight.supportSummary}</p>
+              ) : null}
             </article>
           ))}
         </section>
@@ -78,6 +81,23 @@ export default async function RecommendationsPage() {
                     <p className="mt-3 text-sm leading-6 text-stone-600">
                       {recommendation.description}
                     </p>
+                    {recommendation.supportSummary ? (
+                      <p className="mt-3 text-sm leading-6 text-stone-700">
+                        {recommendation.supportSummary}
+                      </p>
+                    ) : null}
+                    {recommendation.supportPreferenceChips?.length ? (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {recommendation.supportPreferenceChips.map((chip) => (
+                          <span
+                            key={chip}
+                            className="border border-stone-200 bg-stone-50 px-2 py-1 text-xs font-medium text-stone-700"
+                          >
+                            {chip}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 

@@ -120,7 +120,7 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
 
           <section className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_22rem]">
             <article className="relative overflow-hidden border border-stone-200 bg-white/90 p-6 shadow-sm backdrop-blur sm:p-7">
-              <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-teal-100 blur-3xl" />
+              <div className="switch-decorative absolute right-0 top-0 h-32 w-32 rounded-full bg-teal-100 blur-3xl" />
               <div className="relative space-y-6">
                 <div className="space-y-3">
                   <p className="text-xs font-semibold uppercase tracking-[0.26em] text-teal-700">
@@ -199,6 +199,18 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
               </div>
 
               <p className="text-sm leading-7 text-stone-300">{data.supportSnapshotSummary}</p>
+              {data.supportPreferenceChips.length ? (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {data.supportPreferenceChips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="border border-stone-700 bg-stone-900 px-2 py-1 text-xs font-medium text-stone-200"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
             </aside>
           </section>
 
@@ -264,6 +276,18 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                       <p className="mt-3 text-sm leading-7 text-stone-200">
                         {data.supportSnapshotSummary}
                       </p>
+                      {data.supportPreferenceChips.length ? (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {data.supportPreferenceChips.map((chip) => (
+                            <span
+                              key={chip}
+                              className="border border-stone-700 bg-stone-900 px-2 py-1 text-xs font-medium text-stone-200"
+                            >
+                              {chip}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -404,6 +428,18 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                         <p className="mt-2 text-sm leading-6 text-stone-700">
                           {data.supportSnapshotSummary}
                         </p>
+                        {data.supportPreferenceChips.length ? (
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {data.supportPreferenceChips.map((chip) => (
+                              <span
+                                key={chip}
+                                className="border border-stone-200 bg-stone-50 px-2 py-1 text-xs font-medium text-stone-700"
+                              >
+                                {chip}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                       <div className="rounded-2xl border border-stone-200 bg-white p-4">
                         <div className="flex items-center justify-between gap-3">
@@ -500,6 +536,18 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                         <p>Primary focus: {session.focusLabel}</p>
                         <p>{session.supportLabel}</p>
                       </div>
+                      {session.supportPreferenceChips.length ? (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {session.supportPreferenceChips.map((chip) => (
+                            <span
+                              key={chip}
+                              className="border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700"
+                            >
+                              {chip}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
                       <p className="mt-4 text-sm font-medium text-teal-700">{session.actionLabel}</p>
                     </Link>
                   ))}
@@ -551,6 +599,18 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                         <p>{session.focusLabel}</p>
                         <p>{session.supportLabel}</p>
                       </div>
+                      {session.supportPreferenceChips.length ? (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {session.supportPreferenceChips.map((chip) => (
+                            <span
+                              key={chip}
+                              className="border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700"
+                            >
+                              {chip}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
                       <p className="mt-4 text-sm font-medium text-emerald-700">{session.actionLabel}</p>
                     </Link>
                   ))}

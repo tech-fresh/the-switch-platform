@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+import { getRequestUserId } from "@/modules/auth/request";
 import { getAccessibilitySnapshot, updateAccessibilitySettings } from "@/modules/accessibility/service";
 import type { UpdateAccessibilitySnapshotRequest } from "@/modules/accessibility/contracts";
 
 export async function GET() {
-  const snapshot = await getAccessibilitySnapshot("student-demo");
+  const userId = await getRequestUserId();
+  const snapshot = await getAccessibilitySnapshot(userId);
 
   return NextResponse.json({
     snapshot,
@@ -12,6 +14,7 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
   try {
+    const userId = await getRequestUserId();
     const payload = (await request.json()) as Partial<UpdateAccessibilitySnapshotRequest>;
 
     if (!payload.settings) {
@@ -23,7 +26,10 @@ export async function PATCH(request: Request) {
       );
     }
 
-    const snapshot = await updateAccessibilitySettings(payload.settings);
+    const snapshot = await updateAccessibilitySettings({
+      ...payload.settings,
+      userId,
+    });
 
     return NextResponse.json({
       snapshot,

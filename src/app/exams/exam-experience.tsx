@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { buildAccessibilityPreferenceChips, formatColourSchemeLabel } from "@/modules/accessibility/presentation";
 import type { ExamPaper, ExamQuestion, ExamQuestionResponse, ExamSession } from "@/modules/exam-engine/types";
 import type { ReadAloudSession } from "@/modules/read-aloud/types";
 
@@ -170,6 +172,76 @@ function buildAutosaveSignature(session: ExamSession, currentQuestionId: string)
   });
 }
 
+function ExamClientRecoveryState({
+  title,
+  description,
+  selectedExamTitle,
+}: {
+  title: string;
+  description: string;
+  selectedExamTitle?: string;
+}) {
+  return (
+    <main className="min-h-screen bg-stone-100 text-stone-950">
+      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center gap-8 px-4 py-10 sm:px-6 lg:px-8">
+        <section className="border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">
+            Exam Session Recovery
+          </p>
+          <h1 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
+            {title}
+          </h1>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600 sm:text-base">
+            {description}
+          </p>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="border border-stone-200 bg-stone-50 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Selected paper</p>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                {selectedExamTitle ?? "The requested paper could not be prepared safely."}
+              </p>
+            </div>
+            <div className="border border-stone-200 bg-stone-50 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Safest next step</p>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                Open saved progress to recover the latest known-good session state instead of forcing a broken paper view.
+              </p>
+            </div>
+            <div className="border border-stone-200 bg-stone-50 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Why this matters</p>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                This route now fails safely when question or response data is incomplete, rather than hiding the issue behind a blank screen.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/saved-progress"
+              className="inline-flex items-center justify-center border border-teal-700 bg-teal-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-teal-800"
+            >
+              Open saved progress
+            </Link>
+            <Link
+              href="/results"
+              className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-800 transition hover:bg-stone-50"
+            >
+              Open results
+            </Link>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-800 transition hover:bg-stone-50"
+            >
+              Return to dashboard
+            </Link>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
+
 export function ExamExperience({
   papers,
   sessionSeeds,
@@ -238,6 +310,13 @@ export function ExamExperience({
   const currentReadAloudText = buildQuestionReadAloudText(sessionQuestions, currentQuestionIndex);
   const unansweredCount = sessionQuestions.length - answeredCount;
   const noteCount = session.questionResponses.filter((response) => response.workingNotes?.trim()).length;
+  const supportSnapshot = session.accessArrangements?.accessArrangementApplication.savedProgressSnapshot;
+  const supportPreferenceChips = buildAccessibilityPreferenceChips(supportSnapshot);
+  const adjustedDuration =
+    session.accessArrangements?.accessArrangementApplication.duration.adjustedDurationMinutes ??
+    session.durationMinutes;
+  const extraTimePercentage =
+    session.accessArrangements?.accessArrangementApplication.duration.extraTimePercentage ?? 0;
   const timerAlertTone =
     timeRemainingSeconds <= 300
       ? "text-rose-700"
@@ -472,6 +551,11 @@ export function ExamExperience({
   };
 
   const handleSubmitExam = async () => {
+    if (!currentQuestion) {
+      setSubmitState("error");
+      return;
+    }
+
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
@@ -558,7 +642,13 @@ export function ExamExperience({
   };
 
   if (!paper || !currentQuestion || !currentResponse) {
-    return null;
+    return (
+      <ExamClientRecoveryState
+        title="This exam session is missing part of its live question state."
+        description="The exam route loaded, but the current paper, question, or saved response data is incomplete. The safest recovery is to step back into a stable saved-progress or results path instead of showing a partially broken exam view."
+        selectedExamTitle={paper?.title}
+      />
+    );
   }
 
   return (
@@ -720,6 +810,59 @@ export function ExamExperience({
             <section className="space-y-3 border border-stone-200 bg-white p-4">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                  Active support snapshot
+                </h2>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
+                  {supportSnapshot?.activeAccessArrangements.length
+                    ? `${supportSnapshot.activeAccessArrangements.length} active`
+                    : "preferences ready"}
+                </span>
+              </div>
+              <p className="text-sm leading-6 text-stone-600">
+                This exam is carrying the shared support profile through timing, read aloud, and
+                saved progress so the session matches what the student set elsewhere in the product.
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="border border-stone-200 bg-stone-50 p-3">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Timing</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">
+                    {formatTimer(adjustedDuration)}
+                  </p>
+                  <p className="mt-1 text-sm text-stone-600">
+                    {extraTimePercentage
+                      ? `${extraTimePercentage}% extra time applied`
+                      : "Official duration unchanged"}
+                  </p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-3">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Profile defaults</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">
+                    {supportSnapshot ? `${supportSnapshot.preferredFontSize}px / ${supportSnapshot.preferredReadingSpeed.toFixed(1)}x` : "Waiting for profile"}
+                  </p>
+                  <p className="mt-1 text-sm text-stone-600">
+                    {supportSnapshot
+                      ? `${formatColourSchemeLabel(supportSnapshot.preferredColourScheme)} theme`
+                      : "Support preferences will appear here when attached to the session."}
+                  </p>
+                </div>
+              </div>
+              {supportPreferenceChips.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {supportPreferenceChips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="border border-stone-200 bg-stone-50 px-2 py-1 text-xs font-medium text-stone-700"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </section>
+
+            <section className="space-y-3 border border-stone-200 bg-white p-4">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Read aloud
                 </h2>
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
@@ -730,6 +873,10 @@ export function ExamExperience({
                 {readAloudEnabled
                   ? "Current exam support allows question read aloud through the access arrangement layer."
                   : "Read aloud preview is visible here, even before formal support is switched on."}
+              </p>
+              <p className="text-sm leading-6 text-stone-600">
+                Saved profile default: {supportSnapshot?.preferredReadingSpeed.toFixed(1) ?? readAloudSession.speed.toFixed(1)}x.
+                This panel can temporarily preview a different speed without changing the stored support profile.
               </p>
               <label className="space-y-2">
                 <span className="text-sm font-medium text-stone-700">Voice</span>

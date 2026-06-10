@@ -1,4 +1,8 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
+import {
+  buildAccessibilityPreferenceChips,
+  buildAccessibilitySupportSummary,
+} from "@/modules/accessibility/presentation";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import { getSavedProgressSessionInsights } from "@/modules/saved-progress/insights-service";
 import {
@@ -9,23 +13,25 @@ import { listSavedProgressByUser } from "@/modules/saved-progress/service";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import type { ResultTrend, ResultsOverview, SessionResultSummary } from "./types";
 
-export async function getResultsOverview(): Promise<ResultsOverview> {
+export async function getResultsOverview(userId = "guest-preview"): Promise<ResultsOverview> {
   const [papers, assessments, powerGrid, savedProgressOverview, savedProgressRecords] = await Promise.all([
     Promise.resolve(getMockExamPapers()),
     Promise.resolve(getMockTimedAssessments()),
-    getMockPowerGridSummary(),
-    getSavedProgressOverview(),
-    listSavedProgressByUser("student-demo"),
+    getMockPowerGridSummary({ userId }),
+    getSavedProgressOverview({ userId }),
+    listSavedProgressByUser(userId),
   ]);
 
   await Promise.all([
-    ...papers.map((paper) => getMockExamSession(paper.examId)),
-    ...assessments.map((assessment) => getMockTimedAssessmentAttemptSeed(assessment.assessmentId)),
+    ...papers.map((paper) => getMockExamSession(paper.examId, { userId })),
+    ...assessments.map((assessment) =>
+      getMockTimedAssessmentAttemptSeed(assessment.assessmentId, { userId }),
+    ),
   ]);
 
   const examResults = await Promise.all(
     papers.map(async (paper) => {
-      const session = await getMockExamSession(paper.examId);
+      const session = await getMockExamSession(paper.examId, { userId });
       const savedSession = findSavedProgressSessionSummary(
         savedProgressOverview.sessions,
         "exam-session",
@@ -66,6 +72,8 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
               ? `${noteCount} working note${noteCount === 1 ? "" : "s"} still in progress`
               : "Still active in the exam flow",
         strengths: paper.skillsFocus.slice(0, 2),
+        supportSummary: buildAccessibilitySupportSummary(savedRecord?.accessArrangementSnapshot),
+        supportPreferenceChips: buildAccessibilityPreferenceChips(savedRecord?.accessArrangementSnapshot),
         nextStep: `Return to ${paper.skillsFocus[0]} before attempting the next paper.`,
       });
     }),
@@ -73,7 +81,7 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
 
   const assessmentResults = await Promise.all(
     assessments.map(async (assessment) => {
-      const seed = await getMockTimedAssessmentAttemptSeed(assessment.assessmentId);
+      const seed = await getMockTimedAssessmentAttemptSeed(assessment.assessmentId, { userId });
       const savedSession = findSavedProgressSessionSummary(
         savedProgressOverview.sessions,
         "timed-assessment-attempt",
@@ -116,6 +124,8 @@ export async function getResultsOverview(): Promise<ResultsOverview> {
                 } still open`
               : "Still active in the checkpoint flow",
         strengths: [assessment.subject, "Timed recall"],
+        supportSummary: buildAccessibilitySupportSummary(savedRecord?.accessArrangementSnapshot),
+        supportPreferenceChips: buildAccessibilityPreferenceChips(savedRecord?.accessArrangementSnapshot),
         nextStep: `Use the ${assessment.title} checkpoint again after revision to compare progress.`,
       });
     }),

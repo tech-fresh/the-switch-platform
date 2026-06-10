@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getRequestUserId } from "@/modules/auth/request";
 import {
   getMockTimedAssessmentAttemptSeed,
   saveMockTimedAssessmentAttempt,
@@ -14,6 +15,7 @@ export async function GET(
   context: { params: Promise<{ assessmentId: string }> },
 ) {
   const { assessmentId } = await context.params;
+  const userId = await getRequestUserId();
   const { searchParams } = new URL(request.url);
   const durationMinutesParam = searchParams.get("durationMinutes");
   const parsedDurationMinutes = durationMinutesParam ? Number(durationMinutesParam) : undefined;
@@ -34,6 +36,7 @@ export async function GET(
 
   try {
     const seed = await getMockTimedAssessmentAttemptSeed(assessmentId, {
+      userId,
       selectedDurationMinutes: parsedDurationMinutes,
     });
 
@@ -55,6 +58,7 @@ export async function POST(
   context: { params: Promise<{ assessmentId: string }> },
 ) {
   const { assessmentId } = await context.params;
+  const userId = await getRequestUserId();
   const { searchParams } = new URL(request.url);
   const durationMinutesParam = searchParams.get("durationMinutes");
   const parsedDurationMinutes = durationMinutesParam ? Number(durationMinutesParam) : undefined;
@@ -102,6 +106,7 @@ export async function POST(
       notes: payload.notes,
       bookmarkedQuestionIds: payload.bookmarkedQuestionIds,
       timeRemainingMinutes: payload.timeRemainingMinutes,
+      userId,
     });
 
     return NextResponse.json({
@@ -123,6 +128,7 @@ export async function PATCH(
   context: { params: Promise<{ assessmentId: string }> },
 ) {
   const { assessmentId } = await context.params;
+  const userId = await getRequestUserId();
 
   try {
     const payload = (await request.json()) as Partial<SaveTimedAssessmentAttemptRequest>;
@@ -153,6 +159,7 @@ export async function PATCH(
       notes: payload.notes,
       bookmarkedQuestionIds: payload.bookmarkedQuestionIds,
       timeRemainingMinutes: payload.timeRemainingMinutes,
+      userId,
     });
 
     return NextResponse.json({

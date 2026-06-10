@@ -92,6 +92,7 @@ export interface SavedProgressSessionSummary {
   currentQuestionLabel: string;
   timeRemainingLabel: string;
   supportSummary: string;
+  supportPreferenceChips: string[];
   reviewSummary: string;
 }
 

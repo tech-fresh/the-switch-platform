@@ -110,6 +110,18 @@ export default async function SavedProgressPage() {
                     <p>{session.reviewSummary}</p>
                     <p>{session.supportSummary}</p>
                   </div>
+                  {session.supportPreferenceChips.length ? (
+                    <div className="flex flex-wrap gap-2">
+                      {session.supportPreferenceChips.map((chip) => (
+                        <span
+                          key={chip}
+                          className="border border-stone-200 bg-stone-50 px-2 py-1 text-xs font-medium text-stone-700"
+                        >
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="flex flex-col justify-between gap-4">

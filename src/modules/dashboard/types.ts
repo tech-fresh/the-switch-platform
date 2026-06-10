@@ -27,6 +27,7 @@ export interface DashboardSessionCard {
   timeLabel: string;
   statusLabel: string;
   supportLabel: string;
+  supportPreferenceChips: string[];
   focusLabel: string;
   reviewCount: number;
   actionLabel: string;
@@ -52,4 +53,5 @@ export interface DashboardHomeData {
   weakestSubject?: DashboardFocusCard;
   recommendedAction: string;
   supportSnapshotSummary: string;
+  supportPreferenceChips: string[];
 }

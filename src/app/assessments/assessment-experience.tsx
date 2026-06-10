@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { buildAccessibilityPreferenceChips, formatColourSchemeLabel } from "@/modules/accessibility/presentation";
 import type { ReadAloudSession } from "@/modules/read-aloud/types";
 import type {
   TimedAssessmentAttemptSeed,
@@ -203,6 +204,10 @@ export function AssessmentExperience({
     readAloudSession.accessArrangementConfig?.source ??
     "disabled";
   const currentReadAloudText = buildQuestionReadAloudText(currentQuestion, seed.questions.length);
+  const supportSnapshot = seed.attempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot;
+  const supportPreferenceChips = buildAccessibilityPreferenceChips(supportSnapshot);
+  const extraTimePercentage =
+    seed.attempt.accessArrangements?.accessArrangementApplication.duration.extraTimePercentage ?? 0;
   const timerAlertTone =
     timeRemainingSeconds <= 300
       ? "text-rose-700"
@@ -986,6 +991,59 @@ export function AssessmentExperience({
             <section className="space-y-3 border border-stone-200 bg-white p-4">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                  Active support snapshot
+                </h2>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                  {supportSnapshot?.activeAccessArrangements.length
+                    ? `${supportSnapshot.activeAccessArrangements.length} active`
+                    : "preferences ready"}
+                </span>
+              </div>
+              <p className="text-sm leading-6 text-stone-600">
+                This checkpoint now shows the saved support profile that is travelling with the live
+                attempt, so timing and accessibility settings are visible inside the active route.
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="border border-stone-200 bg-stone-50 p-3">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Timing</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">
+                    {formatTimer(seed.attempt.adjustedDurationMinutes)}
+                  </p>
+                  <p className="mt-1 text-sm text-stone-600">
+                    {extraTimePercentage
+                      ? `${extraTimePercentage}% extra time applied`
+                      : "Manual duration unchanged"}
+                  </p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-3">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Profile defaults</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">
+                    {supportSnapshot ? `${supportSnapshot.preferredFontSize}px / ${supportSnapshot.preferredReadingSpeed.toFixed(1)}x` : "Waiting for profile"}
+                  </p>
+                  <p className="mt-1 text-sm text-stone-600">
+                    {supportSnapshot
+                      ? `${formatColourSchemeLabel(supportSnapshot.preferredColourScheme)} theme`
+                      : "Support preferences will appear here when attached to the attempt."}
+                  </p>
+                </div>
+              </div>
+              {supportPreferenceChips.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {supportPreferenceChips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="border border-stone-200 bg-stone-50 px-2 py-1 text-xs font-medium text-stone-700"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </section>
+
+            <section className="space-y-3 border border-stone-200 bg-white p-4">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Read aloud
                 </h2>
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
@@ -996,6 +1054,10 @@ export function AssessmentExperience({
                 {readAloudEnabled
                   ? "This checkpoint can read the current question aloud through the access-arrangements layer."
                   : "Read aloud preview is available here even before formal support is switched on."}
+              </p>
+              <p className="text-sm leading-6 text-stone-600">
+                Saved profile default: {supportSnapshot?.preferredReadingSpeed.toFixed(1) ?? readAloudSession.speed.toFixed(1)}x.
+                This panel can temporarily preview a different speed without changing the stored support profile.
               </p>
               <label className="space-y-2">
                 <span className="text-sm font-medium text-stone-700">Voice</span>

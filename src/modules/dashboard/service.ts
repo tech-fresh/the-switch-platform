@@ -1,4 +1,8 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
+import {
+  buildAccessibilityPreferenceChips,
+  buildAccessibilitySupportSummary,
+} from "@/modules/accessibility/presentation";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import {
   findSavedProgressSessionSummary,
@@ -13,21 +17,24 @@ import type {
   DashboardSessionCard,
 } from "./types";
 
-export async function getDashboardHomeData(): Promise<DashboardHomeData> {
+export async function getDashboardHomeData(userId = "guest-preview"): Promise<DashboardHomeData> {
   const [summary, savedProgress] = await Promise.all([
-    getMockPowerGridSummary(),
-    getSavedProgressOverview(),
+    getMockPowerGridSummary({ userId }),
+    getSavedProgressOverview({ userId }),
   ]);
   const papers = getMockExamPapers();
   const assessments = getMockTimedAssessments();
 
   const examSessions = await Promise.all(
-    papers.map(async (paper) => ({ paper, session: await getMockExamSession(paper.examId) })),
+    papers.map(async (paper) => ({
+      paper,
+      session: await getMockExamSession(paper.examId, { userId }),
+    })),
   );
   const assessmentSessions = await Promise.all(
     assessments.map(async (assessment) => ({
       assessment,
-      seed: await getMockTimedAssessmentAttemptSeed(assessment.assessmentId),
+      seed: await getMockTimedAssessmentAttemptSeed(assessment.assessmentId, { userId }),
     })),
   );
 
@@ -171,6 +178,9 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
     );
     const status = matchingSavedSession?.status === "submitted" ? "submitted" : "in-progress";
 
+    const supportSnapshot =
+      session.accessArrangements?.accessArrangementApplication.savedProgressSnapshot;
+
     return {
       sessionId: session.examSessionId,
       href: matchingSavedSession?.href ?? "/exams",
@@ -191,10 +201,11 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
             : "No flagged questions",
       supportLabel:
         supportCount > 0
-          ? `${supportCount} support adjustments active`
+          ? buildAccessibilitySupportSummary(supportSnapshot)
           : readAloudEnabled
             ? "Read aloud enabled"
             : "Support-ready through access profile layer",
+      supportPreferenceChips: buildAccessibilityPreferenceChips(supportSnapshot),
       focusLabel: paper.skillsFocus[0] ?? "Exam focus available",
       reviewCount: flaggedCount,
       actionLabel: status === "submitted" ? "Reopen review" : "Resume paper",
@@ -212,6 +223,8 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
         seed.attempt.attemptId,
       );
       const status = matchingSavedSession?.status === "submitted" ? "submitted" : "in-progress";
+      const supportSnapshot =
+        seed.attempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot;
 
       return {
         sessionId: seed.attempt.attemptId,
@@ -231,9 +244,10 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
                 seed.bookmarkedQuestionIds.length === 1 ? "" : "s"
               } saved with the attempt`
             : `${seed.bookmarkedQuestionIds.length} bookmarked checkpoint items`,
-        supportLabel: seed.attempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot
-          ? "Access snapshot captured for resume"
+        supportLabel: supportSnapshot
+          ? buildAccessibilitySupportSummary(supportSnapshot)
           : "No access snapshot yet",
+        supportPreferenceChips: buildAccessibilityPreferenceChips(supportSnapshot),
         focusLabel: seed.currentQuestionId ? `Resume from ${seed.currentQuestionId}` : "Ready to start",
         reviewCount: seed.bookmarkedQuestionIds.length,
         actionLabel: status === "submitted" ? "Reopen review" : "Resume checkpoint",
@@ -262,6 +276,9 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
   const readAloudReadyCount = examSessions.filter(
     ({ session }) => session.accessArrangements?.accessArrangementApplication.readAloud.enabled,
   ).length;
+  const latestSupportSnapshot =
+    savedProgress.sessions.find((session) => session.supportPreferenceChips.length > 0)
+      ?.supportPreferenceChips ?? [];
 
   return {
     summary,
@@ -277,6 +294,7 @@ export async function getDashboardHomeData(): Promise<DashboardHomeData> {
       readAloudReadyCount > 0
         ? `${readAloudReadyCount} active exam sessions already have read aloud enabled.`
         : "Saved progress already stores access snapshots, so future support settings can travel with the student session.",
+    supportPreferenceChips: latestSupportSnapshot,
   };
 }
 

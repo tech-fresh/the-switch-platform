@@ -113,6 +113,19 @@ export default async function ResultsPage() {
                     <p className="mt-4 text-sm leading-6 text-stone-700">
                       Strengths: {result.strengths.join(", ")}
                     </p>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{result.supportSummary}</p>
+                    {result.supportPreferenceChips.length ? (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {result.supportPreferenceChips.map((chip) => (
+                          <span
+                            key={chip}
+                            className="border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700"
+                          >
+                            {chip}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                     <p className="mt-2 text-sm leading-6 text-stone-700">{result.reviewLabel}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{result.nextStep}</p>
                     <div className="mt-4">
@@ -168,6 +181,19 @@ export default async function ResultsPage() {
                     <p className="mt-4 text-sm leading-6 text-stone-700">
                       Strengths: {result.strengths.join(", ")}
                     </p>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{result.supportSummary}</p>
+                    {result.supportPreferenceChips.length ? (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {result.supportPreferenceChips.map((chip) => (
+                          <span
+                            key={chip}
+                            className="border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700"
+                          >
+                            {chip}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                     <p className="mt-2 text-sm leading-6 text-stone-700">{result.reviewLabel}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{result.nextStep}</p>
                     <div className="mt-4">

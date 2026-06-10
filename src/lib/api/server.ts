@@ -41,8 +41,12 @@ async function getRequestOrigin(): Promise<string> {
 
 async function fetchApiJson<T>(path: string): Promise<T> {
   const origin = await getRequestOrigin();
+  const headerStore = await headers();
   const response = await fetch(`${origin}${path}`, {
     cache: "no-store",
+    headers: {
+      cookie: headerStore.get("cookie") ?? "",
+    },
   });
 
   if (!response.ok) {

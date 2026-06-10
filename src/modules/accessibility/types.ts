@@ -7,6 +7,7 @@ import type {
 export interface AccessibilitySettings {
   userId: string;
   preferences: AccessibilityPreferences;
+  preferredReadingSpeed: number;
   preferredFontSize: number;
   preferredColourScheme: ColourSchemePreference;
   focusModeEnabled: boolean;

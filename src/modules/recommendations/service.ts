@@ -1,4 +1,8 @@
 import { getAccessibilitySnapshot } from "@/modules/accessibility/service";
+import {
+  buildAccessibilityPreferenceChips,
+  buildAccessibilitySupportSummary,
+} from "@/modules/accessibility/presentation";
 import { getRouteCopy } from "@/modules/language/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import { getResultsOverview } from "@/modules/results/service";
@@ -7,10 +11,10 @@ import type { Recommendation, RecommendationsPageData } from "./types";
 
 export async function getStudentRecommendations(userId: string): Promise<Recommendation[]> {
   const [summary, accessibility, savedProgress, results, routeCopy] = await Promise.all([
-    getMockPowerGridSummary(),
+    getMockPowerGridSummary({ userId }),
     getAccessibilitySnapshot(userId),
     getSavedProgressOverview({ userId }),
-    getResultsOverview(),
+    getResultsOverview(userId),
     getRouteCopy(),
   ]);
   const lowestSubject = [...summary.subjectProgress].sort(
@@ -22,6 +26,32 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
   const activeSavedSession = savedProgress.sessions.find((session) => session.status !== "submitted");
   const submittedSavedSession = savedProgress.sessions.find((session) => session.status === "submitted");
   const hasReviewReadyResults = results.readyForReviewCount > 0;
+  const supportSummary = buildAccessibilitySupportSummary(
+    accessibility.studentAccessProfile
+      ? {
+          activeAccessArrangements: accessibility.studentAccessProfile.activeAccessArrangements,
+          preferredReadingSpeed: accessibility.studentAccessProfile.preferredReadingSpeed,
+          preferredFontSize: accessibility.studentAccessProfile.preferredFontSize,
+          preferredColourScheme: accessibility.studentAccessProfile.preferredColourScheme,
+          textToSpeechEnabled: accessibility.studentAccessProfile.textToSpeechEnabled,
+          accessibilityPreferences: accessibility.studentAccessProfile.accessibilityPreferences,
+          capturedAt: new Date().toISOString(),
+        }
+      : undefined,
+  );
+  const supportPreferenceChips = buildAccessibilityPreferenceChips(
+    accessibility.studentAccessProfile
+      ? {
+          activeAccessArrangements: accessibility.studentAccessProfile.activeAccessArrangements,
+          preferredReadingSpeed: accessibility.studentAccessProfile.preferredReadingSpeed,
+          preferredFontSize: accessibility.studentAccessProfile.preferredFontSize,
+          preferredColourScheme: accessibility.studentAccessProfile.preferredColourScheme,
+          textToSpeechEnabled: accessibility.studentAccessProfile.textToSpeechEnabled,
+          accessibilityPreferences: accessibility.studentAccessProfile.accessibilityPreferences,
+          capturedAt: new Date().toISOString(),
+        }
+      : undefined,
+  );
 
   return [
     {
@@ -55,6 +85,8 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
         : submittedSavedSession
           ? "Your latest completed session is ready to review through the results flow."
           : "As soon as a student starts an exam or assessment, autosave records will appear here.",
+      supportSummary: activeSavedSession?.supportSummary,
+      supportPreferenceChips: activeSavedSession?.supportPreferenceChips,
       actionLabel: activeSavedSession
         ? routeCopy["/saved-progress"].label
         : submittedSavedSession
@@ -98,6 +130,8 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
       description: accessibility.settings.textToSpeechEnabled
         ? "Your current profile is already ready to carry text-to-speech through saved sessions."
         : "Set text size, focus mode, and read aloud preferences so support settings travel with saved progress.",
+      supportSummary,
+      supportPreferenceChips,
       actionLabel: routeCopy["/accessibility"].label,
       href: "/accessibility",
       priority: "medium",
@@ -121,13 +155,23 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
 }
 
 export async function getRecommendationsPageData(userId: string): Promise<RecommendationsPageData> {
-  const [summary, savedProgress, results, routes, recommendations] = await Promise.all([
-    getMockPowerGridSummary(),
+  const [summary, accessibility, savedProgress, results, routes, recommendations] = await Promise.all([
+    getMockPowerGridSummary({ userId }),
+    getAccessibilitySnapshot(userId),
     getSavedProgressOverview({ userId }),
-    getResultsOverview(),
+    getResultsOverview(userId),
     getRouteCopy(),
     getStudentRecommendations(userId),
   ]);
+  const supportSummary = buildAccessibilitySupportSummary({
+    activeAccessArrangements: accessibility.studentAccessProfile.activeAccessArrangements,
+    preferredReadingSpeed: accessibility.studentAccessProfile.preferredReadingSpeed,
+    preferredFontSize: accessibility.studentAccessProfile.preferredFontSize,
+    preferredColourScheme: accessibility.studentAccessProfile.preferredColourScheme,
+    textToSpeechEnabled: accessibility.studentAccessProfile.textToSpeechEnabled,
+    accessibilityPreferences: accessibility.studentAccessProfile.accessibilityPreferences,
+    capturedAt: new Date().toISOString(),
+  });
 
   return {
     title: "Student recommendations built from readiness, autosave, support, and results signals.",
@@ -162,6 +206,12 @@ export async function getRecommendationsPageData(userId: string): Promise<Recomm
                 results.readyForReviewCount === 1 ? "" : "s"
               } ready to open`
             : results.nextPriority,
+      },
+      {
+        label: "Support profile",
+        value: accessibility.settings.textToSpeechEnabled ? "Support active" : "Support ready",
+        detail: supportSummary,
+        supportSummary,
       },
     ],
     recommendations,

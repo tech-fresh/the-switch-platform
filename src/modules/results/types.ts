@@ -15,6 +15,8 @@ export interface SessionResultSummary {
   reviewLabel: string;
   trend: ResultTrend;
   strengths: string[];
+  supportSummary: string;
+  supportPreferenceChips: string[];
   nextStep: string;
 }
 

@@ -7,6 +7,7 @@ export type CmsContentKind = "subject" | "topic" | "revision" | "quiz";
 export type ContentPublicationStatus = "draft" | "published" | "scheduled";
 
 export type ContentSyncStatus = "healthy" | "warning" | "planned";
+export type ReleaseCheckStatus = "complete" | "in-progress" | "watch";
 
 export interface CmsContentReference {
   contentId: string;
@@ -32,6 +33,22 @@ export interface CmsProvider {
   nextStep: string;
 }
 
+export interface CmsReleaseCheck {
+  checkId: string;
+  label: string;
+  status: ReleaseCheckStatus;
+  detail: string;
+}
+
+export interface CmsReleaseChecklistModule {
+  moduleId: string;
+  title: string;
+  priorityOrder: number;
+  summary: string;
+  status: ReleaseCheckStatus;
+  checks: CmsReleaseCheck[];
+}
+
 export interface CmsOverview {
   providers: CmsProvider[];
   content: CmsContentReference[];
@@ -41,4 +58,5 @@ export interface CmsOverview {
   blockedCount: number;
   editorialAudit: ContentEditorialAudit;
   nextUpdatePlan: string;
+  releaseChecklist: CmsReleaseChecklistModule[];
 }

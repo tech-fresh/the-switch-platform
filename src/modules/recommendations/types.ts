@@ -13,6 +13,8 @@ export interface Recommendation {
   eyebrow?: string;
   title: string;
   description: string;
+  supportSummary?: string;
+  supportPreferenceChips?: string[];
   actionLabel: string;
   href: string;
   priority: "high" | "medium" | "low";
@@ -22,6 +24,7 @@ export interface RecommendationInsight {
   label: string;
   value: string;
   detail: string;
+  supportSummary?: string;
 }
 
 export interface RecommendationsPageData {

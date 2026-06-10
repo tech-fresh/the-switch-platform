@@ -12,6 +12,18 @@ function getSyncClasses(status: "healthy" | "warning" | "planned"): string {
   return "border-stone-300 bg-stone-50 text-stone-800";
 }
 
+function getReleaseCheckClasses(status: "complete" | "in-progress" | "watch"): string {
+  if (status === "complete") {
+    return "border-emerald-300 bg-emerald-50 text-emerald-950";
+  }
+
+  if (status === "in-progress") {
+    return "border-amber-300 bg-amber-50 text-amber-950";
+  }
+
+  return "border-stone-300 bg-stone-50 text-stone-800";
+}
+
 export default async function AdminPage() {
   const [cms, papers] = await Promise.all([
     getCmsOverviewApiData(),
@@ -54,6 +66,46 @@ export default async function AdminPage() {
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="grid gap-6">
+            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+              <div className="border-b border-stone-200 pb-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                  MVP release checklist
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  Priority modules checked against the current release rule
+                </h2>
+              </div>
+              <div className="mt-5 grid gap-4">
+                {cms.releaseChecklist.map((module) => (
+                  <article key={module.moduleId} className="border border-stone-200 bg-stone-50 p-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getReleaseCheckClasses(module.status)}`}>
+                        {module.status}
+                      </span>
+                      <span className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                        Priority {module.priorityOrder}
+                      </span>
+                    </div>
+                    <h3 className="mt-4 text-lg font-semibold text-stone-950">{module.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{module.summary}</p>
+                    <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                      {module.checks.map((check) => (
+                        <div key={check.checkId} className="border border-stone-200 bg-white p-3">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className={`border px-2 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] ${getReleaseCheckClasses(check.status)}`}>
+                              {check.status}
+                            </span>
+                          </div>
+                          <p className="mt-3 text-sm font-semibold text-stone-950">{check.label}</p>
+                          <p className="mt-2 text-sm leading-6 text-stone-600">{check.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </article>
+
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">

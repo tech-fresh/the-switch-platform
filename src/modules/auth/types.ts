@@ -10,13 +10,19 @@ export interface AuthUser {
   targetQualifications: string[];
 }
 
-export interface AuthSession {
+export interface AuthenticatedAuthSession {
   sessionId: string;
   user: AuthUser;
   provider: AuthProvider;
   signedInAt: string;
-  status: "authenticated" | "signed-out";
+  status: "authenticated";
 }
+
+export interface SignedOutAuthSession {
+  status: "signed-out";
+}
+
+export type AuthSession = AuthenticatedAuthSession | SignedOutAuthSession;
 
 export interface SignInOption {
   provider: AuthProvider;
@@ -37,10 +43,13 @@ export interface AccountLink {
 }
 
 export interface AccountOverview {
+  isAuthenticated: boolean;
   session: AuthSession;
   signInOptions: SignInOption[];
   metrics: AccountMetric[];
   quickLinks: AccountLink[];
   supportSummary: string;
   nextBestAction: string;
+  signedOutTitle: string;
+  signedOutDescription: string;
 }

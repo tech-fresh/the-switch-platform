@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AccountAuthControls } from "@/components/account-auth-controls";
 import { getAccountOverviewApiData } from "@/lib/api/server";
 
 function formatSignedInAt(timestamp: string): string {
@@ -12,6 +13,8 @@ function formatSignedInAt(timestamp: string): string {
 
 export default async function AccountPage() {
   const account = await getAccountOverviewApiData();
+  const authenticatedSession =
+    account.session.status === "authenticated" ? account.session : null;
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -23,23 +26,45 @@ export default async function AccountPage() {
             </p>
             <div className="space-y-3">
               <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Signed-in student identity, quick account actions, and product-linked support in one route.
+                {account.isAuthenticated
+                  ? "Signed-in student identity, quick account actions, and product-linked support in one route."
+                  : account.signedOutTitle}
               </h1>
               <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                This slice gives the MVP a real account option. Identity stays inside the auth
-                module, while the website reads an account overview model that can later be served
-                through an API to mobile and web clients alike.
+                {account.isAuthenticated
+                  ? "This slice gives the MVP a real account option. Identity stays inside the auth module, while the website reads an account overview model that can later be served through an API to mobile and web clients alike."
+                  : account.signedOutDescription}
               </p>
             </div>
           </div>
 
           <div className="space-y-3 border border-stone-200 bg-white p-4">
             <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Current session</p>
-            <p className="text-lg font-semibold text-stone-950">{account.session.user.displayName}</p>
-            <p className="text-sm text-stone-600">{account.session.user.email}</p>
-            <p className="text-sm text-stone-600">
-              Signed in via {account.session.provider} at {formatSignedInAt(account.session.signedInAt)}
-            </p>
+            {authenticatedSession ? (
+              <>
+                <p className="text-lg font-semibold text-stone-950">
+                  {authenticatedSession.user.displayName}
+                </p>
+                <p className="text-sm text-stone-600">{authenticatedSession.user.email}</p>
+                <p className="text-sm text-stone-600">
+                  Signed in via {authenticatedSession.provider} at{" "}
+                  {formatSignedInAt(authenticatedSession.signedInAt)}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-lg font-semibold text-stone-950">Signed out</p>
+                <p className="text-sm text-stone-600">
+                  Sign in to keep progress, support settings, and resume links tied to one student account.
+                </p>
+              </>
+            )}
+            <div className="pt-2">
+              <AccountAuthControls
+                isAuthenticated={account.isAuthenticated}
+                signInOptions={account.signInOptions}
+              />
+            </div>
           </div>
         </section>
 
@@ -61,7 +86,9 @@ export default async function AccountPage() {
                   Account-linked study actions
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
-                  Jump back into the product from one signed-in home
+                  {account.isAuthenticated
+                    ? "Jump back into the product from one signed-in home"
+                    : "Preview the routes that become account-linked after sign-in"}
                 </h2>
               </div>
               <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -92,6 +119,11 @@ export default async function AccountPage() {
                       </div>
                     ))}
                   </div>
+                  {!account.isAuthenticated ? (
+                    <p className="mt-4 text-sm leading-6 text-stone-600">
+                      Use any provider above to start the same seeded student profile through a real cookie-backed session.
+                    </p>
+                  ) : null}
                 </div>
 
                 <div>
@@ -116,7 +148,7 @@ export default async function AccountPage() {
                 What this route proves
               </h2>
               <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
-                <li>Student identity now has a real modular home in the MVP.</li>
+                <li>Student identity now has a real cookie-backed session flow instead of a hardcoded signed-in default.</li>
                 <li>Account data can aggregate module outputs without moving their logic into the page.</li>
                 <li>Website and future mobile clients can consume the same account contracts through an API layer.</li>
               </ul>

@@ -1102,7 +1102,7 @@ Purpose:
 
 Current work:
 
-- mock signed-in student session
+- local cookie-backed auth session with signed-in and signed-out states
 - sign-in provider metadata
 - student account overview model
 - framework-neutral auth/account contracts
@@ -1300,7 +1300,7 @@ Current work:
 
 - saved exam progress payloads
 - saved timed assessment payloads
-- in-memory repository
+- local file-backed repository
 - save helpers
 - progress status handling
 
@@ -1432,9 +1432,9 @@ src/
 Right now the project uses:
 
 - mock data
-- in-memory saved progress
-- no real database
-- mock signed-in account data
+- local file-backed saved progress
+- no shared production database yet
+- local cookie-backed auth session with a seeded student profile
 - real thin API routes over module services
 - no real CMS data entry yet
 - no enforced editorial fact-check and approval workflow yet
@@ -1526,8 +1526,8 @@ What still needs to be true before this project can be launched with confidence?
 
 ### Must-have before launch
 
-- real authentication end to end
-- real persistence instead of in-memory saved progress
+- production authentication provider integration and security hardening
+- production persistence instead of local file-backed prototype storage
 - write-side API coverage for important student actions
 - enforced fact-check, editorial review, and publish gating for student-facing content
 - CMS or controlled content update workflow
@@ -1577,8 +1577,8 @@ What still needs to be true before this project can be launched with confidence?
 
 ### Shortest realistic launch sequence
 
-1. real persistence
-2. real auth
+1. production persistence
+2. production auth provider integration
 3. editorial fact-check and publish workflow
 4. write-side APIs
 5. results and marking hardening
@@ -1727,7 +1727,7 @@ This keeps the CMS/Admin module as a placeholder while still enforcing the
 important rule: unreviewed or draft content should not silently reach student
 clients.
 
-### 12. Editorial-gated subject delivery and admin visibility
+### 12. Editorial-gated subject delivery and admin visibility (Completed)
 
 The next implemented stage pushed the content workflow further into the live
 student and admin routes rather than leaving it only as a catalog-side idea.
@@ -1744,7 +1744,7 @@ This matters because the website now behaves like a product with publication
 rules, not just a set of routes reading any seeded content that happens to
 exist in the repo.
 
-### 13. Saved-state scoring and live exam countdown
+### 13. Saved-state scoring and live exam countdown (Completed)
 
 The exam, results, and Power Grid flow now follows saved session state more
 closely, and the exam route now behaves more like a real timed paper.
@@ -1763,7 +1763,7 @@ This matters because official-duration exam behaviour should feel trustworthy,
 and downstream progress or results logic should reflect the actual final session
 state rather than a stale autosave snapshot.
 
-### 14. Timed assessment session parity
+### 14. Timed assessment session parity (Completed)
 
 The timed assessment route has now moved beyond a summary-only checkpoint and
 into a real saved session flow.
@@ -1782,7 +1782,7 @@ Added work includes:
 This matters because timed practice now behaves more like a real student
 workflow and no longer sits behind the exam route as a lighter placeholder.
 
-### 15. Accessibility settings persistence
+### 15. Accessibility settings persistence (Completed)
 
 The accessibility route now saves support settings through the API and module
 layer instead of behaving like a page-only preview.
@@ -1798,7 +1798,7 @@ Added work includes:
 This matters because support settings now behave more like real student
 preferences that can travel into future read-aloud and saved-session flows.
 
-### 16. Timed assessment result-source consistency
+### 16. Timed assessment result-source consistency (Completed)
 
 Timed assessment results now score from the saved checkpoint question set rather
 than from a separate hardcoded answer map.
@@ -1813,7 +1813,7 @@ Added work includes:
 This matters because scoring should come from the same module-owned session data
 that the student actually used, not from a second disconnected result-only map.
 
-### 17. Actionable results routing
+### 17. Actionable results routing (Completed)
 
 The results route now links students back into the right study flow instead of
 only summarising what happened.
@@ -1827,7 +1827,7 @@ Added work includes:
 This matters because outcome screens should help students act on their work,
 not just read a score and stop there.
 
-### 18. Dashboard session priority and state clarity
+### 18. Dashboard session priority and state clarity (Completed)
 
 The dashboard now prioritises the most relevant active session first and shows
 clearer session state on the student home surface.
@@ -1842,7 +1842,7 @@ Added work includes:
 This matters because the student home surface should guide the next real action,
 not accidentally treat completed work as the primary resume target.
 
-### 19. Timed assessment deep-link resume reliability
+### 19. Timed assessment deep-link resume reliability (Completed)
 
 Timed assessment resume links now reopen the intended question instead of only
 the intended assessment and duration.
@@ -1855,6 +1855,239 @@ Added work includes:
 
 This matters because an autosave resume flow is not fully trustworthy if it
 reopens the right session but the wrong question.
+
+### 20. Shared read-aloud speed preference (Completed)
+
+The accessibility route now saves the student's preferred read-aloud speed into
+the shared support profile rather than treating speed as a page-only preview
+control.
+
+Added work includes:
+
+- accessibility settings now persisting preferred read-aloud speed through the same profile-backed save path
+- the accessibility route now making it clearer that saved speed becomes the default for later study sessions
+- exam, timed assessment, and other read-aloud sessions now able to start from the same stored reading-speed preference
+
+This matters because read-aloud support should feel continuous across routes,
+not reset to a local preview preference whenever the student opens a new
+session.
+
+### 21. Live support snapshot in active exam and checkpoint flows (Completed)
+
+The exam and timed assessment routes now surface the actual support snapshot
+that is attached to the live session instead of leaving those preferences
+implicit behind the scenes.
+
+Added work includes:
+
+- active exam and timed checkpoint sidebars now showing timing adjustments from the shared support layer
+- saved profile defaults for text size, reading speed, and colour scheme now visible inside those live routes
+- support preference chips now making focus mode, reduced distraction, high contrast, and related settings visible during active work
+- read-aloud panels now clarifying the difference between the saved default speed and a temporary preview speed change
+
+This matters because accessibility support should be visible and trustworthy in
+the routes where students actually work, not only in the settings screen.
+
+### 22. Support snapshot carry-over in results and saved progress (Completed)
+
+Results and saved-progress summaries now show the saved support context in a
+student-readable way instead of reducing it to a hidden count.
+
+Added work includes:
+
+- results cards now showing saved support summaries and support preference chips alongside outcome data
+- saved-progress session cards now exposing the same readable support snapshot and preference carry-over details
+- support-summary formatting now living in a shared presentation helper so active and post-session routes stay aligned
+
+This matters because students should still be able to see which support profile
+was active after submission and during resume decisions, not only while the
+session is live.
+
+### 23. Support visibility on dashboard and recommendations (Completed)
+
+The dashboard and recommendations surfaces now carry the same readable support
+snapshot language forward into the pre-session decision points.
+
+Added work includes:
+
+- dashboard support summaries and session cards now showing support preference chips alongside existing progress signals
+- recommendations now surfacing saved support context in both route insights and relevant recommendation cards
+- shared support-summary helpers now connecting accessibility, saved progress, results, dashboard, and recommendations through one presentation layer
+
+This matters because the student should be able to see support context before
+starting work, while working, and after submission without each route inventing
+its own different wording.
+
+### 24. Power Grid degraded-state recovery (Completed)
+
+The Power Grid route now distinguishes between a trustworthy readiness summary
+and a degraded evidence state instead of treating both cases as a normal loaded
+progress view.
+
+Added work includes:
+
+- Power Grid summaries now exposing a data-state flag, recovery copy, and source warnings
+- the `/progress` route now showing a recovery screen when there is not enough safe subject evidence to build a trustworthy readiness breakdown
+- the normal progress surface now showing data-watch warnings when evidence is partial rather than silently pretending the summary is complete
+
+This matters because readiness guidance should fail safely when linked evidence
+is incomplete, not keep presenting a confident-looking progress surface with
+missing foundations.
+
+### 25. Cautious Power Grid next-step routing (Completed)
+
+Power Grid next-step guidance now becomes more conservative when the evidence is
+partial instead of giving a normal-looking confident recommendation.
+
+Added work includes:
+
+- Power Grid next-best-action wording now prefers rebuilding a safer saved evidence trail when source warnings are present
+- Power Grid next-step hrefs now fall back toward saved-progress recovery rather than overcommitting to a normal comparison flow
+- downstream surfaces that consume Power Grid guidance now inherit that more cautious recommendation automatically
+
+This matters because the route should not give the student a high-confidence
+"do this next" message when the evidence behind the comparison is still
+incomplete.
+
+## Phase 2 Roadmap
+
+This is the next phase after the current MVP-quality pass. The goal is to harden
+the highest-priority modules and replace prototype infrastructure without losing
+the modular architecture.
+
+Current roadmap snapshot:
+
+- MVP Quality Checklist: 6 of 6 complete for the current MVP pass (100%)
+- Phase 2 Roadmap: 3 completed, 1 partially hardened, 3 still upcoming (about 50% of phase 2 by roadmap count)
+- Main priority picture across the MVP checklist plus phase 2 roadmap: 9.5 of 13 major items completed or meaningfully hardened (about 73%)
+
+### 1. Exam Engine hardening
+
+Priority reason:
+
+- this remains the highest-priority product slice in the MVP order
+
+Main goals:
+
+- safer fallback and degraded-state handling when paper or session data is missing
+- stronger error-state recovery across live exam flows
+- deeper post-submit marking and review quality later in the phase
+
+Current phase 2 progress:
+
+- `/exams` now has a recovery surface when paper or seeded session loading fails instead of assuming the live paper is always available
+- the live exam client now shows a recovery state when the current paper, question, or response payload is incomplete instead of failing to a blank screen
+- the exam session API now validates current question ids, response counts, and response-question alignment before accepting autosave or submit writes
+
+### 2. Power Grid hardening (Completed)
+
+Main goals:
+
+- clearer degraded-state handling when linked saved or result data is incomplete
+- safer next-action decisions when upstream evidence is partial
+
+Current phase 2 progress:
+
+- `/progress` now has an explicit degraded-state recovery surface when there is not enough safe subject evidence to build a trustworthy readiness summary
+- Power Grid summaries now carry source warnings so partial evidence is visible rather than implied
+- Power Grid next-step guidance now becomes more cautious when those warnings are present
+
+### 3. Saved Progress infrastructure (Completed)
+
+Main goals:
+
+- replace in-memory persistence with real storage
+- keep current resume and review guarantees while moving to more durable persistence
+
+Current phase 2 progress:
+
+- the default saved-progress repository now reads and writes a local JSON-backed store instead of depending on in-memory-only state
+- saved progress records still preserve the current normalization, support snapshot, resume, and review guarantees across local restarts
+
+### 26. Local file-backed saved progress persistence (Completed)
+
+Saved progress now survives local restarts through a file-backed store instead of
+resetting whenever the app process starts over.
+
+Added work includes:
+
+- the default saved-progress repository now reads and writes a local JSON persistence file for prototype flows
+- writes replace older records for the same user and entity key before saving the latest normalized state
+- saved-progress module docs now describe the file-backed prototype store
+- local persistence artifacts are ignored from git so the prototype storage stays local-only
+
+This matters because resume and review behaviour should remain available through
+normal local development restarts while the platform is still waiting for
+production-grade shared persistence.
+
+### 4. Real authentication (Completed)
+
+Main goals:
+
+- replace mock signed-in state with real end-to-end auth
+- keep account-linked support and saved-progress routing consistent
+
+Current phase 2 progress:
+
+- auth sessions now use a real cookie-backed local session flow instead of a hardcoded signed-in default
+- account, dashboard, progress, saved-progress, recommendations, results, read-aloud, accessibility, exam, and timed assessment routes now resolve the current user through the shared auth boundary
+- the account route now supports signed-out recovery and sign-in or sign-out actions while keeping the page thin
+
+### 27. Cookie-backed authentication foundation (Completed)
+
+The platform now has a real local auth foundation instead of assuming the same
+signed-in student on every request.
+
+Added work includes:
+
+- auth sessions now persist through a local cookie-backed store with explicit signed-in and signed-out states
+- `/api/auth/session` now supports reading, creating, and clearing the active session
+- user-aware routes now resolve the current authenticated learner before loading accessibility, saved-progress, recommendation, results, exam, and timed assessment data
+- the account route now exposes real sign-in and sign-out controls while the app shell reads accessibility state for the active session rather than a hardcoded demo user
+
+This matters because account-linked saved progress, support settings, and resume
+routes should follow the same learner across requests instead of silently
+pretending every session belongs to one fixed demo account.
+
+### 28. 2026-06-10 delivery snapshot (Completed)
+
+This is the consolidated summary of the major implementation work completed in
+today's pass so the README reflects the real shipped state of the branch.
+
+Added work includes:
+
+- accessibility runtime application so saved support preferences now affect the app shell instead of staying page-local
+- shared support-summary presentation and visibility across live sessions, results, saved progress, dashboard, and recommendations
+- admin-facing MVP release checklist coverage for the current priority modules
+- safer exam and progress recovery states when linked session or evidence data is incomplete
+- local file-backed saved-progress persistence that survives local restarts
+- cookie-backed auth session handling with signed-in and signed-out states and user-aware route loading
+- production build verification passed on 2026-06-10 after the current branch changes
+
+This matters because the platform now behaves much more like one connected
+student product, with continuity across support, session recovery, identity,
+dashboard guidance, and admin release visibility.
+
+### 5. Write-side API expansion
+
+Main goals:
+
+- give the main student actions stronger write-side API coverage
+- reduce dependence on page-local assumptions for important state changes
+
+### 6. Results and marking depth
+
+Main goals:
+
+- deepen marking quality beyond the current MVP scoring pass
+- keep result interpretation aligned with saved session evidence
+
+### 7. CMS and editorial workflow expansion
+
+Main goals:
+
+- move from architecture-only admin planning into a controlled update workflow
+- keep review, fact-check, and publication gates intact as content volume grows
 
 ## MVP Quality Checklist
 
@@ -2038,17 +2271,20 @@ Plain-English rule:
 
 ### 5. Make accessibility real, not decorative
 
-Status: in progress.
+Status: complete for the current MVP pass.
 
 Progress already made:
 
 - persisted accessibility settings
+- shared preferred read-aloud speed persistence
 - read aloud in active exam and timed checkpoint flows
+- live support snapshot visibility inside exam and timed checkpoint routes
+- support snapshot visibility in results and saved-progress summaries
 - support snapshots travelling with saved progress
 
 ### 6. Use a release checklist for every priority module
 
-Status: active working rule.
+Status: complete for the current MVP pass.
 
 Each priority slice should now be checked for:
 
@@ -2058,6 +2294,12 @@ Each priority slice should now be checked for:
 - dashboard and recommendation consistency
 - support-setting carry-over
 - safe fallback behaviour when saved or linked data is missing
+
+Covered in this pass:
+
+- the admin route now includes an explicit MVP release checklist for the current priority modules
+- Exam Engine, Power Grid, Saved Progress, Read Aloud, Dashboard, and Timed Assessments now each show check-level release notes
+- checks are now labeled as complete, in progress, or watch so remaining fallback risk stays visible instead of implied
 
 ## Summary
 
@@ -2076,5 +2318,11 @@ It now has:
 - Power Grid foundations
 
 And most importantly, the code is being shaped so that each part of the system has a job.
+
+Current completion snapshot:
+
+- MVP quality pass: complete for the current checklist
+- Phase 2: roughly halfway complete by roadmap count, with Exam Engine already partially hardened and authentication plus saved-progress infrastructure now complete
+- Overall main-priority delivery in this README: about 73% complete based on the combined MVP checklist and current phase 2 roadmap items
 
 That is one of the biggest differences between “a page that works” and “a product that can keep growing.”

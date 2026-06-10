@@ -1,5 +1,9 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
+import {
+  buildAccessibilityPreferenceChips,
+  buildAccessibilitySupportSummary,
+} from "@/modules/accessibility/presentation";
 import { getSavedProgressSessionInsights } from "./insights-service";
 import { listSavedProgressByUser } from "./service";
 import type {
@@ -98,10 +102,8 @@ function buildSessionSummary(
         record.status === "submitted"
           ? "Timing closed for this paper"
           : `${insights.timeRemainingMinutes} mins remaining`,
-      supportSummary:
-        insights.supportCount > 0
-          ? `${insights.supportCount} access adjustments stored with this session`
-          : "Support snapshot ready for future access needs",
+      supportSummary: buildAccessibilitySupportSummary(record.accessArrangementSnapshot),
+      supportPreferenceChips: buildAccessibilityPreferenceChips(record.accessArrangementSnapshot),
       reviewSummary:
         insights.reviewItemCount > 0
           ? `${insights.reviewItemCount} flagged questions waiting for review`
@@ -144,10 +146,8 @@ function buildSessionSummary(
         record.status === "submitted"
           ? "Timing closed for this checkpoint"
           : `${insights.timeRemainingMinutes} mins remaining`,
-      supportSummary:
-        insights.supportCount > 0
-          ? `${insights.supportCount} access adjustments stored with this attempt`
-          : "Snapshot ready for future support-aware resume",
+      supportSummary: buildAccessibilitySupportSummary(record.accessArrangementSnapshot),
+      supportPreferenceChips: buildAccessibilityPreferenceChips(record.accessArrangementSnapshot),
       reviewSummary:
         insights.reviewItemCount > 0
           ? `${insights.reviewItemCount} bookmarked questions to revisit`
@@ -286,9 +286,8 @@ function buildFallbackSessionSummary(record: SavedProgressRecord): SavedProgress
     timeRemainingLabel: isSubmitted
       ? "Timing closed for this saved session"
       : `${insights.timeRemainingMinutes} mins remaining`,
-    supportSummary: insights.hasAccessSnapshot
-      ? `${insights.supportCount} access adjustments are still attached to this saved record`
-      : "No support snapshot stored with this record",
+    supportSummary: buildAccessibilitySupportSummary(record.accessArrangementSnapshot),
+    supportPreferenceChips: buildAccessibilityPreferenceChips(record.accessArrangementSnapshot),
     reviewSummary:
       `${insights.reviewItemCount} review item${insights.reviewItemCount === 1 ? "" : "s"} still stored`,
   };

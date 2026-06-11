@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SavedProgressStatusControls } from "@/components/saved-progress-status-controls";
 import { getSavedProgressOverviewApiData } from "@/lib/api/server";
 import type { SavedProgressStatus } from "@/modules/saved-progress/types";
 
@@ -146,6 +147,12 @@ export default async function SavedProgressPage() {
                   >
                     {session.actionLabel}
                   </Link>
+                  <SavedProgressStatusControls
+                    entityId={session.entityId}
+                    entityType={session.entityType}
+                    recoveryState={session.recoveryState}
+                    status={session.status}
+                  />
                 </div>
               </article>
             ))}

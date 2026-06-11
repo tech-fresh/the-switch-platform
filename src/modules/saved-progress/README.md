@@ -14,6 +14,7 @@ Current foundations in this module:
 - Shared session-insights derivation for score, completion, review, timing, and support signals
 - Save-time normalization protecting against stale status changes and invalid resume pointers
 - Safe fallback summaries when linked session metadata is unavailable
+- Shared write-side status transitions for pause and resume behaviour through the API layer
 - Framework-neutral overview contract for thin API delivery
 
 This module owns persistence contracts, not UI behaviour.

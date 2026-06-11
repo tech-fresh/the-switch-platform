@@ -11,7 +11,13 @@ import {
 } from "@/modules/saved-progress/overview-service";
 import { listSavedProgressByUser } from "@/modules/saved-progress/service";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
-import type { ResultTrend, ResultsOverview, SessionResultSummary } from "./types";
+import type {
+  MarkingConfidence,
+  ResultQuestionReviewItem,
+  ResultTrend,
+  ResultsOverview,
+  SessionResultSummary,
+} from "./types";
 
 export async function getResultsOverview(userId = "guest-preview"): Promise<ResultsOverview> {
   const [papers, assessments, powerGrid, savedProgressOverview, savedProgressRecords] = await Promise.all([
@@ -49,6 +55,7 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
         : {
             scorePercentage: 0,
             answeredCount: 0,
+            correctCount: 0,
             totalCount: 0,
             reviewItemCount: 0,
           };
@@ -63,6 +70,9 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
         actionLabel: status === "submitted" ? "Reopen paper review" : "Resume paper",
         scorePercentage: insights.scorePercentage,
         answeredCount: insights.answeredCount,
+        correctCount: insights.correctCount,
+        incorrectCount: Math.max(insights.answeredCount - insights.correctCount, 0),
+        unansweredCount: Math.max(insights.totalCount - insights.answeredCount, 0),
         totalCount: insights.totalCount,
         flaggedCount: insights.reviewItemCount,
         reviewLabel:
@@ -72,6 +82,10 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
               ? `${noteCount} working note${noteCount === 1 ? "" : "s"} still in progress`
               : "Still active in the exam flow",
         strengths: paper.skillsFocus.slice(0, 2),
+        markingConfidence: getMarkingConfidence(insights.answeredCount, insights.totalCount),
+        reviewPriorities: buildExamReviewPriorities(savedRecord, paper.skillsFocus),
+        markingNotes: buildExamMarkingNotes(savedRecord, noteCount),
+        questionReview: buildExamQuestionReview(savedRecord),
         supportSummary: buildAccessibilitySupportSummary(savedRecord?.accessArrangementSnapshot),
         supportPreferenceChips: buildAccessibilityPreferenceChips(savedRecord?.accessArrangementSnapshot),
         nextStep: `Return to ${paper.skillsFocus[0]} before attempting the next paper.`,
@@ -97,6 +111,7 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
         : {
             scorePercentage: 0,
             answeredCount: 0,
+            correctCount: 0,
             totalCount: 0,
             reviewItemCount: 0,
           };
@@ -113,6 +128,9 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
         actionLabel: status === "submitted" ? "Reopen checkpoint review" : "Resume checkpoint",
         scorePercentage: insights.scorePercentage,
         answeredCount: insights.answeredCount,
+        correctCount: insights.correctCount,
+        incorrectCount: Math.max(insights.answeredCount - insights.correctCount, 0),
+        unansweredCount: Math.max(insights.totalCount - insights.answeredCount, 0),
         totalCount: insights.totalCount,
         flaggedCount: insights.reviewItemCount,
         reviewLabel:
@@ -124,6 +142,10 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
                 } still open`
               : "Still active in the checkpoint flow",
         strengths: [assessment.subject, "Timed recall"],
+        markingConfidence: getMarkingConfidence(insights.answeredCount, insights.totalCount),
+        reviewPriorities: buildAssessmentReviewPriorities(savedRecord, assessment.subject),
+        markingNotes: buildAssessmentMarkingNotes(savedRecord),
+        questionReview: buildAssessmentQuestionReview(savedRecord),
         supportSummary: buildAccessibilitySupportSummary(savedRecord?.accessArrangementSnapshot),
         supportPreferenceChips: buildAccessibilityPreferenceChips(savedRecord?.accessArrangementSnapshot),
         nextStep: `Use the ${assessment.title} checkpoint again after revision to compare progress.`,
@@ -183,4 +205,172 @@ function getTrend(score: number): ResultTrend {
   }
 
   return "needs-attention";
+}
+
+function getMarkingConfidence(answeredCount: number, totalCount: number): MarkingConfidence {
+  const completion = Math.round((answeredCount / Math.max(totalCount, 1)) * 100);
+
+  if (completion >= 85) {
+    return "high";
+  }
+
+  if (completion >= 50) {
+    return "medium";
+  }
+
+  return "low";
+}
+
+function buildExamReviewPriorities(
+  savedRecord: Awaited<ReturnType<typeof listSavedProgressByUser>>[number] | undefined,
+  strengths: string[],
+): string[] {
+  if (!savedRecord?.examProgress) {
+    return [`Revisit ${strengths[0] ?? "the weakest topic"} through a fresh paper attempt.`];
+  }
+
+  const flaggedTopics = savedRecord.examProgress.questionSet
+    .filter((question) =>
+      savedRecord.examProgress?.flaggedQuestionIds.includes(question.questionId),
+    )
+    .map((question) => question.topic);
+
+  return uniqueStrings(
+    flaggedTopics.length > 0
+      ? flaggedTopics.map((topic) => `Review flagged work in ${topic}.`)
+      : [`Revisit ${strengths[0] ?? "the main topic"} through the submitted answer review.`],
+  );
+}
+
+function buildExamMarkingNotes(
+  savedRecord: Awaited<ReturnType<typeof listSavedProgressByUser>>[number] | undefined,
+  noteCount: number,
+): string[] {
+  if (!savedRecord?.examProgress) {
+    return ["Marking is limited until a saved exam snapshot is available."];
+  }
+
+  return [
+    noteCount > 0
+      ? `${noteCount} working note${noteCount === 1 ? "" : "s"} can be reviewed alongside the final answers.`
+      : "No working notes were saved for this paper.",
+    savedRecord.examProgress.flaggedQuestionIds.length > 0
+      ? "Flagged questions stay visible inside the result review model."
+      : "No flagged questions remain in the submitted review state.",
+  ];
+}
+
+function buildAssessmentReviewPriorities(
+  savedRecord: Awaited<ReturnType<typeof listSavedProgressByUser>>[number] | undefined,
+  subject: string,
+): string[] {
+  if (!savedRecord?.timedAssessmentProgress) {
+    return [`Use another ${subject} checkpoint once more saved evidence is available.`];
+  }
+
+  const bookmarkedTopics = savedRecord.timedAssessmentProgress.questionSet
+    .filter((question) =>
+      savedRecord.timedAssessmentProgress?.bookmarkedQuestionIds.includes(question.questionId),
+    )
+    .map((question) => question.topic);
+
+  return uniqueStrings(
+    bookmarkedTopics.length > 0
+      ? bookmarkedTopics.map((topic) => `Revisit bookmarked checkpoint work in ${topic}.`)
+      : [`Repeat the ${subject} checkpoint after targeted revision.`],
+  );
+}
+
+function buildAssessmentMarkingNotes(
+  savedRecord: Awaited<ReturnType<typeof listSavedProgressByUser>>[number] | undefined,
+): string[] {
+  if (!savedRecord?.timedAssessmentProgress) {
+    return ["Checkpoint marking is limited until a saved attempt snapshot is available."];
+  }
+
+  return [
+    savedRecord.timedAssessmentProgress.bookmarkedQuestionIds.length > 0
+      ? "Bookmarked checkpoint questions stay visible as review marks after submission."
+      : "No bookmarked checkpoint items remain in the submitted review state.",
+    Object.values(savedRecord.timedAssessmentProgress.notes).some((note) => note.trim().length > 0)
+      ? "Saved checkpoint notes are still available during result review."
+      : "No checkpoint notes were saved for this attempt.",
+  ];
+}
+
+function buildExamQuestionReview(
+  savedRecord: Awaited<ReturnType<typeof listSavedProgressByUser>>[number] | undefined,
+): ResultQuestionReviewItem[] {
+  if (!savedRecord?.examProgress) {
+    return [];
+  }
+
+  return savedRecord.examProgress.questionSet.map((question) => {
+    const response = savedRecord.examProgress?.questionResponses.find(
+      (candidate) => candidate.questionId === question.questionId,
+    );
+    const selectedOption = question.options?.find(
+      (option) => option.optionId === response?.selectedOptionId,
+    );
+    const correctOption = question.options?.find(
+      (option) => option.optionId === question.correctOptionId,
+    );
+    const outcome =
+      response?.selectedOptionId
+        ? response.selectedOptionId === question.correctOptionId
+          ? "correct"
+          : "incorrect"
+        : "unanswered";
+
+    return {
+      questionId: question.questionId,
+      label: `Question ${question.number}`,
+      topic: question.topic,
+      selectedAnswerLabel: selectedOption?.label ?? "No answer",
+      correctAnswerLabel: correctOption?.label ?? "Unknown",
+      outcome,
+      flagged: Boolean(response?.flagged),
+      hasWorkingNotes: Boolean(response?.workingNotes?.trim()),
+    };
+  });
+}
+
+function buildAssessmentQuestionReview(
+  savedRecord: Awaited<ReturnType<typeof listSavedProgressByUser>>[number] | undefined,
+): ResultQuestionReviewItem[] {
+  if (!savedRecord?.timedAssessmentProgress) {
+    return [];
+  }
+
+  return savedRecord.timedAssessmentProgress.questionSet.map((question, index) => {
+    const selectedAnswerId = savedRecord.timedAssessmentProgress?.selectedAnswerIds.find((answerId) =>
+      answerId.startsWith(`${question.questionId}:`),
+    );
+    const selectedOptionId = selectedAnswerId?.split(":")[1];
+    const selectedOption = question.options.find((option) => option.optionId === selectedOptionId);
+    const correctOption = question.options.find((option) => option.optionId === question.correctOptionId);
+    const outcome =
+      selectedOptionId
+        ? selectedOptionId === question.correctOptionId
+          ? "correct"
+          : "incorrect"
+        : "unanswered";
+
+    return {
+      questionId: question.questionId,
+      label: `Checkpoint ${index + 1}`,
+      topic: question.topic,
+      selectedAnswerLabel: selectedOption?.label ?? "No answer",
+      correctAnswerLabel: correctOption?.label ?? "Unknown",
+      outcome,
+      flagged: savedRecord.timedAssessmentProgress?.bookmarkedQuestionIds.includes(question.questionId) ?? false,
+      hasWorkingNotes: Boolean(
+        savedRecord.timedAssessmentProgress?.notes[question.questionId]?.trim(),
+      ),
+    };
+  });
+}
+
+function uniqueStrings(values: string[]): string[] {
+  return [...new Set(values)];
 }

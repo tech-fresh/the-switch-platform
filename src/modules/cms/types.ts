@@ -3,6 +3,11 @@ import type { ContentEditorialAudit, ContentReviewStatus } from "@/modules/conte
 export type CmsProviderType = "seed-content" | "headless-cms" | "manual-upload";
 
 export type CmsContentKind = "subject" | "topic" | "revision" | "quiz";
+export type CmsEditorialWorkflowStatus =
+  | "queued-review"
+  | "fact-check"
+  | "approved"
+  | "blocked";
 
 export type ContentPublicationStatus = "draft" | "published" | "scheduled";
 
@@ -49,6 +54,23 @@ export interface CmsReleaseChecklistModule {
   checks: CmsReleaseCheck[];
 }
 
+export interface CmsEditorialWorkflowRecord {
+  contentId: string;
+  title: string;
+  status: CmsEditorialWorkflowStatus;
+  owner: string;
+  note: string;
+  updatedAt: string;
+  readyToPublish: boolean;
+}
+
+export interface CmsEditorialWorkflowSummary {
+  queuedReviewCount: number;
+  factCheckCount: number;
+  approvedCount: number;
+  blockedCount: number;
+}
+
 export interface CmsOverview {
   providers: CmsProvider[];
   content: CmsContentReference[];
@@ -59,4 +81,6 @@ export interface CmsOverview {
   editorialAudit: ContentEditorialAudit;
   nextUpdatePlan: string;
   releaseChecklist: CmsReleaseChecklistModule[];
+  editorialWorkflow: CmsEditorialWorkflowRecord[];
+  editorialWorkflowSummary: CmsEditorialWorkflowSummary;
 }

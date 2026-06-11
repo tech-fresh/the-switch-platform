@@ -429,10 +429,12 @@ If you want one place that lists the full current state without replacing earlie
 - `/api/website-guide`
 - `/api/progress/summary`
 - `/api/saved-progress/overview`
+- `/api/saved-progress/session/:entityType/:entityId`
 - `/api/recommendations`
 - `/api/recommendations/page`
 - `/api/accessibility/snapshot`
 - `/api/results/overview`
+- `/api/cms/workflow/:contentId`
 - `/api/exams/papers`
 - `/api/exams/session/:examId`
 - `/api/assessments/definitions`
@@ -797,10 +799,12 @@ The current build is a working website MVP with modular services underneath it. 
 - `/api/website-guide`
 - `/api/progress/summary`
 - `/api/saved-progress/overview`
+- `/api/saved-progress/session/:entityType/:entityId`
 - `/api/recommendations`
 - `/api/recommendations/page`
 - `/api/accessibility/snapshot`
 - `/api/results/overview`
+- `/api/cms/workflow/:contentId`
 - `/api/exams/papers`
 - `/api/exams/session/:examId`
 - `/api/assessments/definitions`
@@ -1958,8 +1962,8 @@ the modular architecture.
 Current roadmap snapshot:
 
 - MVP Quality Checklist: 6 of 6 complete for the current MVP pass (100%)
-- Phase 2 Roadmap: 4 completed, 3 still upcoming (about 57% of phase 2 by roadmap count)
-- Main priority picture across the MVP checklist plus phase 2 roadmap: 10 of 13 major items completed (about 77%)
+- Phase 2 Roadmap: 7 of 7 completed (100%)
+- Main priority picture across the MVP checklist plus phase 2 roadmap: 13 of 13 major items completed (100%)
 
 ### 1. Exam Engine hardening (Completed)
 
@@ -1994,8 +1998,6 @@ Added work includes:
 This matters because the exam flow is the highest-risk student journey in the
 MVP, and it needs both safe failure handling during live work and trustworthy
 review quality after submission.
-- the live exam client now shows a recovery state when the current paper, question, or response payload is incomplete instead of failing to a blank screen
-- the exam session API now validates current question ids, response counts, and response-question alignment before accepting autosave or submit writes
 
 ### 2. Power Grid hardening (Completed)
 
@@ -2086,26 +2088,87 @@ This matters because the platform now behaves much more like one connected
 student product, with continuity across support, session recovery, identity,
 dashboard guidance, and admin release visibility.
 
-### 5. Write-side API expansion
+### 5. Write-side API expansion (Completed)
 
 Main goals:
 
 - give the main student actions stronger write-side API coverage
 - reduce dependence on page-local assumptions for important state changes
 
-### 6. Results and marking depth
+Current phase 2 progress:
+
+- saved progress now has a shared write-side API route for status changes instead of leaving pause or resume state implicit inside pages
+- the saved-progress route now uses that shared API to control pause and ready-to-resume behaviour for active sessions
+- saved-progress status transitions now reject unsafe submitted-to-active downgrades through the module service and API validation layer
+
+### 30. Saved-progress write-side API expansion (Completed)
+
+The product now has a shared write path for saved-progress state instead of
+depending only on read models and page-local assumptions.
+
+Added work includes:
+
+- `/api/saved-progress/session/:entityType/:entityId` now updates saved-progress status for the active user
+- saved-progress transition rules now block unsafe downgrades from submitted records back into active work
+- the Saved Progress route now exposes pause and ready-to-resume controls backed by the shared API route
+- saved-progress module docs now describe the shared write-side status transition support
+
+This matters because recommendations, dashboard guidance, resume routing, and
+saved-session recovery should all be able to trust one API-backed source of
+truth for active versus paused saved work.
+
+### 6. Results and marking depth (Completed)
 
 Main goals:
 
 - deepen marking quality beyond the current MVP scoring pass
 - keep result interpretation aligned with saved session evidence
 
-### 7. CMS and editorial workflow expansion
+Current phase 2 progress:
+
+- results now carry deeper marking signals including correct, incorrect, unanswered, confidence, and question-level review summaries
+- exam and timed-assessment result cards now surface review priorities and marking notes that still follow the saved session evidence layer
+
+### 31. Shared results review depth and marking confidence (Completed)
+
+Results now go beyond one summary percentage and expose a deeper review model
+that still reads from the shared saved session evidence.
+
+Added work includes:
+
+- result summaries now include correct, incorrect, and unanswered counts alongside marking confidence
+- result models now carry review priorities, marking notes, and question-level outcome summaries for both exams and timed assessments
+- the results route now shows those deeper review signals without recalculating from a page-only model
+
+This matters because submitted work should turn into a trustworthy review flow,
+not just a single score number with limited follow-up guidance.
+
+### 7. CMS and editorial workflow expansion (Completed)
 
 Main goals:
 
 - move from architecture-only admin planning into a controlled update workflow
 - keep review, fact-check, and publication gates intact as content volume grows
+
+Current phase 2 progress:
+
+- the admin route now has a local editorial workflow queue with API-backed status updates instead of only static content architecture notes
+- CMS workflow records now persist locally and track controlled review, fact-check, approval, and blocked states per content item
+
+### 32. Local editorial queue and CMS workflow controls (Completed)
+
+The admin surface now includes a real controlled editorial queue instead of
+stopping at provider architecture and blocked-content summaries.
+
+Added work includes:
+
+- `/api/cms/workflow/:contentId` now updates local editorial workflow records
+- CMS overview data now includes workflow records and queue counts for review, fact-check, approval, and blocked states
+- the admin route now exposes workflow controls and notes for the current content queue
+- CMS module docs now describe the new local workflow support
+
+This matters because expanding content safely needs a real review path in the
+product, not only a future-planning description of how one might work later.
 
 ## MVP Quality Checklist
 
@@ -2340,7 +2403,7 @@ And most importantly, the code is being shaped so that each part of the system h
 Current completion snapshot:
 
 - MVP quality pass: complete for the current checklist
-- Phase 2: more than halfway complete by roadmap count, with Exam Engine, authentication, Power Grid, and saved-progress infrastructure now completed
-- Overall main-priority delivery in this README: about 77% complete based on the combined MVP checklist and current phase 2 roadmap items
+- Phase 2: complete for the current roadmap
+- Overall main-priority delivery in this README: 100% complete for the currently tracked MVP checklist and phase 2 roadmap items
 
 That is one of the biggest differences between “a page that works” and “a product that can keep growing.”

@@ -157,6 +157,10 @@ export async function markSavedProgressStatus(
     return null;
   }
 
+  if (!canTransitionSavedProgressStatus(existing.status, status)) {
+    return existing;
+  }
+
   return repository.save({
     ...existing,
     status,
@@ -169,6 +173,25 @@ export async function listSavedProgressByUser(
   repository: SavedProgressRepository = defaultRepository,
 ): Promise<SavedProgressRecord[]> {
   return repository.listByUserId(userId);
+}
+
+export function canTransitionSavedProgressStatus(
+  currentStatus: SavedProgressStatus,
+  nextStatus: SavedProgressStatus,
+): boolean {
+  if (currentStatus === nextStatus) {
+    return true;
+  }
+
+  if (currentStatus === "submitted") {
+    return nextStatus === "submitted";
+  }
+
+  if (currentStatus === "paused") {
+    return nextStatus === "in-progress" || nextStatus === "paused";
+  }
+
+  return nextStatus === "paused" || nextStatus === "in-progress" || nextStatus === "submitted";
 }
 
 function buildRepositoryKey(

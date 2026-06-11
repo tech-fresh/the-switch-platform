@@ -1,6 +1,11 @@
+import {
+  readCmsWorkflowRecords,
+  writeCmsWorkflowRecords,
+} from "@/lib/persistence/cms-workflow-store";
 import { getContentEditorialAudit, getMvpContentCatalog, isTopicStudentVisible } from "@/modules/content/service";
 import type {
   CmsContentReference,
+  CmsEditorialWorkflowRecord,
   CmsOverview,
   CmsProvider,
   CmsReleaseChecklistModule,
@@ -322,6 +327,8 @@ export async function getCmsOverview(): Promise<CmsOverview> {
     }
   }
 
+  const editorialWorkflow = await getCmsEditorialWorkflow(content);
+
   return {
     providers: cmsProviders,
     content,
@@ -333,5 +340,103 @@ export async function getCmsOverview(): Promise<CmsOverview> {
     nextUpdatePlan:
       "Keep the website on reviewed seed content now, then add a headless CMS adapter and approval workflow without changing student routes.",
     releaseChecklist,
+    editorialWorkflow,
+    editorialWorkflowSummary: {
+      queuedReviewCount: editorialWorkflow.filter((item) => item.status === "queued-review").length,
+      factCheckCount: editorialWorkflow.filter((item) => item.status === "fact-check").length,
+      approvedCount: editorialWorkflow.filter((item) => item.status === "approved").length,
+      blockedCount: editorialWorkflow.filter((item) => item.status === "blocked").length,
+    },
   };
+}
+
+export async function updateCmsEditorialWorkflowRecord(input: {
+  contentId: string;
+  status: CmsEditorialWorkflowRecord["status"];
+  note: string;
+  owner?: string;
+}): Promise<CmsEditorialWorkflowRecord | null> {
+  const overview = await getCmsOverview();
+  const reference = overview.content.find((item) => item.contentId === input.contentId);
+
+  if (!reference) {
+    return null;
+  }
+
+  const records = await readCmsWorkflowRecords();
+  const nextRecord: CmsEditorialWorkflowRecord = {
+    contentId: input.contentId,
+    title: reference.title,
+    status: input.status,
+    owner: input.owner ?? "Switch editorial desk",
+    note: input.note,
+    updatedAt: new Date().toISOString(),
+    readyToPublish: input.status === "approved" && reference.status === "published",
+  };
+  const nextRecords = records
+    .filter((record) => record.contentId !== input.contentId)
+    .concat(nextRecord)
+    .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+
+  await writeCmsWorkflowRecords(nextRecords);
+
+  return nextRecord;
+}
+
+async function getCmsEditorialWorkflow(
+  content: CmsContentReference[],
+): Promise<CmsEditorialWorkflowRecord[]> {
+  const records = await readCmsWorkflowRecords();
+  const recordByContentId = new Map(records.map((record) => [record.contentId, record] as const));
+
+  return content
+    .filter((item) => item.kind !== "subject")
+    .map((item) => {
+      const existing = recordByContentId.get(item.contentId);
+
+      if (existing) {
+        return {
+          ...existing,
+          title: item.title,
+          readyToPublish: existing.status === "approved" && item.status === "published",
+        };
+      }
+
+      return {
+        contentId: item.contentId,
+        title: item.title,
+        status: getDefaultWorkflowStatus(item),
+        owner: "Switch editorial desk",
+        note: getDefaultWorkflowNote(item),
+        updatedAt: item.updatedAt,
+        readyToPublish: item.studentVisible,
+      };
+    })
+    .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+}
+
+function getDefaultWorkflowStatus(
+  item: CmsContentReference,
+): CmsEditorialWorkflowRecord["status"] {
+  if (!item.studentVisible) {
+    if (item.reviewStatus === "reviewed") {
+      return "fact-check";
+    }
+
+    return "queued-review";
+  }
+
+  return "approved";
+}
+
+function getDefaultWorkflowNote(item: CmsContentReference): string {
+  if (item.studentVisible) {
+    return "This content is already meeting the current student-visibility gate.";
+  }
+
+  if (item.reviewStatus === "reviewed") {
+    return "Reviewed content still needs fact-check or source verification before student release.";
+  }
+
+  return "Content is waiting for the next editorial review step before publication.";
 }

@@ -1,5 +1,6 @@
 import { getResultsOverviewApiData } from "@/lib/api/server";
 import Link from "next/link";
+import type { MarkingConfidence } from "@/modules/results/types";
 
 function getTrendTone(trend: "improving" | "stable" | "needs-attention"): string {
   if (trend === "improving") {
@@ -17,6 +18,18 @@ function getStatusClasses(status: "submitted" | "in-progress"): string {
   return status === "submitted"
     ? "border-emerald-300 bg-emerald-50 text-emerald-900"
     : "border-amber-300 bg-amber-50 text-amber-900";
+}
+
+function getConfidenceClasses(confidence: MarkingConfidence): string {
+  if (confidence === "high") {
+    return "border-emerald-300 bg-emerald-50 text-emerald-900";
+  }
+
+  if (confidence === "medium") {
+    return "border-amber-300 bg-amber-50 text-amber-900";
+  }
+
+  return "border-rose-300 bg-rose-50 text-rose-900";
 }
 
 export default async function ResultsPage() {
@@ -106,13 +119,65 @@ export default async function ResultsPage() {
                         </p>
                       </div>
                       <div className="border border-stone-200 bg-white p-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Correct</p>
+                        <p className="mt-2 text-xl font-semibold text-stone-950">{result.correctCount}</p>
+                      </div>
+                      <div className="border border-stone-200 bg-white p-3">
                         <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Flags</p>
                         <p className="mt-2 text-xl font-semibold text-stone-950">{result.flaggedCount}</p>
                       </div>
                     </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getConfidenceClasses(result.markingConfidence)}`}>
+                        {result.markingConfidence} confidence marking
+                      </span>
+                      <span className="border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700">
+                        {result.incorrectCount} incorrect
+                      </span>
+                      <span className="border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700">
+                        {result.unansweredCount} unanswered
+                      </span>
+                    </div>
                     <p className="mt-4 text-sm leading-6 text-stone-700">
                       Strengths: {result.strengths.join(", ")}
                     </p>
+                    <div className="mt-3 space-y-2 text-sm leading-6 text-stone-700">
+                      {result.reviewPriorities.map((priority) => (
+                        <p key={priority}>{priority}</p>
+                      ))}
+                    </div>
+                    <div className="mt-3 grid gap-2">
+                      {result.markingNotes.map((note) => (
+                        <p key={note} className="text-sm leading-6 text-stone-600">
+                          {note}
+                        </p>
+                      ))}
+                    </div>
+                    {result.questionReview.length ? (
+                      <div className="mt-4 grid gap-2">
+                        {result.questionReview.slice(0, 4).map((item) => (
+                          <div key={item.questionId} className="border border-stone-200 bg-white p-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <p className="text-sm font-semibold text-stone-950">
+                                {item.label} • {item.topic}
+                              </p>
+                              <span className={`border px-2 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] ${
+                                item.outcome === "correct"
+                                  ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                                  : item.outcome === "incorrect"
+                                    ? "border-rose-300 bg-rose-50 text-rose-900"
+                                    : "border-amber-300 bg-amber-50 text-amber-900"
+                              }`}>
+                                {item.outcome}
+                              </span>
+                            </div>
+                            <p className="mt-2 text-sm text-stone-600">
+                              Student: {item.selectedAnswerLabel} • Correct: {item.correctAnswerLabel}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                     <p className="mt-2 text-sm leading-6 text-stone-600">{result.supportSummary}</p>
                     {result.supportPreferenceChips.length ? (
                       <div className="mt-3 flex flex-wrap gap-2">
@@ -174,13 +239,65 @@ export default async function ResultsPage() {
                         </p>
                       </div>
                       <div className="border border-stone-200 bg-white p-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Correct</p>
+                        <p className="mt-2 text-xl font-semibold text-stone-950">{result.correctCount}</p>
+                      </div>
+                      <div className="border border-stone-200 bg-white p-3">
                         <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Review marks</p>
                         <p className="mt-2 text-xl font-semibold text-stone-950">{result.flaggedCount}</p>
                       </div>
                     </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getConfidenceClasses(result.markingConfidence)}`}>
+                        {result.markingConfidence} confidence marking
+                      </span>
+                      <span className="border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700">
+                        {result.incorrectCount} incorrect
+                      </span>
+                      <span className="border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700">
+                        {result.unansweredCount} unanswered
+                      </span>
+                    </div>
                     <p className="mt-4 text-sm leading-6 text-stone-700">
                       Strengths: {result.strengths.join(", ")}
                     </p>
+                    <div className="mt-3 space-y-2 text-sm leading-6 text-stone-700">
+                      {result.reviewPriorities.map((priority) => (
+                        <p key={priority}>{priority}</p>
+                      ))}
+                    </div>
+                    <div className="mt-3 grid gap-2">
+                      {result.markingNotes.map((note) => (
+                        <p key={note} className="text-sm leading-6 text-stone-600">
+                          {note}
+                        </p>
+                      ))}
+                    </div>
+                    {result.questionReview.length ? (
+                      <div className="mt-4 grid gap-2">
+                        {result.questionReview.slice(0, 4).map((item) => (
+                          <div key={item.questionId} className="border border-stone-200 bg-white p-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <p className="text-sm font-semibold text-stone-950">
+                                {item.label} • {item.topic}
+                              </p>
+                              <span className={`border px-2 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] ${
+                                item.outcome === "correct"
+                                  ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                                  : item.outcome === "incorrect"
+                                    ? "border-rose-300 bg-rose-50 text-rose-900"
+                                    : "border-amber-300 bg-amber-50 text-amber-900"
+                              }`}>
+                                {item.outcome}
+                              </span>
+                            </div>
+                            <p className="mt-2 text-sm text-stone-600">
+                              Student: {item.selectedAnswerLabel} • Correct: {item.correctAnswerLabel}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                     <p className="mt-2 text-sm leading-6 text-stone-600">{result.supportSummary}</p>
                     {result.supportPreferenceChips.length ? (
                       <div className="mt-3 flex flex-wrap gap-2">

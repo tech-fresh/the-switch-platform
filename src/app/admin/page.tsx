@@ -1,4 +1,5 @@
 import { getCmsOverviewApiData, getPastPaperCatalogApiData } from "@/lib/api/server";
+import { CmsWorkflowControls } from "@/components/cms-workflow-controls";
 
 function getSyncClasses(status: "healthy" | "warning" | "planned"): string {
   if (status === "healthy") {
@@ -61,6 +62,11 @@ export default async function AdminPage() {
               <p className="mt-2 text-lg font-semibold text-stone-950">{papers.papers.length}</p>
               <p className="mt-1 text-sm text-stone-600">{papers.metadataOnlyCount} metadata-only so far</p>
             </div>
+            <div className="border border-stone-200 bg-white p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Editorial queue</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">{cms.editorialWorkflow.length}</p>
+              <p className="mt-1 text-sm text-stone-600">{cms.editorialWorkflowSummary.queuedReviewCount} waiting for review</p>
+            </div>
           </div>
         </section>
 
@@ -100,6 +106,60 @@ export default async function AdminPage() {
                           <p className="mt-2 text-sm leading-6 text-stone-600">{check.detail}</p>
                         </div>
                       ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </article>
+
+            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+              <div className="border-b border-stone-200 pb-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                  Editorial workflow
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  Controlled review and publish queue for current content
+                </h2>
+              </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-4">
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Queued review</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">{cms.editorialWorkflowSummary.queuedReviewCount}</p>
+                </div>
+                <div className="border border-amber-200 bg-amber-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-amber-700">Fact-check</p>
+                  <p className="mt-2 text-lg font-semibold text-amber-950">{cms.editorialWorkflowSummary.factCheckCount}</p>
+                </div>
+                <div className="border border-emerald-200 bg-emerald-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">Approved</p>
+                  <p className="mt-2 text-lg font-semibold text-emerald-950">{cms.editorialWorkflowSummary.approvedCount}</p>
+                </div>
+                <div className="border border-rose-200 bg-rose-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-rose-700">Blocked</p>
+                  <p className="mt-2 text-lg font-semibold text-rose-950">{cms.editorialWorkflowSummary.blockedCount}</p>
+                </div>
+              </div>
+              <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                {cms.editorialWorkflow.slice(0, 8).map((item) => (
+                  <article key={item.contentId} className="border border-stone-200 bg-stone-50 p-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getSyncClasses(item.readyToPublish ? "healthy" : item.status === "blocked" ? "warning" : "planned")}`}>
+                        {item.status}
+                      </span>
+                      <span className="text-xs uppercase tracking-[0.2em] text-stone-500">
+                        {item.readyToPublish ? "ready-to-publish" : "needs gate checks"}
+                      </span>
+                    </div>
+                    <h3 className="mt-4 text-lg font-semibold text-stone-950">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{item.note}</p>
+                    <p className="mt-2 text-sm text-stone-700">Owner: {item.owner}</p>
+                    <p className="mt-1 text-sm text-stone-700">Updated: {item.updatedAt}</p>
+                    <div className="mt-4">
+                      <CmsWorkflowControls
+                        contentId={item.contentId}
+                        note={item.note}
+                        status={item.status}
+                      />
                     </div>
                   </article>
                 ))}

@@ -1,4 +1,16 @@
 export type ResultTrend = "improving" | "stable" | "needs-attention";
+export type MarkingConfidence = "high" | "medium" | "low";
+
+export interface ResultQuestionReviewItem {
+  questionId: string;
+  label: string;
+  topic: string;
+  selectedAnswerLabel: string;
+  correctAnswerLabel: string;
+  outcome: "correct" | "incorrect" | "unanswered";
+  flagged: boolean;
+  hasWorkingNotes: boolean;
+}
 
 export interface SessionResultSummary {
   resultId: string;
@@ -10,11 +22,18 @@ export interface SessionResultSummary {
   actionLabel: string;
   scorePercentage: number;
   answeredCount: number;
+  correctCount: number;
+  incorrectCount: number;
+  unansweredCount: number;
   totalCount: number;
   flaggedCount: number;
   reviewLabel: string;
   trend: ResultTrend;
+  markingConfidence: MarkingConfidence;
   strengths: string[];
+  reviewPriorities: string[];
+  markingNotes: string[];
+  questionReview: ResultQuestionReviewItem[];
   supportSummary: string;
   supportPreferenceChips: string[];
   nextStep: string;

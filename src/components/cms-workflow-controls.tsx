@@ -3,12 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-import type { CmsEditorialWorkflowStatus } from "@/modules/cms/types";
+import type { CmsEditorialActionType, CmsEditorialWorkflowStatus } from "@/modules/cms/types";
 
 interface CmsWorkflowControlsProps {
   contentId: string;
   note: string;
   status: CmsEditorialWorkflowStatus;
+  owner: string;
 }
 
 const workflowOptions: CmsEditorialWorkflowStatus[] = [
@@ -18,15 +19,26 @@ const workflowOptions: CmsEditorialWorkflowStatus[] = [
   "blocked",
 ];
 
+const workflowActions: CmsEditorialActionType[] = [
+  "review",
+  "fact-check",
+  "approve",
+  "block",
+  "rollback",
+];
+
 export function CmsWorkflowControls({
   contentId,
   note,
   status,
+  owner,
 }: CmsWorkflowControlsProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [nextStatus, setNextStatus] = useState<CmsEditorialWorkflowStatus>(status);
+  const [nextActionType, setNextActionType] = useState<CmsEditorialActionType>(inferActionType(status));
   const [nextNote, setNextNote] = useState(note);
+  const [nextOwner, setNextOwner] = useState(owner);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   function saveWorkflow() {
@@ -39,8 +51,10 @@ export function CmsWorkflowControls({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          status: nextStatus,
+          status: nextActionType === "rollback" ? "queued-review" : nextStatus,
           note: nextNote,
+          owner: nextOwner,
+          actionType: nextActionType,
         }),
       });
 
@@ -58,12 +72,29 @@ export function CmsWorkflowControls({
     <div className="space-y-3">
       <label className="space-y-2">
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+          Workflow action
+        </span>
+        <select
+          value={nextActionType}
+          onChange={(event) => setNextActionType(event.target.value as CmsEditorialActionType)}
+          className="w-full border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900"
+        >
+          {workflowActions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="space-y-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
           Workflow status
         </span>
         <select
           value={nextStatus}
           onChange={(event) => setNextStatus(event.target.value as CmsEditorialWorkflowStatus)}
           className="w-full border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900"
+          disabled={nextActionType === "rollback"}
         >
           {workflowOptions.map((option) => (
             <option key={option} value={option}>
@@ -71,6 +102,16 @@ export function CmsWorkflowControls({
             </option>
           ))}
         </select>
+      </label>
+      <label className="space-y-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+          Owner
+        </span>
+        <input
+          value={nextOwner}
+          onChange={(event) => setNextOwner(event.target.value)}
+          className="w-full border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900"
+        />
       </label>
       <label className="space-y-2">
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
@@ -94,4 +135,17 @@ export function CmsWorkflowControls({
       {errorMessage ? <p className="text-sm text-rose-700">{errorMessage}</p> : null}
     </div>
   );
+}
+
+function inferActionType(status: CmsEditorialWorkflowStatus): CmsEditorialActionType {
+  if (status === "fact-check") {
+    return "fact-check";
+  }
+  if (status === "approved") {
+    return "approve";
+  }
+  if (status === "blocked") {
+    return "block";
+  }
+  return "review";
 }

@@ -51,4 +51,9 @@ export interface ResultsOverview {
   assessmentResults: SessionResultSummary[];
   strongestArea: string;
   nextPriority: string;
+  continuityStatus: "resume-active-session" | "review-submitted-session" | "start-first-session";
+  continuityTitle: string;
+  continuityDescription: string;
+  continuityHref: string;
+  continuityActionLabel: string;
 }

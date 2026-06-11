@@ -138,6 +138,10 @@ export default async function AdminPage() {
                   <p className="text-xs uppercase tracking-[0.2em] text-rose-700">Blocked</p>
                   <p className="mt-2 text-lg font-semibold text-rose-950">{cms.editorialWorkflowSummary.blockedCount}</p>
                 </div>
+                <div className="border border-sky-200 bg-sky-50 p-4 sm:col-span-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-sky-700">Rollbacks logged</p>
+                  <p className="mt-2 text-lg font-semibold text-sky-950">{cms.editorialWorkflowSummary.rollbackCount}</p>
+                </div>
               </div>
               <div className="mt-5 grid gap-4 lg:grid-cols-2">
                 {cms.editorialWorkflow.slice(0, 8).map((item) => (
@@ -154,11 +158,26 @@ export default async function AdminPage() {
                     <p className="mt-2 text-sm leading-6 text-stone-600">{item.note}</p>
                     <p className="mt-2 text-sm text-stone-700">Owner: {item.owner}</p>
                     <p className="mt-1 text-sm text-stone-700">Updated: {item.updatedAt}</p>
+                    <p className="mt-1 text-sm text-stone-700">Last action: {item.lastActionType}</p>
+                    <div className="mt-4 grid gap-2 border border-stone-200 bg-white p-3">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                        Recent audit trail
+                      </p>
+                      {item.actionHistory.slice(-3).reverse().map((event) => (
+                        <div key={event.eventId} className="border border-stone-200 bg-stone-50 p-3 text-sm leading-6 text-stone-700">
+                          <p className="font-semibold text-stone-950">{event.actionType} • {event.fromStatus} to {event.toStatus}</p>
+                          <p>{event.owner}</p>
+                          <p>{event.note || "No note recorded for this step."}</p>
+                          <p>{event.createdAt}</p>
+                        </div>
+                      ))}
+                    </div>
                     <div className="mt-4">
                       <CmsWorkflowControls
                         contentId={item.contentId}
                         note={item.note}
                         status={item.status}
+                        owner={item.owner}
                       />
                     </div>
                   </article>

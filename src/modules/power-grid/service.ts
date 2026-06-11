@@ -103,15 +103,17 @@ export async function getMockPowerGridSummary(options?: {
   }
 
   const dataState = subjectProgress.length === 0 ? "degraded" : "ready";
+  const continuityHref = savedProgressOverview.continuity.primaryAction.href;
   const nextBestAction = getNextBestAction(
     subjectProgress,
     sourceWarnings,
-    savedProgressOverview.resumeSessionHref ?? savedProgressOverview.reviewSessionHref,
+    continuityHref,
+    savedProgressOverview.continuity.primaryAction.title,
   );
   const nextBestActionHref = getNextBestActionHref(
     subjectProgress,
     sourceWarnings,
-    savedProgressOverview.resumeSessionHref ?? savedProgressOverview.reviewSessionHref,
+    continuityHref,
   );
 
   return {
@@ -125,7 +127,7 @@ export async function getMockPowerGridSummary(options?: {
     subjectsNeedingAttentionCount: subjectProgress.filter((subject) => subject.readinessScore < 50).length,
     accessSnapshotCoverage,
     latestActivityAt,
-    resumeHref: savedProgressOverview.resumeSessionHref ?? savedProgressOverview.reviewSessionHref,
+    resumeHref: continuityHref,
     nextBestAction,
     nextBestActionHref,
     recoveryTitle:
@@ -320,7 +322,8 @@ function getTrendFromSubject(
 function getNextBestAction(
   subjectProgress: PowerGridSubjectProgress[],
   sourceWarnings: string[],
-  resumeHref?: string,
+  resumeHref: string,
+  continuityTitle: string,
 ): string {
   if (subjectProgress.length === 0) {
     return resumeHref

@@ -4,6 +4,7 @@ import {
   buildAccessibilityPreferenceChips,
   buildAccessibilitySupportSummary,
 } from "@/modules/accessibility/presentation";
+import { getLearnerContinuityOverview } from "./continuity-service";
 import { getSavedProgressSessionInsights } from "./insights-service";
 import { listSavedProgressByUser } from "./service";
 import type {
@@ -44,8 +45,7 @@ export async function getSavedProgressOverview(
   const activeCount = records.filter((record) => record.status !== "submitted").length;
   const submittedCount = records.filter((record) => record.status === "submitted").length;
   const accessSnapshotCount = records.filter((record) => record.accessArrangementSnapshot).length;
-  const resumeSession = sessions.find((session) => session.recoveryState === "resume-ready");
-  const reviewSession = sessions.find((session) => session.recoveryState === "review-ready");
+  const continuity = getLearnerContinuityOverview(sessions);
 
   return {
     sessionCount: sessions.length,
@@ -55,11 +55,12 @@ export async function getSavedProgressOverview(
     reviewReadyCount: sessions.filter((session) => session.recoveryState === "review-ready").length,
     accessSnapshotCount,
     latestActivityAt,
-    recommendedAction: getRecommendedAction(sessions),
-    recommendedActionHref: getRecommendedActionHref(sessions),
-    resumeSessionHref: resumeSession?.href,
-    reviewSessionHref: reviewSession?.href,
-    latestSessionHref: sessions[0]?.href,
+    recommendedAction: continuity.primaryAction.title,
+    recommendedActionHref: continuity.primaryAction.href,
+    resumeSessionHref: continuity.activeSession?.href,
+    reviewSessionHref: continuity.reviewSession?.href,
+    latestSessionHref: continuity.latestSession?.href,
+    continuity,
     sessions,
   };
 }
@@ -187,41 +188,6 @@ function buildAssessmentResumeHref(
   }
 
   return `/assessments?${searchParams.toString()}`;
-}
-
-function getRecommendedAction(sessions: SavedProgressSessionSummary[]): string {
-  const activeSessions = sessions.filter((session) => session.status !== "submitted");
-  const mostUrgent = [...activeSessions].sort(
-    (left, right) => left.completionPercentage - right.completionPercentage,
-  )[0];
-
-  if (mostUrgent) {
-    return `Resume ${mostUrgent.title} next and pick up from the saved checkpoint.`;
-  }
-
-  const mostRecentSubmitted = sessions.find((session) => session.status === "submitted");
-
-  if (mostRecentSubmitted) {
-    return `Review ${mostRecentSubmitted.title} next from the saved completed sessions.`;
-  }
-
-  return "Start a timed assessment or exam to create your first saved session.";
-}
-
-function getRecommendedActionHref(sessions: SavedProgressSessionSummary[]): string {
-  const activeSession = sessions.find((session) => session.recoveryState === "resume-ready");
-
-  if (activeSession) {
-    return activeSession.href;
-  }
-
-  const reviewSession = sessions.find((session) => session.recoveryState === "review-ready");
-
-  if (reviewSession) {
-    return reviewSession.href;
-  }
-
-  return "/saved-progress";
 }
 
 export function buildSavedProgressHref(record: SavedProgressRecord): string {

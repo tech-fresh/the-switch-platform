@@ -109,5 +109,6 @@ export interface SavedProgressOverview {
   resumeSessionHref?: string;
   reviewSessionHref?: string;
   latestSessionHref?: string;
+  continuity: import("./continuity-service").LearnerContinuityOverview;
   sessions: SavedProgressSessionSummary[];
 }

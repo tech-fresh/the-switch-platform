@@ -52,6 +52,10 @@ export interface DashboardHomeData {
   strongestSubject?: DashboardFocusCard;
   weakestSubject?: DashboardFocusCard;
   recommendedAction: string;
+  continuityStatus: "resume-active-session" | "review-submitted-session" | "start-first-session";
+  continuityDescription: string;
+  continuityHref: string;
+  continuityActionLabel: string;
   supportSnapshotSummary: string;
   supportPreferenceChips: string[];
 }

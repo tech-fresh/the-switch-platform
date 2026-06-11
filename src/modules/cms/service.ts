@@ -2,6 +2,8 @@ import { getDefaultCmsWorkflowRepository } from "@/lib/server/repositories";
 import { getContentEditorialAudit, getMvpContentCatalog, isTopicStudentVisible } from "@/modules/content/service";
 import type {
   CmsContentReference,
+  CmsEditorialActionType,
+  CmsEditorialWorkflowEvent,
   CmsEditorialWorkflowRecord,
   CmsOverview,
   CmsProvider,
@@ -345,6 +347,11 @@ export async function getCmsOverview(): Promise<CmsOverview> {
       factCheckCount: editorialWorkflow.filter((item) => item.status === "fact-check").length,
       approvedCount: editorialWorkflow.filter((item) => item.status === "approved").length,
       blockedCount: editorialWorkflow.filter((item) => item.status === "blocked").length,
+      rollbackCount: editorialWorkflow.reduce(
+        (total, item) =>
+          total + item.actionHistory.filter((event) => event.actionType === "rollback").length,
+        0,
+      ),
     },
   };
 }
@@ -354,6 +361,7 @@ export async function updateCmsEditorialWorkflowRecord(input: {
   status: CmsEditorialWorkflowRecord["status"];
   note: string;
   owner?: string;
+  actionType?: CmsEditorialActionType;
 }): Promise<CmsEditorialWorkflowRecord | null> {
   const overview = await getCmsOverview();
   const reference = overview.content.find((item) => item.contentId === input.contentId);
@@ -363,14 +371,34 @@ export async function updateCmsEditorialWorkflowRecord(input: {
   }
 
   const records = await defaultRepository.listRecords();
+  const existing = records.find((record) => record.contentId === input.contentId);
+  const owner = input.owner?.trim() || existing?.owner || "Switch editorial desk";
+  const nextTimestamp = new Date().toISOString();
+  const nextActionType = input.actionType ?? inferActionTypeFromStatus(input.status);
+  const resolvedStatus =
+    nextActionType === "rollback" ? getRollbackStatus(existing) : input.status;
+  const fromStatus = existing?.status ?? getDefaultWorkflowStatus(reference);
+  const actionHistory = [
+    ...(existing?.actionHistory ?? []),
+    buildWorkflowEvent({
+      actionType: nextActionType,
+      fromStatus,
+      toStatus: resolvedStatus,
+      owner,
+      note: input.note,
+      createdAt: nextTimestamp,
+    }),
+  ];
   const nextRecord: CmsEditorialWorkflowRecord = {
     contentId: input.contentId,
     title: reference.title,
-    status: input.status,
-    owner: input.owner ?? "Switch editorial desk",
+    status: resolvedStatus,
+    owner,
     note: input.note,
-    updatedAt: new Date().toISOString(),
-    readyToPublish: input.status === "approved" && reference.status === "published",
+    updatedAt: nextTimestamp,
+    readyToPublish: resolvedStatus === "approved" && reference.status === "published",
+    actionHistory,
+    lastActionType: nextActionType,
   };
   const nextRecords = records
     .filter((record) => record.contentId !== input.contentId)
@@ -409,6 +437,17 @@ async function getCmsEditorialWorkflow(
         note: getDefaultWorkflowNote(item),
         updatedAt: item.updatedAt,
         readyToPublish: item.studentVisible,
+        actionHistory: [
+          buildWorkflowEvent({
+            actionType: item.studentVisible ? "publish-check" : inferActionTypeFromStatus(getDefaultWorkflowStatus(item)),
+            fromStatus: getDefaultWorkflowStatus(item),
+            toStatus: getDefaultWorkflowStatus(item),
+            owner: "Switch editorial desk",
+            note: getDefaultWorkflowNote(item),
+            createdAt: item.updatedAt,
+          }),
+        ],
+        lastActionType: item.studentVisible ? "publish-check" : inferActionTypeFromStatus(getDefaultWorkflowStatus(item)),
       };
     })
     .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
@@ -438,4 +477,55 @@ function getDefaultWorkflowNote(item: CmsContentReference): string {
   }
 
   return "Content is waiting for the next editorial review step before publication.";
+}
+
+function inferActionTypeFromStatus(
+  status: CmsEditorialWorkflowRecord["status"],
+): CmsEditorialActionType {
+  if (status === "fact-check") {
+    return "fact-check";
+  }
+
+  if (status === "approved") {
+    return "approve";
+  }
+
+  if (status === "blocked") {
+    return "block";
+  }
+
+  return "review";
+}
+
+function getRollbackStatus(
+  record: CmsEditorialWorkflowRecord | undefined,
+): CmsEditorialWorkflowRecord["status"] {
+  if (!record || record.actionHistory.length === 0) {
+    return "queued-review";
+  }
+
+  const rollbackTarget = [...record.actionHistory]
+    .reverse()
+    .find((event) => event.actionType !== "rollback");
+
+  return rollbackTarget?.fromStatus ?? "queued-review";
+}
+
+function buildWorkflowEvent(input: {
+  actionType: CmsEditorialActionType;
+  fromStatus: CmsEditorialWorkflowRecord["status"];
+  toStatus: CmsEditorialWorkflowRecord["status"];
+  owner: string;
+  note: string;
+  createdAt: string;
+}): CmsEditorialWorkflowEvent {
+  return {
+    eventId: `workflow-event-${input.createdAt}-${Math.random().toString(36).slice(2, 8)}`,
+    actionType: input.actionType,
+    fromStatus: input.fromStatus,
+    toStatus: input.toStatus,
+    owner: input.owner,
+    note: input.note,
+    createdAt: input.createdAt,
+  };
 }

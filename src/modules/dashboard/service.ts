@@ -65,12 +65,13 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     },
   ];
 
-  const resumeExamSession = savedProgress.sessions.find((session) => session.entityType === "exam-session");
-  const resumeAssessmentSession = savedProgress.sessions.find(
-    (session) => session.entityType === "timed-assessment-attempt",
-  );
-  const resumeAnySessionHref =
-    savedProgress.resumeSessionHref ?? savedProgress.reviewSessionHref ?? savedProgress.latestSessionHref;
+  const resumeExamSession = savedProgress.continuity.activeSession?.entityType === "exam-session"
+    ? savedProgress.continuity.activeSession
+    : savedProgress.sessions.find((session) => session.entityType === "exam-session" && session.status !== "submitted");
+  const resumeAssessmentSession = savedProgress.continuity.activeSession?.entityType === "timed-assessment-attempt"
+    ? savedProgress.continuity.activeSession
+    : savedProgress.sessions.find((session) => session.entityType === "timed-assessment-attempt" && session.status !== "submitted");
+  const resumeAnySessionHref = savedProgress.continuity.primaryAction.href;
 
   const routeCards: DashboardRouteCard[] = [
     {
@@ -142,7 +143,7 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
       eyebrow: "Recommendations",
       title: "Follow the next best move",
       description: "See ordered student actions built from readiness, support, results, and saved activity.",
-      stat: summary.nextBestAction,
+      stat: savedProgress.continuity.primaryAction.title,
       tone: "rose",
     },
     {
@@ -289,7 +290,11 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     focusCards,
     strongestSubject,
     weakestSubject,
-    recommendedAction: summary.nextBestAction,
+    recommendedAction: savedProgress.continuity.primaryAction.title,
+    continuityStatus: savedProgress.continuity.status,
+    continuityDescription: savedProgress.continuity.primaryAction.description,
+    continuityHref: savedProgress.continuity.primaryAction.href,
+    continuityActionLabel: savedProgress.continuity.primaryAction.actionLabel,
     supportSnapshotSummary:
       readAloudReadyCount > 0
         ? `${readAloudReadyCount} active exam sessions already have read aloud enabled.`

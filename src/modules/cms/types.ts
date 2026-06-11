@@ -8,6 +8,13 @@ export type CmsEditorialWorkflowStatus =
   | "fact-check"
   | "approved"
   | "blocked";
+export type CmsEditorialActionType =
+  | "review"
+  | "fact-check"
+  | "approve"
+  | "block"
+  | "rollback"
+  | "publish-check";
 
 export type ContentPublicationStatus = "draft" | "published" | "scheduled";
 
@@ -54,6 +61,16 @@ export interface CmsReleaseChecklistModule {
   checks: CmsReleaseCheck[];
 }
 
+export interface CmsEditorialWorkflowEvent {
+  eventId: string;
+  actionType: CmsEditorialActionType;
+  fromStatus: CmsEditorialWorkflowStatus;
+  toStatus: CmsEditorialWorkflowStatus;
+  owner: string;
+  note: string;
+  createdAt: string;
+}
+
 export interface CmsEditorialWorkflowRecord {
   contentId: string;
   title: string;
@@ -62,6 +79,8 @@ export interface CmsEditorialWorkflowRecord {
   note: string;
   updatedAt: string;
   readyToPublish: boolean;
+  actionHistory: CmsEditorialWorkflowEvent[];
+  lastActionType: CmsEditorialActionType;
 }
 
 export interface CmsEditorialWorkflowSummary {
@@ -69,6 +88,7 @@ export interface CmsEditorialWorkflowSummary {
   factCheckCount: number;
   approvedCount: number;
   blockedCount: number;
+  rollbackCount: number;
 }
 
 export interface CmsOverview {

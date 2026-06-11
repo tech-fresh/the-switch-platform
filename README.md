@@ -1887,7 +1887,7 @@ Rule for this section:
 
 Current final-phase snapshot:
 
-- 1 of 8 items completed (13%)
+- 3 of 8 items completed (38%)
 
 ### Final phase execution order
 
@@ -1922,7 +1922,7 @@ Implementation milestones:
 
 ### 2. Fully optimized learner journey continuity
 
-Status: planned.
+Status: completed.
 
 Main goals:
 
@@ -1940,7 +1940,7 @@ Implementation milestones:
 
 ### 3. Complete editorial and trust operating system
 
-Status: planned.
+Status: completed.
 
 Main goals:
 
@@ -2138,6 +2138,141 @@ That includes:
 - cleaner route-to-service wiring for repository-backed server flows
 
 This request-context layer completed the current final-phase architecture slice by moving the main learner-facing read and write APIs onto shared server boundaries.
+
+### Shared learner continuity layer
+
+The platform now has a shared learner continuity model so resume, review, and next-step decisions stop drifting between dashboard, saved progress, results, Power Grid, and recommendations.
+
+That includes:
+
+- a shared learner continuity service built from saved-progress session summaries
+- one primary continuity action for active resume, submitted review, or first-session start states
+- saved progress, dashboard, Power Grid, results, and recommendations reading the same continuity direction instead of inferring it independently
+- continuity-aware follow-up labels that keep submitted work on review paths instead of reopening finished live sessions
+
+This continuity layer is now part of the completed learner-journey slice for the current final-phase roadmap pass.
+
+Learner-friendly explanation:
+
+- if work is still active, the platform should send the learner back to the exact saved place to continue
+- if work is already submitted, the platform should send the learner to review results instead of reopening the finished live session
+- if no session exists yet, the platform should guide the learner into the safest first action
+
+Continuity flow:
+
+```mermaid
+flowchart TD
+    A["Learner opens dashboard, saved progress, results, or recommendations"] --> B["Shared continuity service reads saved session summaries"]
+    B --> C{"Active session exists?"}
+    C -- "Yes" --> D["Resume the saved live session"]
+    C -- "No" --> E{"Submitted session exists?"}
+    E -- "Yes" --> F["Open review through results"]
+    E -- "No" --> G["Guide learner into first safe session"]
+```
+
+Route alignment model:
+
+```mermaid
+flowchart LR
+    A["Saved Progress"] --> E["Shared continuity decision"]
+    B["Dashboard"] --> E
+    C["Results"] --> E
+    D["Recommendations"] --> E
+    E --> F["Resume active work"]
+    E --> G["Review submitted work"]
+    E --> H["Start first session"]
+```
+
+### Editorial trust and audit trail
+
+The platform now has a stronger editorial trust layer behind student-visible content. That means content teams can record who owns a change, what review action happened, when something was blocked, and how to roll it back safely without losing the audit trail.
+
+That includes:
+
+- richer editorial workflow records with owner, action type, timestamps, notes, and action history
+- admin controls for review, fact-check, approval, block, and rollback actions
+- recent audit-trail visibility in the admin workflow view so changes can be understood quickly
+- rollback-aware workflow handling so content can return to a safer earlier state when needed
+- stronger trust reporting in the editorial summary, including rollback counts
+
+This trust layer is now part of the completed editorial and trust slice for the current final-phase roadmap pass.
+
+Learner-friendly explanation:
+
+- if a learning item is reviewed or corrected, the platform can now keep a clearer record of who changed it and why
+- if something is disputed or unsafe, it can be blocked and tracked instead of quietly drifting through the system
+- if a mistake gets published, the workflow can step back to an earlier safer state instead of leaving the learner with unclear content history
+
+Editorial trust flow:
+
+```mermaid
+flowchart TD
+    A["Editor updates content item"] --> B["Workflow action recorded"]
+    B --> C["Owner, note, and timestamp saved"]
+    C --> D{"Workflow action"}
+    D -- "review" --> E["Queued for review"]
+    D -- "fact-check" --> F["Queued for fact-check"]
+    D -- "approve" --> G["Approved for release decisions"]
+    D -- "block" --> H["Blocked from learner release"]
+    D -- "rollback" --> I["Returned to an earlier safer status"]
+```
+
+Audit trail model:
+
+```mermaid
+flowchart LR
+    A["Content item"] --> B["Workflow record"]
+    B --> C["Owner"]
+    B --> D["Current status"]
+    B --> E["Action history"]
+    E --> F["Review"]
+    E --> G["Fact-check"]
+    E --> H["Approval"]
+    E --> I["Block"]
+    E --> J["Rollback"]
+    E --> K["Admin audit view"]
+```
+
+### Website and app mockup preview
+
+The project now also includes a dedicated preview route at `/app-preview` so the same product foundation can be shown as both a website direction and a mobile-style app concept.
+
+That includes:
+
+- a launch-style website preview built from the real dashboard metrics and route actions
+- a mobile app mockup panel driven by the same learner continuity and Power Grid signals
+- academic coverage cards built from the live subject catalog instead of placeholder marketing copy
+- a local preview link for demos when the app is running: `http://localhost:3000/app-preview`
+
+Why this matters to a learner:
+
+- it shows that the product can feel consistent across web and app-style experiences
+- it keeps the same next-step logic, readiness signals, and support context instead of inventing a second disconnected experience
+- it makes demos easier because the product story is visible in one route
+
+Preview structure:
+
+```mermaid
+flowchart LR
+    A["Dashboard data"] --> D["/app-preview"]
+    B["Power Grid summary"] --> D
+    C["Student-visible subject catalog"] --> D
+    D --> E["Website launch view"]
+    D --> F["Mobile app mockup"]
+    D --> G["Coverage cards"]
+```
+
+### README Standard
+
+For the MVP and later roadmap phases, README updates should stay learner-friendly by default.
+
+That means each major completed or in-progress item should include:
+
+- a plain-English explanation of what changed
+- why it matters to the learner journey, not only the codebase
+- route or module references for technical readers
+- a Mermaid diagram when the change affects a multi-step flow or system boundary
+- completion wording that only marks work as done after the implementation is actually in code
 
 ### API-first delivery expansion
 
@@ -2950,7 +3085,7 @@ Current completion snapshot:
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
 - Phase 3: planned, 0 of 8 items completed
-- Final Phase: 1 of 8 items completed
-- Overall project completion estimate: 80% complete for the currently tracked MVP plus full production-completion roadmap
+- Final Phase: 3 of 8 items completed
+- Overall project completion estimate: 86% complete for the currently tracked MVP plus full production-completion roadmap
 
 That is one of the biggest differences between “a page that works” and “a product that can keep growing.”

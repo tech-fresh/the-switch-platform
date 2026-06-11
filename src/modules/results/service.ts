@@ -67,7 +67,7 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
         subtitle: `${paper.board} ${paper.paperName} • attempt ${session.attemptNumber}`,
         status,
         href: savedSession?.href ?? `/exams?examId=${paper.examId}`,
-        actionLabel: status === "submitted" ? "Reopen paper review" : "Resume paper",
+        actionLabel: status === "submitted" ? "Open review results" : "Resume paper",
         scorePercentage: insights.scorePercentage,
         answeredCount: insights.answeredCount,
         correctCount: insights.correctCount,
@@ -125,7 +125,7 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
         href:
           savedSession?.href ??
           `/assessments?assessmentId=${assessment.assessmentId}&durationMinutes=${seed.attempt.selectedDurationMinutes}`,
-        actionLabel: status === "submitted" ? "Reopen checkpoint review" : "Resume checkpoint",
+        actionLabel: status === "submitted" ? "Open review results" : "Resume checkpoint",
         scorePercentage: insights.scorePercentage,
         answeredCount: insights.answeredCount,
         correctCount: insights.correctCount,
@@ -175,6 +175,11 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
     strongestArea: powerGrid.subjectProgress.sort((left, right) => right.readinessScore - left.readinessScore)[0]
       ?.subject ?? "Not enough data yet",
     nextPriority: powerGrid.nextBestAction,
+    continuityStatus: savedProgressOverview.continuity.status,
+    continuityTitle: savedProgressOverview.continuity.primaryAction.title,
+    continuityDescription: savedProgressOverview.continuity.primaryAction.description,
+    continuityHref: savedProgressOverview.continuity.primaryAction.href,
+    continuityActionLabel: savedProgressOverview.continuity.primaryAction.actionLabel,
   };
 }
 

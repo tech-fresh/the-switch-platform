@@ -23,8 +23,8 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
   const strongestSubject = [...summary.subjectProgress].sort(
     (left, right) => right.readinessScore - left.readinessScore,
   )[0];
-  const activeSavedSession = savedProgress.sessions.find((session) => session.status !== "submitted");
-  const submittedSavedSession = savedProgress.sessions.find((session) => session.status === "submitted");
+  const activeSavedSession = savedProgress.continuity.activeSession;
+  const submittedSavedSession = savedProgress.continuity.reviewSession;
   const hasReviewReadyResults = results.readyForReviewCount > 0;
   const supportSummary = buildAccessibilitySupportSummary(
     accessibility.studentAccessProfile
@@ -81,7 +81,7 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
           ? `Review ${submittedSavedSession.title} next`
           : "No saved sessions yet",
       description: activeSavedSession
-        ? savedProgress.recommendedAction
+        ? savedProgress.continuity.primaryAction.description
         : submittedSavedSession
           ? "Your latest completed session is ready to review through the results flow."
           : "As soon as a student starts an exam or assessment, autosave records will appear here.",
@@ -92,7 +92,7 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
         : submittedSavedSession
           ? routeCopy["/results"].label
           : routeCopy["/saved-progress"].label,
-      href: savedProgress.recommendedActionHref,
+      href: savedProgress.continuity.primaryAction.href,
       priority: activeSavedSession ? "high" : submittedSavedSession ? "medium" : "low",
     },
     {
@@ -177,12 +177,12 @@ export async function getRecommendationsPageData(userId: string): Promise<Recomm
     title: "Student recommendations built from readiness, autosave, support, and results signals.",
     description:
       "This route turns the recommendation module into a real student product surface. It gathers progress, support, saved state, and outcome signals into one ordered action list without pushing the decision logic into the frontend.",
-    nextBestAction: summary.nextBestAction,
+    nextBestAction: savedProgress.continuity.primaryAction.title,
     routeSummary: routes["/recommendations"].description,
     insights: [
       {
         label: "Next best action",
-        value: summary.nextBestAction,
+        value: savedProgress.continuity.primaryAction.title,
         detail: `${summary.overallLevel} level with a ${summary.overallTrend} trend`,
       },
       {

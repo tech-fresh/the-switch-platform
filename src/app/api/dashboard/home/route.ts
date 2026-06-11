@@ -1,12 +1,8 @@
-import { NextResponse } from "next/server";
-import { getRequestUserId } from "@/modules/auth/request";
+import { withSwitchRequestContext } from "@/lib/server/api";
 import { getDashboardHomeData } from "@/modules/dashboard/service";
 
 export async function GET() {
-  const userId = await getRequestUserId();
-  const dashboard = await getDashboardHomeData(userId);
-
-  return NextResponse.json({
-    dashboard,
-  });
+  return withSwitchRequestContext(async (context) => ({
+    dashboard: await getDashboardHomeData(context.userId),
+  }));
 }

@@ -1440,17 +1440,17 @@ Right now the project uses:
 - no shared production database yet
 - local cookie-backed auth session with a seeded student profile
 - real thin API routes over module services
-- no real CMS data entry yet
-- no enforced editorial fact-check and approval workflow yet
+- local CMS workflow controls, not a production editorial system yet
+- no production-enforced editorial fact-check and publish workflow yet
 - no live external paper ingestion yet
 - no owned in-app support content for young people
 - trusted external support links instead of a wellbeing assistant
 
 That means the current build is a functional MVP-shaped prototype, not a production system yet.
 
-Current estimated project completion: `63%`
+Current estimated project completion: `78%`
 
-This is an estimate of MVP progress, not production readiness.
+This is an estimate of overall MVP progress, not production readiness.
 
 But it is already more than a mock layout because:
 
@@ -1507,18 +1507,214 @@ Then move on to:
 
 ## What Still Needs Building
 
-Important MVP work still ahead:
+To reach a truly 100% functional, high-quality production release, the platform still needs work across product, content, trust, operations, and scale.
 
-- stronger real saved persistence beyond in-memory state
-- write-side API layer
-- fuller authentication flow
-- enforced fact-check, editorial review, and publish workflow for student-facing content
-- CMS content management tools
-- repository-backed content and paper ingestion adapters
-- deeper results workflows with more detailed marking logic
-- language-ready route support
-- broader past paper coverage and source validation
-- possible owned structured learning content later, only after rigorous factual review and publication workflow are defined
+Top-level remaining work:
+
+- production database, shared persistence, and migration-safe data adapters
+- production authentication, authorization, route protection, and account security hardening
+- production CMS editing, editorial workflow, approval history, rollback, and audit support
+- live content, provider, and past-paper ingestion with source validation and traceability
+- broader academic coverage across subjects, question banks, exams, and timed assessments
+- stronger recommendation quality driven by richer learner history and cross-route evidence
+- full accessibility, safeguarding, privacy, and support-quality validation
+- stronger automated testing, observability, deployment, backup, and operational readiness
+- language-ready delivery and internationalization foundations beyond route structure alone
+
+## Full Product Completion List
+
+This section tracks everything still needed to call the platform fully functional in both quality and functionality.
+
+### 1. Core production infrastructure
+
+Status: not complete.
+
+Still to do:
+
+- replace local file-backed stores with a shared production database
+- define durable schemas for auth, saved progress, results, support settings, and editorial records
+- build migration-safe adapters so current module guarantees survive infrastructure changes
+- add backup, restore, and disaster-recovery plans for student data
+
+### 2. Authentication, authorization, and account safety
+
+Status: prototype complete, production layer not complete.
+
+Still to do:
+
+- connect to a production authentication provider
+- add role-aware authorization for learners, editors, reviewers, and admins
+- harden session expiry, route protection, and account recovery flows
+- verify student data access boundaries across all routes and APIs
+
+### 3. Saved progress, results, and student continuity
+
+Status: strong prototype, not final production system.
+
+Still to do:
+
+- move saved progress and results to shared production persistence
+- verify resume, review, submit, and recovery behaviour under real multi-user load
+- add stronger idempotency and concurrency protection for critical writes
+- ensure every student journey remains recoverable after refresh, reconnect, or partial failure
+
+### 4. Production CMS and editorial operations
+
+Status: local workflow prototype complete, production workflow not complete.
+
+Still to do:
+
+- move editorial workflow from local storage into a shared system
+- support structured editing, review assignment, approval history, and rollback
+- add audit trails for who created, reviewed, approved, blocked, and published content
+- keep admin tooling thin while preserving clear governance and traceability
+
+### 5. Content trust and publication quality
+
+Status: foundations complete, operational trust system not complete.
+
+Still to do:
+
+- enforce review, fact-check, approval, and publish gates everywhere student content appears
+- require trusted source attribution and provider traceability for all surfaced learning content
+- add blocked-content recovery paths when evidence is incomplete or disputed
+- define content correction, rollback, and re-review procedures after publication
+
+### 6. Live paper and content ingestion
+
+Status: not complete.
+
+Still to do:
+
+- connect real external content and past-paper sources
+- validate ingestion quality, source licensing, and provenance
+- normalize imported papers into the internal exam and assessment models
+- add safe reconciliation when upstream sources change or are removed
+
+### 7. Academic coverage and learning depth
+
+Status: partially complete.
+
+Still to do:
+
+- expand subject coverage where current routes are still shallow
+- broaden exam-paper and timed-assessment breadth across more topics and levels
+- deepen question-bank freshness, variation, and weak-topic follow-up behaviour
+- improve recommendation quality from broader learner evidence and longitudinal history
+
+### 8. Accessibility, support, and safeguarding
+
+Status: foundations complete, full validation not complete.
+
+Still to do:
+
+- complete accessibility QA across desktop, tablet, and mobile flows
+- validate support snapshot carry-over in every high-stakes student route
+- review safeguarding copy, crisis signposting, and escalation behaviour
+- confirm support experiences stay safe and understandable for younger learners
+
+### 9. Quality engineering and test coverage
+
+Status: not complete.
+
+Still to do:
+
+- add automated tests for core module logic
+- add route and API integration coverage for main student journeys
+- verify failure handling, degraded states, and recovery paths
+- protect scoring, timing, resume, and submission rules with regression coverage
+
+### 10. Observability, performance, and resilience
+
+Status: not complete.
+
+Still to do:
+
+- add production monitoring, structured logging, and alerting
+- capture errors and operational signals for key student journeys
+- review performance across initial load, route transitions, and heavy result views
+- test resilience under concurrent usage and interrupted network conditions
+
+### 11. Deployment, compliance, and operations
+
+Status: not complete.
+
+Still to do:
+
+- complete deployment pipeline and production environment setup
+- review privacy, data handling, retention, and compliance requirements
+- define operational ownership for incidents, content changes, and student data support
+- run final smoke testing across dashboard, subjects, assessments, exams, saved progress, results, account, and admin
+
+### 12. Language readiness and future platform reach
+
+Status: structural groundwork only.
+
+Still to do:
+
+- move from language-ready routing structure to actual translatable product content
+- define localization rules for learning content, support copy, and assessment metadata
+- verify that accessibility, content gating, and results still behave correctly across languages
+- prepare platform conventions that support future client surfaces without fragmenting product rules
+
+## Remaining MVP Priority List
+
+These are the highest-priority groups still left before the product can be treated as production-ready.
+
+### 1. Production data and identity
+
+Status: highest priority.
+
+Still to do:
+
+- production database and shared persistence
+- production auth provider and route protection
+- account security and session hardening
+- multi-user continuity across saved progress, results, and support state
+
+### 2. Production content and paper operations
+
+Status: highest priority.
+
+Still to do:
+
+- production CMS workflow backend
+- editorial ownership, approval history, and rollback
+- live paper and content ingestion pipelines
+- trusted source validation and publish controls
+
+### 3. Core product depth and academic coverage
+
+Status: high priority.
+
+Still to do:
+
+- broader subject depth
+- broader exam and timed-assessment coverage
+- stronger recommendations and learner-history interpretation
+- deeper question-bank quality and freshness
+
+### 4. Product safety and quality
+
+Status: high priority.
+
+Still to do:
+
+- automated tests for critical rules and routes
+- API contract and failure-path verification
+- accessibility QA across real devices
+- observability, recovery, and resilience hardening
+
+### 5. Launch operations and compliance
+
+Status: high priority.
+
+Still to do:
+
+- deployment and environment setup
+- privacy, safeguarding, and support-signposting review
+- operational ownership and incident response expectations
+- final end-to-end smoke testing
 
 ## Launch Readiness Checklist
 
@@ -1584,15 +1780,364 @@ What still needs to be true before this project can be launched with confidence?
 1. production persistence
 2. production auth provider integration
 3. editorial fact-check and publish workflow
-4. write-side APIs
-5. results and marking hardening
-6. accessibility and mobile QA
-7. deployment, security, and monitoring
-8. final content and paper coverage pass
+4. live content and paper ingestion
+5. broader assessment and paper coverage
+6. accessibility, mobile QA, and safeguarding review
+7. deployment, security, monitoring, and final launch checks
+
+## Phase 3 Roadmap
+
+This is the next delivery phase after the completed MVP checklist and completed Phase 2 roadmap.
+
+Rule for this section:
+
+- only mark an item as completed after the implementation is shipped in code and reflected in the README
+
+Current phase 3 snapshot:
+
+- 0 of 8 items completed (0%)
+
+### 1. Production persistence and shared data layer
+
+Status: planned.
+
+Main goals:
+
+- replace local prototype persistence with a shared production-ready data layer
+- preserve current saved-progress, results, and session guarantees during the migration
+- define database-backed adapters for core student records
+
+### 2. Production authentication and account security
+
+Status: planned.
+
+Main goals:
+
+- connect the platform to a production auth provider
+- harden session, route, and account-security behaviour
+- support real multi-user account continuity across all core routes
+
+### 3. Production CMS and editorial operations
+
+Status: planned.
+
+Main goals:
+
+- move the local editorial queue into a shared production workflow
+- support controlled editing, review assignment, approval history, and rollback
+- enforce trusted publication gates across all student-facing content
+
+### 4. Live content and paper ingestion
+
+Status: planned.
+
+Main goals:
+
+- connect real content and past-paper sources
+- validate source traceability and ingestion quality
+- keep imported content aligned with editorial workflow controls
+
+### 5. Academic coverage expansion
+
+Status: planned.
+
+Main goals:
+
+- expand subject, exam, and timed-assessment coverage
+- improve question-bank depth and freshness across more topics
+- deepen recommendation quality from broader student evidence
+
+### 6. Accessibility, safeguarding, and support validation
+
+Status: planned.
+
+Main goals:
+
+- complete device-level accessibility QA
+- validate safeguarding and support-signposting behaviour
+- confirm support-aware experiences remain safe across all core student routes
+
+### 7. Production QA, observability, and resilience
+
+Status: planned.
+
+Main goals:
+
+- increase automated test coverage for critical product paths
+- add production monitoring, logging, performance review, and recovery support
+- verify failure handling and resilience under real usage conditions
+
+### 8. Deployment, compliance, and launch operations
+
+Status: planned.
+
+Main goals:
+
+- complete deployment and operational setup
+- review privacy, data handling, and compliance expectations
+- run final launch readiness checks across product, content, and support operations
+
+## Final Phase Roadmap
+
+This is the full-completion phase after Phase 3. It is not about small fixes. It is the final architecture, product-quality, and operational optimization pass required to call the platform fully functional and high quality.
+
+Rule for this section:
+
+- only mark an item as completed after the implementation is shipped in code, architecture decisions are reflected in the codebase, and the README is updated to match
+
+Current final-phase snapshot:
+
+- 1 of 8 items completed (13%)
+
+### Final phase execution order
+
+Use this order so infrastructure, trust, and learner continuity are stabilized before broader optimization work.
+
+1. Unified production platform architecture
+2. Fully optimized learner journey continuity
+3. Complete editorial and trust operating system
+4. Full academic and assessment coverage optimization
+5. Accessibility, safeguarding, and student support excellence
+6. Quality engineering and architecture hardening
+7. Production observability, performance, and resilience
+8. Launch governance and long-term operational readiness
+
+### 1. Unified production platform architecture
+
+Status: completed.
+
+Main goals:
+
+- finalize the boundary between routes, APIs, modules, persistence, and external providers
+- remove prototype-only infrastructure assumptions from core product paths
+- standardize shared contracts so all clients consume the same domain rules
+
+Implementation milestones:
+
+- production database adapter layer is added for auth, saved progress, results, and editorial data
+- all critical routes read and write through stable module contracts instead of prototype-only assumptions
+- shared request, validation, and response contracts are aligned across core APIs
+- architecture documentation matches the implemented route to API to module to persistence boundary
+- prototype-only persistence paths are removed from primary production code paths
+
+### 2. Fully optimized learner journey continuity
+
+Status: planned.
+
+Main goals:
+
+- make every core learner journey resilient from first visit through resume, review, and follow-up action
+- guarantee continuity across refresh, reconnect, device change, and partial failure
+- keep saved progress, support state, results, and recommendations synchronized across the platform
+
+Implementation milestones:
+
+- learner account, dashboard, subjects, assessments, exams, saved progress, results, and recommendations all stay in sync across real sessions
+- resume and review flows recover correctly after refresh, reconnect, or interrupted writes
+- cross-device session continuity is supported for active and submitted work
+- support snapshots and access arrangements persist consistently through every core journey
+- degraded and recovery states are validated for each high-stakes learner route
+
+### 3. Complete editorial and trust operating system
+
+Status: planned.
+
+Main goals:
+
+- turn editorial controls into a full operating system for creation, review, fact-check, approval, publication, rollback, and audit
+- enforce source traceability and content ownership across all learning material
+- make trust rules part of normal platform behavior rather than a side workflow
+
+Implementation milestones:
+
+- editors can create, update, review, approve, publish, block, and roll back content through shared workflow tooling
+- every student-visible content item carries review state, fact-check state, source attribution, and approval history
+- blocked or disputed content can be removed from learner routes without breaking route stability
+- audit logs exist for create, review, approval, publish, and rollback actions
+- publication gates are enforced in code across all student-facing content surfaces
+
+### 4. Full academic and assessment coverage optimization
+
+Status: planned.
+
+Main goals:
+
+- broaden subject and assessment depth to the target MVP completion scope
+- optimize question-bank variation, freshness, and weak-topic reinforcement
+- keep exam, timed-assessment, and recommendation quality aligned across the same learner evidence
+
+Implementation milestones:
+
+- target subject set is fully covered with validated topic depth
+- exam and timed-assessment inventories are expanded to the intended MVP breadth
+- question-bank freshness and variant rotation rules are tuned against real coverage goals
+- recommendation quality uses broader learner evidence and produces stable next-step guidance
+- weak-topic reinforcement rules are consistent across results, Power Grid, and recommendations
+
+### 5. Accessibility, safeguarding, and student support excellence
+
+Status: planned.
+
+Main goals:
+
+- make accessibility support complete across all routes and device classes
+- validate safeguarding and crisis-signposting behaviour under real product conditions
+- ensure support-aware experiences remain understandable, respectful, and safe for younger learners
+
+Implementation milestones:
+
+- accessibility settings are fully supported across all core learner routes and reviewed on desktop, tablet, and mobile
+- read-aloud, support snapshots, and access arrangements behave consistently in live and saved flows
+- safeguarding and support-signposting copy is reviewed and validated for high-risk contexts
+- crisis and wellbeing pathways remain visible without interrupting core academic journeys unnecessarily
+- support-aware experiences are reviewed for clarity, safety, and age appropriateness
+
+### 6. Quality engineering and architecture hardening
+
+Status: planned.
+
+Main goals:
+
+- protect core rules with automated unit, integration, and journey-level test coverage
+- harden module boundaries, failure handling, and data consistency guarantees
+- optimize architecture for long-term maintainability without fragmenting product logic
+
+Implementation milestones:
+
+- unit coverage exists for scoring, timing, persistence, publication, and continuity rules
+- route and API integration coverage exists for dashboard, subjects, assessments, exams, saved progress, results, and admin
+- critical learner journeys have end-to-end regression coverage
+- module boundaries are simplified where duplication or drift still exists
+- data consistency guarantees are enforced for submission, resume, review, and editorial transitions
+
+### 7. Production observability, performance, and resilience
+
+Status: planned.
+
+Main goals:
+
+- add complete monitoring, logging, alerting, and recovery coverage for high-risk flows
+- optimize performance across route rendering, APIs, results views, and heavy student interactions
+- verify resilience under concurrency, degraded dependencies, and interrupted network conditions
+
+Implementation milestones:
+
+- monitoring and alerting cover auth, persistence, assessments, exams, saved progress, and editorial flows
+- structured logs and diagnostics exist for high-risk write paths and failure states
+- performance budgets are reviewed for key routes and large result or session payloads
+- resilience is tested under concurrent submissions, reconnects, and degraded dependency conditions
+- backup and recovery mechanisms are verified for production student data and content operations
+
+### 8. Launch governance and long-term operational readiness
+
+Status: planned.
+
+Main goals:
+
+- complete launch governance, privacy, compliance, retention, and incident handling practices
+- define ownership across engineering, editorial, support, and student data operations
+- make the platform ready not only to launch, but to run safely and improve continuously after launch
+
+Implementation milestones:
+
+- deployment pipeline and production environments are finalized
+- privacy, retention, safeguarding, and compliance reviews are completed and recorded
+- ownership is defined for incidents, content operations, data support, and release approvals
+- final launch smoke tests pass across all core routes and operational workflows
+- post-launch review loops exist for incidents, learner trust issues, and content corrections
+
+### Final target architecture
+
+```mermaid
+flowchart TD
+    A["Web Routes"] --> B["Thin API Layer"]
+    B --> C["Domain Modules"]
+    C --> D["Persistence Adapters"]
+    C --> E["Editorial and Trust Services"]
+    C --> F["Assessment and Results Services"]
+    D --> G["Production Database"]
+    E --> H["CMS Workflow Store"]
+    F --> I["Question Banks and Paper Sources"]
+    B --> J["Auth and Session Boundary"]
+    J --> G
+    E --> K["Audit and Publication Controls"]
+    F --> L["Recommendations and Power Grid"]
+```
+
+### Final learner continuity model
+
+```mermaid
+flowchart LR
+    A["Account"] --> B["Dashboard"]
+    B --> C["Subjects"]
+    B --> D["Assessments"]
+    B --> E["Exams"]
+    C --> F["Saved Progress"]
+    D --> F
+    E --> F
+    F --> G["Results"]
+    G --> H["Power Grid"]
+    H --> I["Recommendations"]
+    I --> C
+    F --> E
+    F --> D
+```
+
+### Final content trust flow
+
+```mermaid
+flowchart TD
+    A["Content Draft"] --> B["Editorial Review"]
+    B --> C["Fact Check"]
+    C --> D["Source Validation"]
+    D --> E["Approval"]
+    E --> F["Publish"]
+    F --> G["Student Routes"]
+    G --> H["Audit Feedback"]
+    H --> I["Rollback or Re-review"]
+    I --> B
+```
+
+### Final quality and operations loop
+
+```mermaid
+flowchart LR
+    A["Code Changes"] --> B["Automated Tests"]
+    B --> C["Build and Deploy"]
+    C --> D["Monitoring and Alerts"]
+    D --> E["Incident and Support Review"]
+    E --> F["Product and Editorial Improvements"]
+    F --> A
+```
 
 ## Recent Additions
 
 This section is kept near the bottom on purpose so the README can read as a full project guide first and a latest-changes log second.
+
+### Shared repository and persistence foundation
+
+The architecture now has a cleaner shared persistence boundary for core local data flows instead of each module owning its own file-write pattern.
+
+That includes:
+
+- a reusable JSON file store utility for local persistence adapters
+- shared default repositories for auth sessions, saved progress, access profiles, and CMS workflow records
+- file-backed access profile persistence instead of in-memory-only support settings
+- thinner module services that now depend on reusable repository boundaries instead of duplicating storage logic
+
+This foundation is now part of the completed final-phase architecture slice for the current roadmap pass.
+
+### Shared server request context
+
+Core API routes now also share a cleaner server request boundary instead of resolving auth and user context separately in each route.
+
+That includes:
+
+- a shared request context helper for session, user id, and default server repositories
+- core account, dashboard, progress, recommendations, results, and saved-progress APIs reading from the same auth-derived route context
+- cleaner route-to-service wiring for repository-backed server flows
+
+This request-context layer completed the current final-phase architecture slice by moving the main learner-facing read and write APIs onto shared server boundaries.
 
 ### API-first delivery expansion
 
@@ -2404,6 +2949,8 @@ Current completion snapshot:
 
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
-- Overall main-priority delivery in this README: 100% complete for the currently tracked MVP checklist and phase 2 roadmap items
+- Phase 3: planned, 0 of 8 items completed
+- Final Phase: 1 of 8 items completed
+- Overall project completion estimate: 80% complete for the currently tracked MVP plus full production-completion roadmap
 
 That is one of the biggest differences between “a page that works” and “a product that can keep growing.”

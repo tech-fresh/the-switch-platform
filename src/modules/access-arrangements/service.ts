@@ -1,3 +1,5 @@
+import { getDefaultStudentAccessProfileRepository } from "@/lib/server/repositories";
+
 import type {
   AccessArrangement,
   AccessArrangementApplication,
@@ -15,17 +17,7 @@ import type {
 const DEFAULT_READING_SPEED = 1;
 const DEFAULT_FONT_SIZE = 16;
 
-const inMemoryProfiles = new Map<string, StudentAccessProfile>();
-
-const defaultRepository: StudentAccessProfileRepository = {
-  async getByUserId(userId: string) {
-    return inMemoryProfiles.get(userId) ?? null;
-  },
-  async save(profile: StudentAccessProfile) {
-    inMemoryProfiles.set(profile.userId, profile);
-    return profile;
-  },
-};
+const defaultRepository = getDefaultStudentAccessProfileRepository();
 
 export function calculateExamDurationWithAccessArrangements(
   baseDurationMinutes: number,

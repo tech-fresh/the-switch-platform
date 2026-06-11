@@ -1,12 +1,11 @@
-import { NextResponse } from "next/server";
-import { getRequestUserId } from "@/modules/auth/request";
+import { withSwitchRequestContext } from "@/lib/server/api";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 
 export async function GET() {
-  const userId = await getRequestUserId();
-  const summary = await getMockPowerGridSummary({ userId });
-
-  return NextResponse.json({
-    summary,
-  });
+  return withSwitchRequestContext(async (context) => ({
+    summary: await getMockPowerGridSummary({
+      userId: context.userId,
+      savedProgressRepository: context.repositories.savedProgress,
+    }),
+  }));
 }

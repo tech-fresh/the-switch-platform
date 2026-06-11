@@ -1,12 +1,8 @@
-import { NextResponse } from "next/server";
-import { getRequestUserId } from "@/modules/auth/request";
+import { withSwitchRequestContext } from "@/lib/server/api";
 import { getStudentRecommendations } from "@/modules/recommendations/service";
 
 export async function GET() {
-  const userId = await getRequestUserId();
-  const recommendations = await getStudentRecommendations(userId);
-
-  return NextResponse.json({
-    recommendations,
-  });
+  return withSwitchRequestContext(async (context) => ({
+    recommendations: await getStudentRecommendations(context.userId),
+  }));
 }

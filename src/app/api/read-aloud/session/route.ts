@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getRequestUserId } from "@/modules/auth/request";
+import { getSwitchRequestContext } from "@/lib/server/request-context";
 import { getReadAloudSession } from "@/modules/read-aloud/service";
 import type { ReadAloudContentType } from "@/modules/read-aloud/types";
 
@@ -13,7 +13,7 @@ const allowedContentTypes = new Set<ReadAloudContentType>([
 ]);
 
 export async function GET(request: Request) {
-  const userId = await getRequestUserId();
+  const context = await getSwitchRequestContext();
   const { searchParams } = new URL(request.url);
   const contentType = searchParams.get("contentType");
 
@@ -26,7 +26,11 @@ export async function GET(request: Request) {
     );
   }
 
-  const session = await getReadAloudSession(userId, contentType as ReadAloudContentType);
+  const session = await getReadAloudSession(
+    context.userId,
+    contentType as ReadAloudContentType,
+    context.repositories.accessProfiles,
+  );
 
   return NextResponse.json({
     session,

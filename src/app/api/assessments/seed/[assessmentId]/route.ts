@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getRequestUserId } from "@/modules/auth/request";
+
+import { getSwitchRequestContext } from "@/lib/server/request-context";
 import {
   getMockTimedAssessmentAttemptSeed,
   saveMockTimedAssessmentAttempt,
@@ -10,12 +11,7 @@ import type {
   SubmitTimedAssessmentRequest,
 } from "@/modules/timed-assessment/contracts";
 
-export async function GET(
-  request: Request,
-  context: { params: Promise<{ assessmentId: string }> },
-) {
-  const { assessmentId } = await context.params;
-  const userId = await getRequestUserId();
+function getValidatedDurationMinutes(request: Request): number | null {
   const { searchParams } = new URL(request.url);
   const durationMinutesParam = searchParams.get("durationMinutes");
   const parsedDurationMinutes = durationMinutesParam ? Number(durationMinutesParam) : undefined;
@@ -26,18 +22,26 @@ export async function GET(
       !Number.isFinite(parsedDurationMinutes) ||
       parsedDurationMinutes <= 0)
   ) {
-    return NextResponse.json(
-      {
-        error: "durationMinutes must be a positive number when provided.",
-      },
-      { status: 400 },
-    );
+    throw new Error("durationMinutes must be a positive number when provided.");
   }
 
+  return parsedDurationMinutes ?? null;
+}
+
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ assessmentId: string }> },
+) {
+  const { assessmentId } = await context.params;
+  const requestContext = await getSwitchRequestContext();
+
   try {
+    const parsedDurationMinutes = getValidatedDurationMinutes(request);
     const seed = await getMockTimedAssessmentAttemptSeed(assessmentId, {
-      userId,
-      selectedDurationMinutes: parsedDurationMinutes,
+      userId: requestContext.userId,
+      selectedDurationMinutes: parsedDurationMinutes ?? undefined,
+      accessProfileRepository: requestContext.repositories.accessProfiles,
+      savedProgressRepository: requestContext.repositories.savedProgress,
     });
 
     return NextResponse.json({
@@ -58,26 +62,10 @@ export async function POST(
   context: { params: Promise<{ assessmentId: string }> },
 ) {
   const { assessmentId } = await context.params;
-  const userId = await getRequestUserId();
-  const { searchParams } = new URL(request.url);
-  const durationMinutesParam = searchParams.get("durationMinutes");
-  const parsedDurationMinutes = durationMinutesParam ? Number(durationMinutesParam) : undefined;
-
-  if (
-    durationMinutesParam &&
-    (typeof parsedDurationMinutes !== "number" ||
-      !Number.isFinite(parsedDurationMinutes) ||
-      parsedDurationMinutes <= 0)
-  ) {
-    return NextResponse.json(
-      {
-        error: "durationMinutes must be a positive number when provided.",
-      },
-      { status: 400 },
-    );
-  }
+  const requestContext = await getSwitchRequestContext();
 
   try {
+    getValidatedDurationMinutes(request);
     const payload = (await request.json()) as Partial<SubmitTimedAssessmentRequest>;
 
     if (
@@ -106,12 +94,13 @@ export async function POST(
       notes: payload.notes,
       bookmarkedQuestionIds: payload.bookmarkedQuestionIds,
       timeRemainingMinutes: payload.timeRemainingMinutes,
-      userId,
+      userId: requestContext.userId,
+      savedProgressRepository: requestContext.repositories.savedProgress,
     });
 
     return NextResponse.json({
       attemptId: seed.attempt.attemptId,
-      status: "submitted" as const,
+      status: "submitted",
     });
   } catch (error) {
     return NextResponse.json(
@@ -128,7 +117,7 @@ export async function PATCH(
   context: { params: Promise<{ assessmentId: string }> },
 ) {
   const { assessmentId } = await context.params;
-  const userId = await getRequestUserId();
+  const requestContext = await getSwitchRequestContext();
 
   try {
     const payload = (await request.json()) as Partial<SaveTimedAssessmentAttemptRequest>;
@@ -159,7 +148,8 @@ export async function PATCH(
       notes: payload.notes,
       bookmarkedQuestionIds: payload.bookmarkedQuestionIds,
       timeRemainingMinutes: payload.timeRemainingMinutes,
-      userId,
+      userId: requestContext.userId,
+      savedProgressRepository: requestContext.repositories.savedProgress,
     });
 
     return NextResponse.json({

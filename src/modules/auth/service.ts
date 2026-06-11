@@ -1,9 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import {
-  readPersistedAuthSessions,
-  writePersistedAuthSessions,
-} from "@/lib/persistence/auth-session-store";
+import { getDefaultAuthSessionRepository } from "@/lib/server/repositories";
 import { getAccessibilitySnapshot } from "@/modules/accessibility/service";
 import { getRouteCopy } from "@/modules/language/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
@@ -23,6 +20,8 @@ import type {
 export const AUTH_SESSION_COOKIE_NAME = "switch_auth_session";
 export const DEFAULT_AUTH_USER_ID = "student-demo";
 export const GUEST_AUTH_USER_ID = "guest-preview";
+
+const defaultRepository = getDefaultAuthSessionRepository();
 
 const authUsers: Record<string, AuthUser> = {
   "student-demo": {
@@ -73,7 +72,7 @@ export async function getCurrentAuthSession(
     };
   }
 
-  const persistedSessions = await readPersistedAuthSessions();
+  const persistedSessions = await defaultRepository.listSessions();
   const record = persistedSessions.find((session) => session.sessionToken === sessionToken);
   const user = record ? authUsers[record.userId] : undefined;
 
@@ -103,11 +102,11 @@ export async function createAuthSession(
   }
 
   const sessionToken = randomUUID();
-  const sessionId = `session-${user.userId}-${randomUUID()}`;
+  const sessionId = "session-" + user.userId + "-" + randomUUID();
   const signedInAt = new Date().toISOString();
-  const sessions = await readPersistedAuthSessions();
+  const sessions = await defaultRepository.listSessions();
 
-  await writePersistedAuthSessions(
+  await defaultRepository.replaceSessions(
     sessions
       .filter((existingSession) => existingSession.userId !== user.userId)
       .concat({
@@ -136,9 +135,9 @@ export async function clearAuthSession(sessionToken?: string | null): Promise<vo
     return;
   }
 
-  const sessions = await readPersistedAuthSessions();
+  const sessions = await defaultRepository.listSessions();
 
-  await writePersistedAuthSessions(
+  await defaultRepository.replaceSessions(
     sessions.filter((session) => session.sessionToken !== sessionToken),
   );
 }
@@ -169,7 +168,7 @@ export async function getAccountOverview(
     session.status === "authenticated" ? session.user.displayName : "Guest preview";
   const signedInDetail =
     session.status === "authenticated"
-      ? `${session.user.yearGroup} • ${session.user.email}`
+      ? session.user.yearGroup + " • " + session.user.email
       : "Sign in to keep saved progress, support settings, and session recovery tied to a named student profile.";
 
   const metrics: AccountMetric[] = [
@@ -181,12 +180,12 @@ export async function getAccountOverview(
     {
       label: "Subjects active",
       value: String(subjects.length),
-      detail: `${summary.examReadinessScore} / 100 overall readiness`,
+      detail: String(summary.examReadinessScore) + " / 100 overall readiness",
     },
     {
       label: "Saved sessions",
       value: String(savedProgress.activeCount),
-      detail: `${savedProgress.accessSnapshotCount} support snapshots captured`,
+      detail: String(savedProgress.accessSnapshotCount) + " support snapshots captured",
     },
     {
       label: "Support profile",

@@ -1,7 +1,4 @@
-import {
-  readCmsWorkflowRecords,
-  writeCmsWorkflowRecords,
-} from "@/lib/persistence/cms-workflow-store";
+import { getDefaultCmsWorkflowRepository } from "@/lib/server/repositories";
 import { getContentEditorialAudit, getMvpContentCatalog, isTopicStudentVisible } from "@/modules/content/service";
 import type {
   CmsContentReference,
@@ -11,6 +8,8 @@ import type {
   CmsReleaseChecklistModule,
   ReleaseCheckStatus,
 } from "./types";
+
+const defaultRepository = getDefaultCmsWorkflowRepository();
 
 const cmsProviders: CmsProvider[] = [
   {
@@ -363,7 +362,7 @@ export async function updateCmsEditorialWorkflowRecord(input: {
     return null;
   }
 
-  const records = await readCmsWorkflowRecords();
+  const records = await defaultRepository.listRecords();
   const nextRecord: CmsEditorialWorkflowRecord = {
     contentId: input.contentId,
     title: reference.title,
@@ -378,7 +377,7 @@ export async function updateCmsEditorialWorkflowRecord(input: {
     .concat(nextRecord)
     .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
 
-  await writeCmsWorkflowRecords(nextRecords);
+  await defaultRepository.replaceRecords(nextRecords);
 
   return nextRecord;
 }
@@ -386,7 +385,7 @@ export async function updateCmsEditorialWorkflowRecord(input: {
 async function getCmsEditorialWorkflow(
   content: CmsContentReference[],
 ): Promise<CmsEditorialWorkflowRecord[]> {
-  const records = await readCmsWorkflowRecords();
+  const records = await defaultRepository.listRecords();
   const recordByContentId = new Map(records.map((record) => [record.contentId, record] as const));
 
   return content

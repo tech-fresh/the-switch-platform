@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
-import { getRequestUserId } from "@/modules/auth/request";
-import { getMockExamSession, saveMockExamSession, submitMockExamSession } from "@/modules/exam-engine/service";
+
+import { getSwitchRequestContext } from "@/lib/server/request-context";
+import {
+  getMockExamSession,
+  saveMockExamSession,
+  submitMockExamSession,
+} from "@/modules/exam-engine/service";
 import type { SaveExamSessionRequest, SubmitExamSessionRequest } from "@/modules/exam-engine/contracts";
 import type { ExamQuestionResponse } from "@/modules/exam-engine/types";
 
@@ -37,7 +42,7 @@ function validateExamSessionPayload(
 
   const questionIds = new Set(session.questions.map((question) => question.questionId));
 
-  if (payload.questionResponses.length !== session.questionResponses.length) {
+  if (payload.questionResponses.length != session.questionResponses.length) {
     return "Exam session response count does not match the active paper session.";
   }
 
@@ -64,10 +69,14 @@ export async function GET(
   context: { params: Promise<{ examId: string }> },
 ) {
   const { examId } = await context.params;
-  const userId = await getRequestUserId();
+  const requestContext = await getSwitchRequestContext();
 
   try {
-    const session = await getMockExamSession(examId, { userId });
+    const session = await getMockExamSession(examId, {
+      userId: requestContext.userId,
+      accessProfileRepository: requestContext.repositories.accessProfiles,
+      savedProgressRepository: requestContext.repositories.savedProgress,
+    });
 
     return NextResponse.json({
       session,
@@ -87,11 +96,15 @@ export async function POST(
   context: { params: Promise<{ examId: string }> },
 ) {
   const { examId } = await context.params;
-  const userId = await getRequestUserId();
+  const requestContext = await getSwitchRequestContext();
 
   try {
     const payload = (await request.json()) as Partial<SubmitExamSessionRequest>;
-    const activeSession = await getMockExamSession(examId, { userId });
+    const activeSession = await getMockExamSession(examId, {
+      userId: requestContext.userId,
+      accessProfileRepository: requestContext.repositories.accessProfiles,
+      savedProgressRepository: requestContext.repositories.savedProgress,
+    });
     const validationError = validateExamSessionPayload(payload, activeSession);
 
     if (validationError) {
@@ -117,12 +130,13 @@ export async function POST(
       currentQuestionId: payload.currentQuestionId,
       questionResponses: payload.questionResponses,
       timeRemainingMinutes: payload.timeRemainingMinutes,
-      userId,
+      userId: requestContext.userId,
+      savedProgressRepository: requestContext.repositories.savedProgress,
     });
 
     return NextResponse.json({
       sessionId: session.examSessionId,
-      status: "submitted" as const,
+      status: "submitted",
     });
   } catch (error) {
     return NextResponse.json(
@@ -139,11 +153,15 @@ export async function PATCH(
   context: { params: Promise<{ examId: string }> },
 ) {
   const { examId } = await context.params;
-  const userId = await getRequestUserId();
+  const requestContext = await getSwitchRequestContext();
 
   try {
     const payload = (await request.json()) as Partial<SaveExamSessionRequest>;
-    const activeSession = await getMockExamSession(examId, { userId });
+    const activeSession = await getMockExamSession(examId, {
+      userId: requestContext.userId,
+      accessProfileRepository: requestContext.repositories.accessProfiles,
+      savedProgressRepository: requestContext.repositories.savedProgress,
+    });
     const validationError = validateExamSessionPayload(payload, activeSession);
 
     if (validationError) {
@@ -169,7 +187,8 @@ export async function PATCH(
       currentQuestionId: payload.currentQuestionId,
       questionResponses: payload.questionResponses,
       timeRemainingMinutes: payload.timeRemainingMinutes,
-      userId,
+      userId: requestContext.userId,
+      savedProgressRepository: requestContext.repositories.savedProgress,
     });
 
     return NextResponse.json({
@@ -190,12 +209,14 @@ export async function PUT(
   context: { params: Promise<{ examId: string }> },
 ) {
   const { examId } = await context.params;
-  const userId = await getRequestUserId();
+  const requestContext = await getSwitchRequestContext();
 
   try {
     const session = await getMockExamSession(examId, {
       startFreshAttempt: true,
-      userId,
+      userId: requestContext.userId,
+      accessProfileRepository: requestContext.repositories.accessProfiles,
+      savedProgressRepository: requestContext.repositories.savedProgress,
     });
 
     return NextResponse.json({

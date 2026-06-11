@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getRequestUserId } from "@/modules/auth/request";
+import { getSwitchRequestContext } from "@/lib/server/request-context";
 import type { UpdateSavedProgressStatusRequest } from "@/modules/saved-progress/contracts";
 import {
   canTransitionSavedProgressStatus,
@@ -24,7 +24,7 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ entityType: string; entityId: string }> },
 ) {
-  const userId = await getRequestUserId();
+  const requestContext = await getSwitchRequestContext();
   const { entityType, entityId } = await context.params;
 
   if (!allowedEntityTypes.has(entityType as SavedProgressEntityType)) {
@@ -50,9 +50,10 @@ export async function PATCH(
     }
 
     const existing = await getSavedProgress(
-      userId,
+      requestContext.userId,
       entityType as SavedProgressEntityType,
       entityId,
+      requestContext.repositories.savedProgress,
     );
 
     if (!existing) {
@@ -74,10 +75,11 @@ export async function PATCH(
     }
 
     const record = await markSavedProgressStatus(
-      userId,
+      requestContext.userId,
       entityType as SavedProgressEntityType,
       entityId,
       nextStatus,
+      requestContext.repositories.savedProgress,
     );
 
     if (!record) {

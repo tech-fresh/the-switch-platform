@@ -1,45 +1,34 @@
-import { NextResponse } from "next/server";
-import { getRequestUserId } from "@/modules/auth/request";
+import { getSwitchRequestContext } from "@/lib/server/request-context";
+import { withSwitchRequestContext, withSwitchRouteErrorBoundary } from "@/lib/server/api";
 import { getAccessibilitySnapshot, updateAccessibilitySettings } from "@/modules/accessibility/service";
 import type { UpdateAccessibilitySnapshotRequest } from "@/modules/accessibility/contracts";
 
 export async function GET() {
-  const userId = await getRequestUserId();
-  const snapshot = await getAccessibilitySnapshot(userId);
-
-  return NextResponse.json({
-    snapshot,
-  });
+  return withSwitchRequestContext(async (context) => ({
+    snapshot: await getAccessibilitySnapshot(context.userId, context.repositories.accessProfiles),
+  }));
 }
 
 export async function PATCH(request: Request) {
-  try {
-    const userId = await getRequestUserId();
-    const payload = (await request.json()) as Partial<UpdateAccessibilitySnapshotRequest>;
+  return withSwitchRouteErrorBoundary({
+    badRequestMessage: "Unknown accessibility update error",
+    run: async () => {
+      const context = await getSwitchRequestContext();
+      const payload = (await request.json()) as Partial<UpdateAccessibilitySnapshotRequest>;
 
-    if (!payload.settings) {
-      return NextResponse.json(
-        {
-          error: "Accessibility settings payload is required.",
-        },
-        { status: 400 },
-      );
-    }
+      if (!payload.settings) {
+        throw new Error("Accessibility settings payload is required.");
+      }
 
-    const snapshot = await updateAccessibilitySettings({
-      ...payload.settings,
-      userId,
-    });
-
-    return NextResponse.json({
-      snapshot,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Unknown accessibility update error",
-      },
-      { status: 400 },
-    );
-  }
+      return {
+        snapshot: await updateAccessibilitySettings(
+          {
+            ...payload.settings,
+            userId: context.userId,
+          },
+          context.repositories.accessProfiles,
+        ),
+      };
+    },
+  });
 }

@@ -1,4 +1,5 @@
 import { getCmsOverviewApiData, getPastPaperCatalogApiData } from "@/lib/api/server";
+import { getPersistenceRuntimeSummary } from "@/lib/server/repositories";
 import { CmsWorkflowControls } from "@/components/cms-workflow-controls";
 
 function getSyncClasses(status: "healthy" | "warning" | "planned"): string {
@@ -25,11 +26,18 @@ function getReleaseCheckClasses(status: "complete" | "in-progress" | "watch"): s
   return "border-stone-300 bg-stone-50 text-stone-800";
 }
 
+function getPersistenceClasses(isPrototypePersistence: boolean): string {
+  return isPrototypePersistence
+    ? "border-amber-300 bg-amber-50 text-amber-950"
+    : "border-emerald-300 bg-emerald-50 text-emerald-950";
+}
+
 export default async function AdminPage() {
   const [cms, papers] = await Promise.all([
     getCmsOverviewApiData(),
     getPastPaperCatalogApiData(),
   ]);
+  const persistence = getPersistenceRuntimeSummary();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -66,6 +74,17 @@ export default async function AdminPage() {
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Editorial queue</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{cms.editorialWorkflow.length}</p>
               <p className="mt-1 text-sm text-stone-600">{cms.editorialWorkflowSummary.queuedReviewCount} waiting for review</p>
+            </div>
+            <div className={`border p-4 ${getPersistenceClasses(persistence.isPrototypePersistence)}`}>
+              <p className="text-xs uppercase tracking-[0.2em] opacity-75">Persistence driver</p>
+              <p className="mt-2 text-lg font-semibold">
+                {persistence.driver}
+              </p>
+              <p className="mt-1 text-sm opacity-90">
+                {persistence.isPrototypePersistence
+                  ? "Prototype storage is still active. Launch work still needs a shared production-backed data layer."
+                  : `Runtime directory: ${persistence.dataDirectory}`}
+              </p>
             </div>
           </div>
         </section>

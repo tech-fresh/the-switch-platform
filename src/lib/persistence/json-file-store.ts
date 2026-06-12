@@ -1,7 +1,6 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const storeDirectory = path.join(process.cwd(), ".codex-data");
 const writeChains = new Map<string, Promise<void>>();
 
 export interface JsonFileCollectionStore<TRecord> {
@@ -12,9 +11,10 @@ export interface JsonFileCollectionStore<TRecord> {
 export function createJsonFileCollectionStore<TRecord>(options: {
   filename: string;
   collectionKey: string;
+  directory?: string;
 }): JsonFileCollectionStore<TRecord> {
+  const storeDirectory = options.directory ?? path.join(process.cwd(), ".codex-data");
   const storePath = path.join(storeDirectory, options.filename);
-  const tempStorePath = path.join(storeDirectory, options.filename.replace(/.json$/, ".tmp.json"));
 
   return {
     async read() {
@@ -35,7 +35,16 @@ export function createJsonFileCollectionStore<TRecord>(options: {
     async write(records) {
       const existingWrite = writeChains.get(storePath) ?? Promise.resolve();
       const nextWrite = existingWrite.then(async () => {
-        await mkdir(storeDirectory, { recursive: true });
+        const storePathDirectory = path.dirname(storePath);
+        const tempStorePath = path.join(
+          storePathDirectory,
+          options.filename.replace(
+            /.json$/,
+            `.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp.json`,
+          ),
+        );
+
+        await mkdir(storePathDirectory, { recursive: true });
         await writeFile(
           tempStorePath,
           JSON.stringify({ [options.collectionKey]: records }, null, 2),

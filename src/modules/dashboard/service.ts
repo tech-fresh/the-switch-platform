@@ -1,4 +1,5 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
+import { getDailyMotivation } from "@/modules/motivation/service";
 import {
   buildAccessibilityPreferenceChips,
   buildAccessibilitySupportSummary,
@@ -280,10 +281,12 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
   const latestSupportSnapshot =
     savedProgress.sessions.find((session) => session.supportPreferenceChips.length > 0)
       ?.supportPreferenceChips ?? [];
+  const dailyMotivation = getDailyMotivation();
 
   return {
     summary,
     metrics,
+    dailyMotivation,
     routeCards,
     examSessions: sortedExamSessionCards,
     assessmentSessions: sortedAssessmentSessionCards,

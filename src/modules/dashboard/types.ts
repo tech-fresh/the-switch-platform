@@ -1,4 +1,5 @@
 import type { PowerGridSummary, PowerGridTrend } from "@/modules/power-grid/types";
+import type { DailyMotivation } from "@/modules/motivation/service";
 
 export interface DashboardMetric {
   label: string;
@@ -45,6 +46,7 @@ export interface DashboardFocusCard {
 export interface DashboardHomeData {
   summary: PowerGridSummary;
   metrics: DashboardMetric[];
+  dailyMotivation: DailyMotivation;
   routeCards: DashboardRouteCard[];
   examSessions: DashboardSessionCard[];
   assessmentSessions: DashboardSessionCard[];

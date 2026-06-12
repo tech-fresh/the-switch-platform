@@ -1799,13 +1799,19 @@ Current phase 3 snapshot:
 
 ### 1. Production persistence and shared data layer
 
-Status: planned.
+Status: in progress.
 
 Main goals:
 
 - replace local prototype persistence with a shared production-ready data layer
 - preserve current saved-progress, results, and session guarantees during the migration
 - define database-backed adapters for core student records
+
+Current implementation progress:
+
+- repository wiring now reads its persistence runtime from environment-aware adapter configuration instead of hardcoding local JSON assumptions everywhere
+- the persistence layer can now switch drivers for local JSON or in-memory runtime use, which gives the project a cleaner seam for production-backed adapters and safer test isolation
+- the admin route now makes the active persistence driver visible so prototype storage is easier to spot during launch preparation
 
 ### 2. Production authentication and account security
 
@@ -2231,6 +2237,32 @@ flowchart LR
     E --> I["Block"]
     E --> J["Rollback"]
     E --> K["Admin audit view"]
+```
+
+### Daily student motivation section
+
+The MVP now includes a clean daily motivation section so the website can greet students with a calmer message that changes each day.
+
+That includes:
+
+- a shared daily motivation service for one quote-of-the-day style message
+- a clean dashboard and home section that shows the quote without cluttering the study flow
+- the same motivation moment carried into the app preview so the website and app concept stay aligned
+
+Learner-friendly explanation:
+
+- some students need a quieter emotional reset before they jump into saved work, results, or a new paper
+- this section is meant to support momentum, not add pressure
+- the wording stays simple and encouraging instead of sounding corporate or distracting
+
+Motivation flow:
+
+```mermaid
+flowchart LR
+    A["Current date"] --> B["Shared motivation service"]
+    B --> C["Daily quote selected"]
+    C --> D["Home and dashboard section"]
+    C --> E["App preview mobile concept"]
 ```
 
 ### Website and app mockup preview
@@ -3061,6 +3093,17 @@ Covered in this pass:
 - the admin route now includes an explicit MVP release checklist for the current priority modules
 - Exam Engine, Power Grid, Saved Progress, Read Aloud, Dashboard, and Timed Assessments now each show check-level release notes
 - checks are now labeled as complete, in progress, or watch so remaining fallback risk stays visible instead of implied
+
+### 7. Add a daily student motivation section to the MVP
+
+Status: complete for the current MVP pass.
+
+Progress already made:
+
+- a shared daily motivation service now rotates one student-friendly quote each day
+- dashboard and home now show that quote in a clean low-noise section
+- the app preview route also carries the same motivation moment so website and app concept stay aligned
+- the wording is intentionally calm and study-safe rather than noisy, sales-like, or distracting
 
 ## Summary
 

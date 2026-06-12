@@ -2,6 +2,7 @@ import type { PersistedAuthSessionRecord } from "@/lib/persistence/auth-session-
 import { readPersistedAuthSessions, writePersistedAuthSessions } from "@/lib/persistence/auth-session-store";
 import { readCmsWorkflowRecords, writeCmsWorkflowRecords } from "@/lib/persistence/cms-workflow-store";
 import { readAccessProfiles, writeAccessProfiles } from "@/lib/persistence/access-profile-store";
+import { getPersistenceRuntimeConfig } from "@/lib/persistence/runtime";
 import { readSavedProgressRecords, writeSavedProgressRecords } from "@/lib/persistence/saved-progress-store";
 import type { StudentAccessProfile, StudentAccessProfileRepository } from "@/modules/access-arrangements/types";
 import type { CmsEditorialWorkflowRecord } from "@/modules/cms/types";
@@ -19,6 +20,12 @@ export interface AuthSessionRepository {
 export interface CmsWorkflowRepository {
   listRecords(): Promise<CmsEditorialWorkflowRecord[]>;
   replaceRecords(records: CmsEditorialWorkflowRecord[]): Promise<void>;
+}
+
+export interface PersistenceRuntimeSummary {
+  driver: ReturnType<typeof getPersistenceRuntimeConfig>["driver"];
+  dataDirectory: string;
+  isPrototypePersistence: boolean;
 }
 
 const defaultSavedProgressRepository: SavedProgressRepository = {
@@ -116,6 +123,16 @@ export function getDefaultAuthSessionRepository(): AuthSessionRepository {
 
 export function getDefaultCmsWorkflowRepository(): CmsWorkflowRepository {
   return defaultCmsWorkflowRepository;
+}
+
+export function getPersistenceRuntimeSummary(): PersistenceRuntimeSummary {
+  const config = getPersistenceRuntimeConfig();
+
+  return {
+    driver: config.driver,
+    dataDirectory: config.dataDirectory,
+    isPrototypePersistence: config.isPrototypePersistence,
+  };
 }
 
 function buildSavedProgressRepositoryKey(

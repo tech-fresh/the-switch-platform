@@ -57,6 +57,19 @@ function getProgressBarClasses(score: number): string {
   return "bg-rose-500";
 }
 
+function getMotivationClasses(colour: DashboardHomeData["dailyMotivation"]["colour"]): string {
+  switch (colour) {
+    case "amber":
+      return "border-amber-300 bg-amber-50 text-amber-950";
+    case "sky":
+      return "border-sky-300 bg-sky-50 text-sky-950";
+    case "rose":
+      return "border-rose-300 bg-rose-50 text-rose-950";
+    default:
+      return "border-teal-300 bg-teal-50 text-teal-950";
+  }
+}
+
 export function DashboardHome({ data, mode }: DashboardHomeProps) {
   const isHome = mode === "home";
   const heroEyebrow = isHome ? "The Switch Mark 3.2" : "Student Dashboard";
@@ -214,6 +227,50 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
                   ))}
                 </div>
               ) : null}
+            </aside>
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)]">
+            <article className={`border p-5 shadow-sm sm:p-6 ${getMotivationClasses(data.dailyMotivation.colour)}`}>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-75">
+                    Daily Motivation
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                    A calmer start for today&apos;s study.
+                  </h2>
+                </div>
+                <span className="border border-current/20 bg-white/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]">
+                  {data.dailyMotivation.focusLabel}
+                </span>
+              </div>
+              <blockquote className="mt-5 max-w-3xl text-xl font-medium leading-8 sm:text-2xl">
+                “{data.dailyMotivation.quote}”
+              </blockquote>
+              <p className="mt-4 max-w-3xl text-sm leading-7 opacity-90 sm:text-base">
+                {data.dailyMotivation.reflection}
+              </p>
+            </article>
+
+            <aside className="border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">
+                Why this is in the MVP
+              </p>
+              <div className="mt-4 grid gap-3 text-sm leading-7 text-stone-600">
+                <p>
+                  Student-facing study tools should not only track pressure. They should also help the
+                  learner settle, reset, and keep going.
+                </p>
+                <p>
+                  This quote updates each day from a shared motivation service, so the website feels
+                  fresh without becoming noisy or distracting.
+                </p>
+                <p>
+                  The tone stays simple, student-friendly, and calm so it supports the learning journey
+                  instead of competing with it.
+                </p>
+              </div>
             </aside>
           </section>
 

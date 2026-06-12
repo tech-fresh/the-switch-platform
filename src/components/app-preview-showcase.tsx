@@ -54,6 +54,34 @@ export function AppPreviewShowcase({
   summary,
   subjects,
 }: AppPreviewShowcaseProps) {
+  const streamlinedNavItems = [
+    { label: "Home", detail: "Landing" },
+    { label: "Dashboard", detail: "Main control centre" },
+    { label: "Practice", detail: "Quick practice + full paper" },
+    { label: "Saved Progress", detail: "Resume work" },
+    { label: "Results", detail: "Review outcomes" },
+    { label: "Support", detail: "Calm help" },
+  ];
+  const streamlinedActions = [
+    {
+      title: "Continue saved work",
+      detail: "The first action should reopen the learner's current session instead of asking them to choose another route.",
+      href: dashboardData.continuityHref,
+      tone: "border-teal-300 bg-teal-50 text-teal-950",
+    },
+    {
+      title: "Start practice",
+      detail: "One entry point for quick practice or a full paper keeps practice choices simple.",
+      href: "/assessments",
+      tone: "border-amber-300 bg-amber-50 text-amber-950",
+    },
+    {
+      title: "Review results",
+      detail: "Completed work should flow straight into review instead of splitting attention across more tabs.",
+      href: "/results",
+      tone: "border-sky-300 bg-sky-50 text-sky-950",
+    },
+  ];
   const coverageCards = subjects.slice(0, 6).map((subject) => {
     const matchingProgress = summary.subjectProgress.find(
       (item) => normalizeLabel(item.subject) === normalizeLabel(subject.name),
@@ -109,6 +137,51 @@ export function AppPreviewShowcase({
           </div>
         </header>
 
+        <section className="grid gap-5 border border-dashed border-orange-300 bg-white/80 p-5 shadow-sm lg:grid-cols-[minmax(0,1.2fr)_20rem]">
+          <div className="space-y-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-700">
+                Preview-only concept
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
+                Fewer clicks, fewer route decisions, stronger learner focus.
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-stone-700">
+                This mockup tests a simpler learner-facing structure. It reduces top-level choices,
+                makes the dashboard the control centre, and groups exams and assessments under one
+                clearer practice entry point.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {streamlinedNavItems.map((item) => (
+                <div key={item.label} className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-lg font-semibold tracking-tight text-stone-950">{item.label}</p>
+                  <p className="mt-1 text-sm text-stone-600">{item.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <aside className="border border-stone-200 bg-stone-950 p-5 text-stone-50">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-orange-300">
+              Streamlined rules
+            </p>
+            <div className="mt-4 grid gap-3 text-sm leading-7 text-stone-300">
+              <p>
+                `Progress` and `Recommendations` become dashboard sections instead of separate first-click
+                destinations.
+              </p>
+              <p>
+                `How It Works`, `App Preview`, and `Account` move out of the main learner nav.
+              </p>
+              <p>
+                `Exams` and `Assessments` combine into one clearer `Practice` route.
+              </p>
+            </div>
+          </aside>
+        </section>
+
         <section className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_24rem]">
           <article className="overflow-hidden border border-stone-300 bg-white shadow-sm">
             <div className="border-b border-stone-200 bg-stone-950 px-5 py-3 text-stone-50">
@@ -149,6 +222,22 @@ export function AppPreviewShowcase({
                     </div>
                   ))}
                 </div>
+              </section>
+
+              <section className="grid gap-4 lg:grid-cols-3">
+                {streamlinedActions.map((action) => (
+                  <Link
+                    key={action.title}
+                    href={action.href}
+                    className={`border p-5 transition hover:brightness-[0.98] ${action.tone}`}
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] opacity-75">
+                      Primary learner action
+                    </p>
+                    <h3 className="mt-3 text-xl font-semibold tracking-tight">{action.title}</h3>
+                    <p className="mt-2 text-sm leading-6 opacity-90">{action.detail}</p>
+                  </Link>
+                ))}
               </section>
 
               <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -247,6 +336,18 @@ export function AppPreviewShowcase({
                 </div>
                 <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-900/65">
                   Readiness {summary.examReadinessScore} / 100
+                </p>
+              </section>
+
+              <section className="mt-4 rounded-[1.75rem] border border-white/10 bg-white/5 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-orange-100/75">
+                  Daily motivation
+                </p>
+                <h3 className="mt-3 text-lg font-semibold leading-7 text-white">
+                  “{dashboardData.dailyMotivation.quote}”
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-stone-300">
+                  {dashboardData.dailyMotivation.reflection}
                 </p>
               </section>
 

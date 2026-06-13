@@ -1,5 +1,7 @@
 import { getCmsOverviewApiData, getPastPaperCatalogApiData } from "@/lib/api/server";
 import { getPersistenceRuntimeSummary } from "@/lib/server/repositories";
+import { getCmsRuntimeConfig } from "@/modules/cms/runtime";
+import { requireRequestSessionRoles } from "@/modules/auth/request";
 import { CmsWorkflowControls } from "@/components/cms-workflow-controls";
 
 function getSyncClasses(status: "healthy" | "warning" | "planned"): string {
@@ -33,11 +35,13 @@ function getPersistenceClasses(isPrototypePersistence: boolean): string {
 }
 
 export default async function AdminPage() {
+  await requireRequestSessionRoles(["editor", "admin"]);
   const [cms, papers] = await Promise.all([
     getCmsOverviewApiData(),
     getPastPaperCatalogApiData(),
   ]);
   const persistence = getPersistenceRuntimeSummary();
+  const cmsRuntime = getCmsRuntimeConfig();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -84,6 +88,15 @@ export default async function AdminPage() {
                 {persistence.isPrototypePersistence
                   ? "Prototype storage is still active. Launch work still needs a shared production-backed data layer."
                   : `Runtime directory: ${persistence.dataDirectory}`}
+              </p>
+            </div>
+            <div className="border border-stone-200 bg-white p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">CMS backend mode</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">{cmsRuntime.backendMode}</p>
+              <p className="mt-1 text-sm text-stone-600">
+                {cmsRuntime.backendMode === "read-only"
+                  ? "Editorial writes are intentionally blocked until a writable production adapter is connected."
+                  : "Editorial workflow is running through the current repository-backed backend adapter."}
               </p>
             </div>
           </div>
@@ -178,6 +191,21 @@ export default async function AdminPage() {
                     <p className="mt-2 text-sm text-stone-700">Owner: {item.owner}</p>
                     <p className="mt-1 text-sm text-stone-700">Updated: {item.updatedAt}</p>
                     <p className="mt-1 text-sm text-stone-700">Last action: {item.lastActionType}</p>
+                    <div className="mt-4 border border-stone-200 bg-white p-3">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                        Publish gate
+                      </p>
+                      <div className="mt-3 grid gap-2">
+                        {item.publishGate.checks.map((check) => (
+                          <div key={check.checkId} className="border border-stone-200 bg-stone-50 p-3">
+                            <p className="text-sm font-semibold text-stone-950">
+                              {check.passed ? "Pass" : "Block"} • {check.label}
+                            </p>
+                            <p className="mt-1 text-sm leading-6 text-stone-700">{check.detail}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                     <div className="mt-4 grid gap-2 border border-stone-200 bg-white p-3">
                       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
                         Recent audit trail

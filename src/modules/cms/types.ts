@@ -1,4 +1,8 @@
-import type { ContentEditorialAudit, ContentReviewStatus } from "@/modules/content/types";
+import type {
+  ContentEditorialAudit,
+  ContentFactCheckStatus,
+  ContentReviewStatus,
+} from "@/modules/content/types";
 
 export type CmsProviderType = "seed-content" | "headless-cms" | "manual-upload";
 
@@ -29,10 +33,26 @@ export interface CmsContentReference {
   topicId?: string;
   status: ContentPublicationStatus;
   reviewStatus?: ContentReviewStatus;
+  factCheckStatus?: ContentFactCheckStatus;
   studentVisible: boolean;
+  trustedSourceAttributionComplete?: boolean;
+  gateReason?: string;
   sourceReference?: string;
   updatedAt: string;
   sourceProviderId: string;
+}
+
+export interface CmsPublishGateCheck {
+  checkId: string;
+  label: string;
+  passed: boolean;
+  detail: string;
+}
+
+export interface CmsPublishGateSummary {
+  readyToPublish: boolean;
+  blockedReasons: string[];
+  checks: CmsPublishGateCheck[];
 }
 
 export interface CmsProvider {
@@ -79,6 +99,7 @@ export interface CmsEditorialWorkflowRecord {
   note: string;
   updatedAt: string;
   readyToPublish: boolean;
+  publishGate: CmsPublishGateSummary;
   actionHistory: CmsEditorialWorkflowEvent[];
   lastActionType: CmsEditorialActionType;
 }

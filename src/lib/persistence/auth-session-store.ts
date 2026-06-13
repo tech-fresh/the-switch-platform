@@ -10,6 +10,7 @@ export interface PersistedAuthSessionRecord {
   userId: string;
   provider: AuthProvider;
   signedInAt: string;
+  expiresAt: string;
 }
 
 const runtimeConfig = getPersistenceRuntimeConfig();

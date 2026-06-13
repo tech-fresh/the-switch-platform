@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getSwitchRequestContext } from "@/lib/server/request-context";
+import { getAuthenticatedSwitchRequestContext } from "@/lib/server/request-context";
 import type { UpdateSavedProgressStatusRequest } from "@/modules/saved-progress/contracts";
 import {
   canTransitionSavedProgressStatus,
@@ -24,7 +24,7 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ entityType: string; entityId: string }> },
 ) {
-  const requestContext = await getSwitchRequestContext();
+  const requestContext = await getAuthenticatedSwitchRequestContext();
   const { entityType, entityId } = await context.params;
 
   if (!allowedEntityTypes.has(entityType as SavedProgressEntityType)) {

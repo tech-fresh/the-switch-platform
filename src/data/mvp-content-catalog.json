@@ -1,19 +1,29 @@
 {
   "catalogVersion": "0.1.0",
-  "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+  "lastUpdatedAt": "2026-06-13T09:00:00.000Z",
   "contentOperations": {
     "generation": [
       {
         "sourceId": "seed-content-provider",
         "name": "Seed Content Provider",
-        "handles": ["subject metadata", "topic metadata", "revision stacks", "quiz prompts", "generated image prompts"],
+        "handles": [
+          "subject metadata",
+          "topic metadata",
+          "revision stacks",
+          "quiz prompts",
+          "generated image prompts"
+        ],
         "updateMode": "manual MVP authoring",
         "nextStep": "Keep owned MVP content in seed form while curriculum coverage and editorial gates are still stabilising."
       },
       {
         "sourceId": "future-editorial-pipeline",
         "name": "Future Editorial Pipeline",
-        "handles": ["reviewed content updates", "board-specific variants", "Year 10 and Year 11 refreshes"],
+        "handles": [
+          "reviewed content updates",
+          "board-specific variants",
+          "Year 10 and Year 11 refreshes"
+        ],
         "updateMode": "planned editorial workflow",
         "nextStep": "Connect reviewed content generation to CMS tooling without bypassing source attribution or fact-check gates."
       }
@@ -22,14 +32,22 @@
       {
         "sourceId": "content-catalog-module",
         "name": "Content Catalog Module",
-        "handles": ["student content delivery", "internal editorial audit", "subject and topic selection"],
+        "handles": [
+          "student content delivery",
+          "internal editorial audit",
+          "subject and topic selection"
+        ],
         "updateMode": "API and service delivery",
         "nextStep": "Remain the single source of truth for structured student content across website and future mobile clients."
       },
       {
         "sourceId": "cms-provider-boundary",
         "name": "CMS Provider Boundary",
-        "handles": ["future admin editing", "provider sync visibility", "internal publishing controls"],
+        "handles": [
+          "future admin editing",
+          "provider sync visibility",
+          "internal publishing controls"
+        ],
         "updateMode": "planned provider integration",
         "nextStep": "Attach real CMS adapters only when they respect the existing review and verification workflow."
       }
@@ -38,14 +56,22 @@
       {
         "sourceId": "editorial-audit",
         "name": "Editorial Audit",
-        "handles": ["publication checks", "fact-check status", "source attribution traceability"],
+        "handles": [
+          "publication checks",
+          "fact-check status",
+          "source attribution traceability"
+        ],
         "updateMode": "internal workflow review",
         "nextStep": "Use blocked-topic decisions and fact-check counts to control what reaches students."
       },
       {
         "sourceId": "past-paper-provider-plan",
         "name": "Past Paper Provider Plan",
-        "handles": ["exam-paper metadata updates", "board release checks", "licensed source planning"],
+        "handles": [
+          "exam-paper metadata updates",
+          "board release checks",
+          "licensed source planning"
+        ],
         "updateMode": "manual during MVP",
         "nextStep": "Feed future exam paper updates through provider adapters rather than hard-coding them into page routes."
       }
@@ -57,64 +83,91 @@
       "subjectId": "gcse-maths",
       "name": "GCSE Mathematics",
       "qualificationType": "GCSE",
-      "examBoards": ["AQA", "Edexcel", "OCR"],
+      "examBoards": [
+        "AQA",
+        "Edexcel",
+        "OCR"
+      ],
       "description": "Core number, algebra, geometry, ratio, and statistics revision.",
-      "topicCount": 2,
-      "revisionResourceCount": 8,
+      "topicCount": 3,
+      "revisionResourceCount": 12,
       "examReadinessScore": 56,
       "nextTopicToRevise": "Algebra",
       "studentStudyStage": "year-10-end-of-year",
       "endOfYearExamContext": "Built for Year 10 students preparing for end-of-year internal exams that already begin to use GCSE command words, timings, and mark-style expectations.",
       "gcsePreparationGoal": "Move students from Year 10 end-of-year confidence into stronger GCSE paper readiness by using progression questions and exam-style routines early.",
-      "yearGroups": ["Year 10", "Year 11"],
+      "yearGroups": [
+        "Year 10",
+        "Year 11"
+      ],
       "boardCoverageNote": "Maths coverage is shaped around common AQA, Edexcel, and OCR Year 10 and Year 11 topic sequencing, with room for board-specific paper variants."
     },
     {
       "subjectId": "gcse-english-language",
       "name": "GCSE English Language",
       "qualificationType": "GCSE",
-      "examBoards": ["Edexcel", "AQA", "Eduqas"],
+      "examBoards": [
+        "Edexcel",
+        "AQA",
+        "Eduqas"
+      ],
       "description": "Reading, inference, language analysis, structure, and writing craft.",
-      "topicCount": 2,
-      "revisionResourceCount": 8,
+      "topicCount": 3,
+      "revisionResourceCount": 12,
       "examReadinessScore": 61,
       "nextTopicToRevise": "Language Analysis",
       "studentStudyStage": "year-10-end-of-year",
       "endOfYearExamContext": "Built for Year 10 students who need end-of-year English assessments to feel like a bridge into GCSE extract work, inference, and analytical writing.",
       "gcsePreparationGoal": "Prepare students for GCSE English Language expectations by introducing the same habits of evidence selection, analysis, and timed response structure before Year 11.",
-      "yearGroups": ["Year 10", "Year 11"],
+      "yearGroups": [
+        "Year 10",
+        "Year 11"
+      ],
       "boardCoverageNote": "English coverage follows shared Year 10 and Year 11 reading-analysis expectations across Edexcel, AQA, and Eduqas before more specific paper wording is layered in."
     },
     {
       "subjectId": "gcse-combined-science",
       "name": "GCSE Combined Science",
       "qualificationType": "GCSE",
-      "examBoards": ["AQA", "Edexcel", "OCR"],
+      "examBoards": [
+        "AQA",
+        "Edexcel",
+        "OCR"
+      ],
       "description": "Biology, chemistry, and physics concepts through exam-ready checkpoints.",
-      "topicCount": 2,
-      "revisionResourceCount": 8,
+      "topicCount": 3,
+      "revisionResourceCount": 12,
       "examReadinessScore": 47,
       "nextTopicToRevise": "Chemical Changes",
       "studentStudyStage": "year-10-end-of-year",
       "endOfYearExamContext": "Built for Year 10 end-of-year science exams where students are expected to answer increasingly GCSE-style explanation and practical-method questions.",
       "gcsePreparationGoal": "Use Year 10 science revision and progression checks to make the jump into GCSE-style application and required-practical questions feel familiar.",
-      "yearGroups": ["Year 10", "Year 11"],
+      "yearGroups": [
+        "Year 10",
+        "Year 11"
+      ],
       "boardCoverageNote": "Science coverage is organised around Year 10 foundations and Year 11 application work common to AQA, Edexcel, and OCR combined science courses."
     },
     {
       "subjectId": "igcse-maths",
       "name": "iGCSE Mathematics",
       "qualificationType": "IGCSE",
-      "examBoards": ["Cambridge IGCSE", "Edexcel International GCSE"],
+      "examBoards": [
+        "Cambridge IGCSE",
+        "Edexcel International GCSE"
+      ],
       "description": "iGCSE maths coverage for students bridging from advanced Year 10 work into international GCSE paper styles.",
-      "topicCount": 1,
-      "revisionResourceCount": 4,
+      "topicCount": 2,
+      "revisionResourceCount": 8,
       "examReadinessScore": 52,
       "nextTopicToRevise": "Linear Graphs",
       "studentStudyStage": "year-10-gcse-bridge",
       "endOfYearExamContext": "Built for advanced Year 10 students whose end-of-year work is already beginning to resemble iGCSE algebra and graph interpretation questions.",
       "gcsePreparationGoal": "Bridge strong Year 10 maths students into iGCSE command words, graph reasoning, and paper expectations before full Year 11 exam pressure.",
-      "yearGroups": ["Year 10", "Year 11"],
+      "yearGroups": [
+        "Year 10",
+        "Year 11"
+      ],
       "boardCoverageNote": "iGCSE maths coverage begins with shared Cambridge and Edexcel International GCSE foundations, then expands into board-specific paper variants."
     }
   ],
@@ -134,9 +187,18 @@
         "gcsePreparationBridge": "These questions build fluency first, then bridge students into the style and precision expected in full GCSE algebra items."
       },
       "curriculumCoverage": {
-        "yearGroups": ["Year 10", "Year 11"],
-        "qualificationTypes": ["GCSE"],
-        "boardFocus": ["AQA", "Edexcel", "OCR"],
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "AQA",
+          "Edexcel",
+          "OCR"
+        ],
         "year10CoverageNote": "In Year 10 this topic supports expansion, simplification, and early equation fluency used in end-of-year papers.",
         "year11CoverageNote": "In Year 11 the same topic feeds directly into higher-mark GCSE algebra manipulation and problem solving."
       },
@@ -170,10 +232,26 @@
         "questionId": "quiz-maths-algebra-1",
         "prompt": "Which expression is equivalent to 5(x + 2) - x?",
         "options": [
-          { "optionId": "a", "label": "A", "text": "4x + 2" },
-          { "optionId": "b", "label": "B", "text": "4x + 10" },
-          { "optionId": "c", "label": "C", "text": "5x + 2" },
-          { "optionId": "d", "label": "D", "text": "6x + 10" }
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "4x + 2"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "4x + 10"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "5x + 2"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "6x + 10"
+          }
         ],
         "correctOptionId": "b"
       },
@@ -206,9 +284,18 @@
         "gcsePreparationBridge": "Students move from straightforward ratio methods into more layered GCSE-style reasoning and unit-control questions."
       },
       "curriculumCoverage": {
-        "yearGroups": ["Year 10", "Year 11"],
-        "qualificationTypes": ["GCSE"],
-        "boardFocus": ["AQA", "Edexcel", "OCR"],
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "AQA",
+          "Edexcel",
+          "OCR"
+        ],
         "year10CoverageNote": "In Year 10 this topic supports proportional reasoning and scale work commonly introduced before mock-paper difficulty.",
         "year11CoverageNote": "In Year 11 the same topic supports more complex GCSE multi-step ratio, rates, and scale interpretation."
       },
@@ -242,10 +329,26 @@
         "questionId": "quiz-maths-ratio-1",
         "prompt": "A ratio is 2:3. If the total is 20, what is the larger part?",
         "options": [
-          { "optionId": "a", "label": "A", "text": "8" },
-          { "optionId": "b", "label": "B", "text": "10" },
-          { "optionId": "c", "label": "C", "text": "12" },
-          { "optionId": "d", "label": "D", "text": "15" }
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "8"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "10"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "12"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "15"
+          }
         ],
         "correctOptionId": "c"
       },
@@ -278,9 +381,18 @@
         "gcsePreparationBridge": "Students build the habit of precise quotation choice and analytical explanation before full GCSE language analysis questions become high stakes."
       },
       "curriculumCoverage": {
-        "yearGroups": ["Year 10", "Year 11"],
-        "qualificationTypes": ["GCSE"],
-        "boardFocus": ["Edexcel", "AQA", "Eduqas"],
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "Edexcel",
+          "AQA",
+          "Eduqas"
+        ],
         "year10CoverageNote": "In Year 10 this topic supports extract analysis habits and evidence selection for end-of-year English assessments.",
         "year11CoverageNote": "In Year 11 it feeds directly into GCSE language-analysis paragraphs under timed conditions."
       },
@@ -314,10 +426,26 @@
         "questionId": "quiz-english-language-analysis-1",
         "prompt": "What is the strongest opening move in a language analysis paragraph?",
         "options": [
-          { "optionId": "a", "label": "A", "text": "Summarise the plot" },
-          { "optionId": "b", "label": "B", "text": "Choose a short quotation and identify the writer's method" },
-          { "optionId": "c", "label": "C", "text": "State your final judgement only" },
-          { "optionId": "d", "label": "D", "text": "List every adjective in the extract" }
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "Summarise the plot"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "Choose a short quotation and identify the writer's method"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "State your final judgement only"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "List every adjective in the extract"
+          }
         ],
         "correctOptionId": "b"
       },
@@ -350,9 +478,18 @@
         "gcsePreparationBridge": "Students practise tracking movement and focus now so GCSE structure answers feel like a continuation rather than a brand-new demand."
       },
       "curriculumCoverage": {
-        "yearGroups": ["Year 10", "Year 11"],
-        "qualificationTypes": ["GCSE"],
-        "boardFocus": ["Edexcel", "AQA", "Eduqas"],
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "Edexcel",
+          "AQA",
+          "Eduqas"
+        ],
         "year10CoverageNote": "In Year 10 this topic helps students track shifts in focus and sequence before higher-pressure papers.",
         "year11CoverageNote": "In Year 11 the same structure awareness supports clearer GCSE responses on how texts are organised."
       },
@@ -386,10 +523,26 @@
         "questionId": "quiz-english-structure-1",
         "prompt": "What should you track first in a structure answer?",
         "options": [
-          { "optionId": "a", "label": "A", "text": "Every adjective in the extract" },
-          { "optionId": "b", "label": "B", "text": "How the focus of the text moves" },
-          { "optionId": "c", "label": "C", "text": "The writer's favourite punctuation mark" },
-          { "optionId": "d", "label": "D", "text": "The exact number of paragraphs only" }
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "Every adjective in the extract"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "How the focus of the text moves"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "The writer's favourite punctuation mark"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "The exact number of paragraphs only"
+          }
         ],
         "correctOptionId": "b"
       },
@@ -422,9 +575,18 @@
         "gcsePreparationBridge": "Students use Year 10 chemistry revision to step into the command words and application style they will meet in GCSE Combined Science."
       },
       "curriculumCoverage": {
-        "yearGroups": ["Year 10", "Year 11"],
-        "qualificationTypes": ["GCSE"],
-        "boardFocus": ["AQA", "Edexcel", "OCR"],
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "AQA",
+          "Edexcel",
+          "OCR"
+        ],
         "year10CoverageNote": "In Year 10 this topic supports core reactivity and electrolysis knowledge before heavier exam application.",
         "year11CoverageNote": "In Year 11 it feeds into required-practical thinking and longer GCSE chemistry explanations."
       },
@@ -458,10 +620,26 @@
         "questionId": "quiz-science-chemical-changes-1",
         "prompt": "What helps you decide if a displacement reaction will happen?",
         "options": [
-          { "optionId": "a", "label": "A", "text": "The colour of the solution" },
-          { "optionId": "b", "label": "B", "text": "The reactivity series" },
-          { "optionId": "c", "label": "C", "text": "The mass number only" },
-          { "optionId": "d", "label": "D", "text": "The test tube size" }
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "The colour of the solution"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "The reactivity series"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "The mass number only"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "The test tube size"
+          }
         ],
         "correctOptionId": "b"
       },
@@ -486,23 +664,32 @@
       "summary": "Stores, transfers, efficiency, and required practical links.",
       "confidenceScore": 51,
       "practiceQuestionCount": 9,
-      "timedAssessmentAvailable": false,
+      "timedAssessmentAvailable": true,
       "studentContext": {
         "studentStudyStage": "gcse-preparation",
         "yearGroupLabel": "Year 10",
-        "endOfYearExamUse": "This topic is planned for Year 10 end-of-year and early GCSE-preparation science papers but is still blocked pending verification.",
-        "gcsePreparationBridge": "It is intended to bridge Year 10 energy models into GCSE-style practical and efficiency questions once fact-checking is complete."
+        "endOfYearExamUse": "Use this topic in Year 10 end-of-year and early GCSE-preparation science papers where students explain energy stores, transfers, and efficiency.",
+        "gcsePreparationBridge": "This topic now bridges Year 10 energy models into GCSE-style practical and efficiency questions with reviewed content."
       },
       "curriculumCoverage": {
-        "yearGroups": ["Year 10", "Year 11"],
-        "qualificationTypes": ["GCSE"],
-        "boardFocus": ["AQA", "Edexcel", "OCR"],
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "AQA",
+          "Edexcel",
+          "OCR"
+        ],
         "year10CoverageNote": "In Year 10 this topic supports foundational energy stores and transfer ideas that appear in end-of-year science papers.",
-        "year11CoverageNote": "In Year 11 it should support more formal GCSE efficiency, practical, and energy-transfer application once verification is complete."
+        "year11CoverageNote": "In Year 11 it supports GCSE efficiency, practical, and energy-transfer application."
       },
       "visualSupport": {
-        "generatedImagePrompt": "A planned Year 10 energy revision visual showing energy stores, transfer arrows, and efficiency calculations with GCSE-style labels.",
-        "altText": "Planned Year 10 energy progression visual showing stores, transfers, and efficiency."
+        "generatedImagePrompt": "A Year 10 energy revision visual showing energy stores, transfer arrows, and efficiency calculations with GCSE-style labels.",
+        "altText": "Year 10 energy progression visual showing stores, transfers, and efficiency."
       },
       "revision": {
         "contentId": "rev-science-energy",
@@ -530,24 +717,40 @@
         "questionId": "quiz-science-energy-1",
         "prompt": "In an efficiency question, what should you compare?",
         "options": [
-          { "optionId": "a", "label": "A", "text": "Useful output against total input" },
-          { "optionId": "b", "label": "B", "text": "Only the wasted output" },
-          { "optionId": "c", "label": "C", "text": "Mass against temperature" },
-          { "optionId": "d", "label": "D", "text": "Voltage against colour" }
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "Useful output against total input"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "Only the wasted output"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "Mass against temperature"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "Voltage against colour"
+          }
         ],
         "correctOptionId": "a"
       },
       "metadata": {
-        "publicationStatus": "draft",
-        "reviewStatus": "fact-check-needed",
-        "factCheckStatus": "in-progress",
+        "publicationStatus": "published",
+        "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
         "sourceModel": "seed-json",
-        "lastUpdatedAt": "2026-06-06T12:00:00.000Z",
+        "lastUpdatedAt": "2026-06-13T09:00:00.000Z",
         "sourceAttribution": {
           "providerId": "seed-content-provider",
           "providerName": "Seed Content Provider",
           "sourceReference": "mvp-content-catalog:science-energy",
-          "checkedAgainst": "Pending GCSE physics energy topic check"
+          "checkedAgainst": "GCSE physics energy topic outline"
         }
       }
     },
@@ -566,9 +769,17 @@
         "gcsePreparationBridge": "This topic helps students move from classroom graph skills into iGCSE-style algebraic interpretation, coordinate reasoning, and direct equation-to-graph matching."
       },
       "curriculumCoverage": {
-        "yearGroups": ["Year 10", "Year 11"],
-        "qualificationTypes": ["IGCSE"],
-        "boardFocus": ["Cambridge IGCSE", "Edexcel International GCSE"],
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "IGCSE"
+        ],
+        "boardFocus": [
+          "Cambridge IGCSE",
+          "Edexcel International GCSE"
+        ],
         "year10CoverageNote": "In Year 10 this topic supports advanced graph reading and line-equation fluency used in stronger end-of-year sets.",
         "year11CoverageNote": "In Year 11 it becomes part of fuller iGCSE graph interpretation, transformation, and algebra linkage work."
       },
@@ -602,10 +813,26 @@
         "questionId": "quiz-igcse-maths-linear-graphs-1",
         "prompt": "A line crosses the y-axis at 3 and has gradient 2. Which equation is correct?",
         "options": [
-          { "optionId": "a", "label": "A", "text": "y = 3x + 2" },
-          { "optionId": "b", "label": "B", "text": "y = 2x + 3" },
-          { "optionId": "c", "label": "C", "text": "y = x + 5" },
-          { "optionId": "d", "label": "D", "text": "y = 2x - 3" }
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "y = 3x + 2"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "y = 2x + 3"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "y = x + 5"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "y = 2x - 3"
+          }
         ],
         "correctOptionId": "b"
       },
@@ -620,6 +847,393 @@
           "providerName": "Seed Content Provider",
           "sourceReference": "mvp-content-catalog:igcse-maths-linear-graphs",
           "checkedAgainst": "iGCSE linear graphs topic outline"
+        }
+      }
+    },
+    {
+      "topicId": "maths-geometry",
+      "subjectId": "gcse-maths",
+      "name": "Geometry",
+      "summary": "Angles, polygons, constructions, and circle reasoning for GCSE-style maths questions.",
+      "confidenceScore": 53,
+      "practiceQuestionCount": 10,
+      "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-end-of-year",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic for Year 10 end-of-year maths papers where students begin to meet GCSE-style angle and construction reasoning.",
+        "gcsePreparationBridge": "This topic helps students move from diagram reading into fuller GCSE geometry explanation and multi-step angle proof habits."
+      },
+      "curriculumCoverage": {
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "AQA",
+          "Edexcel",
+          "OCR"
+        ],
+        "year10CoverageNote": "In Year 10 this topic supports core angle and shape fluency before higher-mark geometry questions.",
+        "year11CoverageNote": "In Year 11 it feeds directly into GCSE geometry explanation, circle work, and construction accuracy."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A Year 10 geometry revision visual showing angle facts, polygons, and circle reasoning with GCSE-style labels.",
+        "altText": "Year 10 geometry visual showing angle facts, polygons, and GCSE-style reasoning links."
+      },
+      "revision": {
+        "contentId": "rev-maths-geometry",
+        "title": "Geometry Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Geometry links shapes, angle rules, and diagrams to logical maths reasoning."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Mark known angles first, then use shape facts one step at a time before solving the unknown."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Forgetting which angles add to 180 or 360 degrees can unravel the whole method quickly."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Write the angle fact beside each step so the examiner can see why the conclusion follows."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-maths-geometry-1",
+        "prompt": "The interior angles of a triangle add up to which total?",
+        "options": [
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "90°"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "180°"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "270°"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "360°"
+          }
+        ],
+        "correctOptionId": "b"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-13T09:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:maths-geometry",
+          "checkedAgainst": "GCSE geometry topic outline"
+        }
+      }
+    },
+    {
+      "topicId": "english-writing-craft",
+      "subjectId": "gcse-english-language",
+      "name": "Writing Craft",
+      "summary": "Sentence control, tone, viewpoint, and persuasive choices for GCSE-style writing tasks.",
+      "confidenceScore": 57,
+      "practiceQuestionCount": 9,
+      "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-end-of-year",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic for Year 10 writing tasks that begin to mirror GCSE persuasive and descriptive expectations.",
+        "gcsePreparationBridge": "Students build control over tone and sentence variety now so full GCSE writing tasks feel more structured and deliberate."
+      },
+      "curriculumCoverage": {
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "AQA",
+          "Edexcel",
+          "Eduqas"
+        ],
+        "year10CoverageNote": "In Year 10 this topic supports clearer descriptive and persuasive writing before higher-stakes timed tasks.",
+        "year11CoverageNote": "In Year 11 it supports GCSE-style writing control, tone, and viewpoint shaping under time pressure."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A Year 10 English writing craft visual showing sentence variety, tone shifts, and persuasive structure with GCSE-style prompts.",
+        "altText": "Year 10 English writing craft visual showing tone, structure, and persuasive writing cues."
+      },
+      "revision": {
+        "contentId": "rev-english-writing-craft",
+        "title": "Writing Craft Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Writing craft is about the choices a writer makes to control tone, clarity, and effect."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Plan a clear viewpoint first, then build paragraph openings that match the purpose and audience."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Repeating the same sentence shape makes writing sound flat even when the ideas are good."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Use deliberate sentence variety and a clear ending so the response feels shaped rather than rushed."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-english-writing-craft-1",
+        "prompt": "What usually strengthens a persuasive paragraph most?",
+        "options": [
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "A clear viewpoint with developed evidence"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "Random punctuation only"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "A list of unrelated adjectives"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "Changing subject every sentence"
+          }
+        ],
+        "correctOptionId": "a"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-13T09:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:english-writing-craft",
+          "checkedAgainst": "GCSE English Language writing craft topic outline"
+        }
+      }
+    },
+    {
+      "topicId": "science-forces",
+      "subjectId": "gcse-combined-science",
+      "name": "Forces",
+      "summary": "Balanced forces, acceleration, braking, and motion graphs for GCSE-style science questions.",
+      "confidenceScore": 48,
+      "practiceQuestionCount": 10,
+      "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "gcse-preparation",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic for Year 10 and early Year 11 science papers where motion and force explanation become more GCSE-like.",
+        "gcsePreparationBridge": "Students move from everyday force ideas into GCSE-style acceleration, braking, and graph interpretation reasoning."
+      },
+      "curriculumCoverage": {
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "GCSE"
+        ],
+        "boardFocus": [
+          "AQA",
+          "Edexcel",
+          "OCR"
+        ],
+        "year10CoverageNote": "In Year 10 this topic supports foundational force explanations and motion interpretation.",
+        "year11CoverageNote": "In Year 11 it supports fuller GCSE dynamics, braking, and motion-graph application."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "A GCSE forces study visual showing balanced and unbalanced forces, braking distance factors, and motion graphs.",
+        "altText": "GCSE forces visual showing balanced forces, braking distance, and motion graph links."
+      },
+      "revision": {
+        "contentId": "rev-science-forces",
+        "title": "Forces Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Forces change motion when they are unbalanced, but balanced forces keep motion steady."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Identify the direction of resultant force first, then connect it to acceleration or steady speed."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Students often confuse speed, velocity, and acceleration when reading motion scenarios."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "Use scientific terms like resultant force, deceleration, and resistance precisely in explanations."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-science-forces-1",
+        "prompt": "What happens when the resultant force on an object is zero?",
+        "options": [
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "It must speed up immediately"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "It can stay still or keep moving at constant speed"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "It always changes direction"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "It stops using energy"
+          }
+        ],
+        "correctOptionId": "b"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-13T09:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:science-forces",
+          "checkedAgainst": "GCSE physics forces topic outline"
+        }
+      }
+    },
+    {
+      "topicId": "igcse-maths-transformations",
+      "subjectId": "igcse-maths",
+      "name": "Transformations",
+      "summary": "Translations, reflections, rotations, and enlargements in iGCSE-style coordinate work.",
+      "confidenceScore": 50,
+      "practiceQuestionCount": 8,
+      "timedAssessmentAvailable": true,
+      "studentContext": {
+        "studentStudyStage": "year-10-gcse-bridge",
+        "yearGroupLabel": "Year 10",
+        "endOfYearExamUse": "Use this topic for advanced Year 10 papers where students begin to meet iGCSE-style coordinate transformation questions.",
+        "gcsePreparationBridge": "This topic helps strong Year 10 students bridge into iGCSE transformation accuracy and coordinate reasoning."
+      },
+      "curriculumCoverage": {
+        "yearGroups": [
+          "Year 10",
+          "Year 11"
+        ],
+        "qualificationTypes": [
+          "IGCSE"
+        ],
+        "boardFocus": [
+          "Cambridge IGCSE",
+          "Edexcel International GCSE"
+        ],
+        "year10CoverageNote": "In Year 10 this topic supports accurate coordinate movement and simple transformation notation.",
+        "year11CoverageNote": "In Year 11 it supports fuller iGCSE transformation reasoning and algebra-linked geometry work."
+      },
+      "visualSupport": {
+        "generatedImagePrompt": "An iGCSE transformations visual showing reflections, rotations, enlargements, and coordinate-grid notation.",
+        "altText": "iGCSE transformations visual showing reflections, rotations, enlargements, and coordinate notation."
+      },
+      "revision": {
+        "contentId": "rev-igcse-maths-transformations",
+        "title": "Transformations Revision Stack",
+        "sections": [
+          {
+            "title": "Explain Simply",
+            "body": "Transformations move or resize shapes on a coordinate grid using exact rules."
+          },
+          {
+            "title": "Worked Examples",
+            "body": "Track one vertex at a time and write the transformation rule before drawing the full image."
+          },
+          {
+            "title": "Common Mistakes",
+            "body": "Mixing up the direction of translation or the centre of rotation quickly breaks accuracy."
+          },
+          {
+            "title": "Exam Technique",
+            "body": "State the transformation fully, including centre, direction, or scale factor where needed."
+          }
+        ]
+      },
+      "quiz": {
+        "questionId": "quiz-igcse-maths-transformations-1",
+        "prompt": "Which detail must be included for an enlargement?",
+        "options": [
+          {
+            "optionId": "a",
+            "label": "A",
+            "text": "Only the colour of the shape"
+          },
+          {
+            "optionId": "b",
+            "label": "B",
+            "text": "The scale factor"
+          },
+          {
+            "optionId": "c",
+            "label": "C",
+            "text": "The perimeter only"
+          },
+          {
+            "optionId": "d",
+            "label": "D",
+            "text": "The y-intercept"
+          }
+        ],
+        "correctOptionId": "b"
+      },
+      "metadata": {
+        "publicationStatus": "published",
+        "reviewStatus": "reviewed",
+        "factCheckStatus": "verified",
+        "sourceModel": "seed-json",
+        "lastUpdatedAt": "2026-06-13T09:00:00.000Z",
+        "sourceAttribution": {
+          "providerId": "seed-content-provider",
+          "providerName": "Seed Content Provider",
+          "sourceReference": "mvp-content-catalog:igcse-maths-transformations",
+          "checkedAgainst": "iGCSE transformations topic outline"
         }
       }
     }

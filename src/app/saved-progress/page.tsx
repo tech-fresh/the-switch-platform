@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SavedProgressStatusControls } from "@/components/saved-progress-status-controls";
 import { getSavedProgressOverviewApiData } from "@/lib/api/server";
+import { requireAuthenticatedRequestSession } from "@/modules/auth/request";
 import type { SavedProgressStatus } from "@/modules/saved-progress/types";
 
 function formatLastActivity(timestamp?: string): string {
@@ -29,6 +30,7 @@ function getStatusClasses(status: SavedProgressStatus): string {
 }
 
 export default async function SavedProgressPage() {
+  await requireAuthenticatedRequestSession();
   const overview = await getSavedProgressOverviewApiData();
 
   return (

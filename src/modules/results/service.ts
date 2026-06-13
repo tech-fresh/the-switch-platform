@@ -1,8 +1,13 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
+import { buildAcademicReinforcementOverview } from "@/modules/academic-coverage/reinforcement-service";
 import {
   buildAccessibilityPreferenceChips,
   buildAccessibilitySupportSummary,
 } from "@/modules/accessibility/presentation";
+import {
+  listStudentVisibleContentSubjects,
+  listStudentVisibleContentTopics,
+} from "@/modules/content/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import { getSavedProgressSessionInsights } from "@/modules/saved-progress/insights-service";
 import {
@@ -34,6 +39,29 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
       getMockTimedAssessmentAttemptSeed(assessment.assessmentId, { userId }),
     ),
   ]);
+  const reinforcementOverview = buildAcademicReinforcementOverview({
+    records: savedProgressRecords,
+    subjects: listStudentVisibleContentSubjects().map((subject) => ({
+      subjectId: subject.subjectId,
+      name: subject.name,
+    })),
+    topics: listStudentVisibleContentTopics().map((topic) => ({
+      topicId: topic.topicId,
+      subjectId: topic.subjectId,
+      name: topic.name,
+    })),
+    examPapers: papers.map((paper) => ({
+      examId: paper.examId,
+      subject: paper.subject,
+    })),
+    timedAssessments: assessments.map((assessment) => ({
+      assessmentId: assessment.assessmentId,
+      subject: assessment.subject,
+    })),
+  });
+  const subjectReinforcementBySubject = new Map(
+    reinforcementOverview.subjectSignals.map((signal) => [normalizeLabel(signal.subject), signal] as const),
+  );
 
   const examResults = await Promise.all(
     papers.map(async (paper) => {
@@ -59,6 +87,8 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
             totalCount: 0,
             reviewItemCount: 0,
           };
+
+      const subjectReinforcement = subjectReinforcementBySubject.get(normalizeLabel(paper.subject));
 
       return buildResultSummary({
         resultId: `result-${session.examSessionId}`,
@@ -88,7 +118,10 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
         questionReview: buildExamQuestionReview(savedRecord),
         supportSummary: buildAccessibilitySupportSummary(savedRecord?.accessArrangementSnapshot),
         supportPreferenceChips: buildAccessibilityPreferenceChips(savedRecord?.accessArrangementSnapshot),
-        nextStep: `Return to ${paper.skillsFocus[0]} before attempting the next paper.`,
+        nextStep:
+          subjectReinforcement?.primaryTopic
+            ? `Return to ${subjectReinforcement.primaryTopic.topic} in ${paper.subject} before attempting the next paper.`
+            : `Return to ${paper.skillsFocus[0]} before attempting the next paper.`,
       });
     }),
   );
@@ -115,6 +148,8 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
             totalCount: 0,
             reviewItemCount: 0,
           };
+
+      const subjectReinforcement = subjectReinforcementBySubject.get(normalizeLabel(assessment.subject));
 
       return buildResultSummary({
         resultId: `result-${seed.attempt.attemptId}`,
@@ -148,7 +183,10 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
         questionReview: buildAssessmentQuestionReview(savedRecord),
         supportSummary: buildAccessibilitySupportSummary(savedRecord?.accessArrangementSnapshot),
         supportPreferenceChips: buildAccessibilityPreferenceChips(savedRecord?.accessArrangementSnapshot),
-        nextStep: `Use the ${assessment.title} checkpoint again after revision to compare progress.`,
+        nextStep:
+          subjectReinforcement?.primaryTopic
+            ? `Use the ${assessment.title} checkpoint again after revising ${subjectReinforcement.primaryTopic.topic}.`
+            : `Use the ${assessment.title} checkpoint again after revision to compare progress.`,
       });
     }),
   );
@@ -174,13 +212,20 @@ export async function getResultsOverview(userId = "guest-preview"): Promise<Resu
     assessmentResults,
     strongestArea: powerGrid.subjectProgress.sort((left, right) => right.readinessScore - left.readinessScore)[0]
       ?.subject ?? "Not enough data yet",
-    nextPriority: powerGrid.nextBestAction,
+    nextPriority:
+      reinforcementOverview.weakestTopic
+        ? `Reinforce ${reinforcementOverview.weakestTopic.topic} in ${reinforcementOverview.weakestTopic.subject} next. ${reinforcementOverview.weakestTopic.evidence}`
+        : powerGrid.nextBestAction,
     continuityStatus: savedProgressOverview.continuity.status,
     continuityTitle: savedProgressOverview.continuity.primaryAction.title,
     continuityDescription: savedProgressOverview.continuity.primaryAction.description,
     continuityHref: savedProgressOverview.continuity.primaryAction.href,
     continuityActionLabel: savedProgressOverview.continuity.primaryAction.actionLabel,
   };
+}
+
+function normalizeLabel(value: string): string {
+  return value.trim().toLowerCase();
 }
 
 function buildResultSummary(

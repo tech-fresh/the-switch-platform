@@ -1,6 +1,13 @@
 import { randomUUID } from "node:crypto";
 
-import { getDefaultAuthSessionRepository } from "@/lib/server/repositories";
+import {
+  getConfiguredOidcProviders,
+  getPreviewUserById,
+  listSignInOptions,
+  resolvePreviewUserForProvider,
+} from "@/modules/auth/provider";
+import { getAuthRuntimeConfig } from "@/modules/auth/runtime";
+import { createSessionToken, readSessionToken } from "@/modules/auth/session-token";
 import { getAccessibilitySnapshot } from "@/modules/accessibility/service";
 import { getRouteCopy } from "@/modules/language/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
@@ -12,46 +19,18 @@ import type {
   AccountMetric,
   AccountOverview,
   AuthProvider,
+  AuthRole,
   AuthSession,
   AuthUser,
   SignInOption,
 } from "./types";
 
 export const AUTH_SESSION_COOKIE_NAME = "switch_auth_session";
+export const AUTH_FLOW_COOKIE_NAME = "switch_auth_flow";
 export const DEFAULT_AUTH_USER_ID = "student-demo";
 export const GUEST_AUTH_USER_ID = "guest-preview";
-
-const defaultRepository = getDefaultAuthSessionRepository();
-
-const authUsers: Record<string, AuthUser> = {
-  "student-demo": {
-    userId: "student-demo",
-    firstName: "Maya",
-    lastName: "Okafor",
-    displayName: "Maya Okafor",
-    email: "maya.okafor@student.switch.local",
-    yearGroup: "Year 11",
-    targetQualifications: ["GCSE Mathematics", "GCSE English Language", "GCSE Combined Science"],
-  },
-};
-
-const signInOptions: SignInOption[] = [
-  {
-    provider: "email-magic-link",
-    label: "Email magic link",
-    description: "Fast sign in for students without needing a password-first flow in the MVP.",
-  },
-  {
-    provider: "google",
-    label: "Google",
-    description: "Future-ready sign in option for school-managed and personal Google accounts.",
-  },
-  {
-    provider: "apple",
-    label: "Apple",
-    description: "Future-ready sign in option for mobile and privacy-focused account flows.",
-  },
-];
+export const DEFAULT_AUTH_SESSION_TTL_SECONDS = 60 * 60 * 12;
+export const DEFAULT_AUTH_FLOW_TTL_SECONDS = 60 * 10;
 
 interface GetCurrentAuthSessionOptions {
   sessionToken?: string | null;
@@ -59,6 +38,63 @@ interface GetCurrentAuthSessionOptions {
 
 interface GetAccountOverviewOptions {
   session?: AuthSession;
+}
+
+export interface AuthCookieSettings {
+  httpOnly: true;
+  sameSite: "lax";
+  secure: boolean;
+  path: "/";
+  maxAge: number;
+}
+
+export function getAuthSessionTtlSeconds(): number {
+  const rawValue = process.env.SWITCH_AUTH_SESSION_TTL_SECONDS?.trim();
+
+  if (!rawValue) {
+    return DEFAULT_AUTH_SESSION_TTL_SECONDS;
+  }
+
+  const parsedValue = Number(rawValue);
+
+  if (!Number.isFinite(parsedValue) || parsedValue <= 0) {
+    return DEFAULT_AUTH_SESSION_TTL_SECONDS;
+  }
+
+  return Math.floor(parsedValue);
+}
+
+export function getAuthFlowTtlSeconds(): number {
+  const rawValue = process.env.SWITCH_AUTH_FLOW_TTL_SECONDS?.trim();
+
+  if (!rawValue) {
+    return DEFAULT_AUTH_FLOW_TTL_SECONDS;
+  }
+
+  const parsedValue = Number(rawValue);
+
+  if (!Number.isFinite(parsedValue) || parsedValue <= 0) {
+    return DEFAULT_AUTH_FLOW_TTL_SECONDS;
+  }
+
+  return Math.floor(parsedValue);
+}
+
+export function getAuthCookieSettings(): AuthCookieSettings {
+  return {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: getAuthSessionTtlSeconds(),
+  };
+}
+
+export function getAuthFlowCookieSettings(): AuthCookieSettings {
+  return {
+    ...getAuthCookieSettings(),
+    maxAge: getAuthFlowTtlSeconds(),
+  };
 }
 
 export async function getCurrentAuthSession(
@@ -69,85 +105,92 @@ export async function getCurrentAuthSession(
   if (!sessionToken) {
     return {
       status: "signed-out",
+      reason: "missing-session",
     };
   }
 
-  const persistedSessions = await defaultRepository.listSessions();
-  const record = persistedSessions.find((session) => session.sessionToken === sessionToken);
-  const user = record ? authUsers[record.userId] : undefined;
+  const runtime = getAuthRuntimeConfig();
+  const session = readSessionToken(sessionToken, runtime.sessionSecret);
 
-  if (!record || !user) {
+  if (!session) {
     return {
       status: "signed-out",
+      reason: "invalid-session",
     };
   }
 
-  return {
-    sessionId: record.sessionId,
-    user,
-    provider: record.provider,
-    signedInAt: record.signedInAt,
-    status: "authenticated",
-  };
+  if (runtime.mode === "preview-cookie") {
+    const previewUser = await getPreviewUserById(session.user.userId);
+
+    if (!previewUser) {
+      return {
+        status: "signed-out",
+        reason: "invalid-session",
+      };
+    }
+
+    return {
+      ...session,
+      user: previewUser,
+    };
+  }
+
+  return session;
 }
 
 export async function createAuthSession(
   provider: AuthProvider,
   userId = DEFAULT_AUTH_USER_ID,
 ): Promise<{ session: AuthSession; sessionToken: string }> {
-  const user = authUsers[userId] ?? authUsers[DEFAULT_AUTH_USER_ID];
+  if (!getAuthRuntimeConfig().allowLocalSessionMutation) {
+    throw new Error("Local auth session creation is disabled in the current auth runtime mode.");
+  }
+
+  const resolvedSessionUser = await resolvePreviewUserForProvider(provider, userId);
+  const user = resolvedSessionUser?.user;
 
   if (!user) {
     throw new Error("Unable to create auth session for unknown user.");
   }
 
-  const sessionToken = randomUUID();
-  const sessionId = "session-" + user.userId + "-" + randomUUID();
-  const signedInAt = new Date().toISOString();
-  const sessions = await defaultRepository.listSessions();
-
-  await defaultRepository.replaceSessions(
-    sessions
-      .filter((existingSession) => existingSession.userId !== user.userId)
-      .concat({
-        sessionToken,
-        sessionId,
-        userId: user.userId,
-        provider,
-        signedInAt,
-      }),
-  );
+  const session = buildAuthenticatedSession(user, resolvedSessionUser.provider ?? provider);
 
   return {
-    session: {
-      sessionId,
-      user,
-      provider,
-      signedInAt,
-      status: "authenticated",
-    },
-    sessionToken,
+    session,
+    sessionToken: createSessionToken(session, getAuthRuntimeConfig().sessionSecret),
   };
 }
 
-export async function clearAuthSession(sessionToken?: string | null): Promise<void> {
-  if (!sessionToken) {
-    return;
-  }
+export async function createProviderSession(
+  provider: AuthProvider,
+  user: AuthUser,
+): Promise<{ session: AuthSession; sessionToken: string }> {
+  const session = buildAuthenticatedSession(user, provider);
 
-  const sessions = await defaultRepository.listSessions();
+  return {
+    session,
+    sessionToken: createSessionToken(session, getAuthRuntimeConfig().sessionSecret),
+  };
+}
 
-  await defaultRepository.replaceSessions(
-    sessions.filter((session) => session.sessionToken !== sessionToken),
-  );
+export async function clearAuthSession(): Promise<void> {
+  return;
 }
 
 export async function getSignInOptions(): Promise<SignInOption[]> {
-  return signInOptions;
+  return listSignInOptions();
 }
 
 export function getAuthUserIdFromSession(session: AuthSession): string {
   return session.status === "authenticated" ? session.user.userId : GUEST_AUTH_USER_ID;
+}
+
+export function hasAnyAuthRole(session: AuthSession, roles: AuthRole[]): boolean {
+  if (session.status !== "authenticated") {
+    return false;
+  }
+
+  return roles.some((role) => session.user.roles.includes(role));
 }
 
 export async function getAccountOverview(
@@ -155,27 +198,43 @@ export async function getAccountOverview(
 ): Promise<AccountOverview> {
   const session = options?.session ?? { status: "signed-out" as const };
   const userId = getAuthUserIdFromSession(session);
-  const [summary, savedProgress, accessibility, recommendations, routeCopy] = await Promise.all([
+  const [summary, savedProgress, accessibility, recommendations, routeCopy, signInOptions] = await Promise.all([
     getMockPowerGridSummary({ userId }),
     getSavedProgressOverview({ userId }),
     getAccessibilitySnapshot(userId),
     getStudentRecommendations(userId),
     getRouteCopy(),
+    getSignInOptions(),
   ]);
 
   const subjects = getMockSubjects();
+  const runtime = getAuthRuntimeConfig();
+  const configuredProviders = runtime.mode === "oidc" ? getConfiguredOidcProviders() : [];
   const signedInLabel =
     session.status === "authenticated" ? session.user.displayName : "Guest preview";
   const signedInDetail =
     session.status === "authenticated"
       ? session.user.yearGroup + " • " + session.user.email
-      : "Sign in to keep saved progress, support settings, and session recovery tied to a named student profile.";
+      : runtime.mode === "oidc"
+        ? "Sign in through the configured identity provider to keep saved progress, support settings, and session recovery tied to one student profile."
+        : "Sign in to keep saved progress, support settings, and session recovery tied to a named student profile.";
 
   const metrics: AccountMetric[] = [
     {
       label: "Signed in as",
       value: signedInLabel,
       detail: signedInDetail,
+    },
+    {
+      label: "Access level",
+      value:
+        session.status === "authenticated"
+          ? session.user.roles.join(", ")
+          : "Guest preview",
+      detail:
+        session.status === "authenticated"
+          ? "Role-aware route protection now uses these account roles."
+          : "Sign in to unlock account-linked and protected product surfaces.",
     },
     {
       label: "Subjects active",
@@ -218,14 +277,37 @@ export async function getAccountOverview(
         ? accessibility.studentAccessProfile.textToSpeechEnabled
           ? "Text to speech is enabled in the current profile and can travel with saved sessions."
           : "Support settings are account-linked and ready to carry through future web and app clients."
-        : "Sign in to keep support preferences, accessibility settings, and saved session snapshots tied to one student account.",
+        : runtime.mode === "oidc"
+          ? `Configured production provider${configuredProviders.length === 1 ? "" : "s"} can now anchor support preferences, accessibility settings, and saved session recovery to one learner account.`
+          : "Sign in to keep support preferences, accessibility settings, and saved session snapshots tied to one student account.",
     nextBestAction:
       session.status === "authenticated"
         ? recommendations[0]?.title ?? summary.nextBestAction
-        : "Sign in to keep progress, support settings, and resume links connected.",
-    signedOutTitle: "Sign in to turn the preview into a personal study account.",
+        : runtime.mode === "oidc"
+          ? "Sign in through the production auth provider to keep progress, support settings, and resume links connected."
+          : "Sign in to keep progress, support settings, and resume links connected.",
+    signedOutTitle:
+      runtime.mode === "oidc"
+        ? "Sign in through the production identity provider to turn the preview into a personal study account."
+        : "Sign in to turn the preview into a personal study account.",
     signedOutDescription:
-      "The website can still load in preview mode, but signed-in auth is what keeps saved sessions, support settings, and account-linked recovery paths connected to the same learner.",
+      runtime.mode === "oidc"
+        ? "The website can still load in preview mode, but production auth is what keeps saved sessions, support settings, and account-linked recovery paths connected to the same learner."
+        : "The website can still load in preview mode, but signed-in auth is what keeps saved sessions, support settings, and account-linked recovery paths connected to the same learner.",
+  };
+}
+
+export function buildAuthenticatedSession(user: AuthUser, provider: AuthProvider) {
+  const signedInAt = new Date().toISOString();
+  const expiresAt = new Date(Date.now() + getAuthSessionTtlSeconds() * 1000).toISOString();
+
+  return {
+    sessionId: "session-" + user.userId + "-" + randomUUID(),
+    user,
+    provider,
+    signedInAt,
+    expiresAt,
+    status: "authenticated" as const,
   };
 }
 

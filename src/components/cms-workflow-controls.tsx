@@ -76,7 +76,11 @@ export function CmsWorkflowControls({
         </span>
         <select
           value={nextActionType}
-          onChange={(event) => setNextActionType(event.target.value as CmsEditorialActionType)}
+          onChange={(event) => {
+            const actionType = event.target.value as CmsEditorialActionType;
+            setNextActionType(actionType);
+            setNextStatus(getStatusForAction(actionType, status));
+          }}
           className="w-full border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900"
         >
           {workflowActions.map((option) => (
@@ -148,4 +152,27 @@ function inferActionType(status: CmsEditorialWorkflowStatus): CmsEditorialAction
     return "block";
   }
   return "review";
+}
+
+function getStatusForAction(
+  actionType: CmsEditorialActionType,
+  currentStatus: CmsEditorialWorkflowStatus,
+): CmsEditorialWorkflowStatus {
+  if (actionType === "approve") {
+    return "approved";
+  }
+
+  if (actionType === "fact-check") {
+    return "fact-check";
+  }
+
+  if (actionType === "block") {
+    return "blocked";
+  }
+
+  if (actionType === "rollback") {
+    return currentStatus === "approved" ? "fact-check" : "queued-review";
+  }
+
+  return "queued-review";
 }

@@ -1,5 +1,6 @@
 import { getResultsOverviewApiData } from "@/lib/api/server";
 import Link from "next/link";
+import { requireAuthenticatedRequestSession } from "@/modules/auth/request";
 import type { MarkingConfidence } from "@/modules/results/types";
 
 function getTrendTone(trend: "improving" | "stable" | "needs-attention"): string {
@@ -33,6 +34,7 @@ function getConfidenceClasses(confidence: MarkingConfidence): string {
 }
 
 export default async function ResultsPage() {
+  await requireAuthenticatedRequestSession();
   const results = await getResultsOverviewApiData();
 
   return (

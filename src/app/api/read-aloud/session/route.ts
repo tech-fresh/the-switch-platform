@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSwitchRequestContext } from "@/lib/server/request-context";
+import { getAuthenticatedSwitchRequestContext } from "@/lib/server/request-context";
 import { getReadAloudSession } from "@/modules/read-aloud/service";
 import type { ReadAloudContentType } from "@/modules/read-aloud/types";
 
@@ -13,7 +13,7 @@ const allowedContentTypes = new Set<ReadAloudContentType>([
 ]);
 
 export async function GET(request: Request) {
-  const context = await getSwitchRequestContext();
+  const context = await getAuthenticatedSwitchRequestContext();
   const { searchParams } = new URL(request.url);
   const contentType = searchParams.get("contentType");
 

@@ -11,3 +11,4 @@ Current foundations in this module:
 - editorial gate summary showing reviewed, student-visible, and blocked content states
 - source reference visibility before a full CMS or school administration tool exists
 - local editorial workflow records with API-backed queue updates for controlled review steps
+- backend adapter and runtime mode boundary so the current repository-backed workflow can later be replaced by a writable production CMS backend

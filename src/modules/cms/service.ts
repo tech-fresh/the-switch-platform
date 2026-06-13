@@ -1,45 +1,20 @@
-import { getDefaultCmsWorkflowRepository } from "@/lib/server/repositories";
+import { getCmsBackend } from "@/modules/cms/backend";
 import { getContentEditorialAudit, getMvpContentCatalog, isTopicStudentVisible } from "@/modules/content/service";
+import {
+  assertValidCmsWorkflowUpdate,
+  buildCmsPublishGateSummary,
+} from "@/modules/cms/workflow-rules";
 import type {
   CmsContentReference,
   CmsEditorialActionType,
   CmsEditorialWorkflowEvent,
   CmsEditorialWorkflowRecord,
   CmsOverview,
-  CmsProvider,
   CmsReleaseChecklistModule,
   ReleaseCheckStatus,
 } from "./types";
 
-const defaultRepository = getDefaultCmsWorkflowRepository();
-
-const cmsProviders: CmsProvider[] = [
-  {
-    providerId: "seed-content-provider",
-    name: "Seed Content Provider",
-    type: "seed-content",
-    description: "Current MVP source for subjects, topics, revision stacks, and quiz prompts.",
-    syncStatus: "healthy",
-    lastSyncedAt: "2026-06-06T09:10:00.000Z",
-    nextStep: "Keep serving the website while repository-backed content storage is added.",
-  },
-  {
-    providerId: "headless-cms-provider",
-    name: "Future Headless CMS",
-    type: "headless-cms",
-    description: "Planned source for editor-managed revision content, topic copy, and launch metadata.",
-    syncStatus: "planned",
-    nextStep: "Add repository adapter and publishing workflow before replacing seed content.",
-  },
-  {
-    providerId: "manual-upload-provider",
-    name: "Manual Upload Gateway",
-    type: "manual-upload",
-    description: "Fallback import path for structured CSV or JSON content updates during MVP growth.",
-    syncStatus: "planned",
-    nextStep: "Use for controlled imports before full CMS tooling is prioritised.",
-  },
-];
+const cmsBackend = getCmsBackend();
 
 const releaseChecklistDefinitions = [
   {
@@ -292,7 +267,14 @@ export async function getCmsOverview(): Promise<CmsOverview> {
         topicId: topic.topicId,
         status: topic.metadata.publicationStatus,
         reviewStatus: topic.metadata.reviewStatus,
+        factCheckStatus: topic.metadata.factCheckStatus,
         studentVisible,
+        trustedSourceAttributionComplete:
+          topic.metadata.sourceAttribution.providerId.trim().length > 0 &&
+          topic.metadata.sourceAttribution.providerName.trim().length > 0 &&
+          topic.metadata.sourceAttribution.sourceReference.trim().length > 0 &&
+          (topic.metadata.sourceAttribution.checkedAgainst?.trim().length ?? 0) > 0,
+        gateReason: editorialAudit.gateDecisions.find((decision) => decision.topicId === topic.topicId)?.reason,
         sourceReference: topic.metadata.sourceAttribution.sourceReference,
         updatedAt: topic.metadata.lastUpdatedAt,
         sourceProviderId: topic.metadata.sourceAttribution.providerId,
@@ -306,7 +288,14 @@ export async function getCmsOverview(): Promise<CmsOverview> {
         topicId: topic.topicId,
         status: topic.metadata.publicationStatus,
         reviewStatus: topic.metadata.reviewStatus,
+        factCheckStatus: topic.metadata.factCheckStatus,
         studentVisible,
+        trustedSourceAttributionComplete:
+          topic.metadata.sourceAttribution.providerId.trim().length > 0 &&
+          topic.metadata.sourceAttribution.providerName.trim().length > 0 &&
+          topic.metadata.sourceAttribution.sourceReference.trim().length > 0 &&
+          (topic.metadata.sourceAttribution.checkedAgainst?.trim().length ?? 0) > 0,
+        gateReason: editorialAudit.gateDecisions.find((decision) => decision.topicId === topic.topicId)?.reason,
         sourceReference: topic.metadata.sourceAttribution.sourceReference,
         updatedAt: topic.metadata.lastUpdatedAt,
         sourceProviderId: topic.metadata.sourceAttribution.providerId,
@@ -320,7 +309,14 @@ export async function getCmsOverview(): Promise<CmsOverview> {
         topicId: topic.topicId,
         status: topic.metadata.publicationStatus,
         reviewStatus: topic.metadata.reviewStatus,
+        factCheckStatus: topic.metadata.factCheckStatus,
         studentVisible,
+        trustedSourceAttributionComplete:
+          topic.metadata.sourceAttribution.providerId.trim().length > 0 &&
+          topic.metadata.sourceAttribution.providerName.trim().length > 0 &&
+          topic.metadata.sourceAttribution.sourceReference.trim().length > 0 &&
+          (topic.metadata.sourceAttribution.checkedAgainst?.trim().length ?? 0) > 0,
+        gateReason: editorialAudit.gateDecisions.find((decision) => decision.topicId === topic.topicId)?.reason,
         sourceReference: topic.metadata.sourceAttribution.sourceReference,
         updatedAt: topic.metadata.lastUpdatedAt,
         sourceProviderId: topic.metadata.sourceAttribution.providerId,
@@ -329,17 +325,20 @@ export async function getCmsOverview(): Promise<CmsOverview> {
   }
 
   const editorialWorkflow = await getCmsEditorialWorkflow(content);
+  const [providers, nextUpdatePlan] = await Promise.all([
+    cmsBackend.listProviders(),
+    cmsBackend.getNextUpdatePlan(),
+  ]);
 
   return {
-    providers: cmsProviders,
+    providers,
     content,
     publishedCount: content.filter((item) => item.status === "published").length,
     draftCount: content.filter((item) => item.status === "draft").length,
     studentVisibleCount: content.filter((item) => item.studentVisible).length,
     blockedCount: content.filter((item) => !item.studentVisible).length,
     editorialAudit,
-    nextUpdatePlan:
-      "Keep the website on reviewed seed content now, then add a headless CMS adapter and approval workflow without changing student routes.",
+    nextUpdatePlan,
     releaseChecklist,
     editorialWorkflow,
     editorialWorkflowSummary: {
@@ -370,14 +369,23 @@ export async function updateCmsEditorialWorkflowRecord(input: {
     return null;
   }
 
-  const records = await defaultRepository.listRecords();
+  const records = await cmsBackend.listWorkflowRecords();
   const existing = records.find((record) => record.contentId === input.contentId);
   const owner = input.owner?.trim() || existing?.owner || "Switch editorial desk";
+  const note = input.note.trim();
   const nextTimestamp = new Date().toISOString();
   const nextActionType = input.actionType ?? inferActionTypeFromStatus(input.status);
   const resolvedStatus =
     nextActionType === "rollback" ? getRollbackStatus(existing) : input.status;
   const fromStatus = existing?.status ?? getDefaultWorkflowStatus(reference);
+  assertValidCmsWorkflowUpdate({
+    fromStatus,
+    nextStatus: resolvedStatus,
+    actionType: nextActionType,
+    note,
+    reference,
+  });
+  const publishGate = buildCmsPublishGateSummary(reference, resolvedStatus);
   const actionHistory = [
     ...(existing?.actionHistory ?? []),
     buildWorkflowEvent({
@@ -385,7 +393,7 @@ export async function updateCmsEditorialWorkflowRecord(input: {
       fromStatus,
       toStatus: resolvedStatus,
       owner,
-      note: input.note,
+      note,
       createdAt: nextTimestamp,
     }),
   ];
@@ -394,9 +402,10 @@ export async function updateCmsEditorialWorkflowRecord(input: {
     title: reference.title,
     status: resolvedStatus,
     owner,
-    note: input.note,
+    note,
     updatedAt: nextTimestamp,
-    readyToPublish: resolvedStatus === "approved" && reference.status === "published",
+    readyToPublish: publishGate.readyToPublish,
+    publishGate,
     actionHistory,
     lastActionType: nextActionType,
   };
@@ -405,7 +414,7 @@ export async function updateCmsEditorialWorkflowRecord(input: {
     .concat(nextRecord)
     .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
 
-  await defaultRepository.replaceRecords(nextRecords);
+  await cmsBackend.replaceWorkflowRecords(nextRecords);
 
   return nextRecord;
 }
@@ -413,7 +422,7 @@ export async function updateCmsEditorialWorkflowRecord(input: {
 async function getCmsEditorialWorkflow(
   content: CmsContentReference[],
 ): Promise<CmsEditorialWorkflowRecord[]> {
-  const records = await defaultRepository.listRecords();
+  const records = await cmsBackend.listWorkflowRecords();
   const recordByContentId = new Map(records.map((record) => [record.contentId, record] as const));
 
   return content
@@ -422,32 +431,39 @@ async function getCmsEditorialWorkflow(
       const existing = recordByContentId.get(item.contentId);
 
       if (existing) {
+        const publishGate = buildCmsPublishGateSummary(item, existing.status);
+
         return {
           ...existing,
           title: item.title,
-          readyToPublish: existing.status === "approved" && item.status === "published",
+          readyToPublish: publishGate.readyToPublish,
+          publishGate,
         };
       }
+
+      const defaultStatus = getDefaultWorkflowStatus(item);
+      const publishGate = buildCmsPublishGateSummary(item, defaultStatus);
 
       return {
         contentId: item.contentId,
         title: item.title,
-        status: getDefaultWorkflowStatus(item),
+        status: defaultStatus,
         owner: "Switch editorial desk",
         note: getDefaultWorkflowNote(item),
         updatedAt: item.updatedAt,
-        readyToPublish: item.studentVisible,
+        readyToPublish: publishGate.readyToPublish,
+        publishGate,
         actionHistory: [
           buildWorkflowEvent({
-            actionType: item.studentVisible ? "publish-check" : inferActionTypeFromStatus(getDefaultWorkflowStatus(item)),
-            fromStatus: getDefaultWorkflowStatus(item),
-            toStatus: getDefaultWorkflowStatus(item),
+            actionType: item.studentVisible ? "publish-check" : inferActionTypeFromStatus(defaultStatus),
+            fromStatus: defaultStatus,
+            toStatus: defaultStatus,
             owner: "Switch editorial desk",
             note: getDefaultWorkflowNote(item),
             createdAt: item.updatedAt,
           }),
         ],
-        lastActionType: item.studentVisible ? "publish-check" : inferActionTypeFromStatus(getDefaultWorkflowStatus(item)),
+        lastActionType: item.studentVisible ? "publish-check" : inferActionTypeFromStatus(defaultStatus),
       };
     })
     .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
@@ -497,9 +513,7 @@ function inferActionTypeFromStatus(
   return "review";
 }
 
-function getRollbackStatus(
-  record: CmsEditorialWorkflowRecord | undefined,
-): CmsEditorialWorkflowRecord["status"] {
+function getRollbackStatus(record: CmsEditorialWorkflowRecord | undefined): CmsEditorialWorkflowRecord["status"] {
   if (!record || record.actionHistory.length === 0) {
     return "queued-review";
   }

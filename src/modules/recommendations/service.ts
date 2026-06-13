@@ -1,22 +1,51 @@
 import { getAccessibilitySnapshot } from "@/modules/accessibility/service";
+import { buildAcademicReinforcementOverview } from "@/modules/academic-coverage/reinforcement-service";
 import {
   buildAccessibilityPreferenceChips,
   buildAccessibilitySupportSummary,
 } from "@/modules/accessibility/presentation";
+import {
+  listStudentVisibleContentSubjects,
+  listStudentVisibleContentTopics,
+} from "@/modules/content/service";
 import { getRouteCopy } from "@/modules/language/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import { getResultsOverview } from "@/modules/results/service";
 import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
+import { listSavedProgressByUser } from "@/modules/saved-progress/service";
+import { getMockExamPapers } from "@/modules/exam-engine/service";
+import { getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import type { Recommendation, RecommendationsPageData } from "./types";
 
 export async function getStudentRecommendations(userId: string): Promise<Recommendation[]> {
-  const [summary, accessibility, savedProgress, results, routeCopy] = await Promise.all([
+  const [summary, accessibility, savedProgress, results, routeCopy, savedProgressRecords] = await Promise.all([
     getMockPowerGridSummary({ userId }),
     getAccessibilitySnapshot(userId),
     getSavedProgressOverview({ userId }),
     getResultsOverview(userId),
     getRouteCopy(),
+    listSavedProgressByUser(userId),
   ]);
+  const reinforcementOverview = buildAcademicReinforcementOverview({
+    records: savedProgressRecords,
+    subjects: listStudentVisibleContentSubjects().map((subject) => ({
+      subjectId: subject.subjectId,
+      name: subject.name,
+    })),
+    topics: listStudentVisibleContentTopics().map((topic) => ({
+      topicId: topic.topicId,
+      subjectId: topic.subjectId,
+      name: topic.name,
+    })),
+    examPapers: getMockExamPapers().map((paper) => ({
+      examId: paper.examId,
+      subject: paper.subject,
+    })),
+    timedAssessments: getMockTimedAssessments().map((assessment) => ({
+      assessmentId: assessment.assessmentId,
+      subject: assessment.subject,
+    })),
+  });
   const lowestSubject = [...summary.subjectProgress].sort(
     (left, right) => left.readinessScore - right.readinessScore,
   )[0];
@@ -26,6 +55,7 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
   const activeSavedSession = savedProgress.continuity.activeSession;
   const submittedSavedSession = savedProgress.continuity.reviewSession;
   const hasReviewReadyResults = results.readyForReviewCount > 0;
+  const weakestTopic = reinforcementOverview.weakestTopic;
   const supportSummary = buildAccessibilitySupportSummary(
     accessibility.studentAccessProfile
       ? {
@@ -59,15 +89,20 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
       userId,
       category: "revise-next",
       eyebrow: "Revise next",
-      title: `Revise ${lowestSubject?.subject ?? "your weakest subject"} next`,
+      title: weakestTopic
+        ? `Revise ${weakestTopic.topic} in ${weakestTopic.subject} next`
+        : `Revise ${lowestSubject?.subject ?? "your weakest subject"} next`,
       description:
+        weakestTopic?.evidence ??
         lowestSubject?.recommendedFocus ??
         "Open a subject route and continue with the next recommended topic.",
       actionLabel:
-        lowestSubject?.subjectHref && lowestSubject.recommendedTopicId
+        weakestTopic?.href
+          ? "Open revision topic"
+          : lowestSubject?.subjectHref && lowestSubject.recommendedTopicId
           ? "Open revision topic"
           : routeCopy["/subjects"].label,
-      href: lowestSubject?.subjectHref ?? "/subjects",
+      href: weakestTopic?.href ?? lowestSubject?.subjectHref ?? "/subjects",
       priority: activeSavedSession ? "medium" : "high",
     },
     {

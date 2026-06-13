@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 
+import {
+  AuthenticationRequiredError,
+  AuthorizationRequiredError,
+  getAuthorizedSwitchRequestContext,
+} from "@/lib/server/request-context";
 import { updateCmsEditorialWorkflowRecord } from "@/modules/cms/service";
+import { CmsWorkflowValidationError } from "@/modules/cms/workflow-rules";
 import type { CmsEditorialActionType, CmsEditorialWorkflowStatus } from "@/modules/cms/types";
 
 const allowedStatuses = new Set<CmsEditorialWorkflowStatus>([
@@ -23,9 +29,9 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ contentId: string }> },
 ) {
-  const { contentId } = await context.params;
-
   try {
+    const requestContext = await getAuthorizedSwitchRequestContext(["editor", "admin"]);
+    const { contentId } = await context.params;
     const payload = (await request.json()) as Partial<{
       status: CmsEditorialWorkflowStatus;
       note: string;
@@ -55,7 +61,7 @@ export async function PATCH(
       contentId,
       status: payload.status,
       note: payload.note?.trim() ?? "",
-      owner: payload.owner?.trim(),
+      owner: payload.owner?.trim() || requestContext.session.user.displayName,
       actionType: payload.actionType,
     });
 
@@ -72,6 +78,33 @@ export async function PATCH(
       record,
     });
   } catch (error) {
+    if (error instanceof AuthenticationRequiredError) {
+      return NextResponse.json(
+        {
+          error: error.message,
+        },
+        { status: 401 },
+      );
+    }
+
+    if (error instanceof AuthorizationRequiredError) {
+      return NextResponse.json(
+        {
+          error: error.message,
+        },
+        { status: 403 },
+      );
+    }
+
+    if (error instanceof CmsWorkflowValidationError) {
+      return NextResponse.json(
+        {
+          error: error.message,
+        },
+        { status: 409 },
+      );
+    }
+
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Unknown CMS workflow update error",

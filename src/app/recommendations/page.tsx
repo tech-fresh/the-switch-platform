@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getRecommendationsPageApiData } from "@/lib/api/server";
+import { requireAuthenticatedRequestSession } from "@/modules/auth/request";
 
 function getPriorityClasses(priority: "high" | "medium" | "low"): string {
   if (priority === "high") {
@@ -14,6 +15,7 @@ function getPriorityClasses(priority: "high" | "medium" | "low"): string {
 }
 
 export default async function RecommendationsPage() {
+  await requireAuthenticatedRequestSession();
   const data = await getRecommendationsPageApiData();
 
   return (

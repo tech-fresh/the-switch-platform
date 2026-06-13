@@ -18,18 +18,11 @@ export function AccountAuthControls({
   const [isPending, startTransition] = useTransition();
 
   function signIn(provider: AuthProvider) {
-    startTransition(async () => {
-      await fetch("/api/auth/session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          provider,
-        }),
-      });
-
-      router.refresh();
+    startTransition(() => {
+      const returnTo = window.location.pathname || "/account";
+      window.location.assign(
+        `/api/auth/start?provider=${encodeURIComponent(provider)}&returnTo=${encodeURIComponent(returnTo)}`,
+      );
     });
   }
 

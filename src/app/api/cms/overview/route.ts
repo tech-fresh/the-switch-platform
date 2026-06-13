@@ -1,10 +1,12 @@
-import { NextResponse } from "next/server";
+import { withAuthorizedSwitchRequestContext } from "@/lib/server/api";
 import { getCmsOverview } from "@/modules/cms/service";
 
 export async function GET() {
-  const overview = await getCmsOverview();
+  return withAuthorizedSwitchRequestContext(["editor", "admin"], async () => {
+    const overview = await getCmsOverview();
 
-  return NextResponse.json({
-    overview,
+    return {
+      overview,
+    };
   });
 }

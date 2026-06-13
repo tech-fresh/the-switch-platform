@@ -1,5 +1,6 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import type { ExamPaper } from "@/modules/exam-engine/types";
+import { buildAcademicReinforcementOverview } from "@/modules/academic-coverage/reinforcement-service";
 import { getSavedProgressSessionInsights } from "@/modules/saved-progress/insights-service";
 import {
   findSavedProgressSessionSummary,
@@ -10,6 +11,7 @@ import type { SavedProgressRecord, SavedProgressRepository } from "@/modules/sav
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import type { TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
 import {
+  listStudentVisibleContentTopics,
   listStudentVisibleContentSubjects,
   listStudentVisibleContentTopicsForSubject,
 } from "@/modules/content/service";
@@ -45,6 +47,7 @@ export async function getMockPowerGridSummary(options?: {
   const papers = getMockExamPapers();
   const assessments = getMockTimedAssessments();
   const contentSubjects = listStudentVisibleContentSubjects();
+  const contentTopics = listStudentVisibleContentTopics();
 
   await Promise.all(
     papers.map((paper) =>
@@ -64,11 +67,31 @@ export async function getMockPowerGridSummary(options?: {
     userId,
     savedProgressRepository: repository,
   });
+  const reinforcementOverview = buildAcademicReinforcementOverview({
+    records,
+    subjects: contentSubjects.map((subject) => ({
+      subjectId: subject.subjectId,
+      name: subject.name,
+    })),
+    topics: contentTopics.map((topic) => ({
+      topicId: topic.topicId,
+      subjectId: topic.subjectId,
+      name: topic.name,
+    })),
+    examPapers: papers.map((paper) => ({
+      examId: paper.examId,
+      subject: paper.subject,
+    })),
+    timedAssessments: assessments.map((assessment) => ({
+      assessmentId: assessment.assessmentId,
+      subject: assessment.subject,
+    })),
+  });
   const trackedSubjects = buildTrackedSubjects(papers, assessments, contentSubjects);
 
   const subjectProgress = trackedSubjects
     .map((trackedSubject) =>
-      buildSubjectProgress(trackedSubject, records, savedProgressOverview.sessions),
+      buildSubjectProgress(trackedSubject, records, savedProgressOverview.sessions, reinforcementOverview),
     )
     .filter((subject): subject is PowerGridSubjectProgress => Boolean(subject));
 
@@ -109,11 +132,13 @@ export async function getMockPowerGridSummary(options?: {
     sourceWarnings,
     continuityHref,
     savedProgressOverview.continuity.primaryAction.title,
+    reinforcementOverview.weakestTopic,
   );
   const nextBestActionHref = getNextBestActionHref(
     subjectProgress,
     sourceWarnings,
     continuityHref,
+    reinforcementOverview.weakestTopic?.href,
   );
 
   return {
@@ -187,6 +212,7 @@ function buildSubjectProgress(
   trackedSubject: TrackedSubject,
   records: SavedProgressRecord[],
   sessions: Awaited<ReturnType<typeof getSavedProgressOverview>>["sessions"],
+  reinforcementOverview: ReturnType<typeof buildAcademicReinforcementOverview>,
 ): PowerGridSubjectProgress | null {
   const subjectRecords = records.filter((record) => belongsToTrackedSubject(record, trackedSubject));
 
@@ -235,7 +261,10 @@ function buildSubjectProgress(
       reviewStabilityScore * 0.1 +
       activityDepthScore * 0.05,
   );
-  const recommendedFocus = getRecommendedFocus(trackedSubject);
+  const subjectReinforcement = reinforcementOverview.subjectSignals.find(
+    (signal) => normalizeLabel(signal.subject) === normalizeLabel(trackedSubject.subject),
+  );
+  const recommendedFocus = subjectReinforcement?.recommendedFocus ?? getRecommendedFocus(trackedSubject);
   const recommendedTopic = trackedSubject.topics.find(
     (topic) => normalizeLabel(topic.name) === normalizeLabel(recommendedFocus),
   );
@@ -257,16 +286,20 @@ function buildSubjectProgress(
     reviewItemCount,
     accessSnapshotCount,
     recommendedFocus,
-    recommendedTopicId: recommendedTopic?.topicId,
-    subjectHref: buildSubjectHref(trackedSubject.subjectId, recommendedTopic?.topicId),
+    recommendedTopicId: subjectReinforcement?.recommendedTopicId ?? recommendedTopic?.topicId,
+    subjectHref:
+      subjectReinforcement?.primaryTopic?.href ??
+      buildSubjectHref(trackedSubject.subjectId, recommendedTopic?.topicId),
     resumeHref: resumeSession?.href,
     lastActivityAt,
-    evidence: buildSubjectEvidence({
-      activeSessionCount,
-      completedSessionCount,
-      reviewItemCount,
-      accessSnapshotCount,
-    }),
+    evidence:
+      subjectReinforcement?.evidence ??
+      buildSubjectEvidence({
+        activeSessionCount,
+        completedSessionCount,
+        reviewItemCount,
+        accessSnapshotCount,
+      }),
   };
 }
 
@@ -324,6 +357,7 @@ function getNextBestAction(
   sourceWarnings: string[],
   resumeHref: string,
   continuityTitle: string,
+  weakestTopic?: ReturnType<typeof buildAcademicReinforcementOverview>["weakestTopic"],
 ): string {
   if (subjectProgress.length === 0) {
     return resumeHref
@@ -359,6 +393,10 @@ function getNextBestAction(
     return `Review ${reviewLowest.subject} next, starting with the saved questions marked for attention.`;
   }
 
+  if (weakestTopic) {
+    return `Revise ${weakestTopic.subject} next, starting with ${weakestTopic.topic}.`;
+  }
+
   const lowest = [...subjectProgress].sort((left, right) => left.readinessScore - right.readinessScore)[0];
 
   if (!lowest) {
@@ -372,6 +410,7 @@ function getNextBestActionHref(
   subjectProgress: PowerGridSubjectProgress[],
   sourceWarnings: string[],
   resumeHref?: string,
+  weakestTopicHref?: string,
 ): string {
   if (subjectProgress.length === 0) {
     return resumeHref ?? "/assessments";
@@ -399,6 +438,10 @@ function getNextBestActionHref(
 
   if (reviewLowest?.resumeHref) {
     return reviewLowest.resumeHref;
+  }
+
+  if (weakestTopicHref) {
+    return weakestTopicHref;
   }
 
   const lowest = [...subjectProgress].sort((left, right) => left.readinessScore - right.readinessScore)[0];

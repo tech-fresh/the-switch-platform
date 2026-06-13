@@ -1815,7 +1815,7 @@ Current implementation progress:
 
 ### 2. Production authentication and account security
 
-Status: planned.
+Status: in progress.
 
 Main goals:
 
@@ -1823,15 +1823,36 @@ Main goals:
 - harden session, route, and account-security behaviour
 - support real multi-user account continuity across all core routes
 
+Current implementation progress:
+
+- auth sessions now carry explicit expiry timestamps instead of behaving like indefinite preview cookies
+- cookie settings are now centralized so secure production cookies and consistent session TTL rules can be enforced from one place
+- auth session create and destroy routes now reject cross-origin mutation attempts instead of accepting any browser request shape
+- the admin route now requires an authenticated session, which starts moving launch-sensitive surfaces behind real route protection instead of leaving them open by default
+- preview auth now sits behind a provider abstraction so the current demo identity flow can later be replaced by a real production identity provider without rewriting the page-facing contracts
+- saved progress, results, recommendations, accessibility, and account-linked read-aloud routes now require an authenticated request context instead of silently loading guest-personalized data
+- authorization is now role-aware as well as sign-in-aware, with editor and admin preview roles protecting CMS and admin surfaces from ordinary student sessions
+- auth runtime mode can now switch between local preview-cookie sessions and a trusted external-header identity boundary, so the app no longer assumes its own cookie flow is the only deployment shape
+- production auth can now run through redirect-based provider start and callback routes with signed session cookies instead of relying on local persisted preview sessions
+- production provider configuration now supports OIDC-style authorization, token exchange, user-info resolution, and role mapping without changing the account-facing route contracts
+- external-header auth can now require signed upstream identity headers, so trusted proxy mode no longer depends on unsigned header trust alone
+
 ### 3. Production CMS and editorial operations
 
-Status: planned.
+Status: in progress.
 
 Main goals:
 
 - move the local editorial queue into a shared production workflow
 - support controlled editing, review assignment, approval history, and rollback
 - enforce trusted publication gates across all student-facing content
+
+Current implementation progress:
+
+- CMS service logic now runs behind a backend adapter instead of assuming one hardwired local repository path
+- CMS runtime mode can now switch between a writable repository-backed adapter and a read-only runtime, which gives launch preparation a cleaner seam for a future production CMS backend
+- admin now surfaces the active CMS backend mode so read-only and writable editorial states are visible during launch checks
+- CMS overview and workflow mutation routes now sit behind role-aware authorization instead of relying on open MVP placeholder access
 
 ### 4. Live content and paper ingestion
 
@@ -1893,7 +1914,7 @@ Rule for this section:
 
 Current final-phase snapshot:
 
-- 3 of 8 items completed (38%)
+- 4 of 8 items completed (50%)
 
 ### Final phase execution order
 
@@ -1964,13 +1985,22 @@ Implementation milestones:
 
 ### 4. Full academic and assessment coverage optimization
 
-Status: planned.
+Status: completed.
 
 Main goals:
 
 - broaden subject and assessment depth to the target MVP completion scope
 - optimize question-bank variation, freshness, and weak-topic reinforcement
 - keep exam, timed-assessment, and recommendation quality aligned across the same learner evidence
+
+Implementation outcome:
+
+- Power Grid, results, and recommendations now share one academic reinforcement model instead of inferring weak-topic follow-up independently
+- saved exam and timed-assessment evidence now drive one weakest-topic signal with topic-level deep-link routing back into subject study
+- recommendation copy, Power Grid focus guidance, and result next-step priorities stay aligned around the same saved learner evidence
+- the MVP content catalog now covers broader GCSE and iGCSE topic depth across mathematics, English language, and combined science with published editorial records
+- timed-assessment coverage now includes six checkpoint definitions across algebra, geometry, inference, writing craft, science energy, and iGCSE graph fluency
+- reinforcement tests now protect weakest-topic selection and subject-route fallback behaviour from drifting as more content is added
 
 Implementation milestones:
 
@@ -2188,6 +2218,50 @@ flowchart LR
     E --> G["Review submitted work"]
     E --> H["Start first session"]
 ```
+
+### Production auth provider boundary
+
+The auth layer now has a real production-capable provider boundary instead of stopping at local preview cookies and seeded demo identities.
+
+That includes:
+
+- signed auth session cookies instead of local persisted session records for the primary web auth boundary
+- redirect-based provider start and callback routes for production sign-in flows
+- OIDC-style provider configuration for authorization, token exchange, user-info resolution, and mapped roles
+- stronger external-header trust rules through optional signed upstream auth headers
+- account, protected routes, and role-aware APIs still consuming the same auth contracts while the runtime mode changes underneath
+
+This auth boundary now covers the production-auth slice of the current launch-readiness roadmap pass while keeping preview mode available for local development.
+
+### Explicit editorial publish gates
+
+Editorial workflow now exposes explicit publish-gate checks instead of relying on one implicit ready flag after workflow updates.
+
+That includes:
+
+- publish-gate checks for publication status, editorial review, fact-check verification, source attribution, and workflow approval
+- workflow validation that blocks unsafe approval attempts before content is treated as publish-ready
+- required notes for higher-risk editorial actions such as block and rollback
+- admin-facing publish-gate visibility so editors can see exactly why a content item is blocked or ready
+- shared workflow-rule tests protecting approval and publish-gate behaviour from drift
+
+This trust hardening now strengthens the completed editorial-and-publish-gates slice for the current final-phase roadmap pass.
+
+### Shared academic reinforcement layer
+
+The academic-coverage work now has a shared reinforcement layer and broader content inventory so weak-topic guidance stops drifting between progress, results, and recommendation surfaces.
+
+That includes:
+
+- one shared saved-evidence model for weakest-topic detection across exams and timed assessments
+- topic-priority signals that can deep-link back into the subject route when a matching catalog topic exists
+- subject-level fallback guidance when the saved evidence is narrower than the current catalog structure
+- aligned next-step messaging across Power Grid, results, and recommendations instead of three separate weak-topic heuristics
+- broader published topic coverage across GCSE mathematics, GCSE English language, GCSE combined science, and iGCSE mathematics
+- six timed checkpoints and seven seeded exam papers now mapped against the expanded subject inventory
+- focused tests for weakest-topic prioritisation and subject-route fallback behaviour
+
+This reinforcement and coverage expansion now completes the current academic-and-assessment optimization slice for the final-phase roadmap.
 
 ### Editorial trust and audit trail
 
@@ -3128,7 +3202,57 @@ Current completion snapshot:
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
 - Phase 3: planned, 0 of 8 items completed
-- Final Phase: 3 of 8 items completed
-- Overall project completion estimate: 86% complete for the currently tracked MVP plus full production-completion roadmap
+- Final Phase: 4 of 8 items completed
+- Overall project completion estimate: 88% complete for the currently tracked MVP plus full production-completion roadmap
 
 That is one of the biggest differences between “a page that works” and “a product that can keep growing.”
+
+## Phase 1 Launch Stabilization
+
+Status: complete.
+
+This was the cleanup and confidence-building pass before deeper launch work.
+
+What this phase was meant to do:
+
+- finish the current in-progress student-facing MVP work cleanly
+- make sure the local build is stable and trustworthy
+- add a first lightweight automated test layer instead of relying only on manual checking
+- remove small loose ends that make the project feel unfinished
+
+What is now complete in this phase:
+
+- the current dashboard, home, app preview, and daily motivation work has been carried through as part of the live build
+- local build verification is now passing through both `npm run build` and `npm run type-check`
+- a lightweight test harness now exists through the built-in Node test runner for key runtime and stability checks
+- stray local clutter from the route tree has been cleaned up so the project state is easier to trust
+
+Learner-friendly explanation:
+
+- this phase is like tidying the desk before sitting a serious exam
+- it does not make the whole platform fully launched yet
+- it does make the current build calmer, cleaner, and more dependable before bigger production work continues
+
+Phase 1 stabilization flow:
+
+```mermaid
+flowchart LR
+    A["Current MVP build"] --> B["Finish in-progress student-facing work"]
+    B --> C["Run local build and type checks"]
+    C --> D["Add lightweight automated tests"]
+    D --> E["Clean stray project clutter"]
+    E --> F["Stable Phase 1 baseline"]
+```
+
+What the new lightweight tests cover:
+
+- auth runtime mode switching between local preview and external-provider boundary shapes
+- CMS runtime mode switching between writable and read-only backend shapes
+- in-memory persistence behavior used by the new runtime boundary work
+- daily motivation date behavior so the learner-facing quote stays stable across the same day
+
+Why this matters before launch work continues:
+
+- later launch phases are much easier to trust when the current local build is already stable
+- small hidden issues are less likely to get dragged into production-auth, production-data, and production-CMS work
+- the team can now treat the current repo state as a cleaner checkpoint instead of an unfinished midway state

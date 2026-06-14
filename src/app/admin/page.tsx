@@ -244,6 +244,11 @@ export default async function AdminPage() {
                   <p className="mt-2 text-lg font-semibold capitalize">{governance.overallStatus}</p>
                   <p className="mt-1 text-sm opacity-90">launch governance picture</p>
                 </div>
+                <div className="border border-amber-200 bg-amber-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-amber-700">True completion</p>
+                  <p className="mt-2 text-lg font-semibold text-amber-950">88%</p>
+                  <p className="mt-1 text-sm text-amber-900">toward full production launch</p>
+                </div>
                 <div className="border border-stone-200 bg-stone-50 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Reviews</p>
                   <p className="mt-2 text-lg font-semibold text-stone-950">{governance.reviews.length}</p>
@@ -254,11 +259,35 @@ export default async function AdminPage() {
                   <p className="mt-2 text-lg font-semibold text-stone-950">{governance.ownership.length}</p>
                   <p className="mt-1 text-sm text-stone-600">named responsibility areas</p>
                 </div>
-                <div className="border border-stone-200 bg-stone-50 p-4">
+                <div className="border border-stone-200 bg-stone-50 p-4 sm:col-span-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">What the percentage means</p>
+                  <p className="mt-2 text-sm leading-6 text-stone-700">
+                    The platform is in a strong state, but it is not yet a true full-production launch.
+                    The remaining work is the final closeout list below.
+                  </p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4 sm:col-span-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Smoke checks</p>
                   <p className="mt-2 text-lg font-semibold text-stone-950">{governance.smokeChecks.length}</p>
                   <p className="mt-1 text-sm text-stone-600">core route checks</p>
                 </div>
+              </div>
+              <div className="mt-5 border border-amber-200 bg-amber-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">
+                  Final closeout list before full launch
+                </p>
+                <ol className="mt-4 space-y-2 text-sm leading-6 text-amber-950">
+                  <li>1. Move sign-in out of preview mode and onto the real production auth setup.</li>
+                  <li>2. Remove the fallback preview auth secret from non-preview modes.</li>
+                  <li>3. Move student data onto the intended production-ready data setup with backup and restore checks.</li>
+                  <li>4. Move editorial work onto the intended writable live workflow.</li>
+                  <li>5. Replace planned content and paper update paths with the real operating path.</li>
+                  <li>6. Clean up test runtime warnings so verification is quiet and trustworthy.</li>
+                  <li>7. Add stronger launch automation such as linting, smoke checks, end-to-end checks, and release-ready scripts.</li>
+                  <li>8. Confirm the production environment and live configuration work correctly outside local development.</li>
+                  <li>9. Run the final live smoke pass across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.</li>
+                  <li>10. Confirm privacy, retention, safeguarding, alerts, incident ownership, and final release sign-off in the live environment.</li>
+                </ol>
               </div>
               <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1fr]">
                 <div className="border border-stone-200 bg-stone-50 p-4">

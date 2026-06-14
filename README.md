@@ -1916,7 +1916,7 @@ Rule for this section:
 
 Current final-phase snapshot:
 
-- 8 of 8 items completed (100%)
+- roadmap structure complete, launch completion still requires the final closeout work below
 
 ### Final phase execution order
 
@@ -2102,6 +2102,10 @@ Implementation milestones:
 
 Status: completed.
 
+This is the final part of the roadmap.
+
+If anyone needs one section to consult before launch, it should be this one.
+
 Implementation outcome:
 
 - the admin route now includes a launch-governance layer with recorded reviews, named owners, final smoke checks, and post-launch follow-up loops
@@ -2117,6 +2121,57 @@ Implementation milestones:
 - ownership is defined for incidents, content operations, data support, and release approvals
 - final launch smoke tests are listed across all core routes and operational workflows
 - post-launch review loops exist for incidents, learner trust issues, and content corrections
+
+### Final launch closeout roadmap
+
+Consult this section last.
+
+This is the real final roadmap to full completion, with the code, architecture, operational setup, and launch environment all working as a true production system instead of a strong prototype.
+
+### What still must be finished before calling this fully launched
+
+1. Replace preview sign-in defaults with the real production auth setup so launch does not depend on preview-cookie mode.
+2. Remove the fallback preview auth secret from non-preview modes so a misconfigured live environment cannot rely on a predictable signing secret.
+3. Replace local prototype-style persistence with the intended production data architecture, including backup, restore, and recovery checks.
+4. Replace planned or placeholder editorial infrastructure with the intended writable live content workflow so content operations are fully real, not just modeled.
+5. Replace planned content-provider and paper-ingestion placeholders with the intended live update path where launch content is actually managed.
+6. Clean up the test runtime warnings so verification is quiet, trustworthy, and easier to monitor during release work.
+7. Add stronger launch automation: linting, route smoke checks, end-to-end checks, and release-ready scripts.
+8. Confirm the production environment, live configuration, and release process work correctly outside local development.
+9. Run the final live-environment smoke pass across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
+10. Confirm privacy, retention, safeguarding, support-signposting, alerts, incident ownership, and final release approval in the live environment.
+
+### Full completion checklist
+
+For this project to be honestly described as fully complete, all of the following need to be true at the same time:
+
+1. The sign-in system is running on the intended live auth setup.
+2. Live auth does not fall back to preview secrets.
+3. Student data is stored through the intended production-ready data layer.
+4. Backup and restore checks are proven for live student data.
+5. Editorial review, approval, publishing, and rollback are fully writable in the intended live workflow.
+6. Planned content and paper-ingestion paths are replaced by real operating paths.
+7. The test and verification output is clean, without repeated avoidable runtime warnings.
+8. The repo has stronger launch automation, not only manual command checks.
+9. The live environment passes full route smoke testing.
+10. Privacy, retention, safeguarding, support, and incident ownership are confirmed in the real release environment.
+
+### Final completion sequence
+
+1. Real auth configuration
+2. Production data configuration
+3. Editorial and content operations completion
+4. Security cleanup
+5. Verification cleanup
+6. Launch automation
+7. Live environment validation
+8. Final sign-off
+
+### Why this section matters
+
+The product build is strong, but it should not be described as fully launch-complete until this closeout list is finished.
+
+This is the final section that should be consulted before anyone says the platform is fully complete or fully live.
 
 ### Final target architecture
 
@@ -3238,10 +3293,10 @@ Current completion snapshot:
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
 - Phase 3: planned, 0 of 8 items completed
-- Final Phase: 8 of 8 items completed
-- Overall project completion estimate: 100% complete for the current roadmap picture
+- Final Phase: structurally complete, but final launch closeout work still remains
+- Overall project completion estimate: about 88% complete toward true full production launch
 
-In simple terms: the tracked roadmap is now fully complete, and the project has moved from “still building the foundation” into “ready for launch management and continued improvement.”
+In simple terms: the product foundation is strong, but it is still short of a true full-production finish until the closeout work above is done.
 
 ## Phase 1 Launch Stabilization
 

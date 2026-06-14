@@ -2,6 +2,7 @@ import { applyAccessArrangementsToAssessment } from "@/modules/access-arrangemen
 import type { StudentAccessProfileRepository } from "@/modules/access-arrangements";
 import { getSavedProgress, saveTimedAssessmentProgress } from "@/modules/saved-progress/service";
 import type { SavedProgressRepository } from "@/modules/saved-progress/types";
+import { buildOperationsEvent, recordOperationsEvent } from "@/lib/server/operations-event";
 import type {
   CreateTimedAssessmentAttemptInput,
   TimedAssessmentAttempt,
@@ -687,6 +688,17 @@ export async function submitMockTimedAssessmentAttempt(
       status: "submitted",
     },
     input.savedProgressRepository,
+  );
+
+  recordOperationsEvent(
+    buildOperationsEvent({
+      domain: "assessment",
+      action: "attempt-submitted",
+      status: "success",
+      userId: submittedAttempt.userId,
+      entityId: submittedAttempt.attemptId,
+      detail: `Timed assessment ${assessmentId} was submitted and stored through the saved-progress layer.`,
+    }),
   );
 
   return {

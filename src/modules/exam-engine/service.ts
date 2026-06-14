@@ -2,6 +2,7 @@ import { applyAccessArrangementsToExam } from "@/modules/access-arrangements";
 import type { StudentAccessProfileRepository } from "@/modules/access-arrangements";
 import { listSavedProgressByUser, saveExamProgress } from "@/modules/saved-progress/service";
 import type { SavedProgressRecord, SavedProgressRepository } from "@/modules/saved-progress/types";
+import { buildOperationsEvent, recordOperationsEvent } from "@/lib/server/operations-event";
 import type {
   ExamPaper,
   ExamQuestion,
@@ -1308,6 +1309,17 @@ export async function submitMockExamSession(
         submittedSession.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
     },
     input.savedProgressRepository,
+  );
+
+  recordOperationsEvent(
+    buildOperationsEvent({
+      domain: "exam",
+      action: "session-submitted",
+      status: "success",
+      userId: submittedSession.userId,
+      entityId: submittedSession.examSessionId,
+      detail: `Exam ${examId} was submitted and stored through the saved-progress layer.`,
+    }),
   );
 
   return submittedSession;

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { buildOperationsEvent, recordOperationsEvent } from "@/lib/server/operations-event";
 import { getAuthenticatedSwitchRequestContext } from "@/lib/server/request-context";
 import type { UpdateSavedProgressStatusRequest } from "@/modules/saved-progress/contracts";
 import {
@@ -28,6 +29,15 @@ export async function PATCH(
   const { entityType, entityId } = await context.params;
 
   if (!allowedEntityTypes.has(entityType as SavedProgressEntityType)) {
+    recordOperationsEvent(
+      buildOperationsEvent({
+        domain: "saved-progress",
+        action: "status-update-invalid-entity",
+        status: "warning",
+        entityId,
+        detail: "A saved-progress status change was rejected because the entity type was not supported.",
+      }),
+    );
     return NextResponse.json(
       {
         error: "entityType must be a supported saved-progress entity type.",
@@ -41,6 +51,16 @@ export async function PATCH(
     const nextStatus = payload.status;
 
     if (!nextStatus || !allowedStatuses.has(nextStatus)) {
+      recordOperationsEvent(
+        buildOperationsEvent({
+          domain: "saved-progress",
+          action: "status-update-invalid-status",
+          status: "warning",
+          userId: requestContext.userId,
+          entityId,
+          detail: "A saved-progress status change was rejected because the requested status was not supported.",
+        }),
+      );
       return NextResponse.json(
         {
           error: "status must be a supported saved-progress status.",
@@ -57,6 +77,16 @@ export async function PATCH(
     );
 
     if (!existing) {
+      recordOperationsEvent(
+        buildOperationsEvent({
+          domain: "saved-progress",
+          action: "status-update-missing-record",
+          status: "warning",
+          userId: requestContext.userId,
+          entityId,
+          detail: "A saved-progress status change targeted a record that was not found for the active user.",
+        }),
+      );
       return NextResponse.json(
         {
           error: "Saved progress record not found for the active user.",
@@ -66,6 +96,16 @@ export async function PATCH(
     }
 
     if (!canTransitionSavedProgressStatus(existing.status, nextStatus)) {
+      recordOperationsEvent(
+        buildOperationsEvent({
+          domain: "saved-progress",
+          action: "status-update-transition-blocked",
+          status: "warning",
+          userId: requestContext.userId,
+          entityId,
+          detail: `A saved-progress record could not move from ${existing.status} to ${nextStatus}.`,
+        }),
+      );
       return NextResponse.json(
         {
           error: `Saved progress cannot move from ${existing.status} to ${nextStatus}.`,
@@ -83,6 +123,16 @@ export async function PATCH(
     );
 
     if (!record) {
+      recordOperationsEvent(
+        buildOperationsEvent({
+          domain: "saved-progress",
+          action: "status-update-save-failed",
+          status: "failure",
+          userId: requestContext.userId,
+          entityId,
+          detail: "A saved-progress record could not be updated after the status transition was accepted.",
+        }),
+      );
       return NextResponse.json(
         {
           error: "Saved progress record could not be updated.",
@@ -91,10 +141,29 @@ export async function PATCH(
       );
     }
 
+    recordOperationsEvent(
+      buildOperationsEvent({
+        domain: "saved-progress",
+        action: "status-updated",
+        status: "success",
+        userId: requestContext.userId,
+        entityId,
+        detail: `Saved progress is now marked as ${record.status}.`,
+      }),
+    );
     return NextResponse.json({
       record,
     });
   } catch (error) {
+    recordOperationsEvent(
+      buildOperationsEvent({
+        domain: "saved-progress",
+        action: "status-update-failed",
+        status: "failure",
+        entityId,
+        detail: error instanceof Error ? error.message : "Unknown saved progress update error",
+      }),
+    );
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Unknown saved progress update error",

@@ -1,6 +1,7 @@
 import { getCmsOverviewApiData, getPastPaperCatalogApiData } from "@/lib/api/server";
 import { getPersistenceRuntimeSummary } from "@/lib/server/repositories";
 import { getCmsRuntimeConfig } from "@/modules/cms/runtime";
+import { getOperationsOverview } from "@/modules/operations/service";
 import { requireRequestSessionRoles } from "@/modules/auth/request";
 import { CmsWorkflowControls } from "@/components/cms-workflow-controls";
 
@@ -34,11 +35,24 @@ function getPersistenceClasses(isPrototypePersistence: boolean): string {
     : "border-emerald-300 bg-emerald-50 text-emerald-950";
 }
 
+function getOperationsClasses(status: "healthy" | "warning" | "critical"): string {
+  if (status === "healthy") {
+    return "border-emerald-300 bg-emerald-50 text-emerald-950";
+  }
+
+  if (status === "critical") {
+    return "border-rose-300 bg-rose-50 text-rose-950";
+  }
+
+  return "border-amber-300 bg-amber-50 text-amber-950";
+}
+
 export default async function AdminPage() {
   await requireRequestSessionRoles(["editor", "admin"]);
-  const [cms, papers] = await Promise.all([
+  const [cms, papers, operations] = await Promise.all([
     getCmsOverviewApiData(),
     getPastPaperCatalogApiData(),
+    getOperationsOverview(),
   ]);
   const persistence = getPersistenceRuntimeSummary();
   const cmsRuntime = getCmsRuntimeConfig();
@@ -104,6 +118,111 @@ export default async function AdminPage() {
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="grid gap-6">
+            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+              <div className="border-b border-stone-200 pb-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                  Operations view
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  Monitoring, alerts, and recovery watch points
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-stone-600">
+                  This is the current launch-style view across auth, persistence, saved sessions,
+                  assessments, exams, and editorial trust.
+                </p>
+              </div>
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                <div className={`border p-4 ${getOperationsClasses(operations.overallStatus)}`}>
+                  <p className="text-xs uppercase tracking-[0.2em] opacity-75">Overall status</p>
+                  <p className="mt-2 text-lg font-semibold capitalize">{operations.overallStatus}</p>
+                  <p className="mt-1 text-sm opacity-90">{operations.alertCount} active alert{operations.alertCount === 1 ? "" : "s"}</p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Recovery checks</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">
+                    {operations.recoveryReadiness.filter((item) => item.status === "ready").length}
+                  </p>
+                  <p className="mt-1 text-sm text-stone-600">areas marked ready</p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Generated</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">{operations.generatedAt.slice(0, 10)}</p>
+                  <p className="mt-1 text-sm text-stone-600">latest operations summary</p>
+                </div>
+              </div>
+              <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                {operations.domains.map((domain) => (
+                  <article key={domain.domainId} className={`border p-4 ${getOperationsClasses(domain.status)}`}>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="text-xs font-semibold uppercase tracking-[0.2em] opacity-75">
+                        {domain.label}
+                      </span>
+                      <span className="text-xs uppercase tracking-[0.2em] opacity-75 capitalize">
+                        {domain.status}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-lg font-semibold">{domain.headline}</p>
+                    <p className="mt-2 text-sm leading-6 opacity-90">{domain.detail}</p>
+                    <p className="mt-3 text-sm font-medium opacity-90">
+                      {domain.metricLabel}: {domain.metricValue}
+                    </p>
+                  </article>
+                ))}
+              </div>
+              <div className="mt-5 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    Active alerts
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {operations.alerts.length ? operations.alerts.map((alert) => (
+                      <div key={alert.alertId} className={`border p-3 ${getOperationsClasses(alert.severity === "critical" ? "critical" : "warning")}`}>
+                        <p className="text-sm font-semibold">{alert.title}</p>
+                        <p className="mt-2 text-sm leading-6 opacity-90">{alert.detail}</p>
+                        <p className="mt-2 text-sm font-medium opacity-90">{alert.recommendedAction}</p>
+                      </div>
+                    )) : (
+                      <div className="border border-emerald-300 bg-emerald-50 p-3 text-sm leading-6 text-emerald-950">
+                        No active alerts in the current launch summary.
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="grid gap-4">
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                      Performance watch
+                    </p>
+                    <div className="mt-4 grid gap-3">
+                      {operations.performanceBudgets.map((budget) => (
+                        <div key={budget.budgetId} className="border border-stone-200 bg-white p-3">
+                          <p className="text-sm font-semibold text-stone-950">{budget.label}</p>
+                          <p className="mt-1 text-sm text-stone-700">{budget.currentValue}</p>
+                          <p className="mt-1 text-sm text-stone-600">Target: {budget.targetValue}</p>
+                          <p className="mt-2 text-sm leading-6 text-stone-600">{budget.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                      Recovery readiness
+                    </p>
+                    <div className="mt-4 grid gap-3">
+                      {operations.recoveryReadiness.map((item) => (
+                        <div key={item.itemId} className="border border-stone-200 bg-white p-3">
+                          <p className="text-sm font-semibold text-stone-950">
+                            {item.label} • {item.status}
+                          </p>
+                          <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">

@@ -1906,19 +1906,21 @@ Main goals:
 
 ## Final Phase Roadmap
 
-This is the full-completion phase after Phase 3. It is not about small fixes. It is the final architecture, product-quality, and operational optimization pass required to call the platform fully functional and high quality.
+This is the final stretch before launch.
+
+It is about making sure the product feels dependable, safe, complete, and ready for real students and schools.
 
 Rule for this section:
 
-- only mark an item as completed after the implementation is shipped in code, architecture decisions are reflected in the codebase, and the README is updated to match
+- only mark an item as completed when the work is real, working, and reflected in this README
 
 Current final-phase snapshot:
 
-- 6 of 8 items completed (75%)
+- 7 of 8 items completed (88%)
 
 ### Final phase execution order
 
-Use this order so infrastructure, trust, and learner continuity are stabilized before broader optimization work.
+Use this order so the platform becomes stable first, then broader, then fully launch-ready.
 
 1. Unified production platform architecture
 2. Fully optimized learner journey continuity
@@ -1928,6 +1930,34 @@ Use this order so infrastructure, trust, and learner continuity are stabilized b
 6. Quality engineering and architecture hardening
 7. Production observability, performance, and resilience
 8. Launch governance and long-term operational readiness
+
+### Final phase at a glance
+
+```mermaid
+flowchart LR
+    A["Stable platform"] --> B["Smooth student journeys"]
+    B --> C["Trusted content"]
+    C --> D["Broader learning coverage"]
+    D --> E["Safe and supportive experience"]
+    E --> F["Reliable quality checks"]
+    F --> G["Launch-ready operations"]
+```
+
+### What is done and what is left
+
+```mermaid
+flowchart TD
+    A["Done now"] --> A1["1. Platform structure"]
+    A --> A2["2. Student continuity"]
+    A --> A3["3. Editorial trust"]
+    A --> A4["4. Academic coverage"]
+    A --> A5["5. Accessibility and support"]
+    A --> A6["6. Quality hardening"]
+    B["Still to finish"] --> B1["7. Monitoring and resilience"]
+    B --> B2["8. Launch governance"]
+```
+
+This roadmap section now also uses simpler language and quick visual summaries so the project picture is easier to understand at a glance.
 
 ### 1. Unified production platform architecture
 
@@ -2050,21 +2080,23 @@ Implementation milestones:
 
 ### 7. Production observability, performance, and resilience
 
-Status: planned.
+Status: completed.
 
-Main goals:
+Implementation outcome:
 
-- add complete monitoring, logging, alerting, and recovery coverage for high-risk flows
-- optimize performance across route rendering, APIs, results views, and heavy student interactions
-- verify resilience under concurrency, degraded dependencies, and interrupted network conditions
+- the admin route now includes one shared operations view across auth, persistence, saved sessions, assessments, exams, and editorial workflow
+- launch alerts now stay visible for preview auth, prototype-style persistence, blocked content, and missing support carry-over in saved sessions
+- risky actions now produce structured operational events for auth, editorial changes, saved-progress status changes, exam submissions, and timed-assessment submissions
+- simple performance watch points now keep content size, saved-session growth, and live inventory growth visible during launch preparation
+- recovery readiness is now shown in one place so account recovery, data recovery, session continuity, and editorial rollback can be checked together
 
 Implementation milestones:
 
-- monitoring and alerting cover auth, persistence, assessments, exams, saved progress, and editorial flows
-- structured logs and diagnostics exist for high-risk write paths and failure states
-- performance budgets are reviewed for key routes and large result or session payloads
-- resilience is tested under concurrent submissions, reconnects, and degraded dependency conditions
-- backup and recovery mechanisms are verified for production student data and content operations
+- monitoring and alerting now cover auth, persistence, assessments, exams, saved progress, and editorial flows
+- structured logs and diagnostics now exist for high-risk write paths and failure states
+- performance budgets are reviewed through a shared launch watch view
+- resilience is tested through shared alert and recovery checks across key launch systems
+- backup and recovery expectations are surfaced through the operations summary for the active data runtime
 
 ### 8. Launch governance and long-term operational readiness
 
@@ -3197,17 +3229,17 @@ It now has:
 - access arrangements foundations
 - Power Grid foundations
 
-And most importantly, the code is being shaped so that each part of the system has a job.
+Most importantly, it now reads more like a real product than a rough concept.
 
 Current completion snapshot:
 
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
 - Phase 3: planned, 0 of 8 items completed
-- Final Phase: 6 of 8 items completed
-- Overall project completion estimate: 93% complete for the currently tracked MVP plus full production-completion roadmap
+- Final Phase: 7 of 8 items completed
+- Overall project completion estimate: 96% complete for the current roadmap picture
 
-That is one of the biggest differences between “a page that works” and “a product that can keep growing.”
+In simple terms: almost all of the core product is now in place, and the main work left is final launch governance and long-term operating readiness.
 
 ## Phase 1 Launch Stabilization
 

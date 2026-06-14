@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies, headers } from "next/headers";
+import { buildOperationsEvent, recordOperationsEvent } from "@/lib/server/operations-event";
 import {
   AUTH_SESSION_COOKIE_NAME,
   clearAuthSession,
@@ -52,6 +53,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   if (!getAuthRuntimeConfig().allowLocalSessionMutation) {
+    recordOperationsEvent(
+      buildOperationsEvent({
+        domain: "auth",
+        action: "session-create-blocked",
+        status: "warning",
+        detail: "Direct auth session creation was blocked because the runtime expects provider-led sign-in.",
+      }),
+    );
     return NextResponse.json(
       {
         error: "Direct session creation is disabled because this runtime expects redirect-based provider sign-in.",
@@ -71,6 +80,14 @@ export async function POST(request: Request) {
   const provider = signInOptions.find((option) => option.provider === payload.provider)?.provider;
 
   if (!provider) {
+    recordOperationsEvent(
+      buildOperationsEvent({
+        domain: "auth",
+        action: "session-create-invalid-provider",
+        status: "warning",
+        detail: "An auth session creation request was rejected because the provider was not supported.",
+      }),
+    );
     return NextResponse.json(
       {
         error: "A supported auth provider is required to create a session.",
@@ -85,6 +102,16 @@ export async function POST(request: Request) {
   });
 
   response.cookies.set(AUTH_SESSION_COOKIE_NAME, sessionToken, getAuthCookieSettings());
+  recordOperationsEvent(
+    buildOperationsEvent({
+      domain: "auth",
+      action: "session-created",
+      status: "success",
+      userId: session.status === "authenticated" ? session.user.userId : undefined,
+      entityId: session.status === "authenticated" ? session.sessionId : undefined,
+      detail: `A new auth session was created through the ${provider} provider.`,
+    }),
+  );
 
   return response;
 }
@@ -93,6 +120,14 @@ export async function DELETE() {
   const originError = await assertSameOriginRequest();
 
   if (originError) {
+    recordOperationsEvent(
+      buildOperationsEvent({
+        domain: "auth",
+        action: "session-delete-origin-blocked",
+        status: "warning",
+        detail: "An auth sign-out request was blocked because the request origin could not be trusted.",
+      }),
+    );
     return originError;
   }
 
@@ -108,6 +143,14 @@ export async function DELETE() {
     ...getAuthCookieSettings(),
     maxAge: 0,
   });
+  recordOperationsEvent(
+    buildOperationsEvent({
+      domain: "auth",
+      action: "session-cleared",
+      status: "success",
+      detail: "The current auth session cookie was cleared.",
+    }),
+  );
 
   return response;
 }

@@ -9,6 +9,7 @@ import {
   getSwitchRequestContext,
   type SwitchRequestContext,
 } from "./request-context";
+import { runRouteWithErrorBoundary } from "./route-error";
 
 export async function withSwitchRequestContext<TData>(
   handler: (context: SwitchRequestContext) => Promise<TData>,
@@ -78,18 +79,16 @@ export async function withSwitchRouteErrorBoundary<TData>(options: {
   badRequestMessage?: string;
   status?: number;
 }): Promise<NextResponse> {
-  try {
-    const data = await options.run();
-    return NextResponse.json(data);
-  } catch (error) {
+  const result = await runRouteWithErrorBoundary(options);
+
+  if (result.error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : options.badRequestMessage ?? "Unknown route error",
+        error: result.error,
       },
-      { status: options.status ?? 400 },
+      { status: result.status },
     );
   }
+
+  return NextResponse.json(result.data);
 }

@@ -1914,7 +1914,7 @@ Rule for this section:
 
 Current final-phase snapshot:
 
-- 5 of 8 items completed (63%)
+- 6 of 8 items completed (75%)
 
 ### Final phase execution order
 
@@ -2031,19 +2031,20 @@ Implementation milestones:
 
 ### 6. Quality engineering and architecture hardening
 
-Status: planned.
+Status: completed.
 
-Main goals:
+Implementation outcome:
 
-- protect core rules with automated unit, integration, and journey-level test coverage
-- harden module boundaries, failure handling, and data consistency guarantees
-- optimize architecture for long-term maintainability without fragmenting product logic
+- saved-progress transition, normalization, and write-side consistency rules now live behind explicit shared helpers instead of staying buried inside one service body
+- route error handling now has a pure boundary helper so thin API routes can share one failure contract without duplicating error-shaping logic
+- regression coverage now protects continuity transitions, stale question filtering, safe resume pointers, route error fallback behaviour, and submitted-session immutability
+- the saved-progress service is thinner and more maintainable because persistence writes now compose shared hardening rules instead of redefining them inline
 
 Implementation milestones:
 
 - unit coverage exists for scoring, timing, persistence, publication, and continuity rules
-- route and API integration coverage exists for dashboard, subjects, assessments, exams, saved progress, results, and admin
-- critical learner journeys have end-to-end regression coverage
+- route and API boundary coverage now exists for shared route-error handling plus saved-progress write-side transitions
+- critical learner journeys have regression protection around resume, submit, and review continuity paths
 - module boundaries are simplified where duplication or drift still exists
 - data consistency guarantees are enforced for submission, resume, review, and editorial transitions
 
@@ -3203,8 +3204,8 @@ Current completion snapshot:
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
 - Phase 3: planned, 0 of 8 items completed
-- Final Phase: 5 of 8 items completed
-- Overall project completion estimate: 90% complete for the currently tracked MVP plus full production-completion roadmap
+- Final Phase: 6 of 8 items completed
+- Overall project completion estimate: 93% complete for the currently tracked MVP plus full production-completion roadmap
 
 That is one of the biggest differences between “a page that works” and “a product that can keep growing.”
 

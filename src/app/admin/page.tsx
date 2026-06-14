@@ -1,6 +1,7 @@
 import { getCmsOverviewApiData, getPastPaperCatalogApiData } from "@/lib/api/server";
 import { getPersistenceRuntimeSummary } from "@/lib/server/repositories";
 import { getCmsRuntimeConfig } from "@/modules/cms/runtime";
+import { getLaunchGovernanceOverview } from "@/modules/governance/service";
 import { getOperationsOverview } from "@/modules/operations/service";
 import { requireRequestSessionRoles } from "@/modules/auth/request";
 import { CmsWorkflowControls } from "@/components/cms-workflow-controls";
@@ -49,10 +50,11 @@ function getOperationsClasses(status: "healthy" | "warning" | "critical"): strin
 
 export default async function AdminPage() {
   await requireRequestSessionRoles(["editor", "admin"]);
-  const [cms, papers, operations] = await Promise.all([
+  const [cms, papers, operations, governance] = await Promise.all([
     getCmsOverviewApiData(),
     getPastPaperCatalogApiData(),
     getOperationsOverview(),
+    Promise.resolve(getLaunchGovernanceOverview()),
   ]);
   const persistence = getPersistenceRuntimeSummary();
   const cmsRuntime = getCmsRuntimeConfig();
@@ -218,6 +220,105 @@ export default async function AdminPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+              <div className="border-b border-stone-200 pb-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                  Launch governance
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  Ownership, compliance review, and final launch checks
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-stone-600">
+                  This is the final launch-readiness layer. It keeps review records, clear owners,
+                  smoke checks, and post-launch follow-up routines in one place.
+                </p>
+              </div>
+              <div className="mt-5 grid gap-4 sm:grid-cols-4">
+                <div className={`border p-4 ${getOperationsClasses(governance.overallStatus === "ready" ? "healthy" : "warning")}`}>
+                  <p className="text-xs uppercase tracking-[0.2em] opacity-75">Governance</p>
+                  <p className="mt-2 text-lg font-semibold capitalize">{governance.overallStatus}</p>
+                  <p className="mt-1 text-sm opacity-90">launch governance picture</p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Reviews</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">{governance.reviews.length}</p>
+                  <p className="mt-1 text-sm text-stone-600">recorded launch reviews</p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Owners</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">{governance.ownership.length}</p>
+                  <p className="mt-1 text-sm text-stone-600">named responsibility areas</p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Smoke checks</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">{governance.smokeChecks.length}</p>
+                  <p className="mt-1 text-sm text-stone-600">core route checks</p>
+                </div>
+              </div>
+              <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1fr]">
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    Recorded reviews
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {governance.reviews.map((review) => (
+                      <div key={review.reviewId} className="border border-stone-200 bg-white p-3">
+                        <p className="text-sm font-semibold text-stone-950">{review.title}</p>
+                        <p className="mt-1 text-sm text-stone-700">{review.completedAt} • {review.owner}</p>
+                        <p className="mt-2 text-sm leading-6 text-stone-600">{review.note}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    Ownership map
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {governance.ownership.map((item) => (
+                      <div key={item.areaId} className="border border-stone-200 bg-white p-3">
+                        <p className="text-sm font-semibold text-stone-950">{item.area}</p>
+                        <p className="mt-1 text-sm text-stone-700">
+                          {item.primaryOwner} • backup {item.backupOwner}
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-stone-600">{item.responsibility}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1fr]">
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    Final launch smoke checks
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {governance.smokeChecks.map((check) => (
+                      <div key={check.checkId} className="border border-stone-200 bg-white p-3">
+                        <p className="text-sm font-semibold text-stone-950">{check.route}</p>
+                        <p className="mt-1 text-sm text-stone-700">{check.status}</p>
+                        <p className="mt-2 text-sm leading-6 text-stone-600">{check.note}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    Post-launch review loops
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {governance.followUpLoops.map((loop) => (
+                      <div key={loop.loopId} className="border border-stone-200 bg-white p-3">
+                        <p className="text-sm font-semibold text-stone-950">{loop.title}</p>
+                        <p className="mt-1 text-sm text-stone-700">{loop.cadence} • {loop.owner}</p>
+                        <p className="mt-2 text-sm leading-6 text-stone-600">{loop.purpose}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

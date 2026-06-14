@@ -1,4 +1,11 @@
-import type { ExamSupportGuide, SupportHubData, SupportResource, UrgentHelpOption } from "./types";
+import type {
+  ExamSupportGuide,
+  SupportHubData,
+  SupportResource,
+  SupportRouteGuidance,
+  SupportSafetyReview,
+  UrgentHelpOption,
+} from "./types";
 
 export type SupportContractRoute =
   | "GET /support/hub"
@@ -20,4 +27,9 @@ export interface GetExamSupportGuidesResponse {
 
 export interface GetUrgentHelpResponse {
   urgentHelp: UrgentHelpOption[];
+}
+
+export interface GetSupportSafetyReviewResponse {
+  safetyReview: SupportSafetyReview;
+  routeGuidance: SupportRouteGuidance[];
 }

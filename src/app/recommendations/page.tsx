@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getRecommendationsPageApiData } from "@/lib/api/server";
+import { getRecommendationsPageApiData, getSupportHubApiData } from "@/lib/api/server";
 import { requireAuthenticatedRequestSession } from "@/modules/auth/request";
 
 function getPriorityClasses(priority: "high" | "medium" | "low"): string {
@@ -16,7 +16,10 @@ function getPriorityClasses(priority: "high" | "medium" | "low"): string {
 
 export default async function RecommendationsPage() {
   await requireAuthenticatedRequestSession();
-  const data = await getRecommendationsPageApiData();
+  const [data, support] = await Promise.all([
+    getRecommendationsPageApiData(),
+    getSupportHubApiData(),
+  ]);
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -116,6 +119,24 @@ export default async function RecommendationsPage() {
           </div>
 
           <aside className="space-y-6">
+            <section className="border border-amber-200 bg-amber-50 p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-800">
+                Support-aware recommendation rules
+              </h2>
+              <p className="mt-4 text-sm leading-6 text-stone-700">
+                {support.routeGuidance.find((guidance) => guidance.routeId === "/recommendations")?.message}
+              </p>
+              <p className="mt-3 text-sm leading-6 text-stone-700">
+                {support.safetyReview.escalationGuidance}
+              </p>
+              <Link
+                href="/support"
+                className="mt-4 inline-flex items-center justify-center border border-stone-900 px-3 py-2 text-sm font-medium text-stone-900 transition hover:bg-white"
+              >
+                Open support hub
+              </Link>
+            </section>
+
             <section className="border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 What this route proves

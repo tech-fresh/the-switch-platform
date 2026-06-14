@@ -1,5 +1,6 @@
 import examSupportGuides from "@/data/exam-support-guides.json";
 import supportResources from "@/data/support-resources.json";
+import { buildSupportRouteGuidance, buildSupportSafetyReview } from "./safety";
 import type { ExamSupportGuide, SupportHubData, SupportResource, UrgentHelpOption } from "./types";
 
 const urgentHelp: UrgentHelpOption[] = [
@@ -36,6 +37,8 @@ export async function getSupportHubData(): Promise<SupportHubData> {
       "This support area is signposting only. It links to NHS services and established UK charities so students can find trusted help without the product pretending to be counselling or crisis care.",
     safetyNotice:
       "This route does not offer live counselling or emergency response. If you feel unsafe or need urgent help, use one of the urgent support options straight away and speak to a trusted adult, teacher, or school support lead.",
+    safetyReview: buildSupportSafetyReview(),
+    routeGuidance: buildSupportRouteGuidance(),
     urgentHelp,
     examSupportGuides: examSupportGuides as ExamSupportGuide[],
     trustedResources: supportResources as SupportResource[],

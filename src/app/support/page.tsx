@@ -29,6 +29,28 @@ export default async function SupportPage() {
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="grid gap-6">
+            <article className="border border-amber-200 bg-amber-50 p-5 sm:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200 pb-4">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-800">
+                    Safety review
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                    Reviewed support rules for younger learners
+                  </h2>
+                </div>
+                <p className="text-sm text-stone-700">
+                  Reviewed {support.safetyReview.reviewedAt} by {support.safetyReview.reviewedBy}
+                </p>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-stone-700">
+                {support.safetyReview.policySummary}
+              </p>
+              <p className="mt-3 text-sm leading-6 text-stone-700">
+                {support.safetyReview.escalationGuidance}
+              </p>
+            </article>
+
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-rose-700">
@@ -128,6 +150,26 @@ export default async function SupportPage() {
                 ))}
               </div>
             </article>
+
+            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+              <div className="border-b border-stone-200 pb-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                  Route guidance
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  How support should appear across the product
+                </h2>
+              </div>
+              <div className="mt-5 grid gap-4 lg:grid-cols-3">
+                {support.routeGuidance.map((guidance) => (
+                  <div key={guidance.routeId} className="border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-lg font-semibold text-stone-950">{guidance.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{guidance.message}</p>
+                    <p className="mt-4 text-sm font-medium text-sky-700">{guidance.actionLabel}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
           </div>
 
           <aside className="space-y-6">
@@ -150,6 +192,17 @@ export default async function SupportPage() {
                 <li>Not a live counselling service.</li>
                 <li>Not a chatbot or wellbeing assistant.</li>
                 <li>Not a place where personal mental health details are stored.</li>
+              </ul>
+            </section>
+
+            <section className="border border-stone-200 bg-white p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                Reviewed safeguards
+              </h2>
+              <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
+                <li>Urgent help stays visible without adding panic to normal study routes.</li>
+                <li>Support copy stays age-appropriate and non-clinical.</li>
+                <li>Escalation points always move students toward trusted adults and established services.</li>
               </ul>
             </section>
           </aside>

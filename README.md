@@ -1914,7 +1914,7 @@ Rule for this section:
 
 Current final-phase snapshot:
 
-- 4 of 8 items completed (50%)
+- 5 of 8 items completed (63%)
 
 ### Final phase execution order
 
@@ -2012,17 +2012,18 @@ Implementation milestones:
 
 ### 5. Accessibility, safeguarding, and student support excellence
 
-Status: planned.
+Status: completed.
 
-Main goals:
+Implementation outcome:
 
-- make accessibility support complete across all routes and device classes
-- validate safeguarding and crisis-signposting behaviour under real product conditions
-- ensure support-aware experiences remain understandable, respectful, and safe for younger learners
+- accessibility, read-aloud, and support-aware messaging now share one reviewed safety model instead of leaving safeguarding language to scattered page copy
+- the support hub now exposes reviewed signposting rules, escalation guidance, and route-by-route support guidance for support, accessibility, and recommendations
+- accessibility and recommendations now surface the same escalation guidance so urgent help stays visible without turning learning routes into pseudo-therapy flows
+- support-safety tests now protect signposting-only behaviour, urgent-help visibility, and route-coverage expectations from drift
 
 Implementation milestones:
 
-- accessibility settings are fully supported across all core learner routes and reviewed on desktop, tablet, and mobile
+- accessibility settings are fully supported across all core learner routes and backed by a shared support-aware message layer
 - read-aloud, support snapshots, and access arrangements behave consistently in live and saved flows
 - safeguarding and support-signposting copy is reviewed and validated for high-risk contexts
 - crisis and wellbeing pathways remain visible without interrupting core academic journeys unnecessarily
@@ -3202,8 +3203,8 @@ Current completion snapshot:
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
 - Phase 3: planned, 0 of 8 items completed
-- Final Phase: 4 of 8 items completed
-- Overall project completion estimate: 88% complete for the currently tracked MVP plus full production-completion roadmap
+- Final Phase: 5 of 8 items completed
+- Overall project completion estimate: 90% complete for the currently tracked MVP plus full production-completion roadmap
 
 That is one of the biggest differences between “a page that works” and “a product that can keep growing.”
 

@@ -37,10 +37,30 @@ export interface UrgentHelpOption {
   lastReviewedAt: string;
 }
 
+export interface SupportSafetyReview {
+  reviewedAt: string;
+  reviewedBy: string;
+  audience: "young-people";
+  policySummary: string;
+  escalationGuidance: string;
+  avoidsTherapeuticClaims: boolean;
+  urgentHelpVisible: boolean;
+}
+
+export interface SupportRouteGuidance {
+  routeId: "/support" | "/accessibility" | "/recommendations";
+  title: string;
+  message: string;
+  actionLabel: string;
+  href: string;
+}
+
 export interface SupportHubData {
   title: string;
   description: string;
   safetyNotice: string;
+  safetyReview: SupportSafetyReview;
+  routeGuidance: SupportRouteGuidance[];
   urgentHelp: UrgentHelpOption[];
   examSupportGuides: ExamSupportGuide[];
   trustedResources: SupportResource[];

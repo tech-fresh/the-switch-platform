@@ -6,11 +6,13 @@ import type { ColourSchemePreference } from "@/modules/access-arrangements";
 import type { AccessibilitySnapshot } from "@/modules/accessibility/types";
 import type { Recommendation } from "@/modules/recommendations/types";
 import type { ReadAloudSession } from "@/modules/read-aloud/types";
+import type { SupportHubData } from "@/modules/support/types";
 
 interface AccessibilityExperienceProps {
   snapshot: AccessibilitySnapshot;
   readAloudSession: ReadAloudSession;
   recommendations: Recommendation[];
+  support: SupportHubData;
 }
 
 type ToggleKey =
@@ -24,6 +26,7 @@ export function AccessibilityExperience({
   snapshot,
   readAloudSession,
   recommendations,
+  support,
 }: AccessibilityExperienceProps) {
   const [settings, setSettings] = useState(snapshot.settings);
   const [accessProfile, setAccessProfile] = useState(snapshot.studentAccessProfile);
@@ -205,6 +208,23 @@ export function AccessibilityExperience({
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="grid gap-6">
+            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+              <div className="border-b border-stone-200 pb-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">
+                  Support safety
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  Accessibility stays practical while urgent help stays clear
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-stone-600">
+                  {support.routeGuidance.find((guidance) => guidance.routeId === "/accessibility")?.message}
+                </p>
+                <p className="mt-3 text-sm leading-6 text-stone-700">
+                  {support.safetyReview.escalationGuidance}
+                </p>
+              </div>
+            </article>
+
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">

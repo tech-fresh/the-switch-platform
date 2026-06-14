@@ -3,15 +3,17 @@ import {
   getAccessibilitySnapshotApiData,
   getReadAloudSessionApiData,
   getStudentRecommendationsApiData,
+  getSupportHubApiData,
 } from "@/lib/api/server";
 import { requireAuthenticatedRequestSession } from "@/modules/auth/request";
 
 export default async function AccessibilityPage() {
   await requireAuthenticatedRequestSession();
-  const [snapshot, readAloudSession, recommendations] = await Promise.all([
+  const [snapshot, readAloudSession, recommendations, support] = await Promise.all([
     getAccessibilitySnapshotApiData(),
     getReadAloudSessionApiData("revision-notes"),
     getStudentRecommendationsApiData(),
+    getSupportHubApiData(),
   ]);
 
   return (
@@ -19,6 +21,7 @@ export default async function AccessibilityPage() {
       snapshot={snapshot}
       readAloudSession={readAloudSession}
       recommendations={recommendations}
+      support={support}
     />
   );
 }

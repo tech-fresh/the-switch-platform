@@ -1,0 +1,56 @@
+<svg width="900" height="1600" viewBox="0 0 900 1600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1600" rx="48" fill="#0F172A"/>
+  <circle cx="450" cy="180" r="220" fill="url(#glow)" opacity="0.7"/>
+
+  <rect x="248" y="92" width="404" height="1416" rx="62" fill="#111827" stroke="#334155" stroke-width="3"/>
+  <rect x="286" y="138" width="328" height="1324" rx="44" fill="#F8FAFC"/>
+  <rect x="404" y="160" width="92" height="10" rx="5" fill="#CBD5E1"/>
+
+  <text x="330" y="238" fill="#78716C" font-family="Avenir Next, Segoe UI, sans-serif" font-size="18" font-weight="700" letter-spacing="2">THE SWITCH</text>
+  <text x="330" y="286" fill="#0F172A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="38" font-weight="700">Study today</text>
+
+  <rect x="494" y="214" width="92" height="88" rx="24" fill="#0F766E"/>
+  <text x="540" y="246" fill="#CCFBF1" font-family="Avenir Next, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="1.2">READINESS</text>
+  <text x="540" y="286" fill="#FFFFFF" font-family="Avenir Next, Segoe UI, sans-serif" font-size="32" font-weight="700" text-anchor="middle">72</text>
+
+  <rect x="314" y="336" width="272" height="236" rx="34" fill="#0C0A09"/>
+  <text x="344" y="384" fill="#A8A29E" font-family="Avenir Next, Segoe UI, sans-serif" font-size="16" font-weight="700" letter-spacing="1.6">RESUME NOW</text>
+  <text x="344" y="430" fill="#FFFFFF" font-family="Avenir Next, Segoe UI, sans-serif" font-size="30" font-weight="700">Maths Paper 1</text>
+  <text x="344" y="468" fill="#D6D3D1" font-family="Avenir Next, Segoe UI, sans-serif" font-size="18">38 mins remaining</text>
+  <rect x="344" y="498" width="212" height="12" rx="6" fill="#292524"/>
+  <rect x="344" y="498" width="134" height="12" rx="6" fill="#2DD4BF"/>
+  <text x="344" y="540" fill="#99F6E4" font-family="Avenir Next, Segoe UI, sans-serif" font-size="18">3 flagged questions ready for review</text>
+
+  <rect x="314" y="610" width="272" height="170" rx="28" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="338" y="652" fill="#78716C" font-family="Avenir Next, Segoe UI, sans-serif" font-size="15" font-weight="700" letter-spacing="1.4">ACCESS SUPPORT</text>
+  <text x="338" y="694" fill="#0F172A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="20">Read aloud and support</text>
+  <text x="338" y="724" fill="#0F172A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="20">snapshots stay synced</text>
+  <text x="338" y="756" fill="#475569" font-family="Avenir Next, Segoe UI, sans-serif" font-size="16">Built to travel across website and future app flows</text>
+
+  <rect x="314" y="806" width="272" height="170" rx="28" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="338" y="848" fill="#78716C" font-family="Avenir Next, Segoe UI, sans-serif" font-size="15" font-weight="700" letter-spacing="1.4">QUICK ROUTES</text>
+  <text x="338" y="890" fill="#0F172A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="20">Dashboard, exams,</text>
+  <text x="338" y="920" fill="#0F172A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="20">Power Grid, saved work</text>
+  <rect x="450" y="934" width="108" height="34" rx="17" fill="#D1FAE5"/>
+  <text x="504" y="956" fill="#065F46" font-family="Avenir Next, Segoe UI, sans-serif" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="1.2">SYNCED</text>
+
+  <rect x="314" y="1006" width="272" height="220" rx="28" fill="#ECFEFF" stroke="#CFFAFE" stroke-width="2"/>
+  <text x="338" y="1048" fill="#0F766E" font-family="Avenir Next, Segoe UI, sans-serif" font-size="15" font-weight="700" letter-spacing="1.4">FUTURE APP DIRECTION</text>
+  <text x="338" y="1090" fill="#0F172A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="22" font-weight="700">Same contracts,</text>
+  <text x="338" y="1122" fill="#0F172A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="22" font-weight="700">smaller screen</text>
+  <text x="338" y="1164" fill="#334155" font-family="Avenir Next, Segoe UI, sans-serif" font-size="18">The mobile shell stays API-first and uses the same modular services as the website MVP.</text>
+
+  <rect x="314" y="1272" width="272" height="74" rx="28" fill="#E2E8F0"/>
+  <rect x="326" y="1284" width="60" height="50" rx="20" fill="#FFFFFF"/>
+  <text x="356" y="1314" fill="#0F172A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="15" font-weight="700" text-anchor="middle">Home</text>
+  <text x="430" y="1314" fill="#475569" font-family="Avenir Next, Segoe UI, sans-serif" font-size="15" font-weight="700">Exams</text>
+  <text x="494" y="1314" fill="#475569" font-family="Avenir Next, Segoe UI, sans-serif" font-size="15" font-weight="700">Grid</text>
+  <text x="548" y="1314" fill="#475569" font-family="Avenir Next, Segoe UI, sans-serif" font-size="15" font-weight="700">Saved</text>
+
+  <defs>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(450 180) rotate(90) scale(220)">
+      <stop stop-color="#2DD4BF"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

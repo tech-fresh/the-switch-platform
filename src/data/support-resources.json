@@ -1,0 +1,72 @@
+[
+  {
+    "resourceId": "childline",
+    "name": "Childline",
+    "category": "mental-health",
+    "description": "Free, confidential support for anyone under 19 in the UK.",
+    "url": "https://www.childline.org.uk/",
+    "providerType": "registered-charity",
+    "contactLabel": "Call 0800 1111",
+    "audience": "young-people",
+    "urgent": true,
+    "lastReviewedAt": "2026-06-06"
+  },
+  {
+    "resourceId": "youngminds",
+    "name": "YoungMinds",
+    "category": "mental-health",
+    "description": "Mental health information and support guides for young people.",
+    "url": "https://www.youngminds.org.uk/young-person/",
+    "providerType": "registered-charity",
+    "audience": "young-people",
+    "urgent": false,
+    "lastReviewedAt": "2026-06-06"
+  },
+  {
+    "resourceId": "shout",
+    "name": "Shout 85258",
+    "category": "text-support",
+    "description": "Free, confidential 24/7 text support service in the UK.",
+    "url": "https://giveusashout.org/get-help/",
+    "providerType": "registered-charity",
+    "contactLabel": "Text SHOUT to 85258",
+    "audience": "young-people",
+    "urgent": true,
+    "lastReviewedAt": "2026-06-06"
+  },
+  {
+    "resourceId": "papyrus",
+    "name": "PAPYRUS HOPELINE247",
+    "category": "urgent-help",
+    "description": "Suicide prevention support for under-35s and anyone worried about them.",
+    "url": "https://www.papyrus-uk.org/papyrus-HOPELINE247/",
+    "providerType": "registered-charity",
+    "contactLabel": "Call 0800 068 4141 or text 88247",
+    "audience": "young-people",
+    "urgent": true,
+    "lastReviewedAt": "2026-06-06"
+  },
+  {
+    "resourceId": "samaritans-young-people",
+    "name": "Samaritans young people resources",
+    "category": "mental-health",
+    "description": "Support information for young people and routes into Samaritans help.",
+    "url": "https://www.samaritans.org/how-we-can-help/schools/young-people/",
+    "providerType": "registered-charity",
+    "contactLabel": "Call 116 123",
+    "audience": "young-people",
+    "urgent": true,
+    "lastReviewedAt": "2026-06-06"
+  },
+  {
+    "resourceId": "nhs-urgent-mental-health",
+    "name": "NHS urgent mental health help",
+    "category": "urgent-help",
+    "description": "NHS guidance on where to get urgent mental health help.",
+    "url": "https://www.nhs.uk/nhs-services/mental-health-services/where-to-get-urgent-help-for-mental-health/",
+    "providerType": "nhs",
+    "audience": "young-people",
+    "urgent": true,
+    "lastReviewedAt": "2026-06-06"
+  }
+]

@@ -13,11 +13,11 @@ const DEFAULT_PREVIEW_SESSION_SECRET = "switch-preview-session-secret";
 export function getAuthRuntimeConfig(): AuthRuntimeConfig {
   const requestedMode = process.env.SWITCH_AUTH_MODE?.trim();
   const mode: AuthRuntimeMode =
-    requestedMode === "oidc"
-      ? "oidc"
+    requestedMode === "preview-cookie"
+      ? "preview-cookie"
       : requestedMode === "external-header"
         ? "external-header"
-        : "preview-cookie";
+        : "oidc";
 
   return {
     mode,
@@ -39,5 +39,7 @@ function getAuthSessionSecret(mode: AuthRuntimeMode): string {
     return DEFAULT_PREVIEW_SESSION_SECRET;
   }
 
-  return DEFAULT_PREVIEW_SESSION_SECRET;
+  throw new Error(
+    `SWITCH_AUTH_SECRET must be configured when SWITCH_AUTH_MODE resolves to ${mode}.`,
+  );
 }

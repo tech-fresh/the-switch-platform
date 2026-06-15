@@ -21,6 +21,7 @@ const store =
         filename: "auth-sessions.json",
         collectionKey: "sessions",
         directory: runtimeConfig.dataDirectory,
+        backupDirectory: runtimeConfig.backupDirectory,
       });
 
 export async function readPersistedAuthSessions(): Promise<PersistedAuthSessionRecord[]> {

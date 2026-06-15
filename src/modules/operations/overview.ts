@@ -21,7 +21,7 @@ export interface BuildOperationsOverviewInput {
   assessmentCount: number;
   examPaperCount: number;
   contentTopicCount: number;
-  cmsBackendMode: "repository" | "read-only";
+  cmsBackendMode: "live" | "read-only";
   queuedReviewCount: number;
   blockedCount: number;
   rollbackCount: number;
@@ -259,9 +259,9 @@ export function buildOperationsOverview(input: BuildOperationsOverviewInput): Op
     {
       itemId: "editorial-recovery",
       label: "Editorial rollback path",
-      status: input.cmsBackendMode === "repository" ? "ready" : "watch",
+      status: input.cmsBackendMode === "live" ? "ready" : "watch",
       detail:
-        input.cmsBackendMode === "repository"
+        input.cmsBackendMode === "live"
           ? `${input.rollbackCount} rollback event${input.rollbackCount === 1 ? "" : "s"} recorded so far in the workflow history.`
           : "Rollback intent is visible, but the current backend mode still limits full editorial recovery operations.",
     },

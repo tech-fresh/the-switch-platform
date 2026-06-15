@@ -30,7 +30,14 @@ function getReleaseCheckClasses(status: "complete" | "in-progress" | "watch"): s
   return "border-stone-300 bg-stone-50 text-stone-800";
 }
 
-function getPersistenceClasses(isPrototypePersistence: boolean): string {
+function getPersistenceClasses(
+  driver: "local-json" | "memory",
+  isPrototypePersistence: boolean,
+): string {
+  if (driver === "memory") {
+    return "border-rose-300 bg-rose-50 text-rose-950";
+  }
+
   return isPrototypePersistence
     ? "border-amber-300 bg-amber-50 text-amber-950"
     : "border-emerald-300 bg-emerald-50 text-emerald-950";
@@ -50,13 +57,13 @@ function getOperationsClasses(status: "healthy" | "warning" | "critical"): strin
 
 export default async function AdminPage() {
   await requireRequestSessionRoles(["editor", "admin"]);
-  const [cms, papers, operations, governance] = await Promise.all([
+  const [cms, papers, operations, governance, persistence] = await Promise.all([
     getCmsOverviewApiData(),
     getPastPaperCatalogApiData(),
     getOperationsOverview(),
     Promise.resolve(getLaunchGovernanceOverview()),
+    getPersistenceRuntimeSummary(),
   ]);
-  const persistence = getPersistenceRuntimeSummary();
   const cmsRuntime = getCmsRuntimeConfig();
 
   return (
@@ -69,12 +76,12 @@ export default async function AdminPage() {
             </p>
             <div className="space-y-3">
               <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Planned content and past-paper update architecture for the full product.
+                Live content and past-paper operating path for the current product runtime.
               </h1>
               <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                This route is still an MVP admin placeholder, but it now exposes the real
-                architecture for how the website will receive updated learning content and where
-                past-paper metadata and future links will come from.
+                This route now exposes the real operating path for reviewed learning content and
+                curated past-paper updates, including where live workflow control ends and future
+                source-provider replacement can begin safely.
               </p>
             </div>
           </div>
@@ -88,22 +95,34 @@ export default async function AdminPage() {
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Paper catalog</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{papers.papers.length}</p>
-              <p className="mt-1 text-sm text-stone-600">{papers.metadataOnlyCount} metadata-only so far</p>
+              <p className="mt-1 text-sm text-stone-600">{papers.cataloguedCount} catalogued entries waiting on direct source links</p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Editorial queue</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{cms.editorialWorkflow.length}</p>
               <p className="mt-1 text-sm text-stone-600">{cms.editorialWorkflowSummary.queuedReviewCount} waiting for review</p>
             </div>
-            <div className={`border p-4 ${getPersistenceClasses(persistence.isPrototypePersistence)}`}>
+            <div className={`border p-4 ${getPersistenceClasses(persistence.driver, persistence.isPrototypePersistence)}`}>
               <p className="text-xs uppercase tracking-[0.2em] opacity-75">Persistence driver</p>
               <p className="mt-2 text-lg font-semibold">
                 {persistence.driver}
               </p>
               <p className="mt-1 text-sm opacity-90">
-                {persistence.isPrototypePersistence
-                  ? "Prototype storage is still active. Launch work still needs a shared production-backed data layer."
+                {persistence.driver === "memory"
+                  ? "Memory persistence is active, so student data would reset on restart."
+                  : persistence.isPrototypePersistence
+                  ? `Backup or restore coverage is still incomplete for ${persistence.dataDirectory}.`
                   : `Runtime directory: ${persistence.dataDirectory}`}
+              </p>
+              <p className="mt-1 text-sm opacity-90">
+                {persistence.backupDirectory
+                  ? `Backup directory: ${persistence.backupDirectory}`
+                  : "Backups are unavailable while memory persistence is active."}
+              </p>
+              <p className="mt-1 text-sm opacity-90">
+                {persistence.recoveryCheckedAt
+                  ? `Recovery checks: ${persistence.recoveryReady ? "ready" : `${persistence.recoveryIssueCount} issue${persistence.recoveryIssueCount === 1 ? "" : "s"}`} at ${persistence.recoveryCheckedAt.slice(0, 16).replace("T", " ")}`
+                  : "Recovery checks have not run yet."}
               </p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
@@ -112,7 +131,7 @@ export default async function AdminPage() {
               <p className="mt-1 text-sm text-stone-600">
                 {cmsRuntime.backendMode === "read-only"
                   ? "Editorial writes are intentionally blocked until a writable production adapter is connected."
-                  : "Editorial workflow is running through the current repository-backed backend adapter."}
+                  : "Editorial workflow is running through the live writable backend path for this runtime."}
               </p>
             </div>
           </div>
@@ -487,7 +506,7 @@ export default async function AdminPage() {
                   Content update architecture
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
-                  How the website will receive updated learning content
+                  How the website now receives updated learning content
                 </h2>
               </div>
               <div className="mt-5 grid gap-4 lg:grid-cols-2">
@@ -572,7 +591,7 @@ export default async function AdminPage() {
                   Past paper sourcing
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
-                  Where updated past papers will come from
+                  Where updated past papers now move through the platform
                 </h2>
               </div>
               <div className="mt-5 grid gap-4 lg:grid-cols-2">
@@ -599,8 +618,9 @@ export default async function AdminPage() {
               </h2>
               <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
                 <li>Student content still comes from seeded module data inside the repo.</li>
-                <li>Past papers currently have architecture and metadata, not live external ingestion.</li>
-                <li>The provider boundaries are now explicit, so we can add real sources without rewriting routes.</li>
+                <li>Reviewed content updates now move through the live editorial workflow before student visibility changes.</li>
+                <li>Past papers now use a real catalog path with direct-link entries and separately catalogued follow-up items.</li>
+                <li>The provider boundaries are explicit, so source replacement can happen without rewriting routes.</li>
               </ul>
             </section>
 
@@ -609,8 +629,8 @@ export default async function AdminPage() {
                 What this route proves
               </h2>
               <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
-                <li>Content update architecture now exists in code, not only in planning notes.</li>
-                <li>Past paper sourcing has provider boundaries before external integrations are added.</li>
+                <li>Content updates now follow an operating path in code, not only planning notes.</li>
+                <li>Past paper sourcing now has an active catalog path plus provider boundaries for controlled expansion.</li>
                 <li>Website and future app clients can later consume the same CMS and paper catalogs through API routes.</li>
               </ul>
             </section>

@@ -1,6 +1,6 @@
 export type PastPaperSourceType = "seed-catalog" | "board-source" | "licensed-storage";
 
-export type PastPaperAvailability = "available" | "metadata-only" | "planned";
+export type PastPaperAvailability = "available" | "catalogued";
 
 export interface PastPaper {
   paperId: string;
@@ -31,6 +31,6 @@ export interface PastPaperCatalogOverview {
   providers: PastPaperSourceProvider[];
   papers: PastPaper[];
   availableCount: number;
-  metadataOnlyCount: number;
+  cataloguedCount: number;
   nextUpdatePlan: string;
 }

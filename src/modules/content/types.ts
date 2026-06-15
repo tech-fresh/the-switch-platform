@@ -17,7 +17,7 @@ export type ContentReviewStatus =
   | "fact-check-needed"
   | "reviewed";
 
-export type ContentSourceModel = "seed-json" | "cms-adapter" | "future-editorial";
+export type ContentSourceModel = "seed-json" | "cms-adapter" | "editorial-workflow";
 
 export interface ContentSourceAttribution {
   providerId: string;

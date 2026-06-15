@@ -5,6 +5,7 @@ export type PersistenceDriver = "local-json" | "memory";
 export interface PersistenceRuntimeConfig {
   driver: PersistenceDriver;
   dataDirectory: string;
+  backupDirectory: string | null;
   isPrototypePersistence: boolean;
 }
 
@@ -18,6 +19,8 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
   const dataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim()
     ? path.resolve(process.env.SWITCH_DATA_DIRECTORY)
     : path.join(process.cwd(), DEFAULT_DATA_DIRECTORY_NAME);
+  const backupDirectory =
+    driver === "memory" ? null : path.join(dataDirectory, "backups");
 
   if (driver === "memory" && !memoryDriverWarningShown) {
     memoryDriverWarningShown = true;
@@ -29,6 +32,7 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
   return {
     driver,
     dataDirectory,
+    backupDirectory,
     isPrototypePersistence: driver === "local-json",
   };
 }

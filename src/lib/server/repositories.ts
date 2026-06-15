@@ -1,3 +1,4 @@
+import { getPersistenceRecoveryStatus } from "@/lib/persistence/recovery";
 import type { PersistedAuthSessionRecord } from "@/lib/persistence/auth-session-store";
 import { readPersistedAuthSessions, writePersistedAuthSessions } from "@/lib/persistence/auth-session-store";
 import { readCmsWorkflowRecords, writeCmsWorkflowRecords } from "@/lib/persistence/cms-workflow-store";
@@ -25,7 +26,11 @@ export interface CmsWorkflowRepository {
 export interface PersistenceRuntimeSummary {
   driver: ReturnType<typeof getPersistenceRuntimeConfig>["driver"];
   dataDirectory: string;
+  backupDirectory: string | null;
   isPrototypePersistence: boolean;
+  recoveryReady: boolean;
+  recoveryCheckedAt: string | null;
+  recoveryIssueCount: number;
 }
 
 const defaultSavedProgressRepository: SavedProgressRepository = {
@@ -125,13 +130,18 @@ export function getDefaultCmsWorkflowRepository(): CmsWorkflowRepository {
   return defaultCmsWorkflowRepository;
 }
 
-export function getPersistenceRuntimeSummary(): PersistenceRuntimeSummary {
+export async function getPersistenceRuntimeSummary(): Promise<PersistenceRuntimeSummary> {
   const config = getPersistenceRuntimeConfig();
+  const recovery = await getPersistenceRecoveryStatus(config);
 
   return {
     driver: config.driver,
     dataDirectory: config.dataDirectory,
-    isPrototypePersistence: config.isPrototypePersistence,
+    backupDirectory: config.backupDirectory,
+    isPrototypePersistence: config.driver === "memory" ? false : !recovery.isReady,
+    recoveryReady: recovery.isReady,
+    recoveryCheckedAt: recovery.checkedAt,
+    recoveryIssueCount: recovery.issueCount,
   };
 }
 

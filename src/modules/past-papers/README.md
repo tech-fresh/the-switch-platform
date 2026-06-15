@@ -6,5 +6,5 @@ Current foundations in this module:
 
 - paper source provider definitions
 - past paper metadata catalog
-- availability state for metadata-only versus future linked papers
+- availability state for catalogued entries versus direct linked papers
 - framework-neutral contract for catalog delivery

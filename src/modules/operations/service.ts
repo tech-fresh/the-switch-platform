@@ -18,7 +18,7 @@ export async function getOperationsOverview(): Promise<OperationsOverview> {
     getPastPaperCatalogOverview(),
   ]);
   const authRuntime = getAuthRuntimeConfig();
-  const persistence = getPersistenceRuntimeSummary();
+  const persistence = await getPersistenceRuntimeSummary();
   const cmsRuntime = getCmsRuntimeConfig();
   const assessments = getMockTimedAssessments();
   const contentTopics = listSeedContentTopics();

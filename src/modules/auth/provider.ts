@@ -93,10 +93,11 @@ export async function listSignInOptions(): Promise<SignInOption[]> {
 
 export async function resolvePreviewUserForProvider(
   provider: AuthProvider,
-  userId = "student-demo",
+  userId?: string,
 ): Promise<ResolvedAuthSessionUser | null> {
   const providerDefaultUserId = provider === "google" ? "editor-demo" : "student-demo";
-  const user = authUsers[userId] ?? authUsers[providerDefaultUserId];
+  const preferredUserId = userId ?? providerDefaultUserId;
+  const user = authUsers[preferredUserId] ?? authUsers[providerDefaultUserId];
 
   if (!user) {
     return null;

@@ -26,7 +26,7 @@ function getAuthErrorMessage(authError: string | undefined): string | null {
   }
 
   if (authError === "provider-not-configured") {
-    return "The selected sign-in provider is not configured in this runtime yet.";
+    return "The selected sign-in provider is not configured in this runtime yet. Add the live provider settings before using this sign-in path.";
   }
 
   if (authError === "token-exchange-failed" || authError === "user-info-failed") {
@@ -174,9 +174,14 @@ export default async function AccountPage({
                       </div>
                     ))}
                   </div>
+                  {account.signInOptions.length === 0 ? (
+                    <p className="mt-4 text-sm leading-6 text-amber-800">
+                      Production auth is active, but no live sign-in providers are configured in this runtime yet.
+                    </p>
+                  ) : null}
                   {!account.isAuthenticated ? (
                     <p className="mt-4 text-sm leading-6 text-stone-600">
-                      Production auth can now redirect through configured providers, while preview mode still supports local demo sign-in for development.
+                      Production auth is now the primary route. Preview sign-in remains an explicit development-only mode.
                     </p>
                   ) : null}
                 </div>

@@ -13,19 +13,19 @@
           "quiz prompts",
           "generated image prompts"
         ],
-        "updateMode": "manual MVP authoring",
-        "nextStep": "Keep owned MVP content in seed form while curriculum coverage and editorial gates are still stabilising."
+        "updateMode": "reviewed seed authoring",
+        "nextStep": "Keep owned content current in the seed catalog while the live editorial workflow controls review, fact-check, and publish decisions."
       },
       {
-        "sourceId": "future-editorial-pipeline",
-        "name": "Future Editorial Pipeline",
+        "sourceId": "live-editorial-pipeline",
+        "name": "Live Editorial Pipeline",
         "handles": [
           "reviewed content updates",
           "board-specific variants",
           "Year 10 and Year 11 refreshes"
         ],
-        "updateMode": "planned editorial workflow",
-        "nextStep": "Connect reviewed content generation to CMS tooling without bypassing source attribution or fact-check gates."
+        "updateMode": "live editorial workflow",
+        "nextStep": "Move reviewed content updates through CMS workflow controls without bypassing source attribution or fact-check gates."
       }
     ],
     "supply": [
@@ -44,12 +44,12 @@
         "sourceId": "cms-provider-boundary",
         "name": "CMS Provider Boundary",
         "handles": [
-          "future admin editing",
+          "admin editing",
           "provider sync visibility",
           "internal publishing controls"
         ],
-        "updateMode": "planned provider integration",
-        "nextStep": "Attach real CMS adapters only when they respect the existing review and verification workflow."
+        "updateMode": "live provider boundary",
+        "nextStep": "Keep provider integrations behind this boundary so live updates still respect review and verification workflow checks."
       }
     ],
     "updates": [
@@ -72,8 +72,8 @@
           "board release checks",
           "licensed source planning"
         ],
-        "updateMode": "manual during MVP",
-        "nextStep": "Feed future exam paper updates through provider adapters rather than hard-coding them into page routes."
+        "updateMode": "catalog and provider updates",
+        "nextStep": "Feed exam paper updates through the paper catalog and provider adapters rather than hard-coding them into page routes."
       }
     ],
     "visibilityRule": "Only reviewed, source-attributed, and fact-check-verified content can become student visible."

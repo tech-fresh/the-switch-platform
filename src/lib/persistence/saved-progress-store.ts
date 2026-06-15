@@ -12,6 +12,7 @@ const store =
         filename: "saved-progress.json",
         collectionKey: "records",
         directory: runtimeConfig.dataDirectory,
+        backupDirectory: runtimeConfig.backupDirectory,
       });
 
 export async function readSavedProgressRecords(): Promise<SavedProgressRecord[]> {

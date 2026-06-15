@@ -6,7 +6,7 @@ Current foundations in this module:
 
 - master seed content catalog for all current MVP topics
 - repository interface for subjects, topics, revision content, and quiz prompts
-- review and publication metadata fields for future editorial workflow
+- review and publication metadata fields for the live editorial workflow
 - framework-neutral contract for content catalog delivery
 - student-visible catalog filtering so draft or unreviewed topics do not leak into client delivery
 - editorial audit output for review status, source attribution, and blocked-topic decisions
@@ -15,7 +15,7 @@ Current foundations in this module:
 - Year 10 end-of-year and GCSE-preparation context at subject and topic level
 - Year 10, Year 11, GCSE, and iGCSE curriculum coverage notes at topic and subject level
 - generated study visual metadata that follows the same review and fact-check expectations as other content
-- explicit content generation, supply, and update paths inside the catalog so future CMS and provider work has a stable home
+- explicit content generation, supply, and update paths inside the catalog so CMS and provider replacement work has a stable home
 
 Current content quality principle:
 

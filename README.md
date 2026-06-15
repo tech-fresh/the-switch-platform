@@ -2128,18 +2128,41 @@ Consult this section last.
 
 This is the real final roadmap to full completion, with the code, architecture, operational setup, and launch environment all working as a true production system instead of a strong prototype.
 
+### Final launch picture
+
+```mermaid
+flowchart LR
+    A["Done now in this repo"] --> B["Real sign-in path is the default"]
+    A --> C["Unsafe live secret fallback is gone"]
+    A --> D["Editorial work is writable"]
+    A --> E["Content update path is real enough to operate"]
+    A --> F["Checks are cleaner and quieter"]
+    A --> G["Launch checking is automated"]
+    H["Still to finish"] --> I["Move student data onto the intended live data setup"]
+    H --> J["Prove the live environment outside local development"]
+    H --> K["Run the final live route walk-through"]
+    H --> L["Finish the final trust and release sign-off"]
+```
+
+### What is already done in the codebase
+
+1. Done. Sign-in no longer defaults to preview mode.
+2. Done. Live sign-in no longer falls back to the preview secret.
+3. Not done yet. Student data is still using the local file-based setup, so the intended live data setup still needs to replace it.
+4. Done. Editorial work now runs through a writable live workflow in this runtime.
+5. Done. The content and paper update path is now described and handled as a real operating path instead of only a placeholder plan.
+6. Done. Verification is cleaner now, with the noisy runtime warning issue cleared up.
+7. Done. Launch checking now has stronger automation instead of relying only on manual command runs.
+8. Not done yet. The full live environment still needs to be confirmed outside local development.
+9. Not done yet. The final live route walk-through still needs to be run in the real environment.
+10. Not done yet. The final privacy, safeguarding, alerts, ownership, and release sign-off still need to be confirmed in the live environment.
+
 ### What still must be finished before calling this fully launched
 
-1. Replace preview sign-in defaults with the real production auth setup so launch does not depend on preview-cookie mode.
-2. Remove the fallback preview auth secret from non-preview modes so a misconfigured live environment cannot rely on a predictable signing secret.
-3. Replace local prototype-style persistence with the intended production data architecture, including backup, restore, and recovery checks.
-4. Replace planned or placeholder editorial infrastructure with the intended writable live content workflow so content operations are fully real, not just modeled.
-5. Replace planned content-provider and paper-ingestion placeholders with the intended live update path where launch content is actually managed.
-6. Clean up the test runtime warnings so verification is quiet, trustworthy, and easier to monitor during release work.
-7. Add stronger launch automation: linting, route smoke checks, end-to-end checks, and release-ready scripts.
-8. Confirm the production environment, live configuration, and release process work correctly outside local development.
-9. Run the final live-environment smoke pass across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
-10. Confirm privacy, retention, safeguarding, support-signposting, alerts, incident ownership, and final release approval in the live environment.
+1. Move student data onto the intended live data setup, with backup, restore, and recovery checks proved in the real operating environment.
+2. Confirm the live environment, live settings, and release flow work correctly outside local development.
+3. Run the final live route check across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
+4. Confirm privacy, retention, safeguarding, alerts, ownership, and final release sign-off in the live environment.
 
 ### Full completion checklist
 
@@ -2156,16 +2179,14 @@ For this project to be honestly described as fully complete, all of the followin
 9. The live environment passes full route smoke testing.
 10. Privacy, retention, safeguarding, support, and incident ownership are confirmed in the real release environment.
 
+Current closeout status: 6 of 10 final launch items are done in the codebase. 4 of 10 still need live-environment completion.
+
 ### Final completion sequence
 
-1. Real auth configuration
-2. Production data configuration
-3. Editorial and content operations completion
-4. Security cleanup
-5. Verification cleanup
-6. Launch automation
-7. Live environment validation
-8. Final sign-off
+1. Live student data setup
+2. Live environment confirmation
+3. Final live route check
+4. Final trust and release sign-off
 
 ### Why this section matters
 
@@ -2840,7 +2861,8 @@ Current roadmap snapshot:
 
 - MVP Quality Checklist: 6 of 6 complete for the current MVP pass (100%)
 - Phase 2 Roadmap: 7 of 7 completed (100%)
-- Main priority picture across the MVP checklist plus phase 2 roadmap: 13 of 13 major items completed (100%)
+- Main priority picture across the MVP checklist plus phase 2 roadmap: 13 of 13 major items completed for those earlier phases
+- Final launch closeout roadmap: 6 of 10 items completed in the codebase, 4 of 10 still require live-environment completion
 
 ### 1. Exam Engine hardening (Completed)
 
@@ -3293,8 +3315,8 @@ Current completion snapshot:
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
 - Phase 3: planned, 0 of 8 items completed
-- Final Phase: structurally complete, but final launch closeout work still remains
-- Overall project completion estimate: about 88% complete toward true full production launch
+- Final Phase: partly complete, with 6 of 10 closeout items now done in the codebase
+- Overall project completion estimate: about 92% complete toward true full production launch
 
 In simple terms: the product foundation is strong, but it is still short of a true full-production finish until the closeout work above is done.
 

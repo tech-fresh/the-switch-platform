@@ -12,6 +12,7 @@ const store =
         filename: "access-profiles.json",
         collectionKey: "profiles",
         directory: runtimeConfig.dataDirectory,
+        backupDirectory: runtimeConfig.backupDirectory,
       });
 
 export async function readAccessProfiles(): Promise<StudentAccessProfile[]> {

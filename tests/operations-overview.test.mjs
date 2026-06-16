@@ -41,7 +41,7 @@ test("operations overview can report a healthier launch picture", async () => {
     authMode: "oidc",
     allowRedirectSignIn: true,
     activeAuthSessions: 8,
-    persistenceDriver: "local-json",
+    persistenceDriver: "sqlite",
     isPrototypePersistence: false,
     dataDirectory: "/srv/switch-data",
     totalSavedProgressRecords: 5,
@@ -58,6 +58,10 @@ test("operations overview can report a healthier launch picture", async () => {
 
   assert.equal(overview.overallStatus, "healthy");
   assert.equal(overview.alertCount, 0);
+  assert.equal(
+    overview.domains.find((domain) => domain.domainId === "persistence")?.headline,
+    "Persistence runtime looks launch-ready.",
+  );
   assert.equal(
     overview.recoveryReadiness.every((item) => item.status === "ready"),
     true,

@@ -115,3 +115,62 @@ test("persistence recovery status warns when backup files drift from active data
     assert.equal(savedProgressFile?.issue, "backup-drift");
   });
 });
+
+test("sqlite store mirrors writes into the backup database", async () => {
+  await withTempDir(async (tempDir) => {
+    const dataDirectory = path.join(tempDir, "data");
+    const backupDirectory = path.join(dataDirectory, "backups");
+    const databasePath = path.join(dataDirectory, "switch-live.sqlite");
+    const backupDatabasePath = path.join(backupDirectory, "switch-live.sqlite");
+    const { createSqliteCollectionStore } = await import(
+      `../src/lib/persistence/sqlite-store.ts?test=${Date.now()}-sqlite-backup-write`
+    );
+    const store = createSqliteCollectionStore({
+      collectionKey: "saved-progress.records",
+      databasePath,
+      backupDatabasePath,
+    });
+
+    await store.write([{ id: "record-sqlite-1", status: "paused" }]);
+
+    const activeBytes = await readFile(databasePath);
+    const backupBytes = await readFile(backupDatabasePath);
+
+    assert.equal(activeBytes.equals(backupBytes), true);
+  });
+});
+
+test("sqlite persistence recovery status is ready when active and backup databases match", async () => {
+  await withTempDir(async (tempDir) => {
+    const dataDirectory = path.join(tempDir, "data");
+    const backupDirectory = path.join(dataDirectory, "backups");
+    const databasePath = path.join(dataDirectory, "switch-live.sqlite");
+    const backupDatabasePath = path.join(backupDirectory, "switch-live.sqlite");
+    const { createSqliteCollectionStore } = await import(
+      `../src/lib/persistence/sqlite-store.ts?test=${Date.now()}-sqlite-recovery-ready-store`
+    );
+    const { getPersistenceRecoveryStatus } = await import(
+      `../src/lib/persistence/recovery.ts?test=${Date.now()}-sqlite-recovery-ready`
+    );
+    const store = createSqliteCollectionStore({
+      collectionKey: "saved-progress.records",
+      databasePath,
+      backupDatabasePath,
+    });
+
+    await store.write([{ id: "record-sqlite-2", status: "submitted" }]);
+
+    const status = await getPersistenceRecoveryStatus({
+      driver: "sqlite",
+      dataDirectory,
+      backupDirectory,
+      primaryStorePath: databasePath,
+      backupStorePath: backupDatabasePath,
+      isPrototypePersistence: false,
+    });
+
+    assert.equal(status.isReady, true);
+    assert.equal(status.issueCount, 0);
+    assert.equal(status.files[0]?.issue, null);
+  });
+});

@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 
 import type { PersistenceRuntimeConfig } from "./runtime.ts";
 import { getPersistenceRuntimeConfig } from "./runtime.ts";
@@ -72,6 +73,23 @@ export async function getPersistenceRecoveryStatus(
     };
   }
 
+  if (config.driver === "sqlite" && config.backupStorePath) {
+    const sqliteFile = await inspectSqliteStore(
+      config.primaryStorePath,
+      config.backupStorePath,
+    );
+    const issueCount = sqliteFile.issue === null ? 0 : 1;
+
+    return {
+      checkedAt,
+      dataDirectory: config.dataDirectory,
+      backupDirectory: config.backupDirectory,
+      isReady: issueCount === 0,
+      issueCount,
+      files: [sqliteFile],
+    };
+  }
+
   const files = await Promise.all(
     TRACKED_FILES.map((trackedFile) =>
       inspectTrackedFile(config.dataDirectory, config.backupDirectory as string, trackedFile),
@@ -87,6 +105,124 @@ export async function getPersistenceRecoveryStatus(
     issueCount,
     files,
   };
+}
+
+async function inspectSqliteStore(
+  activePath: string,
+  backupPath: string,
+): Promise<PersistenceRecoveryFileStatus> {
+  const [active, backup] = await Promise.all([
+    readSqliteStore(activePath),
+    readSqliteStore(backupPath),
+  ]);
+
+  if (active.invalid) {
+    return buildRecoveryFileStatus({
+      trackedFile: {
+        filename: path.basename(activePath),
+        collectionKey: "sqlite",
+        label: "Shared SQLite store",
+      },
+      activePath,
+      backupPath,
+      recordCount: 0,
+      activeExists: active.exists,
+      backupExists: backup.exists,
+      matchesBackup: false,
+      restoreCheckPassed: false,
+      issue: "invalid-active",
+    });
+  }
+
+  if (backup.invalid) {
+    return buildRecoveryFileStatus({
+      trackedFile: {
+        filename: path.basename(activePath),
+        collectionKey: "sqlite",
+        label: "Shared SQLite store",
+      },
+      activePath,
+      backupPath,
+      recordCount: active.recordCount,
+      activeExists: active.exists,
+      backupExists: backup.exists,
+      matchesBackup: false,
+      restoreCheckPassed: false,
+      issue: "invalid-backup",
+    });
+  }
+
+  if (active.exists && !backup.exists) {
+    return buildRecoveryFileStatus({
+      trackedFile: {
+        filename: path.basename(activePath),
+        collectionKey: "sqlite",
+        label: "Shared SQLite store",
+      },
+      activePath,
+      backupPath,
+      recordCount: active.recordCount,
+      activeExists: true,
+      backupExists: false,
+      matchesBackup: false,
+      restoreCheckPassed: false,
+      issue: "missing-backup",
+    });
+  }
+
+  if (!active.exists && backup.exists) {
+    return buildRecoveryFileStatus({
+      trackedFile: {
+        filename: path.basename(activePath),
+        collectionKey: "sqlite",
+        label: "Shared SQLite store",
+      },
+      activePath,
+      backupPath,
+      recordCount: backup.recordCount,
+      activeExists: false,
+      backupExists: true,
+      matchesBackup: false,
+      restoreCheckPassed: false,
+      issue: "orphaned-backup",
+    });
+  }
+
+  if (!active.exists && !backup.exists) {
+    return buildRecoveryFileStatus({
+      trackedFile: {
+        filename: path.basename(activePath),
+        collectionKey: "sqlite",
+        label: "Shared SQLite store",
+      },
+      activePath,
+      backupPath,
+      recordCount: 0,
+      activeExists: false,
+      backupExists: false,
+      matchesBackup: true,
+      restoreCheckPassed: true,
+      issue: null,
+    });
+  }
+
+  const matchesBackup = active.raw.equals(backup.raw);
+
+  return buildRecoveryFileStatus({
+    trackedFile: {
+      filename: path.basename(activePath),
+      collectionKey: "sqlite",
+      label: "Shared SQLite store",
+    },
+    activePath,
+    backupPath,
+    recordCount: active.recordCount,
+    activeExists: true,
+    backupExists: true,
+    matchesBackup,
+    restoreCheckPassed: true,
+    issue: matchesBackup ? null : "backup-drift",
+  });
 }
 
 async function inspectTrackedFile(
@@ -242,6 +378,46 @@ async function readCollectionFile(
       exists: true,
       invalid: true,
       records: [],
+    };
+  }
+}
+
+async function readSqliteStore(
+  filePath: string,
+): Promise<{ exists: boolean; invalid: boolean; recordCount: number; raw: Buffer }> {
+  try {
+    const raw = await readFile(filePath);
+    const database = new DatabaseSync(filePath, { readOnly: true });
+
+    try {
+      const row = database
+        .prepare("SELECT COALESCE(SUM(json_array_length(payload)), 0) AS recordCount FROM collection_store")
+        .get() as { recordCount?: number } | undefined;
+
+      return {
+        exists: true,
+        invalid: false,
+        recordCount: Number(row?.recordCount ?? 0),
+        raw,
+      };
+    } finally {
+      database.close();
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return {
+        exists: false,
+        invalid: false,
+        recordCount: 0,
+        raw: Buffer.alloc(0),
+      };
+    }
+
+    return {
+      exists: true,
+      invalid: true,
+      recordCount: 0,
+      raw: Buffer.alloc(0),
     };
   }
 }

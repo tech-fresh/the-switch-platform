@@ -2179,7 +2179,7 @@ For this project to be honestly described as fully complete, all of the followin
 9. The live environment passes full route smoke testing.
 10. Privacy, retention, safeguarding, support, and incident ownership are confirmed in the real release environment.
 
-Current closeout status: 6 of 10 final launch items are done in the codebase. 4 of 10 still need live-environment completion.
+Current closeout status: 7 of 10 final launch items are done in the codebase. 3 of 10 still need live-environment completion.
 
 ### Final completion sequence
 
@@ -2193,6 +2193,22 @@ Current closeout status: 6 of 10 final launch items are done in the codebase. 4 
 The product build is strong, but it should not be described as fully launch-complete until this closeout list is finished.
 
 This is the final section that should be consulted before anyone says the platform is fully complete or fully live.
+
+### Final Path Mark 1
+
+This is the main section to refer back to for the true final path to full completion.
+
+It covers everything still needed across:
+
+- code
+- architecture
+- data
+- sign-in
+- editorial workflow
+- content operations
+- release checks
+- live environment proof
+- trust, ownership, and final launch approval
 
 ### Full launch audit in simple language
 
@@ -2210,16 +2226,16 @@ What the audit says overall:
 Current plain-English completion picture:
 
 - earlier quality and roadmap phases are complete for the work they were meant to cover
-- the final launch closeout list is 6 of 10 complete in the codebase
-- the true full-launch picture is closer to about 85% to 88% complete
+- the final launch closeout list is 7 of 10 complete in the codebase
+- the true full-launch picture is closer to about 88% to 90% complete
 - the remaining gap is mostly about real live setup, real proof, real operating discipline, and final launch approval
 
 The four biggest things still stopping a true 100% launch are:
 
-1. Student data is still tied to the local file-based setup instead of the intended shared live setup.
-2. The strongest automated checks still prove the local preview sign-in path more than the real live sign-in path.
-3. The content and paper update path is better, but parts of the longer-term source path are still described as future or optional.
-4. The final launch approval picture is visible, but it still needs more real evidence from the live environment.
+1. The live student-data path is now implemented in code, but it still needs to be proven in the real deployed environment with real backup and recovery evidence.
+2. The repo now has live-proof automation, but the deployed sign-in path still needs a real run with live credentials, callbacks, and protected-route proof.
+3. The final live route walkthrough path now exists in code, but the real target environment still needs the recorded pass.
+4. The final launch approval picture is visible and recordable, but it still needs named real-world approvals and evidence from the live environment.
 
 ### Full completion plan
 
@@ -2384,6 +2400,171 @@ This project should only be called 100% complete when all of the statements belo
 
 Until all of those are true together, the project should be described as near-launch, not fully complete.
 
+### Final phase for actual completion
+
+This is part of Final Path Mark 1 and should be treated as the final completion standard for the whole project.
+
+This is the last full phase required before the project can honestly be called fully complete, fully live, and free of prototype foundations.
+
+In simple terms, this phase means:
+
+- no preview-only launch path
+- no local-only student-data dependency
+- no placeholder content operating path
+- no guessed sign-off
+- no gap between what the README says and what the live platform really does
+
+#### The final-phase goal
+
+The goal of this last phase is to make the whole platform work as one real production system.
+
+That means:
+
+- the code is real
+- the architecture is real
+- the data setup is real
+- the sign-in path is real
+- the editorial path is real
+- the release checks are real
+- the launch approval is real
+
+#### The final-phase picture
+
+```mermaid
+flowchart TD
+    A["Current strong near-launch platform"] --> B["Real live sign-in"]
+    B --> C["Real shared student-data setup"]
+    C --> D["Real editorial and content operating path"]
+    D --> E["Real live environment proof"]
+    E --> F["Real final route walk-through"]
+    F --> G["Real trust and release approval"]
+    G --> H["100% launch-ready platform with no prototype foundations"]
+```
+
+#### The full final-phase checklist
+
+##### 1. Finish the real sign-in path
+
+This must be true:
+
+- the live sign-in route is the one used for real launch
+- preview sign-in is kept only for local development and rehearsal
+- student, editor, and admin access all work correctly in the live environment
+- sign-in, sign-out, and protected pages are proven in the real release setup
+
+##### 2. Finish the real student-data path
+
+This must be true:
+
+- saved progress, results, account settings, sessions, and editorial records no longer depend on local machine files
+- the live data location is shared, durable, and intended for real use
+- restart, backup, restore, and recovery checks are proven
+- learner continuity survives across sessions, devices, and returns
+
+##### 3. Finish the real content and editorial path
+
+This must be true:
+
+- review, approval, publish, block, correction, and rollback all happen through one real operating path
+- content and paper updates are no longer described as future or optional placeholders
+- trust evidence stays attached to every publish decision
+- blocked or disputed content can be safely held back without confusing learners
+
+##### 4. Finish the real architecture picture
+
+This must be true:
+
+- the routes, services, data layer, sign-in boundary, and editorial controls all match the architecture described in the README
+- the product is not quietly relying on prototype-only assumptions under the surface
+- the live architecture is simple enough to explain clearly and strong enough to operate safely
+
+##### 5. Finish the real launch evidence
+
+This must be true:
+
+- launch checks show what was proved locally and what was proved in the live environment
+- the strongest checks no longer depend on preview-only behaviour
+- the final route walk-through is recorded with the environment, date, and result
+- the release story is backed by proof, not confidence alone
+
+##### 6. Finish the real operating ownership
+
+This must be true:
+
+- privacy, safeguarding, support boundaries, data recovery, alerts, and incidents all have named owners
+- the final release approval is recorded clearly
+- it is clear who can approve launch, stop launch, and respond after launch
+
+#### What 100% launch-ready means here
+
+For this project, 100% launch-ready means all of the following are true at the same time:
+
+1. The live platform uses the intended real sign-in path.
+2. The live platform uses the intended real shared student-data setup.
+3. The live platform uses the intended real editorial and content operating path.
+4. The strongest release checks prove the real live setup, not only the local preview setup.
+5. The full learner and admin journey has been checked in the real environment.
+6. The launch record includes real evidence, real owners, and real release approval.
+7. The README, the admin launch view, and the live runtime all tell the same story.
+
+If even one of those is still missing, the project is not yet at true 100% completion.
+
+#### Final launch decision rule
+
+The project should only be called fully complete when this final phase is finished in full.
+
+Until then, the honest description is:
+
+- strong
+- advanced
+- near-launch
+- but not yet fully complete
+- and not yet fully free of prototype foundations
+
+### Final Path Mark 2
+
+This section names the final live-completion path that follows `Final Path Mark 1`.
+
+Use it when the codebase closeout is already in place and the remaining work is about proving, recording, and approving the real live platform.
+
+#### What Final Path Mark 2 means
+
+- `Final Path Mark 1` = the repo, scripts, governance surfaces, and closeout structure are in place
+- `Final Path Mark 2` = the real deployed environment has been proven end to end and the final launch approval has been recorded
+
+`Final Path Mark 2` should only be marked complete when every item below is complete in the real target environment.
+
+#### Final Path Mark 2 completion list
+
+1. Run the real deployed sign-in path with the intended provider, callback, session, sign-out, and protected-route proof.
+2. Prove the live student-data path for saved progress, results, account-linked settings, recovery, backup, and restore.
+3. Confirm the live editorial and content workflow is the real operating path for review, approval, publish, rollback, and blocked-content handling.
+4. Run the final live route walkthrough across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
+5. Record the true environment evidence for auth, persistence, editorial mode, smoke checks, and route walkthrough outcomes.
+6. Record named privacy, safeguarding, support, incident, and release-approval ownership against the real environment.
+7. Run the final launch command sequence and keep the generated evidence as the permanent release record.
+8. Confirm the README, admin launch view, runtime state, and release evidence all tell the same final story.
+
+#### Final Path Mark 2 command order
+
+Run these in order against the intended release environment once the deployment is ready:
+
+1. `npm run verify:live-readiness`
+2. `npm run verify:persistence-recovery`
+3. `npm run verify:live-walkthrough`
+4. `npm run verify:launch-signoff`
+5. `npm run verify:launch-complete`
+
+#### Final Path Mark 2 completion rule
+
+The platform should only be called fully complete when:
+
+- `Final Path Mark 1` is code-complete in the repository
+- `Final Path Mark 2` is evidence-complete in the real environment
+- the final release record includes real owners, real proof, and real approval
+
+Until then, the honest description remains near-launch rather than fully complete.
+
 ### Final target architecture
 
 ```mermaid
@@ -2534,6 +2715,37 @@ That includes:
 - account, protected routes, and role-aware APIs still consuming the same auth contracts while the runtime mode changes underneath
 
 This auth boundary now covers the production-auth slice of the current launch-readiness roadmap pass while keeping preview mode available for local development.
+
+#### Final Path Mark 2 live auth minimum
+
+Before the platform can start the final live completion path, the deployed auth environment must include one complete redirect-based OIDC configuration.
+
+The minimum live auth block is:
+
+```bash
+SWITCH_AUTH_MODE=oidc
+SWITCH_AUTH_SECRET=<long-random-production-secret>
+SWITCH_AUTH_BASE_URL=https://app.switch.example.com
+
+SWITCH_OIDC_GOOGLE_CLIENT_ID=<provider-client-id>
+SWITCH_OIDC_GOOGLE_CLIENT_SECRET=<provider-client-secret>
+SWITCH_OIDC_GOOGLE_AUTHORIZATION_URL=https://accounts.google.com/o/oauth2/v2/auth
+SWITCH_OIDC_GOOGLE_TOKEN_URL=https://oauth2.googleapis.com/token
+SWITCH_OIDC_GOOGLE_USERINFO_URL=https://openidconnect.googleapis.com/v1/userinfo
+SWITCH_OIDC_GOOGLE_SCOPES=openid profile email
+SWITCH_OIDC_GOOGLE_PROMPT=select_account
+```
+
+Rules for this block:
+
+- `SWITCH_AUTH_MODE` must resolve to `oidc` for the redirect-based live sign-in path.
+- `SWITCH_AUTH_SECRET` must be a real production secret and must not use the preview fallback.
+- `SWITCH_AUTH_BASE_URL` must be the exact deployed app origin used by the callback flow.
+- At least one provider block must be complete from top to bottom.
+- A provider only counts as complete when `CLIENT_ID`, `CLIENT_SECRET`, `AUTHORIZATION_URL`, `TOKEN_URL`, and `USERINFO_URL` are all present together.
+- The repo treats a partial provider block as not configured.
+
+The matching template now lives in `.env.example` under `Final Path Mark 2 live OIDC release example`.
 
 ### Explicit editorial publish gates
 
@@ -3052,7 +3264,7 @@ Current roadmap snapshot:
 - MVP Quality Checklist: 6 of 6 complete for the current MVP pass (100%)
 - Phase 2 Roadmap: 7 of 7 completed (100%)
 - Main priority picture across the MVP checklist plus phase 2 roadmap: 13 of 13 major items completed for those earlier phases
-- Final launch closeout roadmap: 6 of 10 items completed in the codebase, 4 of 10 still require live-environment completion
+- Final launch closeout roadmap: 7 of 10 items completed in the codebase, 3 of 10 still require live-environment completion
 
 ### 1. Exam Engine hardening (Completed)
 
@@ -3505,8 +3717,8 @@ Current completion snapshot:
 - MVP quality pass: complete for the current checklist
 - Phase 2: complete for the current roadmap
 - Phase 3: planned, 0 of 8 items completed
-- Final Phase: partly complete, with 6 of 10 closeout items now done in the codebase
-- Overall project completion estimate: about 85% to 88% complete toward true full production launch
+- Final Phase: partly complete, with 7 of 10 closeout items now done in the codebase
+- Overall project completion estimate: about 88% to 90% complete toward true full production launch
 
 In simple terms: the product foundation is strong, but it is still short of a true full-production finish until the closeout work above is done.
 
@@ -3559,3 +3771,249 @@ Why this matters before launch work continues:
 - later launch phases are much easier to trust when the current local build is already stable
 - small hidden issues are less likely to get dragged into production-auth, production-data, and production-CMS work
 - the team can now treat the current repo state as a cleaner checkpoint instead of an unfinished midway state
+
+### 33. Environment example and runtime setup baseline (Completed)
+
+The repo now includes a real `.env.example` that matches the current runtime surface instead of leaving environment setup implied.
+
+Added guidance includes:
+
+- auth mode and session secret setup
+- public callback base URL setup
+- external-header auth secret setup
+- role-mapping email lists for editor and admin access
+- OIDC provider variables for email magic link, Google, and Apple
+- persistence driver and data-directory setup
+- CMS backend mode setup
+- live-readiness verification base URL setup
+
+Why this matters:
+
+- the project no longer relies on scattered code reading just to discover the runtime contract
+- local setup and deployed setup now have one clearer starting point
+- the remaining final-path work can now talk about real environment variables instead of implied ones
+
+### 34. Script-backed launch governance recording (Completed)
+
+The release verification path can now write its own evidence into launch governance instead of leaving the admin record entirely manual.
+
+Added guidance includes:
+
+- `npm run verify:release` can now record local rehearsal evidence when governance recording is explicitly enabled
+- `npm run verify:live-readiness` can now record passed environment checks and live-readiness evidence for a named environment
+- governance recording stays opt-in so local confidence checks are not silently presented as live launch proof
+- `.env.example` now documents the environment variables used for script-backed governance recording
+
+Why this matters:
+
+- the admin launch view can now reflect script-backed evidence instead of only hand-entered notes
+- local rehearsal proof and live-environment proof stay separated more honestly
+- the final-path governance layer is closer to being evidence-backed by default release operations
+
+### 35. Final-route rehearsal governance recording (Completed)
+
+The final-route rehearsal script can now write route smoke-check outcomes into launch governance when recording is explicitly enabled.
+
+Added guidance includes:
+
+- `npm run test:final-smoke` can now record the signed-in dashboard, subjects, assessments, exams, saved-progress, results, account, and admin route pass as governance smoke checks
+- the recorded notes explicitly describe the run as a local preview-style rehearsal rather than live launch proof
+- the governance env example now includes a dedicated smoke-check owner field
+
+Why this matters:
+
+- the admin launch view can now show route-pass evidence from the actual rehearsal script instead of relying only on manual route notes
+- local route proof and live launch proof stay separated honestly
+- the final-path governance layer now captures both environment readiness and route-rehearsal evidence from scripts
+
+### 36. Live route walkthrough script and final-proof recording (Completed)
+
+The repo now has a dedicated deployed-environment route-walkthrough script instead of stopping at local preview rehearsal.
+
+Added guidance includes:
+
+- `npm run verify:live-walkthrough` now checks the deployed dashboard, subjects, assessments, exams, saved-progress, results, account, support, and admin routes
+- the script supports both cookie-backed live auth and the repo's signed external-header auth mode
+- when governance recording is explicitly enabled, the script now records the passed smoke checks and the final live-proof evidence entry
+- `.env.example` now documents the live walkthrough runtime values needed for cookie or external-header verification
+
+Why this matters:
+
+- the final-path codebase now has a real live-environment walkthrough path instead of only local rehearsal tooling
+- launch governance can now capture true deployed-route evidence separately from local preview proof
+- the remaining gap is narrower and more honestly limited to having the real target environment and credentials available
+
+### 37. Final trust and release sign-off recording path (Completed)
+
+The repo now has a dedicated final sign-off script instead of relying on one-off manual governance edits for the last trust and approval layer.
+
+Added guidance includes:
+
+- `npm run verify:launch-signoff` now records privacy, safeguarding, release-review, alerts, incident ownership, and final release-approval records into launch governance
+- the sign-off script captures named final launch authority and named stop-release authority alongside the recorded notes
+- `.env.example` now documents the required trust-and-approval inputs for that final recording step
+
+Why this matters:
+
+- the last trust and approval stage now has a repeatable recording path instead of only manual patch requests
+- launch governance is closer to reflecting auditable release records rather than fixed placeholder language
+- the remaining gap is now even more directly about having the real live environment and real decision-makers available for the final run
+
+### 38. Final launch completion orchestration (Completed)
+
+The repo now has one final launch command that ties the live-only verification steps together in the right order.
+
+Added guidance includes:
+
+- `npm run verify:launch-complete` now runs live readiness, persistence recovery, live route walkthrough, and final launch sign-off as one sequence
+- the command keeps the final live path distinct from local rehearsal scripts
+- `.env.example` now documents the optional dry-run flag for checking the sequence before a real live run
+
+Why this matters:
+
+- the final external launch pass is now repeatable instead of relying on remembered command order
+- the repo now expresses the true last-step sequence for Final Path Mark 1 in code
+
+### 39. Final launch preflight guard (Completed)
+
+The final orchestration command now checks the required live inputs before it tries the real launch sequence.
+
+Added guidance includes:
+
+- `npm run verify:launch-complete` now performs a launch preflight before any live checks run
+- dry-run mode now shows missing live inputs instead of only listing the command order
+- the preflight covers live auth setup, live walkthrough credentials, governance notes, and final approver fields
+
+Why this matters:
+
+- the last live pass now fails fast with a clear missing-input list instead of failing partway through the sequence
+- the final launch path is more repeatable for the real operators who still need to run it
+- this keeps the repo honest about what is still external-state dependent
+
+### 40. Final launch status report (Completed)
+
+The repo now has a single status command that reports what is code-complete versus what still depends on the real live environment.
+
+Added guidance includes:
+
+- `npm run verify:launch-status` now prints the Final Path Mark 1 closeout state in one place
+- the status output includes code-complete items, remaining live-only items, preflight readiness, and any missing required live inputs
+- the command also prints the ordered final live sequence so operators can move straight from status into execution
+
+Why this matters:
+
+- the final operators no longer need to piece together readiness from README notes, env vars, and multiple scripts
+- the repo now exposes one fast truth-check before the real launch sequence begins
+
+### 41. Final launch runbook (Completed)
+
+The repo now includes one dedicated runbook for the final live-only completion work.
+
+Added guidance includes:
+
+- `FINAL_LAUNCH_RUNBOOK.md` now holds the operator checklist for the remaining live-only steps
+- the runbook covers required environment inputs, dry-run validation, live command order, evidence expectations, and the final completion rule
+- the file is meant to be the single practical handoff for the real launch operators
+
+Why this matters:
+
+- the final live-only work no longer depends on piecing together instructions from multiple README sections
+- the remaining completion list is now explicit, ordered, and easier to execute safely
+- this keeps the repo aligned with the rule that the project story should tell the exact truth
+- this further reduces the remaining gap to external state rather than missing repo guidance
+- what remains is almost entirely the real environment, real credentials, and real approvals rather than missing repo machinery
+
+### 42. Local preview sign-in path for account testing (Completed)
+
+The repo now has a working local sign-in path again for day-to-day product testing, even while the real live launch path still depends on OIDC provider setup.
+
+Added guidance includes:
+
+- `.env.local` can now run the website in `preview-cookie` mode for local account testing
+- the local account route can create and clear signed session cookies again through the existing auth API boundary
+- the same account page and account-linked routes can now be tested without pretending the local preview is the final live auth path
+
+Why this matters in architecture terms:
+
+- the auth module still owns identity and session rules
+- the website still talks to auth through the API and module boundary instead of embedding business logic directly into the page
+- local preview testing and real live launch stay separated cleanly, which protects the future mobile and API-first architecture
+
+Learner-friendly explanation:
+
+- think of this as a practice sign-in desk inside the building
+- it lets you test how people move through the product after signing in
+- but it is not the real front gate that the live platform will use later
+
+Local preview sign-in architecture:
+
+```mermaid
+flowchart LR
+    A["Account page"] --> B["Account auth controls"]
+    B --> C["/api/auth/start"]
+    C --> D["Auth module"]
+    D --> E["Preview-cookie session"]
+    E --> F["Signed-in account route"]
+    F --> G["Dashboard, saved progress, recommendations, and protected routes"]
+```
+
+How to think about the code:
+
+- `src/app/account/page.tsx` is the website route
+- `src/components/account-auth-controls.tsx` is the interaction layer the student clicks
+- `src/app/api/auth/*` is the API boundary
+- `src/modules/auth/*` is the business-logic layer that decides how sessions work
+
+This is useful to learn because it shows one of the most important architecture habits in the repo:
+
+- the page should not own auth logic
+- the auth module should own auth logic
+- the page should read and trigger that logic through the API layer
+
+### 43. Live cookie guide route for final-path testing (Completed)
+
+The website now includes a dedicated route that explains how to capture the two live auth cookies needed for the final live walkthrough.
+
+Added guidance includes:
+
+- a new route at `/account/live-cookie-guide`
+- a direct account-page link that opens the guide from the signed-out or signed-in account experience
+- browser-specific instructions for Chrome, Edge, Firefox, and Safari
+- the exact `.env.local` format needed for `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE`
+
+Why this matters in architecture terms:
+
+- launch-readiness guidance is now exposed through the website shell instead of being trapped only in chat or scattered notes
+- the account slice now teaches the operator how the final live walkthrough connects back into environment configuration
+- this keeps the operational learning path close to the auth route where the work actually starts
+
+Learner-friendly explanation:
+
+- this page acts like an operations checklist inside the product
+- instead of remembering several scattered steps, you can open one route and follow the path in order
+- it links the account experience, the environment setup, and the final launch walkthrough together
+
+Live cookie guide flow:
+
+```mermaid
+flowchart TD
+    A["Deployed account sign-in"] --> B["Open browser developer tools"]
+    B --> C["Find switch_auth_session cookie"]
+    C --> D["Save student cookie"]
+    C --> E["Save admin cookie"]
+    D --> F["Add values to .env.local"]
+    E --> F
+    F --> G["Run live walkthrough and launch verification"]
+```
+
+How to think about the code:
+
+- `src/app/account/live-cookie-guide/page.tsx` is a teaching route inside the website
+- `src/app/account/page.tsx` links into that route from the account slice
+- the guide does not replace the auth module
+- it supports the operator who needs to prove the final live auth flow
+
+This is useful to learn because it shows another architecture habit in the repo:
+
+- operational guidance can live in the product shell
+- but the product shell should still describe and support the real backend workflow, not bypass it

@@ -1,5 +1,6 @@
 export type AuthProvider = "email-magic-link" | "google" | "apple";
 export type AuthRole = "student" | "editor" | "admin";
+export type AuthRuntimeMode = "preview-cookie" | "oidc" | "external-header";
 
 export interface AuthUser {
   userId: string;
@@ -34,6 +35,14 @@ export interface SignInOption {
   description: string;
 }
 
+export interface AuthReadinessSummary {
+  mode: AuthRuntimeMode;
+  status: "development-only" | "needs-provider-setup" | "ready" | "external-managed";
+  configuredProviderCount: number;
+  title: string;
+  detail: string;
+}
+
 export interface AccountMetric {
   label: string;
   value: string;
@@ -50,6 +59,7 @@ export interface AccountOverview {
   isAuthenticated: boolean;
   session: AuthSession;
   signInOptions: SignInOption[];
+  authReadiness: AuthReadinessSummary;
   metrics: AccountMetric[];
   quickLinks: AccountLink[];
   supportSummary: string;

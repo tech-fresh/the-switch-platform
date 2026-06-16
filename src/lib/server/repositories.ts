@@ -2,11 +2,16 @@ import { getPersistenceRecoveryStatus } from "@/lib/persistence/recovery";
 import type { PersistedAuthSessionRecord } from "@/lib/persistence/auth-session-store";
 import { readPersistedAuthSessions, writePersistedAuthSessions } from "@/lib/persistence/auth-session-store";
 import { readCmsWorkflowRecords, writeCmsWorkflowRecords } from "@/lib/persistence/cms-workflow-store";
+import {
+  readLaunchGovernanceRecords,
+  writeLaunchGovernanceRecords,
+} from "@/lib/persistence/launch-governance-store";
 import { readAccessProfiles, writeAccessProfiles } from "@/lib/persistence/access-profile-store";
 import { getPersistenceRuntimeConfig } from "@/lib/persistence/runtime";
 import { readSavedProgressRecords, writeSavedProgressRecords } from "@/lib/persistence/saved-progress-store";
 import type { StudentAccessProfile, StudentAccessProfileRepository } from "@/modules/access-arrangements/types";
 import type { CmsEditorialWorkflowRecord } from "@/modules/cms/types";
+import type { StoredGovernanceRecord } from "@/modules/governance/types";
 import type {
   SavedProgressEntityType,
   SavedProgressRecord,
@@ -23,10 +28,17 @@ export interface CmsWorkflowRepository {
   replaceRecords(records: CmsEditorialWorkflowRecord[]): Promise<void>;
 }
 
+export interface LaunchGovernanceRepository {
+  listRecords(): Promise<StoredGovernanceRecord[]>;
+  replaceRecords(records: StoredGovernanceRecord[]): Promise<void>;
+}
+
 export interface PersistenceRuntimeSummary {
   driver: ReturnType<typeof getPersistenceRuntimeConfig>["driver"];
   dataDirectory: string;
   backupDirectory: string | null;
+  primaryStorePath: string;
+  backupStorePath: string | null;
   isPrototypePersistence: boolean;
   recoveryReady: boolean;
   recoveryCheckedAt: string | null;
@@ -114,6 +126,15 @@ const defaultCmsWorkflowRepository: CmsWorkflowRepository = {
   },
 };
 
+const defaultLaunchGovernanceRepository: LaunchGovernanceRepository = {
+  async listRecords() {
+    return readLaunchGovernanceRecords();
+  },
+  async replaceRecords(records) {
+    await writeLaunchGovernanceRecords(records);
+  },
+};
+
 export function getDefaultSavedProgressRepository(): SavedProgressRepository {
   return defaultSavedProgressRepository;
 }
@@ -130,6 +151,10 @@ export function getDefaultCmsWorkflowRepository(): CmsWorkflowRepository {
   return defaultCmsWorkflowRepository;
 }
 
+export function getDefaultLaunchGovernanceRepository(): LaunchGovernanceRepository {
+  return defaultLaunchGovernanceRepository;
+}
+
 export async function getPersistenceRuntimeSummary(): Promise<PersistenceRuntimeSummary> {
   const config = getPersistenceRuntimeConfig();
   const recovery = await getPersistenceRecoveryStatus(config);
@@ -138,6 +163,8 @@ export async function getPersistenceRuntimeSummary(): Promise<PersistenceRuntime
     driver: config.driver,
     dataDirectory: config.dataDirectory,
     backupDirectory: config.backupDirectory,
+    primaryStorePath: config.primaryStorePath,
+    backupStorePath: config.backupStorePath,
     isPrototypePersistence: config.driver === "memory" ? false : config.isPrototypePersistence || !recovery.isReady,
     recoveryReady: recovery.isReady,
     recoveryCheckedAt: recovery.checkedAt,

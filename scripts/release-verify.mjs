@@ -1,5 +1,6 @@
 import path from "node:path";
 
+import { getGovernanceRecordingConfig, recordLocalReleaseRehearsal } from "./launch-governance.mjs";
 import { getRepoRoot, runCommand } from "./launch-utils.mjs";
 
 const repoRoot = getRepoRoot();
@@ -26,4 +27,13 @@ for (const scriptName of scriptNames) {
   });
 }
 
-console.log("\nRelease verification passed: lint, tests, build, smoke checks, and end-to-end checks are all green.");
+const governanceRecording = await recordLocalReleaseRehearsal(
+  getGovernanceRecordingConfig("local-release-rehearsal"),
+  scriptNames,
+);
+
+console.log("\nLocal release rehearsal passed: lint, tests, build, smoke checks, and end-to-end checks are all green.");
+console.log("This proves the local rehearsal path. Run verify:live-readiness for the real launch environment checks.");
+if (governanceRecording) {
+  console.log("Launch governance recording updated the local rehearsal evidence for this run.");
+}

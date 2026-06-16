@@ -3,9 +3,9 @@ import type { PastPaper, PastPaperCatalogOverview, PastPaperSourceProvider } fro
 const pastPaperProviders: PastPaperSourceProvider[] = [
   {
     providerId: "seed-paper-catalog",
-    name: "Seed Paper Catalog",
+    name: "Reviewed Paper Catalog",
     type: "seed-catalog",
-    description: "Current operating catalog for reviewed paper metadata and controlled source links.",
+    description: "Current live operating catalog for reviewed paper metadata and controlled source links.",
     updateCadence: "editorial release cadence",
     lastCheckedAt: "2026-06-06T09:05:00.000Z",
     nextStep: "Keep the catalog current through the live editorial workflow and only attach links that pass source and licensing checks.",
@@ -77,6 +77,6 @@ export async function getPastPaperCatalogOverview(): Promise<PastPaperCatalogOve
     availableCount: mockPastPapers.filter((paper) => paper.availability === "available").length,
     cataloguedCount: mockPastPapers.filter((paper) => paper.availability === "catalogued").length,
     nextUpdatePlan:
-      "Run paper updates through the seed catalog now, promote validated links through the board-source boundary, and keep licensed storage as the controlled path for retained references.",
+      "Run paper updates through the reviewed catalog, promote validated links through the board-source boundary, and keep licensed storage as the controlled path for retained references.",
   };
 }

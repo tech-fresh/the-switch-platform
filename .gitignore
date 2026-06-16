@@ -8,3 +8,6 @@ yarn-error.log*
 pnpm-debug.log*
 *.swp
 .codex-data
+
+*storybook.log
+storybook-static

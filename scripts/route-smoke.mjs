@@ -55,7 +55,7 @@ try {
 
   assert(cmsOverview.response.status === 401, `Expected /api/cms/overview to return 401 when signed out, received ${cmsOverview.response.status}.`);
 
-  console.log("Route smoke passed: public pages, public APIs, and signed-out protection are behaving as expected.");
+  console.log("Local route smoke passed: public pages, public APIs, and signed-out protection are behaving as expected in the rehearsal runtime.");
 } finally {
   await stopServer(server.child);
 }

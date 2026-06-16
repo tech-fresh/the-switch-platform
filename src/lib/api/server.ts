@@ -5,6 +5,8 @@ import type { CmsOverview } from "@/modules/cms/types";
 import type { ContentEditorialAudit, MvpContentCatalog } from "@/modules/content/types";
 import type { DashboardHomeData } from "@/modules/dashboard/types";
 import type { ExamPaper, ExamSession } from "@/modules/exam-engine/types";
+import type { LaunchGovernanceOverview } from "@/modules/governance/types";
+import type { OperationsOverview } from "@/modules/operations/types";
 import type { PastPaperCatalogOverview } from "@/modules/past-papers/types";
 import type { PowerGridSummary } from "@/modules/power-grid/types";
 import type { Recommendation, RecommendationsPageData } from "@/modules/recommendations/types";
@@ -18,6 +20,7 @@ import type { SupportHubData } from "@/modules/support/types";
 import type { TimedAssessmentAttemptSeed, TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
 import type { Topic } from "@/modules/topics/types";
 import type { WebsiteGuideData } from "@/modules/website-guide/types";
+import type { PersistenceRuntimeSummary } from "@/lib/server/repositories";
 
 export interface SubjectsExperienceData {
   subjects: Subject[];
@@ -179,6 +182,30 @@ export async function getPastPaperCatalogApiData(): Promise<PastPaperCatalogOver
   );
 
   return response.catalog;
+}
+
+export async function getLaunchGovernanceOverviewApiData(): Promise<LaunchGovernanceOverview> {
+  const response = await fetchApiJson<{ governance: LaunchGovernanceOverview }>(
+    "/api/governance/overview",
+  );
+
+  return response.governance;
+}
+
+export async function getOperationsOverviewApiData(): Promise<OperationsOverview> {
+  const response = await fetchApiJson<{ operations: OperationsOverview }>(
+    "/api/operations/overview",
+  );
+
+  return response.operations;
+}
+
+export async function getPersistenceRuntimeSummaryApiData(): Promise<PersistenceRuntimeSummary> {
+  const response = await fetchApiJson<{ persistence: PersistenceRuntimeSummary }>(
+    "/api/persistence/runtime",
+  );
+
+  return response.persistence;
 }
 
 export async function getStudentContentCatalogApiData(): Promise<MvpContentCatalog> {

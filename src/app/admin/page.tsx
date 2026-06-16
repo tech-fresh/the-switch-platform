@@ -1,10 +1,13 @@
-import { getCmsOverviewApiData, getPastPaperCatalogApiData } from "@/lib/api/server";
-import { getPersistenceRuntimeSummary } from "@/lib/server/repositories";
-import { getCmsRuntimeConfig } from "@/modules/cms/runtime";
-import { getLaunchGovernanceOverview } from "@/modules/governance/service";
-import { getOperationsOverview } from "@/modules/operations/service";
+import {
+  getCmsOverviewApiData,
+  getLaunchGovernanceOverviewApiData,
+  getOperationsOverviewApiData,
+  getPastPaperCatalogApiData,
+  getPersistenceRuntimeSummaryApiData,
+} from "@/lib/api/server";
 import { requireRequestSessionRoles } from "@/modules/auth/request";
 import { CmsWorkflowControls } from "@/components/cms-workflow-controls";
+import { LaunchGovernanceControls } from "@/components/launch-governance-controls";
 
 export const dynamic = "force-dynamic";
 
@@ -32,8 +35,14 @@ function getReleaseCheckClasses(status: "complete" | "in-progress" | "watch"): s
   return "border-stone-300 bg-stone-50 text-stone-800";
 }
 
+function getCloseoutClasses(status: "done" | "remaining"): string {
+  return status === "done"
+    ? "border-emerald-300 bg-emerald-50 text-emerald-950"
+    : "border-amber-300 bg-amber-50 text-amber-950";
+}
+
 function getPersistenceClasses(
-  driver: "local-json" | "memory",
+  driver: "local-json" | "sqlite" | "memory",
   isPrototypePersistence: boolean,
 ): string {
   if (driver === "memory") {
@@ -62,11 +71,10 @@ export default async function AdminPage() {
   const [cms, papers, operations, governance, persistence] = await Promise.all([
     getCmsOverviewApiData(),
     getPastPaperCatalogApiData(),
-    getOperationsOverview(),
-    Promise.resolve(getLaunchGovernanceOverview()),
-    getPersistenceRuntimeSummary(),
+    getOperationsOverviewApiData(),
+    getLaunchGovernanceOverviewApiData(),
+    getPersistenceRuntimeSummaryApiData(),
   ]);
-  const cmsRuntime = getCmsRuntimeConfig();
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -97,7 +105,7 @@ export default async function AdminPage() {
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Paper catalog</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{papers.papers.length}</p>
-              <p className="mt-1 text-sm text-stone-600">{papers.cataloguedCount} catalogued entries waiting on direct source links</p>
+              <p className="mt-1 text-sm text-stone-600">{papers.cataloguedCount} catalogued entries in controlled source review</p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Editorial queue</p>
@@ -122,6 +130,16 @@ export default async function AdminPage() {
                   : "Backups are unavailable while memory persistence is active."}
               </p>
               <p className="mt-1 text-sm opacity-90">
+                {persistence.driver === "memory"
+                  ? "Primary live store: unavailable while memory persistence is active."
+                  : `Primary live store: ${persistence.primaryStorePath}`}
+              </p>
+              <p className="mt-1 text-sm opacity-90">
+                {persistence.backupStorePath
+                  ? `Backup live store: ${persistence.backupStorePath}`
+                  : "Backup live store: unavailable in the current runtime."}
+              </p>
+              <p className="mt-1 text-sm opacity-90">
                 {persistence.recoveryCheckedAt
                   ? `Recovery checks: ${persistence.recoveryReady ? "ready" : `${persistence.recoveryIssueCount} issue${persistence.recoveryIssueCount === 1 ? "" : "s"}`} at ${persistence.recoveryCheckedAt.slice(0, 16).replace("T", " ")}`
                   : "Recovery checks have not run yet."}
@@ -129,9 +147,9 @@ export default async function AdminPage() {
             </div>
             <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">CMS backend mode</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">{cmsRuntime.backendMode}</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">{cms.backendMode}</p>
               <p className="mt-1 text-sm text-stone-600">
-                {cmsRuntime.backendMode === "read-only"
+                {cms.backendMode === "read-only"
                   ? "Editorial writes are intentionally blocked until a writable production adapter is connected."
                   : "Editorial workflow is running through the live writable backend path for this runtime."}
               </p>
@@ -266,8 +284,8 @@ export default async function AdminPage() {
                   <p className="mt-1 text-sm opacity-90">launch governance picture</p>
                 </div>
                 <div className="border border-amber-200 bg-amber-50 p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-amber-700">True completion</p>
-                  <p className="mt-2 text-lg font-semibold text-amber-950">92%</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-amber-700">{governance.finalPathSummary.label}</p>
+                  <p className="mt-2 text-lg font-semibold text-amber-950">{governance.finalPathSummary.estimatedCompletionRange}</p>
                   <p className="mt-1 text-sm text-amber-900">toward full production launch</p>
                 </div>
                 <div className="border border-stone-200 bg-stone-50 p-4">
@@ -283,9 +301,15 @@ export default async function AdminPage() {
                 <div className="border border-stone-200 bg-stone-50 p-4 sm:col-span-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">What the percentage means</p>
                   <p className="mt-2 text-sm leading-6 text-stone-700">
-                    The platform is in a strong state, but it is not yet a true full-production launch.
-                    The remaining work is the final closeout list below.
+                    {governance.finalPathSummary.note}
                   </p>
+                </div>
+                <div className="border border-stone-200 bg-stone-50 p-4 sm:col-span-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Code-complete closeout items</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">
+                    {governance.finalPathSummary.codeCompleteCount} of {governance.finalPathSummary.totalCount}
+                  </p>
+                  <p className="mt-1 text-sm text-stone-600">final launch items completed in the codebase</p>
                 </div>
                 <div className="border border-stone-200 bg-stone-50 p-4 sm:col-span-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Smoke checks</p>
@@ -302,25 +326,67 @@ export default async function AdminPage() {
                   <p className="mt-2 text-lg font-semibold text-stone-950">{governance.signOffChecks.length}</p>
                   <p className="mt-1 text-sm text-stone-600">trust and release approval checks</p>
                 </div>
+                <div className="border border-stone-200 bg-stone-50 p-4 sm:col-span-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Recorded evidence items</p>
+                  <p className="mt-2 text-lg font-semibold text-stone-950">{governance.evidenceRecords.length}</p>
+                  <p className="mt-1 text-sm text-stone-600">launch-proof records across auth, persistence, editorial, environment, and sign-off</p>
+                </div>
               </div>
               <div className="mt-5 border border-amber-200 bg-amber-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">
-                  Final closeout list before full launch
+                  Final Path Mark 1
                 </p>
-                <ol className="mt-4 space-y-2 text-sm leading-6 text-amber-950">
-                  <li>1. Move sign-in out of preview mode and onto the real production auth setup.</li>
-                  <li>2. Remove the fallback preview auth secret from non-preview modes.</li>
-                  <li>3. Move student data onto the intended production-ready data setup with backup and restore checks.</li>
-                  <li>4. Move editorial work onto the intended writable live workflow.</li>
-                  <li>5. Replace planned content and paper update paths with the real operating path.</li>
-                  <li>6. Clean up test runtime warnings so verification is quiet and trustworthy.</li>
-                  <li>7. Add stronger launch automation such as linting, smoke checks, end-to-end checks, and release-ready scripts.</li>
-                  <li>8. Confirm the production environment and live configuration work correctly outside local development.</li>
-                  <li>9. Run the final live smoke pass across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.</li>
-                  <li>10. Confirm privacy, retention, safeguarding, alerts, incident ownership, and final release sign-off in the live environment.</li>
-                </ol>
+                <p className="mt-3 text-sm leading-6 text-amber-950">
+                  This is the main final-path checklist for true full completion across code, architecture, operations, and launch proof.
+                </p>
+                <div className="mt-4 grid gap-3">
+                  {governance.finalPathSummary.closeoutItems.map((item, index) => (
+                    <div key={item.itemId} className={`border p-3 ${getCloseoutClasses(item.status)}`}>
+                      <p className="text-sm font-semibold">
+                        {index + 1}. {item.title}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 opacity-90">{item.detail}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 grid gap-3">
+                  {governance.finalPathSummary.biggestBlockers.map((blocker, index) => (
+                    <div key={blocker} className="border border-stone-200 bg-white p-3 text-sm leading-6 text-stone-700">
+                      <span className="font-semibold text-stone-950">Big blocker {index + 1}.</span> {blocker}
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1fr]">
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    Launch evidence
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {governance.evidenceRecords.map((record) => (
+                      <div key={record.evidenceId} className="border border-stone-200 bg-white p-3">
+                        <p className="text-sm font-semibold text-stone-950">{record.title}</p>
+                        <p className="mt-1 text-sm text-stone-700">
+                          {record.status} • {record.owner}
+                          {record.recordedAt ? ` • ${record.recordedAt}` : ""}
+                          {record.environment ? ` • ${record.environment}` : ""}
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-stone-600">{record.summary}</p>
+                        <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">
+                          source: {record.source}
+                        </p>
+                        <LaunchGovernanceControls
+                          mode="evidence"
+                          targetId={record.evidenceId}
+                          owner={record.owner}
+                          environment={record.environment}
+                          note={record.summary}
+                          status={record.status}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <div className="border border-stone-200 bg-stone-50 p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
                     Recorded reviews
@@ -329,8 +395,23 @@ export default async function AdminPage() {
                     {governance.reviews.map((review) => (
                       <div key={review.reviewId} className="border border-stone-200 bg-white p-3">
                         <p className="text-sm font-semibold text-stone-950">{review.title}</p>
-                        <p className="mt-1 text-sm text-stone-700">{review.completedAt} • {review.owner}</p>
+                        <p className="mt-1 text-sm text-stone-700">
+                          {review.status} • {review.owner}
+                          {review.completedAt ? ` • ${review.completedAt}` : ""}
+                          {review.environment ? ` • ${review.environment}` : ""}
+                        </p>
                         <p className="mt-2 text-sm leading-6 text-stone-600">{review.note}</p>
+                        <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">
+                          source: {review.source}
+                        </p>
+                        <LaunchGovernanceControls
+                          mode="review"
+                          targetId={review.reviewId}
+                          owner={review.owner}
+                          environment={review.environment}
+                          note={review.note}
+                          status={review.status}
+                        />
                       </div>
                     ))}
                   </div>
@@ -361,8 +442,24 @@ export default async function AdminPage() {
                     {governance.environmentChecks.map((check) => (
                       <div key={check.checkId} className="border border-stone-200 bg-white p-3">
                         <p className="text-sm font-semibold text-stone-950">{check.label}</p>
-                        <p className="mt-1 text-sm text-stone-700">{check.status}</p>
+                        <p className="mt-1 text-sm text-stone-700">
+                          {check.status}
+                          {check.owner ? ` • ${check.owner}` : ""}
+                          {check.recordedAt ? ` • ${check.recordedAt.slice(0, 10)}` : ""}
+                          {check.environment ? ` • ${check.environment}` : ""}
+                        </p>
                         <p className="mt-2 text-sm leading-6 text-stone-600">{check.detail}</p>
+                        <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">
+                          source: {check.source}
+                        </p>
+                        <LaunchGovernanceControls
+                          mode="environment"
+                          targetId={check.checkId}
+                          owner={check.owner ?? "Platform lead"}
+                          environment={check.environment}
+                          note={check.detail}
+                          status={check.status}
+                        />
                       </div>
                     ))}
                   </div>
@@ -375,8 +472,23 @@ export default async function AdminPage() {
                     {governance.signOffChecks.map((check) => (
                       <div key={check.checkId} className="border border-stone-200 bg-white p-3">
                         <p className="text-sm font-semibold text-stone-950">{check.label}</p>
-                        <p className="mt-1 text-sm text-stone-700">{check.status} • {check.owner}</p>
+                        <p className="mt-1 text-sm text-stone-700">
+                          {check.status} • {check.owner}
+                          {check.recordedAt ? ` • ${check.recordedAt.slice(0, 10)}` : ""}
+                          {check.environment ? ` • ${check.environment}` : ""}
+                        </p>
                         <p className="mt-2 text-sm leading-6 text-stone-600">{check.detail}</p>
+                        <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">
+                          source: {check.source}
+                        </p>
+                        <LaunchGovernanceControls
+                          mode="signoff"
+                          targetId={check.checkId}
+                          owner={check.owner}
+                          environment={check.environment}
+                          note={check.detail}
+                          status={check.status}
+                        />
                       </div>
                     ))}
                   </div>
@@ -391,8 +503,24 @@ export default async function AdminPage() {
                     {governance.smokeChecks.map((check) => (
                       <div key={check.checkId} className="border border-stone-200 bg-white p-3">
                         <p className="text-sm font-semibold text-stone-950">{check.route}</p>
-                        <p className="mt-1 text-sm text-stone-700">{check.status}</p>
+                        <p className="mt-1 text-sm text-stone-700">
+                          {check.status}
+                          {check.owner ? ` • ${check.owner}` : ""}
+                          {check.recordedAt ? ` • ${check.recordedAt.slice(0, 10)}` : ""}
+                          {check.environment ? ` • ${check.environment}` : ""}
+                        </p>
                         <p className="mt-2 text-sm leading-6 text-stone-600">{check.note}</p>
+                        <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">
+                          source: {check.source}
+                        </p>
+                        <LaunchGovernanceControls
+                          mode="smoke"
+                          targetId={check.checkId}
+                          owner={check.owner ?? "Release manager"}
+                          environment={check.environment}
+                          note={check.note}
+                          status={check.status}
+                        />
                       </div>
                     ))}
                   </div>

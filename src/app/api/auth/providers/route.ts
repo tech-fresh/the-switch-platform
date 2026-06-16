@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { getSignInOptions } from "@/modules/auth/service";
+import { getAuthReadinessSummary, getSignInOptions } from "@/modules/auth/service";
 
 export async function GET() {
   const providers = await getSignInOptions();
 
   return NextResponse.json({
     providers,
+    readiness: getAuthReadinessSummary(),
   });
 }

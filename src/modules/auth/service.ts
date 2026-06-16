@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import {
+  getAuthReadinessSummary,
   getConfiguredOidcProviders,
   getPreviewUserById,
   listSignInOptions,
@@ -181,6 +182,8 @@ export async function getSignInOptions(): Promise<SignInOption[]> {
   return listSignInOptions();
 }
 
+export { getAuthReadinessSummary };
+
 export function getAuthUserIdFromSession(session: AuthSession): string {
   return session.status === "authenticated" ? session.user.userId : GUEST_AUTH_USER_ID;
 }
@@ -211,6 +214,7 @@ export async function getAccountOverview(
   const runtime = getAuthRuntimeConfig();
   const configuredProviders = runtime.mode === "oidc" ? getConfiguredOidcProviders() : [];
   const hasConfiguredProductionProviders = configuredProviders.length > 0;
+  const authReadiness = getAuthReadinessSummary();
   const signedInLabel =
     session.status === "authenticated" ? session.user.displayName : "Guest preview";
   const signedInDetail =
@@ -273,6 +277,7 @@ export async function getAccountOverview(
     isAuthenticated: session.status === "authenticated",
     session,
     signInOptions,
+    authReadiness,
     metrics,
     quickLinks,
     supportSummary:

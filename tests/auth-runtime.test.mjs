@@ -95,3 +95,67 @@ test("auth runtime can switch into oidc mode with an explicit session secret", a
   restoreEnv("SWITCH_AUTH_MODE", previousMode);
   restoreEnv("SWITCH_AUTH_SECRET", previousSecret);
 });
+
+test("auth readiness reports provider setup is still needed when oidc has no configured providers", async () => {
+  const previousMode = process.env.SWITCH_AUTH_MODE;
+  const previousSecret = process.env.SWITCH_AUTH_SECRET;
+  const previousClientId = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_ID;
+  const previousClientSecret = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_SECRET;
+  const previousAuthorizationUrl = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_AUTHORIZATION_URL;
+  const previousTokenUrl = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_TOKEN_URL;
+  const previousUserInfoUrl = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL;
+  process.env.SWITCH_AUTH_MODE = "oidc";
+  process.env.SWITCH_AUTH_SECRET = "test-auth-secret";
+  delete process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_ID;
+  delete process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_SECRET;
+  delete process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_AUTHORIZATION_URL;
+  delete process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_TOKEN_URL;
+  delete process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL;
+
+  const { getAuthReadinessSummary } = await import(`../src/modules/auth/provider.ts?test=${Date.now()}-readiness-needs-provider`);
+  const summary = getAuthReadinessSummary();
+
+  assert.equal(summary.mode, "oidc");
+  assert.equal(summary.status, "needs-provider-setup");
+  assert.equal(summary.configuredProviderCount, 0);
+
+  restoreEnv("SWITCH_AUTH_MODE", previousMode);
+  restoreEnv("SWITCH_AUTH_SECRET", previousSecret);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_ID", previousClientId);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_SECRET", previousClientSecret);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_AUTHORIZATION_URL", previousAuthorizationUrl);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_TOKEN_URL", previousTokenUrl);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL", previousUserInfoUrl);
+});
+
+test("auth readiness reports ready when oidc has a full configured provider", async () => {
+  const previousMode = process.env.SWITCH_AUTH_MODE;
+  const previousSecret = process.env.SWITCH_AUTH_SECRET;
+  const previousClientId = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_ID;
+  const previousClientSecret = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_SECRET;
+  const previousAuthorizationUrl = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_AUTHORIZATION_URL;
+  const previousTokenUrl = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_TOKEN_URL;
+  const previousUserInfoUrl = process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL;
+  process.env.SWITCH_AUTH_MODE = "oidc";
+  process.env.SWITCH_AUTH_SECRET = "test-auth-secret";
+  process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_ID = "client-id";
+  process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_SECRET = "client-secret";
+  process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_AUTHORIZATION_URL = "https://id.example.com/authorize";
+  process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_TOKEN_URL = "https://id.example.com/token";
+  process.env.SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL = "https://id.example.com/userinfo";
+
+  const { getAuthReadinessSummary } = await import(`../src/modules/auth/provider.ts?test=${Date.now()}-readiness-ready`);
+  const summary = getAuthReadinessSummary();
+
+  assert.equal(summary.mode, "oidc");
+  assert.equal(summary.status, "ready");
+  assert.equal(summary.configuredProviderCount, 1);
+
+  restoreEnv("SWITCH_AUTH_MODE", previousMode);
+  restoreEnv("SWITCH_AUTH_SECRET", previousSecret);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_ID", previousClientId);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_CLIENT_SECRET", previousClientSecret);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_AUTHORIZATION_URL", previousAuthorizationUrl);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_TOKEN_URL", previousTokenUrl);
+  restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL", previousUserInfoUrl);
+});

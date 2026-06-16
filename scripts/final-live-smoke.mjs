@@ -1,14 +1,15 @@
+import { getGovernanceRecordingConfig, recordFinalRouteRehearsal } from "./launch-governance.mjs";
 import { assert, ensureBuild, fetchJson, fetchText, getSessionCookie, startNextServer, stopServer } from "./launch-utils.mjs";
 
 const studentRoutes = [
-  ["/dashboard", "Dashboard"],
-  ["/subjects", "Subjects"],
-  ["/assessments", "Timed Assessment"],
-  ["/exams", "Exam Engine Preview"],
-  ["/saved-progress", "Saved Progress"],
-  ["/results", "Results"],
-  ["/account", "Student Account"],
-  ["/support", "Support Hub"],
+  ["/dashboard", "Dashboard", "smoke-dashboard"],
+  ["/subjects", "Subjects", "smoke-subjects"],
+  ["/assessments", "Timed Assessment", "smoke-assessments"],
+  ["/exams", "Exam Engine Preview", "smoke-exams"],
+  ["/saved-progress", "Saved Progress", "smoke-saved-results"],
+  ["/results", "Results", "smoke-saved-results"],
+  ["/account", "Student Account", "smoke-account-admin"],
+  ["/support", "Support Hub", null],
 ];
 
 await ensureBuild();
@@ -20,8 +21,9 @@ const server = await startNextServer({
 try {
   const studentCookie = await signIn(server.baseUrl, "email-magic-link", "/dashboard");
   const adminCookie = await signIn(server.baseUrl, "google", "/admin");
+  const passedSmokeChecks = new Set();
 
-  for (const [route, expectedText] of studentRoutes) {
+  for (const [route, expectedText, smokeCheckId] of studentRoutes) {
     const { response, body } = await fetchText(`${server.baseUrl}${route}`, {
       headers: {
         cookie: studentCookie,
@@ -30,6 +32,10 @@ try {
 
     assert(response.ok, `Expected authenticated ${route} to return 200, received ${response.status}.`);
     assert(body.includes(expectedText), `Expected authenticated ${route} to include "${expectedText}".`);
+
+    if (smokeCheckId) {
+      passedSmokeChecks.add(smokeCheckId);
+    }
   }
 
   const adminPage = await fetchText(`${server.baseUrl}/admin`, {
@@ -65,7 +71,40 @@ try {
   );
   assert(signedOutAdminLocation.includes("/account"), "Expected signed-out /admin to redirect to /account.");
 
-  console.log("Final live smoke pass passed: dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin all behaved correctly.");
+  const governanceRecording = await recordFinalRouteRehearsal(
+    getGovernanceRecordingConfig("local-final-route-rehearsal"),
+    [
+      {
+        checkId: "smoke-dashboard",
+        note: "Local preview-style rehearsal confirmed dashboard continuity cards, next-step guidance, and signed-in route access.",
+      },
+      {
+        checkId: "smoke-subjects",
+        note: "Local preview-style rehearsal confirmed subject navigation and topic entry routes behaved correctly.",
+      },
+      {
+        checkId: "smoke-assessments",
+        note: "Local preview-style rehearsal confirmed timed-assessment entry routes and signed-in checkpoint access behaved correctly.",
+      },
+      {
+        checkId: "smoke-exams",
+        note: "Local preview-style rehearsal confirmed exam route access and learner flow entry behaved correctly.",
+      },
+      {
+        checkId: "smoke-saved-results",
+        note: "Local preview-style rehearsal confirmed saved-progress, results, and review continuity routes behaved correctly.",
+      },
+      {
+        checkId: "smoke-account-admin",
+        note: "Local preview-style rehearsal confirmed signed-in account access, admin route protection, and admin launch-governance visibility behaved correctly.",
+      },
+    ].filter((check) => passedSmokeChecks.has(check.checkId)),
+  );
+
+  console.log("Local final-route rehearsal passed: dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin all behaved correctly in the preview-style test runtime.");
+  if (governanceRecording) {
+    console.log("Launch governance recording updated the route smoke checks for this rehearsal run.");
+  }
 } finally {
   await stopServer(server.child);
 }

@@ -12,7 +12,17 @@
     "test:smoke": "node scripts/route-smoke.mjs",
     "test:e2e": "node scripts/launch-e2e.mjs",
     "test:final-smoke": "node scripts/final-live-smoke.mjs",
-    "verify:release": "node scripts/release-verify.mjs"
+    "verify:release": "node scripts/release-verify.mjs",
+    "verify:live-readiness": "node scripts/live-readiness.mjs",
+    "verify:launch-status": "node scripts/launch-status.mjs",
+    "verify:live-walkthrough": "node scripts/live-route-walkthrough.mjs",
+    "verify:launch-signoff": "node scripts/launch-signoff.mjs",
+    "verify:launch-complete": "node scripts/launch-complete.mjs",
+    "verify:persistence-recovery": "node scripts/persistence-recovery-check.mjs",
+    "persistence:migrate-to-sqlite": "node scripts/persistence-migrate-to-sqlite.mjs",
+    "persistence:restore-from-backup": "node scripts/persistence-restore-from-backup.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "next": "^15.3.3",
@@ -20,12 +30,32 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-a11y": "^10.4.5",
+    "@storybook/addon-docs": "^10.4.5",
+    "@storybook/addon-mcp": "^0.6.0",
+    "@storybook/addon-vitest": "^10.4.5",
+    "@storybook/nextjs-vite": "^10.4.5",
     "@types/node": "^22.15.29",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
+    "@vitest/browser-playwright": "^4.1.9",
+    "@vitest/coverage-v8": "^4.1.9",
     "autoprefixer": "^10.4.21",
+    "mockdate": "^3.0.5",
+    "msw": "^2.14.6",
+    "msw-storybook-addon": "^2.0.7",
+    "playwright": "^1.61.0",
     "postcss": "^8.5.4",
+    "storybook": "^10.4.5",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.9"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

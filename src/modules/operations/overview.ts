@@ -12,7 +12,7 @@ export interface BuildOperationsOverviewInput {
   authMode: "preview-cookie" | "oidc" | "external-header";
   allowRedirectSignIn: boolean;
   activeAuthSessions: number;
-  persistenceDriver: "local-json" | "memory";
+  persistenceDriver: "local-json" | "sqlite" | "memory";
   isPrototypePersistence: boolean;
   dataDirectory: string;
   totalSavedProgressRecords: number;

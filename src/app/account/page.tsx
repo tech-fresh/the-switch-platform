@@ -4,6 +4,18 @@ import { getAccountOverviewApiData } from "@/lib/api/server";
 
 export const dynamic = "force-dynamic";
 
+function getAuthReadinessClasses(status: "development-only" | "needs-provider-setup" | "ready" | "external-managed"): string {
+  if (status === "ready") {
+    return "border-emerald-300 bg-emerald-50 text-emerald-950";
+  }
+
+  if (status === "external-managed") {
+    return "border-sky-300 bg-sky-50 text-sky-950";
+  }
+
+  return "border-amber-300 bg-amber-50 text-amber-950";
+}
+
 function formatSignedInAt(timestamp: string): string {
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -136,8 +148,8 @@ export default async function AccountPage({
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-          <div className="grid gap-6">
-            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+	          <div className="grid gap-6">
+	            <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-700">
                   Account-linked study actions
@@ -160,11 +172,21 @@ export default async function AccountPage({
                   </Link>
                 ))}
               </div>
-            </article>
+	            </article>
 
-            <article className="border border-stone-200 bg-white p-5 sm:p-6">
-              <div className="grid gap-5 lg:grid-cols-2">
-                <div>
+	            <article className="border border-stone-200 bg-white p-5 sm:p-6">
+	              <div className={`border p-4 ${getAuthReadinessClasses(account.authReadiness.status)}`}>
+	                <p className="text-xs font-semibold uppercase tracking-[0.2em] opacity-75">
+	                  Live sign-in readiness
+	                </p>
+	                <p className="mt-2 text-lg font-semibold">{account.authReadiness.title}</p>
+	                <p className="mt-2 text-sm leading-6 opacity-90">{account.authReadiness.detail}</p>
+	                <p className="mt-2 text-sm opacity-90">
+	                  Mode: {account.authReadiness.mode} • Configured providers: {account.authReadiness.configuredProviderCount}
+	                </p>
+	              </div>
+	              <div className="grid gap-5 lg:grid-cols-2">
+	                <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                     Sign-in options
                   </p>
@@ -195,6 +217,12 @@ export default async function AccountPage({
                   <div className="mt-4 border border-dashed border-stone-300 bg-stone-50 p-4 text-sm leading-7 text-stone-700">
                     {account.supportSummary}
                   </div>
+                  <Link
+                    href="/account/live-cookie-guide"
+                    className="mt-4 inline-flex border border-sky-200 bg-sky-50 px-3 py-2 text-sm font-medium text-sky-800 transition hover:bg-white"
+                  >
+                    Open live cookie guide
+                  </Link>
                   <div className="mt-4 border border-stone-200 bg-white p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Next best action</p>
                     <p className="mt-2 text-lg font-semibold text-stone-950">{account.nextBestAction}</p>

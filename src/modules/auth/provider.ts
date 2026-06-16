@@ -1,5 +1,11 @@
-import type { AuthProvider, AuthRole, AuthUser, SignInOption } from "./types";
-import { getAuthRuntimeConfig } from "./runtime";
+import type {
+  AuthProvider,
+  AuthReadinessSummary,
+  AuthRole,
+  AuthUser,
+  SignInOption,
+} from "./types";
+import { getAuthRuntimeConfig } from "./runtime.ts";
 
 export interface ResolvedAuthSessionUser {
   user: AuthUser;
@@ -111,6 +117,53 @@ export async function resolvePreviewUserForProvider(
 
 export async function getPreviewUserById(userId: string): Promise<AuthUser | null> {
   return authUsers[userId] ?? null;
+}
+
+export function getAuthReadinessSummary(): AuthReadinessSummary {
+  const runtime = getAuthRuntimeConfig();
+  const configuredProviders = runtime.mode === "oidc" ? getConfiguredOidcProviders() : [];
+
+  if (runtime.mode === "preview-cookie") {
+    return {
+      mode: runtime.mode,
+      status: "development-only",
+      configuredProviderCount: 0,
+      title: "Preview sign-in is active",
+      detail:
+        "This runtime is still using development-style preview sign-in. It is useful for local rehearsal, but it is not the final live sign-in path.",
+    };
+  }
+
+  if (runtime.mode === "external-header") {
+    return {
+      mode: runtime.mode,
+      status: "external-managed",
+      configuredProviderCount: 0,
+      title: "Sign-in is managed upstream",
+      detail:
+        "This runtime expects a trusted upstream identity layer to complete sign-in before requests arrive here.",
+    };
+  }
+
+  if (configuredProviders.length === 0) {
+    return {
+      mode: runtime.mode,
+      status: "needs-provider-setup",
+      configuredProviderCount: 0,
+      title: "Production sign-in still needs provider setup",
+      detail:
+        "The live sign-in path is enabled in principle, but no full production provider configuration is present in this runtime yet.",
+    };
+  }
+
+  return {
+    mode: runtime.mode,
+    status: "ready",
+    configuredProviderCount: configuredProviders.length,
+    title: "Production sign-in is ready in this runtime",
+    detail:
+      `The runtime has ${configuredProviders.length} configured production sign-in provider${configuredProviders.length === 1 ? "" : "s"} available for live account access.`,
+  };
 }
 
 export function getConfiguredOidcProviders(): OidcProviderConfig[] {

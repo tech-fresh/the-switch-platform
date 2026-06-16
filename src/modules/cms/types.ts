@@ -113,6 +113,7 @@ export interface CmsEditorialWorkflowSummary {
 }
 
 export interface CmsOverview {
+  backendMode: "live" | "read-only";
   providers: CmsProvider[];
   content: CmsContentReference[];
   publishedCount: number;

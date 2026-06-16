@@ -1,4 +1,5 @@
 import { getCmsBackend } from "@/modules/cms/backend";
+import { getCmsRuntimeConfig } from "@/modules/cms/runtime";
 import { getContentEditorialAudit, getMvpContentCatalog, isTopicStudentVisible } from "@/modules/content/service";
 import {
   assertValidCmsWorkflowUpdate,
@@ -235,6 +236,7 @@ const releaseChecklist: CmsReleaseChecklistModule[] = releaseChecklistDefinition
 }));
 
 export async function getCmsOverview(): Promise<CmsOverview> {
+  const cmsRuntime = getCmsRuntimeConfig();
   const [catalog, editorialAudit] = await Promise.all([
     getMvpContentCatalog(),
     getContentEditorialAudit(),
@@ -331,6 +333,7 @@ export async function getCmsOverview(): Promise<CmsOverview> {
   ]);
 
   return {
+    backendMode: cmsRuntime.backendMode,
     providers,
     content,
     publishedCount: content.filter((item) => item.status === "published").length,

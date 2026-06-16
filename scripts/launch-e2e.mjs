@@ -87,7 +87,7 @@ try {
   });
   assert(signedOutResults.response.status === 401, `Expected signed-out /api/results/overview to return 401, received ${signedOutResults.response.status}.`);
 
-  console.log("Launch end-to-end checks passed: student continuity, admin access, protected APIs, and sign-out all behaved correctly.");
+  console.log("Local end-to-end rehearsal passed: student continuity, admin access, protected APIs, and sign-out all behaved correctly in the preview-style test runtime.");
 } finally {
   await stopServer(server.child);
 }

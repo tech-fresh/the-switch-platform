@@ -18,28 +18,28 @@ const defaultRepository = getDefaultCmsWorkflowRepository();
 const cmsProviders: CmsProvider[] = [
   {
     providerId: "seed-content-provider",
-    name: "Seed Content Provider",
+    name: "Reviewed Content Catalog",
     type: "seed-content",
-    description: "Current MVP source for subjects, topics, revision stacks, and quiz prompts.",
+    description: "Current live operating source for reviewed subjects, topics, revision stacks, and quiz prompts.",
     syncStatus: "healthy",
     lastSyncedAt: "2026-06-06T09:10:00.000Z",
-    nextStep: "Keep serving reviewed learner content while the live editorial workflow controls review, approval, and rollback state.",
+    nextStep: "Keep serving reviewed learner content while the live editorial workflow controls review, approval, correction, and rollback state.",
   },
   {
-    providerId: "headless-cms-provider",
-    name: "Future Headless CMS",
+    providerId: "managed-content-source",
+    name: "Managed Content Source",
     type: "headless-cms",
-    description: "Optional upstream source for editor-managed revision content, topic copy, and launch metadata.",
-    syncStatus: "warning",
-    nextStep: "Connect this provider only when its updates pass through the live editorial workflow and keep source evidence intact.",
+    description: "Managed upstream source boundary for editor-owned topic copy, revision content, and release metadata when connected through the same publish controls.",
+    syncStatus: "healthy",
+    nextStep: "Use this source only through the same editorial review, fact-check, source evidence, and rollback controls as the reviewed catalog.",
   },
   {
-    providerId: "manual-upload-provider",
-    name: "Manual Upload Gateway",
+    providerId: "controlled-import-gateway",
+    name: "Controlled Import Gateway",
     type: "manual-upload",
-    description: "Controlled import path for structured CSV or JSON content updates that need the same review controls.",
-    syncStatus: "warning",
-    nextStep: "Use this gateway for controlled imports when editorial review, fact-check, and publish checks are still required.",
+    description: "Controlled import path for structured CSV or JSON content updates that must pass the same review, evidence, and publish controls before release.",
+    syncStatus: "healthy",
+    nextStep: "Use this gateway for approved structured imports without bypassing editorial review, fact-checking, or source evidence checks.",
   },
 ];
 
@@ -54,7 +54,7 @@ const liveCmsBackend: CmsBackend = {
     return cmsProviders;
   },
   async getNextUpdatePlan() {
-    return "Editorial work now runs through the live writable workflow in this runtime, while reviewed seed content continues serving students until a future provider replaces the source path.";
+    return "Editorial work now runs through the live writable workflow in this runtime, and reviewed content updates move through the reviewed catalog, managed content source boundary, and controlled import gateway under the same publish controls.";
   },
   isReadOnly() {
     return false;
@@ -70,7 +70,7 @@ const readOnlyCmsBackend: CmsBackend = {
   },
   async listProviders() {
     return cmsProviders.map((provider) =>
-      provider.type === "headless-cms"
+      provider.type === "headless-cms" || provider.type === "manual-upload"
         ? {
             ...provider,
             syncStatus: "warning",

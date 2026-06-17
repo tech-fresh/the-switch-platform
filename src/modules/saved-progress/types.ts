@@ -4,7 +4,7 @@ import type { TimedAssessmentQuestion } from "@/modules/timed-assessment/types";
 
 export type SavedProgressEntityType = "exam-session" | "timed-assessment-attempt";
 
-export type SavedProgressStatus = "in-progress" | "paused" | "submitted";
+export type SavedProgressStatus = "not-started" | "in-progress" | "paused" | "submitted";
 
 export interface SavedExamProgressPayload {
   currentQuestionId: string;

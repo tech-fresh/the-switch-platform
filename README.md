@@ -2532,18 +2532,61 @@ Use it when the codebase closeout is already in place and the remaining work is 
 - `Final Path Mark 1` = the repo, scripts, governance surfaces, and closeout structure are in place
 - `Final Path Mark 2` = the real deployed environment has been proven end to end and the final launch approval has been recorded
 
+Authoritative rule:
+
+- The following `Full End-to-End Completion List` is the only list to use when judging true 100% completion for this repository.
+- Use this same list in this README, in `AGENTS.md`, in this chat, and in any future chat or completion discussion for this repository.
+- Do not replace it with a shorter substitute list.
+- Short summaries are allowed only if they clearly point back to this list as the source of truth.
+
 `Final Path Mark 2` should only be marked complete when every item below is complete in the real target environment.
 
-#### Final Path Mark 2 completion list
+#### Full End-to-End Completion List
 
-1. Run the real deployed sign-in path with the intended provider, callback, session, sign-out, and protected-route proof.
-2. Prove the live student-data path for saved progress, results, account-linked settings, recovery, backup, and restore.
-3. Confirm the live editorial and content workflow is the real operating path for review, approval, publish, rollback, and blocked-content handling.
-4. Run the final live route walkthrough across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
-5. Record the true environment evidence for auth, persistence, editorial mode, smoke checks, and route walkthrough outcomes.
-6. Record named privacy, safeguarding, support, incident, and release-approval ownership against the real environment.
-7. Run the final launch command sequence and keep the generated evidence as the permanent release record.
-8. Confirm the README, admin launch view, runtime state, and release evidence all tell the same final story.
+1. Configure the real live auth environment.
+   Set `SWITCH_AUTH_MODE=oidc`, `SWITCH_AUTH_SECRET`, `SWITCH_AUTH_BASE_URL`, and one complete live OIDC provider block.
+2. Prove the real deployed sign-in flow.
+   Verify sign-in, callback, session creation, sign-out, and protected-route access in the live environment.
+3. Configure the real live persistence environment.
+   Set `SWITCH_PERSISTENCE_DRIVER=sqlite` and `SWITCH_DATA_DIRECTORY` to the intended shared live student-data setup.
+4. Prove live student-data continuity.
+   Verify saved progress, results, account-linked settings, and session continuity across real usage.
+5. Prove backup, restore, and recovery.
+   Run live backup, restore, and recovery checks for the student-data path.
+6. Configure the live CMS and editorial runtime.
+   Set `SWITCH_CMS_BACKEND_MODE=live` and confirm the intended writable editorial operating mode.
+7. Prove the live editorial workflow.
+   Verify review, approval, publish, rollback, and blocked-content handling through the real operating path.
+8. Configure live governance recording.
+   Set `SWITCH_RECORD_GOVERNANCE=1` and `SWITCH_GOVERNANCE_ENVIRONMENT` for the target release environment.
+9. Provide named launch ownership.
+   Set `SWITCH_LAUNCH_APPROVER` and `SWITCH_LAUNCH_STOP_AUTHORITY`.
+10. Provide governance review notes.
+   Set `SWITCH_GOVERNANCE_PRIVACY_REVIEW_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_REVIEW_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_REVIEW_NOTE`.
+11. Provide governance sign-off notes.
+   Set `SWITCH_GOVERNANCE_PRIVACY_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_ALERTS_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_INCIDENT_SIGNOFF_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_SIGNOFF_NOTE`.
+12. Configure the live base URL.
+   Set `SWITCH_LIVE_BASE_URL` to the deployed platform URL.
+13. Provide live route test access.
+   For cookie or OIDC live auth, set `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE`. For `external-header` live auth, set the matching live student and live admin identity environment values required by the walkthrough runtime.
+14. Run live readiness verification.
+   Execute `npm run verify:live-readiness`.
+15. Run live persistence recovery verification.
+   Execute `npm run verify:persistence-recovery`.
+16. Run the final live walkthrough.
+   Execute `npm run verify:live-walkthrough` across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
+17. Run the final governance sign-off.
+   Execute `npm run verify:launch-signoff`.
+18. Run the final launch completion sequence.
+   Execute `npm run verify:launch-complete`.
+19. Store the release evidence permanently.
+   Keep the outputs from readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
+20. Confirm system-wide truth matches.
+   Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
+
+Completion rule:
+
+- Only when all 20 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
 
 #### Final Path Mark 2 command order
 

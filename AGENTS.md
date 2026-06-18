@@ -258,3 +258,51 @@ Before reporting a task as done, ask yourself:
 5. if there is something needed add it to agents create prompt when change is needed.
 6. 
 
+## Final Phase Mark 2
+
+This is the only list that should be referred to for full completion.
+
+Do not deviate from this list when describing the remaining path to full launch readiness.
+
+1. Configure the real live auth environment.
+   Set `SWITCH_AUTH_SECRET`, `SWITCH_AUTH_BASE_URL`, and one complete live OIDC provider block.
+2. Prove the real deployed sign-in flow.
+   Verify sign-in, callback, session creation, sign-out, and protected-route access in the live environment.
+3. Configure the real live persistence environment.
+   Set `SWITCH_PERSISTENCE_DRIVER` and `SWITCH_DATA_DIRECTORY` to the intended shared live student-data setup.
+4. Prove live student-data continuity.
+   Verify saved progress, results, account-linked settings, and session continuity across real usage.
+5. Prove backup and restore.
+   Run live backup, restore, and recovery checks for the student-data path.
+6. Configure the live CMS/editorial runtime.
+   Set `SWITCH_CMS_BACKEND_MODE` to the intended live mode and confirm writable editorial operations.
+7. Prove the live editorial workflow.
+   Verify review, approval, publish, rollback, and blocked-content handling through the real operating path.
+8. Configure live governance recording.
+   Set `SWITCH_RECORD_GOVERNANCE=true` and `SWITCH_GOVERNANCE_ENVIRONMENT` for the target release environment.
+9. Provide named launch ownership.
+   Set `SWITCH_LAUNCH_APPROVER` and `SWITCH_LAUNCH_STOP_AUTHORITY`.
+10. Provide governance review notes.
+    Set `SWITCH_GOVERNANCE_PRIVACY_REVIEW_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_REVIEW_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_REVIEW_NOTE`.
+11. Provide governance sign-off notes.
+    Set `SWITCH_GOVERNANCE_PRIVACY_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_ALERTS_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_INCIDENT_SIGNOFF_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_SIGNOFF_NOTE`.
+12. Configure the live base URL.
+    Set `SWITCH_LIVE_BASE_URL` to the deployed platform URL.
+13. Provide live route test access.
+    Set `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE`.
+14. Run live readiness verification.
+    Execute `npm run verify:live-readiness`.
+15. Run live persistence recovery verification.
+    Execute `npm run verify:persistence-recovery`.
+16. Run the final live walkthrough.
+    Execute `npm run verify:live-walkthrough` across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
+17. Run the final governance sign-off.
+    Execute `npm run verify:launch-signoff`.
+18. Run the final launch completion sequence.
+    Execute `npm run verify:launch-complete`.
+19. Store the release evidence permanently.
+    Keep the outputs from readiness, recovery, walkthrough, sign-off, and launch-complete as the final release record.
+20. Confirm system-wide truth matches.
+    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
+
+When all 20 are done, that is the full end-to-end completion list for full launch readiness.

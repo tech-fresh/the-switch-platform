@@ -1,4 +1,4 @@
-import type { AccountOverview, AuthSession, SignInOption } from "./types";
+import type { AccountOverview, AuthRuntimeConfig, AuthSession, SignInOption } from "./types";
 
 export type AuthContractRoute =
   | "GET /auth/session"
@@ -7,10 +7,12 @@ export type AuthContractRoute =
 
 export interface GetAuthSessionResponse {
   session: AuthSession;
+  runtime: AuthRuntimeConfig;
 }
 
 export interface GetAuthProvidersResponse {
   providers: SignInOption[];
+  runtime: AuthRuntimeConfig;
 }
 
 export interface GetAccountOverviewResponse {

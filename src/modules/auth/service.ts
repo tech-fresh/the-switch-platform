@@ -4,6 +4,7 @@ import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import { getStudentRecommendations } from "@/modules/recommendations/service";
 import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
 import { getMockSubjects } from "@/modules/subjects/service";
+import { getAuthRuntimeConfig, getConfiguredSessionProvider } from "./runtime";
 import type {
   AccountLink,
   AccountMetric,
@@ -25,7 +26,7 @@ const mockUsers: Record<string, AuthUser> = {
   },
 };
 
-const signInOptions: SignInOption[] = [
+const fallbackSignInOptions: SignInOption[] = [
   {
     provider: "email-magic-link",
     label: "Email magic link",
@@ -45,29 +46,44 @@ const signInOptions: SignInOption[] = [
 
 export async function getCurrentAuthSession(userId = "student-demo"): Promise<AuthSession> {
   const user = mockUsers[userId] ?? mockUsers["student-demo"];
+  const provider = getConfiguredSessionProvider();
 
   return {
     sessionId: `session-${user.userId}`,
     user,
-    provider: "email-magic-link",
+    provider,
     signedInAt: "2026-06-06T08:15:00.000Z",
     status: "authenticated",
   };
 }
 
 export async function getSignInOptions(): Promise<SignInOption[]> {
-  return signInOptions;
+  const runtime = getAuthRuntimeConfig();
+
+  if (!runtime.isLiveConfigured) {
+    return fallbackSignInOptions;
+  }
+
+  return [
+    {
+      provider: "oidc",
+      label: runtime.oidcProvider.providerName ?? "OIDC",
+      description: `Live OIDC sign in via ${runtime.oidcProvider.issuerUrl}.`,
+    },
+  ];
 }
 
 export async function getAccountOverview(userId = "student-demo"): Promise<AccountOverview> {
-  const [session, summary, savedProgress, accessibility, recommendations, routeCopy] = await Promise.all([
-    getCurrentAuthSession(userId),
-    getMockPowerGridSummary(),
-    getSavedProgressOverview({ userId }),
-    getAccessibilitySnapshot(userId),
-    getStudentRecommendations(userId),
-    getRouteCopy(),
-  ]);
+  const [session, signInOptions, summary, savedProgress, accessibility, recommendations, routeCopy] =
+    await Promise.all([
+      getCurrentAuthSession(userId),
+      getSignInOptions(),
+      getMockPowerGridSummary(),
+      getSavedProgressOverview({ userId }),
+      getAccessibilitySnapshot(userId),
+      getStudentRecommendations(userId),
+      getRouteCopy(),
+    ]);
 
   const subjects = getMockSubjects();
   const metrics: AccountMetric[] = [

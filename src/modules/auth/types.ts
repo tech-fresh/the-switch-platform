@@ -1,4 +1,4 @@
-export type AuthProvider = "email-magic-link" | "google" | "apple";
+export type AuthProvider = "email-magic-link" | "google" | "apple" | "oidc";
 
 export interface AuthUser {
   userId: string;
@@ -22,6 +22,24 @@ export interface SignInOption {
   provider: AuthProvider;
   label: string;
   description: string;
+}
+
+export interface OidcProviderConfig {
+  provider: "oidc";
+  providerId?: string;
+  providerName?: string;
+  issuerUrl?: string;
+  clientId?: string;
+  clientSecret?: string;
+  scopes: string[];
+}
+
+export interface AuthRuntimeConfig {
+  secret?: string;
+  baseUrl?: string;
+  oidcProvider: OidcProviderConfig;
+  isLiveConfigured: boolean;
+  missingVariables: string[];
 }
 
 export interface AccountMetric {

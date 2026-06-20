@@ -707,3 +707,18 @@ Use this section as the current website mockup direction until a newer named cha
 - Treat Vercel as the primary current deployment platform during this session unless the user explicitly changes platform direction.
 - Keep Google OIDC as the preferred auth-provider direction for `Full End-to-End Completion List` item 1 unless the user explicitly reprioritises auth strategy.
 - Do not overwrite existing deployment or auth notes when adding newer guidance; append new Vercel-related notes cumulatively.
+
+## Documentation Rule
+
+- When adding new project truth, recovery notes, deployment notes, architecture notes, auth notes, or completion notes, append them to `README.md` and `AGENTS.md`.
+- Do not overwrite earlier records unless the earlier content is genuinely wrong or obsolete and the replacement is stated explicitly.
+- Prefer cumulative history over replacement history.
+- When a feature or launch issue is explained, add a plain-English explanation as well as any technical note.
+- When a workflow is hard to follow, add a simple diagram in `README.md` if it helps the next session or operator understand the path faster.
+
+## Current Auth Learning Note
+
+- The live auth path and the preview auth path can look similar in the account UI, so future sessions should verify the active runtime mode before claiming the real sign-in path is complete.
+- A signed-in preview session can still show a provider label such as `google`, but that does not by itself prove a real external Google identity round-trip happened.
+- The real live auth goal is: deployed runtime in `oidc` mode, full provider block present, redirect callback succeeds, session is created, sign-out works, and protected routes behave correctly.
+- Microsoft support has now been added in code alongside Google, Apple, and Email Magic Link provider slots.

@@ -4268,3 +4268,58 @@ Why this matters:
 
 - the active tool and hosting direction are now recorded in the repo instead of being trapped only in session chat
 - future sessions can stay aligned with the same Vercel-plus-Google-OIDC path without losing earlier documentation
+
+### 52. Plain-English auth and deployment learning record (Recorded)
+
+This repo now includes a clearer non-coder explanation of what happened during the Vercel auth and deployment troubleshooting path.
+
+Plain-English explanation:
+
+- the website has two different sign-in worlds:
+  - a preview/demo world used for rehearsal
+  - a real live sign-in world used for actual external identity providers
+- those two worlds can look similar on the account page
+- because of that, future checks should not assume that seeing the word `google` on screen automatically proves a real Google sign-in happened
+- the live path is only proven when the deployed website really redirects out to the identity provider, comes back through the callback route, creates a session, signs out correctly, and protects routes correctly
+
+What went wrong in this session:
+
+- the deployed Vercel runtime first failed because the app tried to write persistence files into a read-only serverless path
+- after that was fixed, the account journey still showed mixed behaviour because preview-mode auth and live OIDC auth were being confused during operator checks
+- the account UI therefore needed to be interpreted carefully rather than assumed to be final-path proof
+
+What was fixed in code:
+
+- the persistence runtime now falls back to a writable temp directory in serverless runtimes when no explicit data directory is configured
+- Microsoft was added as a supported auth provider option alongside Google, Apple, and Email Magic Link provider slots
+
+Simple architecture explanation:
+
+- the account page is the visible front door
+- the API auth routes handle starting sign-in, callback return, session read, and sign-out
+- the auth module decides whether the runtime is using preview auth, OIDC auth, or external-header auth
+- the persistence layer stores supporting session and account-linked data
+
+Auth path diagram:
+
+```mermaid
+flowchart LR
+    A["Account page"] --> B["/api/auth/start"]
+    B --> C{"Auth mode"}
+    C -->|preview-cookie| D["Create demo session cookie"]
+    C -->|oidc| E["Redirect to external identity provider"]
+    E --> F["/api/auth/callback"]
+    F --> G["Create signed session cookie"]
+    G --> H["Return to account page signed in"]
+```
+
+Session-learning rule:
+
+- seeing `preview` language means the runtime is not currently proving the real live sign-in path
+- seeing a signed-in state alone is not enough; the route flow and runtime mode must also match the intended live auth path
+
+Documentation rule for future sessions:
+
+- append to `README.md` and `AGENTS.md`
+- do not silently overwrite earlier project record unless the earlier material is truly obsolete or incorrect
+- add diagrams when they make the system easier to understand for the next operator

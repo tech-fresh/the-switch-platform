@@ -267,32 +267,35 @@ Do not describe the platform as fully complete unless every item below is comple
    Set `SWITCH_LIVE_BASE_URL` to the deployed platform URL.
 14. Provide live route test access.
    For cookie or OIDC live auth, set `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE`. For `external-header` live auth, set the matching live student and live admin identity environment values required by the walkthrough runtime.
-15. Run live readiness verification.
+15. Run live launch status verification.
+   Execute `npm run verify:launch-status` and confirm the report shows the intended release environment inputs, command order, and any remaining live-only gaps truthfully before the final run starts.
+16. Run live readiness verification.
    Execute `npm run verify:live-readiness`.
-16. Run live persistence recovery verification.
+17. Run live persistence recovery verification.
    Execute `npm run verify:persistence-recovery`.
-17. Run the final live walkthrough.
+18. Run the final live walkthrough.
    Execute `npm run verify:live-walkthrough` across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
-18. Run the final governance sign-off.
+19. Run the final governance sign-off.
    Execute `npm run verify:launch-signoff`.
-19. Run the final launch completion sequence.
+20. Run the final launch completion sequence.
    Execute `npm run verify:launch-complete`.
-20. Store the release evidence permanently.
-   Keep the outputs from readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
-21. Confirm system-wide truth matches.
+21. Store the release evidence permanently.
+   Keep the outputs from launch-status, readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
+22. Confirm system-wide truth matches.
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
 
 Completion rule:
 
-- Only when all 21 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
+- Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
 
 Recommended final live command order:
 
-1. `npm run verify:live-readiness`
-2. `npm run verify:persistence-recovery`
-3. `npm run verify:live-walkthrough`
-4. `npm run verify:launch-signoff`
-5. `npm run verify:launch-complete`
+1. `npm run verify:launch-status`
+2. `npm run verify:live-readiness`
+3. `npm run verify:persistence-recovery`
+4. `npm run verify:live-walkthrough`
+5. `npm run verify:launch-signoff`
+6. `npm run verify:launch-complete`
 
 Completion language rule:
 

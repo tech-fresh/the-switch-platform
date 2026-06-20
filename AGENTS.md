@@ -18,6 +18,7 @@
 7. Accessibility
 8. Read Aloud
 9. Access Arrangements
+10. Guided sign-up and onboarding
 
 ## Development Rules
 
@@ -46,6 +47,9 @@
 - Do not build school administration tools until explicitly prioritised.
 - Access Arrangements API contracts must be framework-neutral until the app stack is chosen.
 - Website and future mobile clients must consume Access Arrangements through the API layer, not duplicate the rules.
+- Guided sign-up must capture learner stage, school context, qualification path, and subject setup before the personalised dashboard is treated as ready.
+- Guardian invite and age-or-consent checks must remain part of the onboarding architecture for school-age learners.
+- Onboarding choices must feed dashboard, planner, saved progress, and recommendation setup through shared API and module boundaries.
 
 ## Build Priority
 
@@ -222,46 +226,48 @@ Do not describe the platform as fully complete unless every item below is comple
    Set `SWITCH_AUTH_MODE=oidc`, `SWITCH_AUTH_SECRET`, `SWITCH_AUTH_BASE_URL`, and one complete live OIDC provider block.
 2. Prove the real deployed sign-in flow.
    Verify sign-in, callback, session creation, sign-out, and protected-route access in the live environment.
-3. Configure the real live persistence environment.
+3. Prove the real deployed sign-up and onboarding flow.
+   Verify welcome, learner-role selection, school and year-group capture, qualification-path capture, subject selection, guardian invite path, age-or-consent confirmation, and first dashboard provisioning in the live environment.
+4. Configure the real live persistence environment.
    Set `SWITCH_PERSISTENCE_DRIVER=sqlite` and `SWITCH_DATA_DIRECTORY` to the intended shared live student-data setup.
-4. Prove live student-data continuity.
+5. Prove live student-data continuity.
    Verify saved progress, results, account-linked settings, and session continuity across real usage.
-5. Prove backup, restore, and recovery.
+6. Prove backup, restore, and recovery.
    Run live backup, restore, and recovery checks for the student-data path.
-6. Configure the live CMS and editorial runtime.
+7. Configure the live CMS and editorial runtime.
    Set `SWITCH_CMS_BACKEND_MODE=live` and confirm the intended writable editorial operating mode.
-7. Prove the live editorial workflow.
+8. Prove the live editorial workflow.
    Verify review, approval, publish, rollback, and blocked-content handling through the real operating path.
-8. Configure live governance recording.
+9. Configure live governance recording.
    Set `SWITCH_RECORD_GOVERNANCE=1` and `SWITCH_GOVERNANCE_ENVIRONMENT` for the target release environment.
-9. Provide named launch ownership.
+10. Provide named launch ownership.
    Set `SWITCH_LAUNCH_APPROVER` and `SWITCH_LAUNCH_STOP_AUTHORITY`.
-10. Provide governance review notes.
+11. Provide governance review notes.
    Set `SWITCH_GOVERNANCE_PRIVACY_REVIEW_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_REVIEW_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_REVIEW_NOTE`.
-11. Provide governance sign-off notes.
+12. Provide governance sign-off notes.
    Set `SWITCH_GOVERNANCE_PRIVACY_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_ALERTS_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_INCIDENT_SIGNOFF_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_SIGNOFF_NOTE`.
-12. Configure the live base URL.
+13. Configure the live base URL.
    Set `SWITCH_LIVE_BASE_URL` to the deployed platform URL.
-13. Provide live route test access.
+14. Provide live route test access.
    For cookie or OIDC live auth, set `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE`. For `external-header` live auth, set the matching live student and live admin identity environment values required by the walkthrough runtime.
-14. Run live readiness verification.
+15. Run live readiness verification.
    Execute `npm run verify:live-readiness`.
-15. Run live persistence recovery verification.
+16. Run live persistence recovery verification.
    Execute `npm run verify:persistence-recovery`.
-16. Run the final live walkthrough.
+17. Run the final live walkthrough.
    Execute `npm run verify:live-walkthrough` across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
-17. Run the final governance sign-off.
+18. Run the final governance sign-off.
    Execute `npm run verify:launch-signoff`.
-18. Run the final launch completion sequence.
+19. Run the final launch completion sequence.
    Execute `npm run verify:launch-complete`.
-19. Store the release evidence permanently.
+20. Store the release evidence permanently.
    Keep the outputs from readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
-20. Confirm system-wide truth matches.
+21. Confirm system-wide truth matches.
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
 
 Completion rule:
 
-- Only when all 20 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
+- Only when all 21 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
 
 Recommended final live command order:
 
@@ -541,3 +547,109 @@ Before reporting a task as done, ask yourself:
 5. if there is something needed add it to agents create prompt when change is needed.
 6.
 ```
+
+## Changes 1.0
+
+Use this section as the current website mockup direction until a newer named change set replaces it.
+
+### Changes 1.0 intent
+
+- Streamline the website so it feels launch-ready, calmer, and easier to use.
+- Keep the dashboard as the operational home for the student experience.
+- Add planner-led structure without making the product feel crowded.
+- Add weekly reports and FAQ/support surfaces as part of the main website direction.
+
+### Changes 1.0 main website direction
+
+- Keep the main student navigation focused on:
+  - `Dashboard`
+  - `Subjects`
+  - `Practice`
+  - `Progress`
+  - `Planner`
+- Keep `Account` and `Support` available but visually secondary to the main student workflow.
+- Avoid large numbers of equal-weight dashboard cards.
+- Prefer one strong primary action area, one planner area, one continue area, and one slim performance summary area.
+
+### Changes 1.0 dashboard direction
+
+- The dashboard should act as the working student home screen.
+- The planner should be visible on the dashboard in weekly form, inspired by the provided weekly planner references.
+- The planner should not dominate the full dashboard width unless explicitly prioritised later.
+- The best current direction is:
+  - hero greeting and daily focus
+  - `Next Best Step`
+  - integrated weekly planner
+  - `Continue where you left off`
+  - slim `Study Pulse` or `Power Grid` summary
+- Prefer lists, rails, chips, and slim summaries over many large stacked cards.
+
+### Changes 1.0 planner rules
+
+- Use a weekly planner first, with optional monthly toggle.
+- Keep event blocks rounded, soft, and colour-coded by study type or subject.
+- Auto-linked study items should eventually come from exams, timed assessments, saved progress, and subject tasks through the API layer.
+- Do not let the planner visually replace the exam engine, timed assessment, or saved progress modules.
+- Treat the planner as the organising layer above the modules, not as a duplicate logic system.
+
+### Changes 1.0 weekly reports direction
+
+- Add a `Weekly Reports` page or section to summarise:
+  - study time
+  - assignments or practice completion
+  - average score
+  - focus areas by subject
+- The weekly reports direction should be inspired by the provided report reference, but cleaner and more premium.
+- The page should work for students first and also feel parent-readable.
+- Use subject filter chips and weekly/monthly toggles only when they stay visually light.
+- Avoid overcrowding the reports screen with too many chart types at once.
+
+### Changes 1.0 FAQ/support direction
+
+- Add a dedicated FAQ/support page with large rounded accordion rows.
+- The FAQ direction should be inspired by the provided FAQ reference but aligned to The Switch visual language.
+- Keep FAQ pages calm, spacious, and readable.
+- Prefer a short intro, a clean accordion list, and one clear support CTA.
+- Support content should remain signposting-first and should not pretend to be counselling or AI wellbeing support.
+
+### Changes 1.0 page set to use for mockups and future design planning
+
+- Homepage
+- Dashboard with integrated planner
+- Weekly Reports
+- Subjects
+- Practice
+- FAQ / Support
+
+### Changes 1.0 onboarding direction
+
+- The product should include a guided sign-up and onboarding flow inspired by the supplied mobile signup references.
+- The intended onboarding journey should include:
+  - welcome and role entry
+  - progressive step-based onboarding
+  - school and year-group capture
+  - qualification-path selection
+  - subject selection
+  - optional guardian invite
+  - age-or-consent confirmation
+  - first dashboard build after onboarding completion
+- The website version can simplify the visuals, but it should preserve the same journey shape and data capture intent.
+- Onboarding outcomes should shape the first dashboard, planner defaults, subject surfaces, and recommendation setup.
+
+### Changes 1.0 style directions approved for exploration
+
+- `Launch Fit`
+  - the cleanest and most balanced direction
+  - best default for launch planning
+- `Premium Editorial`
+  - more mature and brand-led
+  - suitable if a stronger trust and premium tone is wanted
+- `App-First Planner`
+  - stronger planner and habit-building identity
+  - suitable only if the product should lean more heavily into planning behaviour
+
+### Changes 1.0 recommendation
+
+- Treat `Launch Fit` as the current best default direction.
+- Keep planner, weekly reports, and FAQ in the product direction, but do not let them overload the first-screen dashboard experience.
+- Use mockups to validate page hierarchy before implementing new UI patterns.

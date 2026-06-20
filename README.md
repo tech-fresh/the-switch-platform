@@ -50,8 +50,9 @@ This repository follows the current The Switch Platform Mark 3.2 product spec.
 7. Accessibility
 8. Read Aloud
 9. Access Arrangements foundation
-10. Year 10 end-of-year progression papers that prepare students for GCSE-style questions
-11. Qualification-aware content and exam coverage across GCSE and iGCSE routes
+10. Guided sign-up and onboarding
+11. Year 10 end-of-year progression papers that prepare students for GCSE-style questions
+12. Qualification-aware content and exam coverage across GCSE and iGCSE routes
 
 ### Non-negotiable development rules
 
@@ -80,6 +81,9 @@ This repository follows the current The Switch Platform Mark 3.2 product spec.
 - Do not build school administration tools until explicitly prioritised.
 - Access Arrangements API contracts must stay framework-neutral until the app stack is chosen.
 - Website and future mobile clients must consume Access Arrangements through the API layer rather than duplicating the rules.
+- Guided sign-up must capture learner stage, school context, qualification path, and subject setup before the personalised dashboard is treated as ready.
+- Guardian invite and age-or-consent checks must remain part of the onboarding architecture for school-age learners.
+- Onboarding choices must feed dashboard, planner, saved progress, and recommendation setup through shared API and module boundaries.
 - Reviewed-only student visibility is required for structured learning content.
 - Source attribution is required for structured learning content and generated study visuals.
 - Fact-check gates are required before draft content becomes student visible.
@@ -110,6 +114,7 @@ This is the order the MVP should be pushed forward in unless a new instruction o
 - Saved Progress should behave like a real cross-module autosave and resume system.
 - Read Aloud should appear inside real student flows, not only in isolated previews.
 - Dashboard should aggregate the higher-priority modules rather than invent separate logic.
+- Sign-up and onboarding should build the first dashboard, planner defaults, and learner context instead of leaving those choices implicit.
 - Content should not keep expanding toward student-facing publication without a real fact-check and editorial approval workflow.
 - Year 10 end-of-year work should prepare students for GCSE expectations rather than acting like a disconnected lower-stakes mode.
 - CMS/Admin should stay architectural and placeholder-focused during MVP unless reprioritised.
@@ -2547,46 +2552,48 @@ Authoritative rule:
    Set `SWITCH_AUTH_MODE=oidc`, `SWITCH_AUTH_SECRET`, `SWITCH_AUTH_BASE_URL`, and one complete live OIDC provider block.
 2. Prove the real deployed sign-in flow.
    Verify sign-in, callback, session creation, sign-out, and protected-route access in the live environment.
-3. Configure the real live persistence environment.
+3. Prove the real deployed sign-up and onboarding flow.
+   Verify welcome, learner-role selection, school and year-group capture, qualification-path capture, subject selection, guardian invite path, age-or-consent confirmation, and first dashboard provisioning in the live environment.
+4. Configure the real live persistence environment.
    Set `SWITCH_PERSISTENCE_DRIVER=sqlite` and `SWITCH_DATA_DIRECTORY` to the intended shared live student-data setup.
-4. Prove live student-data continuity.
+5. Prove live student-data continuity.
    Verify saved progress, results, account-linked settings, and session continuity across real usage.
-5. Prove backup, restore, and recovery.
+6. Prove backup, restore, and recovery.
    Run live backup, restore, and recovery checks for the student-data path.
-6. Configure the live CMS and editorial runtime.
+7. Configure the live CMS and editorial runtime.
    Set `SWITCH_CMS_BACKEND_MODE=live` and confirm the intended writable editorial operating mode.
-7. Prove the live editorial workflow.
+8. Prove the live editorial workflow.
    Verify review, approval, publish, rollback, and blocked-content handling through the real operating path.
-8. Configure live governance recording.
+9. Configure live governance recording.
    Set `SWITCH_RECORD_GOVERNANCE=1` and `SWITCH_GOVERNANCE_ENVIRONMENT` for the target release environment.
-9. Provide named launch ownership.
+10. Provide named launch ownership.
    Set `SWITCH_LAUNCH_APPROVER` and `SWITCH_LAUNCH_STOP_AUTHORITY`.
-10. Provide governance review notes.
+11. Provide governance review notes.
    Set `SWITCH_GOVERNANCE_PRIVACY_REVIEW_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_REVIEW_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_REVIEW_NOTE`.
-11. Provide governance sign-off notes.
+12. Provide governance sign-off notes.
    Set `SWITCH_GOVERNANCE_PRIVACY_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_ALERTS_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_INCIDENT_SIGNOFF_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_SIGNOFF_NOTE`.
-12. Configure the live base URL.
+13. Configure the live base URL.
    Set `SWITCH_LIVE_BASE_URL` to the deployed platform URL.
-13. Provide live route test access.
+14. Provide live route test access.
    For cookie or OIDC live auth, set `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE`. For `external-header` live auth, set the matching live student and live admin identity environment values required by the walkthrough runtime.
-14. Run live readiness verification.
+15. Run live readiness verification.
    Execute `npm run verify:live-readiness`.
-15. Run live persistence recovery verification.
+16. Run live persistence recovery verification.
    Execute `npm run verify:persistence-recovery`.
-16. Run the final live walkthrough.
+17. Run the final live walkthrough.
    Execute `npm run verify:live-walkthrough` across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
-17. Run the final governance sign-off.
+18. Run the final governance sign-off.
    Execute `npm run verify:launch-signoff`.
-18. Run the final launch completion sequence.
+19. Run the final launch completion sequence.
    Execute `npm run verify:launch-complete`.
-19. Store the release evidence permanently.
+20. Store the release evidence permanently.
    Keep the outputs from readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
-20. Confirm system-wide truth matches.
+21. Confirm system-wide truth matches.
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
 
 Completion rule:
 
-- Only when all 20 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
+- Only when all 21 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
 
 #### Final Path Mark 2 command order
 
@@ -2675,6 +2682,29 @@ flowchart LR
 ## Recent Additions
 
 This section is kept near the bottom on purpose so the README can read as a full project guide first and a latest-changes log second.
+
+### Guided sign-up and onboarding direction
+
+The product direction now explicitly includes a guided sign-up and onboarding flow inspired by the supplied reference journey.
+
+That means the intended learner account path should include:
+
+- welcome and role entry
+- progressive onboarding with visible step state
+- school and year-group capture
+- qualification-path selection
+- subject selection
+- optional guardian invite
+- age-or-consent confirmation
+- first dashboard build after onboarding completion
+
+This direction is now part of the MVP plan rather than a later polish idea.
+
+Architecture rule:
+
+- onboarding should stay thin in the website frontend
+- auth, account, learner-profile, subject-selection, and guardian-invite rules should live behind shared API and module boundaries
+- dashboard, planner, recommendations, and saved progress should consume onboarding outcomes instead of re-asking for the same setup separately
 
 ### Shared repository and persistence foundation
 

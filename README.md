@@ -2723,6 +2723,29 @@ UK school-source direction:
 
 These links should be treated as maintained source-entry points for school lookup planning rather than replaced by one hardcoded local school list.
 
+### Later qualification expansion direction
+
+This is a later expansion note and not part of the current active MVP list or current active build-priority order.
+
+Future qualification expansion should be handled by qualification family, not by incorrectly placing every nation into one GCSE bucket.
+
+Planned later-direction categories:
+
+- England GCSE
+- Wales GCSE
+- Northern Ireland GCSE
+- broader iGCSE coverage
+- Scotland as a separate qualification family
+- Republic of Ireland as a separate qualification family
+
+Rules for this later expansion:
+
+- do not describe Scottish qualification content as GCSE content
+- do not describe Republic of Ireland qualification content as GCSE content
+- keep nation and qualification selection explicit in onboarding and account setup
+- let dashboard, planner, recommendations, and content access adapt from the selected qualification route
+- only move these later-direction categories into active delivery when the current MVP and launch path can support the added content, routing, and quality-control load
+
 ### Shared repository and persistence foundation
 
 The architecture now has a cleaner shared persistence boundary for core local data flows instead of each module owning its own file-write pattern.

@@ -649,6 +649,24 @@ Use this section as the current website mockup direction until a newer named cha
   - Wales: `https://mylocalschool.gov.wales/`
   - Northern Ireland: `https://www.eani.org.uk/`
 
+### Changes 1.0 later qualification expansion direction
+
+- This is a later expansion note only and should not be added to the current active MVP list or active build-priority order unless explicitly reprioritised.
+- Future qualification expansion should be handled by qualification family rather than treating every nation as one GCSE content bucket.
+- Planned later-direction categories:
+  - England GCSE
+  - Wales GCSE
+  - Northern Ireland GCSE
+  - broader iGCSE coverage
+  - Scotland as a separate qualification family
+  - Republic of Ireland as a separate qualification family
+- Rules for this later expansion:
+  - do not describe Scottish qualification content as GCSE content
+  - do not describe Republic of Ireland qualification content as GCSE content
+  - keep nation and qualification selection explicit in onboarding and account setup
+  - let dashboard, planner, recommendations, and content access adapt from the selected qualification route
+  - only move these later-direction categories into active delivery when the current MVP and launch path can support the added content, routing, and quality-control load
+
 ### Changes 1.0 style directions approved for exploration
 
 - `Launch Fit`

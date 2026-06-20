@@ -4142,3 +4142,110 @@ This is useful to learn because it shows another architecture habit in the repo:
 
 - operational guidance can live in the product shell
 - but the product shell should still describe and support the real backend workflow, not bypass it
+
+### 44. Full project audit and launch completion plan (Completed)
+
+The repo now includes a fuller written audit of what is built, what is still provisional, and what still blocks a true live launch.
+
+Added guidance includes:
+
+- a clearer full-project audit and launch-completion path in the repository documentation
+- stronger separation between repository-complete work and live-environment-only completion work
+- a more explicit rule that the platform should not be described as fully complete until the real deployment path is proven
+
+Why this matters:
+
+- the repo history now tells the truth about what is code-complete versus what still depends on external setup
+- future work can build from a shared baseline instead of re-auditing the same areas from scratch
+
+### 45. Final-path and local preview auth documentation (Completed)
+
+The repo documentation now explains the local preview auth path and the final-path launch truth more clearly.
+
+Added guidance includes:
+
+- clearer final-path notes for local preview auth versus real live auth
+- stronger wording around the difference between repository readiness and deployed-environment proof
+- documentation support for local account testing without overstating launch completeness
+
+Why this matters:
+
+- day-to-day product work can keep moving with a usable local auth path
+- the repo stays honest about the remaining live OIDC and deployment requirements
+
+### 46. Netlify deploy config and completion source of truth (Completed)
+
+The repo now includes the Netlify deployment configuration and the clearer completion source-of-truth framing that was pushed alongside the final-path work.
+
+Added guidance includes:
+
+- `netlify.toml` for deployment configuration
+- stronger completion language that points back to the full end-to-end launch criteria
+- a more explicit release record in the repo history
+
+Why this matters:
+
+- deployment expectations are now present in the repository rather than implied
+- completion claims are tied back to one consistent standard
+
+### 47. Onboarding launch requirements and school-source documentation (Completed)
+
+The repo documentation now records the onboarding requirements needed before the personalised student dashboard should be treated as ready.
+
+Added guidance includes:
+
+- learner stage, school context, qualification path, subject setup, accessibility support, guardian invite, and consent requirements
+- maintained UK school-source entry points for England, Scotland, Wales, and Northern Ireland
+- stronger wording that onboarding choices must feed dashboard, planner, saved progress, and recommendations through shared boundaries
+
+Why this matters:
+
+- the onboarding direction is now part of the pushed project record rather than a chat-only instruction
+- future implementation work has a clearer product truth to follow
+
+### 48. Later qualification expansion notes (Completed)
+
+The repo now includes the later-direction qualification expansion record without promoting it into the active MVP delivery order.
+
+Added guidance includes:
+
+- explicit later-direction categories for England GCSE, Wales GCSE, Northern Ireland GCSE, broader iGCSE, Scotland, and Republic of Ireland
+- clear rules against flattening Scotland or Republic of Ireland into generic GCSE language
+- guidance that qualification and nation choices should later shape dashboard, planner, recommendations, and content access
+
+Why this matters:
+
+- the qualification roadmap is recorded without distorting the current MVP scope
+- future expansion can stay aligned with the architecture already being built
+
+### 49. Launch script env loading and timed-assessment normalization hardening (Completed)
+
+The pushed code now includes a small but important runtime hardening pass across launch scripts and timed-assessment progress handling.
+
+Added work includes:
+
+- `scripts/load-script-env.mjs` for shared script environment loading
+- updated launch verification scripts to use the shared environment loading path
+- timed-assessment progress normalization that removes stale question state more safely
+- expanded persistence-script test coverage for the updated runtime behavior
+
+Why this matters:
+
+- the launch verification scripts now share a more consistent environment-loading path
+- saved timed-assessment state is less likely to carry invalid question references forward
+
+### 50. Repo-managed automatic GitHub push workflow and git verification rules (Completed)
+
+The pushed project now includes the repository-managed git automation and the matching documentation rules in both `README.md` and `AGENTS.md`.
+
+Added work includes:
+
+- `.githooks/post-commit` for automatic push behavior on tracked branches
+- `scripts/enable-auto-push.mjs` to enable the committed hooks in each local clone
+- the critical git workflow rule in `README.md`
+- the matching git decision rule and pushed-baseline reminder in `AGENTS.md`
+
+Why this matters:
+
+- the repo now documents and supports the expected git workflow instead of relying on memory
+- pushed branch state is easier to trust and verify across future sessions

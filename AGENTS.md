@@ -169,6 +169,12 @@ Before doing any work in this repository:
 - Before reporting work complete, verify the intended commit is present locally and confirm the branch has been pushed to GitHub successfully.
 - Keep the repo-managed `.githooks/post-commit` hook enabled through local `core.hooksPath` so tracked branches push to GitHub automatically after commits unless a task explicitly requires a local-only commit.
 
+### Current Pushed Baseline
+
+- Treat the current pushed project baseline as including the full audit and launch completion plan, final-path and local preview auth documentation, Netlify deploy config, onboarding and school-source documentation, later qualification expansion notes, launch script environment loading, timed-assessment normalization hardening, persistence-script test coverage, the repo-managed auto-push hook, and the README/AGENTS git workflow rules.
+- Do not describe those pushed items as planned-only if they already exist in code or documentation on `main`.
+- Do not describe the platform as fully live or fully complete unless the `Final Path Mark 2` live-environment requirements are actually finished.
+
 ### Completion Standard
 
 - Complete each task fully before moving on.

@@ -49,6 +49,10 @@
 - Website and future mobile clients must consume Access Arrangements through the API layer, not duplicate the rules.
 - Guided sign-up must capture learner stage, school context, qualification path, and subject setup before the personalised dashboard is treated as ready.
 - Guardian invite and age-or-consent checks must remain part of the onboarding architecture for school-age learners.
+- Guided sign-up should explicitly ask whether the learner wants accessibility support or access help as part of first-time setup.
+- Qualification and subject setup must cover both GCSE and iGCSE routes where supported by the platform.
+- SEND-related support should flow through accessibility, access arrangements, and support content without forcing a complex SEND UI during MVP.
+- School selection should be driven by maintained UK school-source links rather than an unmanaged static list.
 - Onboarding choices must feed dashboard, planner, saved progress, and recommendation setup through shared API and module boundaries.
 
 ## Build Priority
@@ -227,7 +231,7 @@ Do not describe the platform as fully complete unless every item below is comple
 2. Prove the real deployed sign-in flow.
    Verify sign-in, callback, session creation, sign-out, and protected-route access in the live environment.
 3. Prove the real deployed sign-up and onboarding flow.
-   Verify welcome, learner-role selection, school and year-group capture, qualification-path capture, subject selection, guardian invite path, age-or-consent confirmation, and first dashboard provisioning in the live environment.
+   Verify welcome, learner-role selection, school and year-group capture, qualification-path capture, subject selection across GCSE and iGCSE where supported, accessibility-question capture, SEND and access-arrangement path visibility, guardian invite path, age-or-consent confirmation, UK school-source lookup behaviour, and first dashboard provisioning based on the learner's selected setup in the live environment.
 4. Configure the real live persistence environment.
    Set `SWITCH_PERSISTENCE_DRIVER=sqlite` and `SWITCH_DATA_DIRECTORY` to the intended shared live student-data setup.
 5. Prove live student-data continuity.
@@ -630,11 +634,20 @@ Use this section as the current website mockup direction until a newer named cha
   - school and year-group capture
   - qualification-path selection
   - subject selection
+  - accessibility support question
+  - SEND, access-arrangement, and support-path question flow
   - optional guardian invite
   - age-or-consent confirmation
   - first dashboard build after onboarding completion
 - The website version can simplify the visuals, but it should preserve the same journey shape and data capture intent.
 - Onboarding outcomes should shape the first dashboard, planner defaults, subject surfaces, and recommendation setup.
+- The first dashboard should be built from what the learner picked during onboarding rather than starting as a generic one-size-fits-all home screen.
+- Qualification, subject, accessibility, and support selections should directly shape dashboard content, planner defaults, saved progress setup, and recommendations.
+- Use maintained UK school-source entry points when planning school lookup:
+  - England: `https://www.get-information-schools.service.gov.uk/`
+  - Scotland: `https://education.gov.scot/parentzone/find-a-school/`
+  - Wales: `https://mylocalschool.gov.wales/`
+  - Northern Ireland: `https://www.eani.org.uk/`
 
 ### Changes 1.0 style directions approved for exploration
 

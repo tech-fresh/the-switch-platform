@@ -1,3 +1,5 @@
+import "./load-script-env.mjs";
+
 import path from "node:path";
 
 import { getRepoRoot, runCommand } from "./launch-utils.mjs";

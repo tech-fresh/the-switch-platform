@@ -2,6 +2,10 @@ export function getLaunchPreflightReport(env = process.env) {
   const authMode = (env.SWITCH_AUTH_MODE ?? "oidc").trim();
   const missing = [];
 
+  if (authMode === "preview-cookie") {
+    missing.push("SWITCH_AUTH_MODE (must be oidc or external-header for live launch)");
+  }
+
   requireValue(missing, env, "SWITCH_AUTH_SECRET");
   requireValue(missing, env, "SWITCH_PERSISTENCE_DRIVER");
   requireValue(missing, env, "SWITCH_DATA_DIRECTORY");

@@ -1,3 +1,5 @@
+import "./load-script-env.mjs";
+
 import {
   fetchJson,
   fetchText,

@@ -162,6 +162,12 @@ Before doing any work in this repository:
 3. Check key configuration files such as `package.json`, `tsconfig.json`, and any relevant framework config.
 4. Stay consistent with the existing codebase structure, naming, and architecture.
 
+### Git Decision Rule
+
+- Treat git state review as critical before making implementation decisions.
+- Before changing code, check the current branch, `git status`, and whether local work still needs to be committed or pushed.
+- Before reporting work complete, verify the intended commit is present locally and confirm the branch has been pushed to GitHub successfully.
+
 ### Completion Standard
 
 - Complete each task fully before moving on.

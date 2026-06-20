@@ -1,3 +1,5 @@
+import "./load-script-env.mjs";
+
 import { getLaunchPreflightReport } from "./launch-preflight-utils.mjs";
 
 const closeoutItems = [

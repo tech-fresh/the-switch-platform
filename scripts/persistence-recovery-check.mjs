@@ -1,3 +1,5 @@
+import "./load-script-env.mjs";
+
 const { getPersistenceRuntimeConfig } = await import("../src/lib/persistence/runtime.ts");
 const { getPersistenceRecoveryStatus } = await import("../src/lib/persistence/recovery.ts");
 

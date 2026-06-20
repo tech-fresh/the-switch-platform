@@ -520,6 +520,34 @@ test("launch preflight report validates live launch requirements by auth mode", 
   });
   assert.equal(readyReport.ready, true);
   assert.deepEqual(readyReport.missing, []);
+
+  const previewReport = getLaunchPreflightReport({
+    SWITCH_AUTH_MODE: "preview-cookie",
+    SWITCH_AUTH_SECRET: "secret",
+    SWITCH_PERSISTENCE_DRIVER: "sqlite",
+    SWITCH_DATA_DIRECTORY: "/srv/switch/data",
+    SWITCH_CMS_BACKEND_MODE: "live",
+    SWITCH_LIVE_BASE_URL: "https://switch.example.com",
+    SWITCH_RECORD_GOVERNANCE: "1",
+    SWITCH_GOVERNANCE_ENVIRONMENT: "production-eu",
+    SWITCH_LAUNCH_APPROVER: "Release board",
+    SWITCH_LAUNCH_STOP_AUTHORITY: "Platform lead",
+    SWITCH_GOVERNANCE_PRIVACY_REVIEW_NOTE: "done",
+    SWITCH_GOVERNANCE_SAFEGUARDING_REVIEW_NOTE: "done",
+    SWITCH_GOVERNANCE_RELEASE_REVIEW_NOTE: "done",
+    SWITCH_GOVERNANCE_PRIVACY_SIGNOFF_NOTE: "done",
+    SWITCH_GOVERNANCE_SAFEGUARDING_SIGNOFF_NOTE: "done",
+    SWITCH_GOVERNANCE_ALERTS_SIGNOFF_NOTE: "done",
+    SWITCH_GOVERNANCE_INCIDENT_SIGNOFF_NOTE: "done",
+    SWITCH_GOVERNANCE_RELEASE_SIGNOFF_NOTE: "done",
+  });
+  assert.equal(previewReport.ready, false);
+  assert.equal(
+    previewReport.missing.includes(
+      "SWITCH_AUTH_MODE (must be oidc or external-header for live launch)"
+    ),
+    true,
+  );
 });
 
 test("launch status script reports code-complete and missing live inputs", async () => {

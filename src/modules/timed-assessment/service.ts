@@ -1,7 +1,10 @@
 import { applyAccessArrangementsToAssessment } from "@/modules/access-arrangements";
 import type { StudentAccessProfileRepository } from "@/modules/access-arrangements";
 import { getSavedProgress, saveTimedAssessmentProgress } from "@/modules/saved-progress/service";
-import type { SavedProgressRepository } from "@/modules/saved-progress/types";
+import type {
+  SavedProgressRepository,
+  SavedProgressStatus,
+} from "@/modules/saved-progress/types";
 import { buildOperationsEvent, recordOperationsEvent } from "@/lib/server/operations-event";
 import type {
   CreateTimedAssessmentAttemptInput,
@@ -487,6 +490,16 @@ export function getMockTimedAssessmentQuestions(
   }));
 }
 
+function getSavedProgressStatusForAttemptStatus(
+  status: TimedAssessmentAttempt["status"],
+): SavedProgressStatus {
+  if (status === "paused" || status === "submitted") {
+    return status;
+  }
+
+  return "in-progress";
+}
+
 export async function createTimedAssessmentAttempt(
   input: CreateTimedAssessmentAttemptInput,
   accessProfileRepository?: StudentAccessProfileRepository,
@@ -572,7 +585,7 @@ export async function getMockTimedAssessmentAttemptSeed(
       timeRemainingMinutes: resumedAttempt.attempt.timeRemainingMinutes,
       accessArrangementSnapshot:
         resumedAttempt.attempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
-      status: resumedAttempt.attempt.status === "not-started" ? "in-progress" : resumedAttempt.attempt.status,
+      status: getSavedProgressStatusForAttemptStatus(resumedAttempt.attempt.status),
     },
     options?.savedProgressRepository,
   );
@@ -633,7 +646,7 @@ export async function saveMockTimedAssessmentAttempt(
       timeRemainingMinutes: nextAttempt.timeRemainingMinutes,
       accessArrangementSnapshot:
         nextAttempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
-      status: "in-progress",
+      status: getSavedProgressStatusForAttemptStatus(nextAttempt.status),
     },
     input.savedProgressRepository,
   );
@@ -685,7 +698,7 @@ export async function submitMockTimedAssessmentAttempt(
       timeRemainingMinutes: submittedAttempt.timeRemainingMinutes,
       accessArrangementSnapshot:
         submittedAttempt.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
-      status: "submitted",
+      status: getSavedProgressStatusForAttemptStatus(submittedAttempt.status),
     },
     input.savedProgressRepository,
   );
@@ -762,7 +775,12 @@ async function hydrateAttemptFromSavedProgress(
   return {
     attempt: {
       ...attempt,
-      status: savedProgress.status === "submitted" ? "submitted" : "in-progress",
+      status:
+        savedProgress.status === "submitted"
+          ? "submitted"
+          : savedProgress.status === "paused"
+            ? "paused"
+            : "in-progress",
       lastSavedAt: savedProgress.lastActivityAt,
       timeRemainingMinutes: savedProgress.timedAssessmentProgress.timeRemainingMinutes,
     },

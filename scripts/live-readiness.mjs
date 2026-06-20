@@ -1,3 +1,4 @@
+import "./load-script-env.mjs";
 import { assert, fetchJson, fetchText } from "./launch-utils.mjs";
 import { getGovernanceRecordingConfig, recordLiveReadiness } from "./launch-governance.mjs";
 

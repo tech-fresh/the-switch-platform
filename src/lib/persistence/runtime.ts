@@ -1,3 +1,4 @@
+import { tmpdir } from "node:os";
 import path from "node:path";
 
 export type PersistenceDriver = "local-json" | "sqlite" | "memory";
@@ -27,7 +28,7 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
         : "local-json";
   const dataDirectory = configuredDataDirectory
     ? path.resolve(configuredDataDirectory)
-    : path.join(process.cwd(), DEFAULT_DATA_DIRECTORY_NAME);
+    : getDefaultDataDirectory();
   const backupDirectory =
     driver === "memory" ? null : path.join(dataDirectory, "backups");
   const primaryStorePath =
@@ -55,4 +56,20 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
     isPrototypePersistence:
       driver === "memory" || driver === "local-json" || !configuredDataDirectory,
   };
+}
+
+function getDefaultDataDirectory(): string {
+  if (isServerlessFilesystemRuntime()) {
+    return path.join(tmpdir(), DEFAULT_DATA_DIRECTORY_NAME);
+  }
+
+  return path.join(process.cwd(), DEFAULT_DATA_DIRECTORY_NAME);
+}
+
+function isServerlessFilesystemRuntime(): boolean {
+  return Boolean(
+    process.env.VERCEL?.trim() ||
+      process.env.AWS_LAMBDA_FUNCTION_VERSION?.trim() ||
+      process.env.LAMBDA_TASK_ROOT?.trim(),
+  );
 }

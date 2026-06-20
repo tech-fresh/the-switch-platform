@@ -700,3 +700,10 @@ Use this section as the current website mockup direction until a newer named cha
 - Treat `Launch Fit` as the current best default direction.
 - Keep planner, weekly reports, and FAQ in the product direction, but do not let them overload the first-screen dashboard experience.
 - Use mockups to validate page hierarchy before implementing new UI patterns.
+
+## Tooling Note
+
+- The Codex-side `vercel-plugin` has been installed for this working environment.
+- Treat Vercel as the primary current deployment platform during this session unless the user explicitly changes platform direction.
+- Keep Google OIDC as the preferred auth-provider direction for `Full End-to-End Completion List` item 1 unless the user explicitly reprioritises auth strategy.
+- Do not overwrite existing deployment or auth notes when adding newer guidance; append new Vercel-related notes cumulatively.

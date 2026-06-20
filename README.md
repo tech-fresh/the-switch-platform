@@ -4252,3 +4252,19 @@ Why this matters:
 
 - the repo now documents and supports the expected git workflow instead of relying on memory
 - pushed branch state is easier to trust and verify across future sessions
+
+### 51. Vercel plugin session note and current deployment direction (Recorded)
+
+The current working environment now has the Codex-side `vercel-plugin` installed, and the current deployment direction for the website remains Vercel-first unless a later instruction explicitly changes platform choice.
+
+Added guidance includes:
+
+- the Codex environment can now use the installed Vercel plugin after agent-tool restart
+- Vercel remains the preferred current hosting direction for this Next.js MVP
+- Google OIDC remains the preferred current auth-provider direction for the live auth item on the full completion path
+- new deployment notes should be appended cumulatively rather than replacing earlier completion history
+
+Why this matters:
+
+- the active tool and hosting direction are now recorded in the repo instead of being trapped only in session chat
+- future sessions can stay aligned with the same Vercel-plus-Google-OIDC path without losing earlier documentation

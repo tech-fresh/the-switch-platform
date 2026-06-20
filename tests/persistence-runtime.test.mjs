@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { tmpdir } from "node:os";
 
 function restoreEnv(name, value) {
   if (value === undefined) {
@@ -13,8 +14,10 @@ function restoreEnv(name, value) {
 test("persistence runtime treats the default workspace data directory as provisional", async () => {
   const previousDriver = process.env.SWITCH_PERSISTENCE_DRIVER;
   const previousDataDirectory = process.env.SWITCH_DATA_DIRECTORY;
+  const previousVercel = process.env.VERCEL;
   delete process.env.SWITCH_PERSISTENCE_DRIVER;
   delete process.env.SWITCH_DATA_DIRECTORY;
+  delete process.env.VERCEL;
 
   const { getPersistenceRuntimeConfig } = await import(
     `../src/lib/persistence/runtime.ts?test=${Date.now()}-default-persistence`
@@ -27,6 +30,30 @@ test("persistence runtime treats the default workspace data directory as provisi
 
   restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
   restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);
+  restoreEnv("VERCEL", previousVercel);
+});
+
+test("persistence runtime falls back to a writable temp directory in serverless runtimes", async () => {
+  const previousDriver = process.env.SWITCH_PERSISTENCE_DRIVER;
+  const previousDataDirectory = process.env.SWITCH_DATA_DIRECTORY;
+  const previousVercel = process.env.VERCEL;
+  delete process.env.SWITCH_PERSISTENCE_DRIVER;
+  delete process.env.SWITCH_DATA_DIRECTORY;
+  process.env.VERCEL = "1";
+
+  const { getPersistenceRuntimeConfig } = await import(
+    `../src/lib/persistence/runtime.ts?test=${Date.now()}-vercel-default-persistence`
+  );
+  const runtime = getPersistenceRuntimeConfig();
+
+  assert.equal(runtime.driver, "local-json");
+  assert.equal(runtime.isPrototypePersistence, true);
+  assert.equal(runtime.dataDirectory.includes(".codex-data"), true);
+  assert.equal(runtime.dataDirectory.startsWith(tmpdir()), true);
+
+  restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
+  restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);
+  restoreEnv("VERCEL", previousVercel);
 });
 
 test("persistence runtime still treats explicit local-json storage as provisional", async () => {

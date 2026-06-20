@@ -28,6 +28,12 @@ New product work, requested additions, previews, mockups, routes, modules, and a
 - Do not let a new feature section interrupt the opening product explanation.
 - Only replace earlier README content when that older content is genuinely wrong or obsolete.
 
+### Critical git workflow rule
+
+- Treat git state review as mandatory before making code or release decisions.
+- Check the current branch, `git status`, and whether local work still needs to be committed or pushed before changing implementation.
+- Before calling work complete, verify the intended commit is present locally and confirm the branch has been pushed to GitHub successfully.
+
 ## Mark 3.2 Product Spec
 
 This repository follows the current The Switch Platform Mark 3.2 product spec.

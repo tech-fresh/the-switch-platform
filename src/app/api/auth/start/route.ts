@@ -15,7 +15,7 @@ import {
 import { createAuthFlowToken } from "@/modules/auth/session-token";
 import type { AuthProvider } from "@/modules/auth/types";
 
-const supportedProviders = new Set<AuthProvider>(["email-magic-link", "google", "apple"]);
+const supportedProviders = new Set<AuthProvider>(["email-magic-link", "google", "apple", "microsoft"]);
 
 export async function GET(request: Request) {
   const runtime = getAuthRuntimeConfig();

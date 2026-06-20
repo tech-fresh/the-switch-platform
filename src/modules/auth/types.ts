@@ -1,4 +1,4 @@
-export type AuthProvider = "email-magic-link" | "google" | "apple";
+export type AuthProvider = "email-magic-link" | "google" | "apple" | "microsoft";
 export type AuthRole = "student" | "editor" | "admin";
 export type AuthRuntimeMode = "preview-cookie" | "oidc" | "external-header";
 

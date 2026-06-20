@@ -159,3 +159,35 @@ test("auth readiness reports ready when oidc has a full configured provider", as
   restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_TOKEN_URL", previousTokenUrl);
   restoreEnv("SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL", previousUserInfoUrl);
 });
+
+test("auth readiness reports ready when oidc has a full configured microsoft provider", async () => {
+  const previousMode = process.env.SWITCH_AUTH_MODE;
+  const previousSecret = process.env.SWITCH_AUTH_SECRET;
+  const previousClientId = process.env.SWITCH_OIDC_MICROSOFT_CLIENT_ID;
+  const previousClientSecret = process.env.SWITCH_OIDC_MICROSOFT_CLIENT_SECRET;
+  const previousAuthorizationUrl = process.env.SWITCH_OIDC_MICROSOFT_AUTHORIZATION_URL;
+  const previousTokenUrl = process.env.SWITCH_OIDC_MICROSOFT_TOKEN_URL;
+  const previousUserInfoUrl = process.env.SWITCH_OIDC_MICROSOFT_USERINFO_URL;
+  process.env.SWITCH_AUTH_MODE = "oidc";
+  process.env.SWITCH_AUTH_SECRET = "test-auth-secret";
+  process.env.SWITCH_OIDC_MICROSOFT_CLIENT_ID = "microsoft-client-id";
+  process.env.SWITCH_OIDC_MICROSOFT_CLIENT_SECRET = "microsoft-client-secret";
+  process.env.SWITCH_OIDC_MICROSOFT_AUTHORIZATION_URL = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
+  process.env.SWITCH_OIDC_MICROSOFT_TOKEN_URL = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+  process.env.SWITCH_OIDC_MICROSOFT_USERINFO_URL = "https://graph.microsoft.com/oidc/userinfo";
+
+  const { getAuthReadinessSummary } = await import(`../src/modules/auth/provider.ts?test=${Date.now()}-readiness-microsoft`);
+  const summary = getAuthReadinessSummary();
+
+  assert.equal(summary.mode, "oidc");
+  assert.equal(summary.status, "ready");
+  assert.equal(summary.configuredProviderCount, 1);
+
+  restoreEnv("SWITCH_AUTH_MODE", previousMode);
+  restoreEnv("SWITCH_AUTH_SECRET", previousSecret);
+  restoreEnv("SWITCH_OIDC_MICROSOFT_CLIENT_ID", previousClientId);
+  restoreEnv("SWITCH_OIDC_MICROSOFT_CLIENT_SECRET", previousClientSecret);
+  restoreEnv("SWITCH_OIDC_MICROSOFT_AUTHORIZATION_URL", previousAuthorizationUrl);
+  restoreEnv("SWITCH_OIDC_MICROSOFT_TOKEN_URL", previousTokenUrl);
+  restoreEnv("SWITCH_OIDC_MICROSOFT_USERINFO_URL", previousUserInfoUrl);
+});

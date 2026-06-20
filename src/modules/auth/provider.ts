@@ -77,6 +77,11 @@ const previewSignInOptions: SignInOption[] = [
     label: "Apple",
     description: "Future-ready sign in option for mobile and privacy-focused account flows.",
   },
+  {
+    provider: "microsoft",
+    label: "Microsoft",
+    description: "School and staff sign in through a configured Microsoft identity provider flow.",
+  },
 ];
 
 export async function listSignInOptions(): Promise<SignInOption[]> {
@@ -167,7 +172,7 @@ export function getAuthReadinessSummary(): AuthReadinessSummary {
 }
 
 export function getConfiguredOidcProviders(): OidcProviderConfig[] {
-  return ["email-magic-link", "google", "apple"]
+  return ["email-magic-link", "google", "apple", "microsoft"]
     .map((provider) => getConfiguredOidcProvider(provider as AuthProvider))
     .filter((provider): provider is OidcProviderConfig => Boolean(provider));
 }
@@ -238,6 +243,10 @@ function getProviderLabel(provider: AuthProvider): string {
     return "Google";
   }
 
+  if (provider === "microsoft") {
+    return "Microsoft";
+  }
+
   return "Apple";
 }
 
@@ -248,6 +257,10 @@ function getOidcDescription(provider: AuthProvider): string {
 
   if (provider === "google") {
     return "Production sign-in through your configured Google identity provider flow.";
+  }
+
+  if (provider === "microsoft") {
+    return "Production sign-in through your configured Microsoft identity provider flow.";
   }
 
   return "Production sign-in through your configured Apple identity provider flow.";

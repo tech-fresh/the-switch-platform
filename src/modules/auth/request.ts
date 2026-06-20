@@ -52,7 +52,10 @@ export async function getRequestAuthSession(): Promise<AuthSession> {
     const email = headerStore.get("x-switch-auth-email") ?? `${userId}@external.switch.local`;
     const providerHeader = headerStore.get("x-switch-auth-provider");
     const provider =
-      providerHeader === "apple" || providerHeader === "email-magic-link" || providerHeader === "google"
+      providerHeader === "apple" ||
+      providerHeader === "email-magic-link" ||
+      providerHeader === "google" ||
+      providerHeader === "microsoft"
         ? providerHeader
         : "google";
     const signedInAt = headerStore.get("x-switch-auth-signed-in-at") ?? new Date().toISOString();

@@ -167,6 +167,7 @@ Before doing any work in this repository:
 - Treat git state review as critical before making implementation decisions.
 - Before changing code, check the current branch, `git status`, and whether local work still needs to be committed or pushed.
 - Before reporting work complete, verify the intended commit is present locally and confirm the branch has been pushed to GitHub successfully.
+- Keep the repo-managed `.githooks/post-commit` hook enabled through local `core.hooksPath` so tracked branches push to GitHub automatically after commits unless a task explicitly requires a local-only commit.
 
 ### Completion Standard
 

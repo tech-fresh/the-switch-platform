@@ -34,6 +34,12 @@ New product work, requested additions, previews, mockups, routes, modules, and a
 - Check the current branch, `git status`, and whether local work still needs to be committed or pushed before changing implementation.
 - Before calling work complete, verify the intended commit is present locally and confirm the branch has been pushed to GitHub successfully.
 
+### Automatic GitHub push rule
+
+- This repository should use the committed `.githooks/post-commit` hook so commits can push to GitHub automatically when the current branch already tracks a remote branch.
+- Run `node scripts/enable-auto-push.mjs` once per local clone to point `core.hooksPath` at `.githooks`.
+- Use `SWITCH_SKIP_AUTO_PUSH=1 git commit ...` only when a commit must stay local temporarily.
+
 ## Mark 3.2 Product Spec
 
 This repository follows the current The Switch Platform Mark 3.2 product spec.

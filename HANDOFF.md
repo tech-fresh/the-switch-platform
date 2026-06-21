@@ -33,25 +33,25 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 94286b7 — Set HANDOFF Last commit to current HEAD (substantive sync: 0bebb80)
+- **Last commit:** (pending — exam-engine service tests)
 
 ### Active task
 
 - **Priority item #:** 1 — Exam Engine
 - **Module:** exam-engine
-- **Status:** not started
+- **Status:** in progress
 - **Branch:** main
 
 ### What was just completed
 
-- Multi-agent workflow setup complete (`HANDOFF.md`, `AGENTS.md`, `.cursor/rules/`, recovery files)
-- Session rules documented: **Read HANDOFF.md first** at start; update **Live session state** at end
-- Synced Live session state with latest Git commit (`530eaf4`)
+- Added `tests/exam-engine-service.test.mjs` with 8 service-level tests covering papers, first attempt, resume, variant rotation, save, submit, and error handling
+- Switched `npm run test` to `tsx --test` so module service imports resolve TypeScript path aliases
+- Updated `src/modules/exam-engine/README.md` to document the new automated test coverage
 
 ### What is next
 
-- Begin Exam Engine work (build priority #1)
-- Read `src/modules/exam-engine/README.md` before making changes
+- Continue Exam Engine priority #1 work — expand coverage (e.g. access-arrangement duration, submitted-state resume, API route validation)
+- Consider exam API route smoke checks in `npm run test:smoke`
 - At session end: update this file and commit/push
 
 ### Blockers
@@ -60,12 +60,12 @@ Update this section every session.
 
 ### Verification last run
 
-- [ ] `npm run lint`
-- [ ] `npm run type-check`
-- [ ] `npm run test`
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test`
 - [ ] `npm run test:smoke` (only if routes changed)
 - [ ] `npm run verify:release` (if bigger release or launch-path change)
-- [x] Pushed to GitHub
+- [ ] Pushed to GitHub
 
 ---
 

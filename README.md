@@ -213,6 +213,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-21 Exam Engine service test coverage (Priority #1)
+
+- Added `tests/exam-engine-service.test.mjs` with eight automated tests for the highest-priority module.
+- Coverage includes paper listing, first-attempt creation, resume hydration, fresh-attempt variant rotation, autosave, submit, session-id mismatch protection, and unknown-paper rejection.
+- Switched `npm run test` to `tsx --test` so TypeScript module services with `@/` path aliases can run under the existing Node test runner.
+- Updated `src/modules/exam-engine/README.md` to record the new test coverage.
+
 ### 2026-06-21 Full multi-agent workflow integration
 
 - Added `HANDOFF.md` as the live session handoff file between Cursor Agent and Codex.

@@ -11,7 +11,7 @@
     "build": "next build",
     "lint": "node scripts/repo-lint.mjs",
     "type-check": "tsc --noEmit",
-    "test": "node --test tests/*.test.mjs",
+    "test": "tsx --test tests/*.test.mjs",
     "test:smoke": "node scripts/route-smoke.mjs",
     "test:e2e": "node scripts/launch-e2e.mjs",
     "test:final-smoke": "node scripts/final-live-smoke.mjs",
@@ -54,6 +54,7 @@
     "postcss": "^8.5.4",
     "storybook": "^10.4.5",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.22.4",
     "typescript": "^5.9.3",
     "vite": "^8.0.16",
     "vitest": "^4.1.9"

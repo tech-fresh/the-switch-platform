@@ -1,0 +1,37 @@
+---
+description: Module boundaries and API-first architecture
+alwaysApply: true
+---
+
+# Architecture
+
+Flow: `src/app` route → thin component → `src/modules/*/service.ts` → contracts/types → `src/app/api` → `src/lib/persistence`
+
+# Non-negotiable rules
+
+- Keep modules independent
+- No business logic only in page components
+- Use API layer between UI and services
+- Do not mix exam logic with progress logic
+- Do not mix saved progress with content logic
+- Keep Read Aloud separate from revision and quiz logic
+- Keep Access Arrangements independent from other modules
+- All student progress must auto-save where applicable
+- Mobile-first UI and accessibility-first design
+
+# Build priority order
+
+1. Exam Engine
+2. Power Grid
+3. Saved Progress
+4. Read Aloud
+5. Dashboard
+6. Timed Assessments
+7. Full GCSE Exams
+8. Content Fact-Checking And Editorial Workflow
+9. Results
+10. Recommendations
+11. Accessibility
+12. Access Arrangements foundation
+
+Do not skip higher-priority work unless explicitly overridden. Record the reason in `HANDOFF.md`.

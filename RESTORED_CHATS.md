@@ -91,9 +91,12 @@ The full project currently lives in:
 
 The main project record is:
 
+- `AGENTS.md`
+- `HANDOFF.md`
 - `README.md`
 - `PROJECT_RECOVERY.md`
 - `RESTORED_CHATS.md`
+- `.cursor/rules/`
 - Git history on `main`
 - GitHub remote `origin/main`
 

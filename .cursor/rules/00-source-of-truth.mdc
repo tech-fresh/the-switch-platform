@@ -1,0 +1,28 @@
+---
+description: Source of truth and multi-agent workflow for The Switch Platform
+alwaysApply: true
+---
+
+# Source Of Truth
+
+- Active folder: `/Users/lloydnwagbara/Documents/THE SWITCH 3`
+- GitHub: `https://github.com/tech-fresh/the-switch-platform`
+- Do not use `THE SWITCH` or `THE SWITCH 2`
+
+# Session start
+
+1. Read `AGENTS.md`, `HANDOFF.md`, and `README.md` priorities
+2. Read relevant `src/modules/<module>/README.md`
+3. Work on one module per session
+4. State which build-priority item the task serves
+
+# Session end
+
+1. Run `npm run lint && npm run type-check && npm run test`
+2. Commit and push to GitHub
+3. Update `HANDOFF.md` live session state and session log
+4. Append `README.md` Ordered Build Record if behavior changed
+
+# Handoff rule
+
+Never switch between Cursor and Codex with uncommitted work. Update `HANDOFF.md` first.

@@ -37,7 +37,7 @@ This project is built with **Cursor Agent** and **Codex** on the same repo.
 | `AGENTS.md` | Architecture, priorities, session rules, completion standard |
 | `HANDOFF.md` | Live session state between Cursor and Codex |
 | `README.md` | Cumulative product spec and build record (this file) |
-| `.cursor/rules/` | Cursor-specific enforcement (mirrors AGENTS.md) |
+| `.cursor/rules/` | Cursor-specific enforcement mirroring `AGENTS.md` |
 
 #### Every session must
 
@@ -87,12 +87,6 @@ flowchart LR
 - The user should not have to run manual git commands as the default path for ordinary completion.
 - If GitHub authentication expires, the session should proactively repair it and continue the push workflow in the same session.
 - Only ask the user for a browser or device approval step when an external GitHub login confirmation is genuinely unavoidable.
-
-The active local project folder is:
-
-`/Users/lloydnwagbara/Documents/THE SWITCH 3`
-
-Both Cursor Agent and Codex must use this folder. See `AGENTS.md` → Multi-Agent Workflow.
 
 ## Mark 3.2 Product Spec
 
@@ -202,12 +196,22 @@ The current homepage now presents both the website-first preview and the future 
 ![The Switch app mockup](public/readme/app-mockup.svg)
 
 ## Ordered Build Record
+
+This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-21 Full multi-agent workflow integration
+
+- Added `HANDOFF.md` as the live session handoff file between Cursor Agent and Codex.
+- Added `.cursor/rules/` with source-of-truth, architecture, module, and API-route enforcement.
+- Consolidated `AGENTS.md` multi-agent workflow and removed duplicate temporary agent blocks.
+- Aligned `README.md`, `PROJECT_RECOVERY.md`, and `RESTORED_CHATS.md` on `THE SWITCH 3` as the only active folder.
+- Integrated git closeout rules: read `HANDOFF.md` at session start, update at session end, commit and push before switching tools.
+
 ### 2026-06-21 Source-of-Truth Migration to THE SWITCH 3
 
 - Confirmed `/Users/lloydnwagbara/Documents/THE SWITCH 3` as the only active local project folder.
 - Updated recovery notes and multi-agent workflow documentation.
 - Cursor Agent and Codex must both use this folder and the same GitHub remote.
-This section is the running record of what has been requested, added, and committed so far in this MVP.
 
 ### 2026-06-21 truth-match hardening
 
@@ -4603,9 +4607,3 @@ Documentation rule for future sessions:
 - append to `README.md` and `AGENTS.md`
 - do not silently overwrite earlier project record unless the earlier material is truly obsolete or incorrect
 - add diagrams when they make the system easier to understand for the next operator
-
-### 2026-06-21 Source-of-Truth Migration to THE SWITCH 3
-
-- Confirmed `/Users/lloydnwagbara/Documents/THE SWITCH 3` as the only active local project folder.
-- Updated recovery notes and multi-agent workflow documentation.
-- Cursor Agent and Codex must both use this folder and the same GitHub remote.

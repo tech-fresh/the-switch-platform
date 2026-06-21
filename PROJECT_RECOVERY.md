@@ -16,12 +16,26 @@ The connected GitHub remote is:
 
 `https://github.com/tech-fresh/the-switch-platform.git`
 
+## Multi-Agent Workflow Files
+
+Both **Cursor Agent** and **Codex** must use this folder only.
+
+| File | Purpose |
+|------|---------|
+| `AGENTS.md` | Architecture, priorities, completion standard |
+| `HANDOFF.md` | Live session handoff between tools |
+| `README.md` | Cumulative product spec and build record |
+| `.cursor/rules/` | Cursor-specific enforcement |
+
+Read `HANDOFF.md` at session start. Update it at session end before switching tools.
+
 ## Other Folders Found
 
 The following related folders were found during recovery:
 
-- `/Users/lloydnwagbara/Documents/THE SWITCH`
-- `/Users/lloydnwagbara/Documents/THE SWITCH 3`  ← active source-of-truth folder
+- `/Users/lloydnwagbara/Documents/THE SWITCH` — empty `.git` only; do not use
+- `/Users/lloydnwagbara/Documents/THE SWITCH 2` — superseded; do not use
+- `/Users/lloydnwagbara/Documents/THE SWITCH 3` — **active source-of-truth folder**
 - `/Users/lloydnwagbara/Documents/Codex/2026-06-05/i-am-building-the-switch-platform`
 
 The older `/Users/lloydnwagbara/Documents/THE SWITCH` folder currently contains

@@ -1,0 +1,26 @@
+---
+description: Module service patterns for src/modules
+globs: src/modules/**
+alwaysApply: false
+---
+
+# Module pattern
+
+- Logic lives in `service.ts`
+- Types in `types.ts`
+- Shared shapes in `contracts.ts`
+- Read the module `README.md` before editing
+
+# Boundaries
+
+- Exam Engine owns exam timing and exam mode rules
+- Saved Progress owns persistence and resume storage requests
+- Power Grid aggregates activity into next steps
+- Content and CMS stay separate from student progress logic
+- Access Arrangements stay framework-neutral and separate
+
+# Before changing a module
+
+1. Read `src/modules/<name>/README.md`
+2. Check existing `service.ts`, `types.ts`, and `contracts.ts`
+3. Match naming and patterns already in that module

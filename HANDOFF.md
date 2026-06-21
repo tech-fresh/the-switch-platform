@@ -29,21 +29,21 @@ Update this section every session.
 
 - **Priority item #:** setup — multi-agent workflow
 - **Module:** project-workflow
-- **Status:** in progress
+- **Status:** done
 - **Branch:** main
 
 ### What was just completed
 
-- Created and expanded `HANDOFF.md` with full multi-agent workflow guidance
-- Updated `AGENTS.md` with consolidated Multi-Agent Workflow and `HANDOFF.md` references
-- Fixed duplicate HANDOFF content in `README.md`
-- Updated recovery files for THE SWITCH 3 source of truth
+- Full multi-agent workflow integration completed
+- Added `.cursor/rules/` for Cursor enforcement
+- Removed duplicate temporary blocks from `AGENTS.md`
+- Fixed `README.md` build record structure and duplicates
+- Updated `PROJECT_RECOVERY.md` and `RESTORED_CHATS.md`
 
 ### What is next
 
-- Begin using `HANDOFF.md` at the start and end of every Cursor and Codex session
-- Complete remaining workflow setup (`.cursor/rules/` if not yet added)
-- Choose the next real product task from build priority #1 (Exam Engine)
+- Use `HANDOFF.md` at the start and end of every Cursor and Codex session
+- Start real product work from build priority #1 (Exam Engine)
 
 ### Blockers
 
@@ -56,7 +56,7 @@ Update this section every session.
 - [ ] `npm run test`
 - [ ] `npm run test:smoke` (only if routes changed)
 - [ ] `npm run verify:release` (if bigger release or launch-path change)
-- [x] Pushed to GitHub
+- [ ] Pushed to GitHub
 
 ---
 
@@ -71,7 +71,7 @@ Update this section every session.
 | Product history | `README.md` (cumulative — append only) |
 | Recovery notes | `PROJECT_RECOVERY.md`, `RESTORED_CHATS.md` |
 | Session handoff | `HANDOFF.md` (this file) |
-| Cursor-only rules | `.cursor/rules/` (when present) |
+| Cursor-only rules | `.cursor/rules/` |
 
 ---
 
@@ -355,6 +355,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Full multi-agent workflow integration
+
+- Branch: main
+- Module: project-workflow
+- Priority #: setup — multi-agent workflow
+- Done: added `.cursor/rules/`, cleaned AGENTS.md duplicates, fixed README build record, updated recovery files
+- Next: use HANDOFF.md every session; start priority #1 Exam Engine work
+- Commit: pending this session
 
 ### 2026-06-21 — Cursor — Commit multi-agent handoff workflow
 

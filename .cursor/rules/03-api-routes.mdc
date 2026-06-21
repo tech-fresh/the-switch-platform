@@ -1,0 +1,18 @@
+---
+description: API route conventions for src/app/api
+globs: src/app/api/**
+alwaysApply: false
+---
+
+# API routes
+
+- Keep route handlers thin
+- Delegate to module services
+- Use helpers from `src/lib/server/api.ts` such as `withSwitchRequestContext`
+- Use `src/lib/server/request-context.ts` for auth and request boundaries
+- Do not put business rules directly in route files
+
+# UI routes
+
+- Page components fetch through the API layer or existing server bridges
+- Do not duplicate module logic in `src/app/**/page.tsx`

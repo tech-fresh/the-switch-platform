@@ -84,6 +84,7 @@ if (!preflight.ready) {
 }
 
 console.log("\nFinal live sequence:");
+console.log("- npm run verify:blob-health");
 console.log("- npm run verify:live-readiness");
 console.log("- npm run verify:persistence-recovery");
 console.log("- npm run verify:live-walkthrough");

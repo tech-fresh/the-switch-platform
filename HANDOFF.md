@@ -33,56 +33,58 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** a098c6b — Record Final Path Mark 2 blocked state in HANDOFF (launch substantive: `1168e4f`)
+- **Last commit:** (pending — blob health closeout tooling)
 - **Platform label:** `near-launch` — **not** true `100% complete`
 
 ### Active task
 
 - **Priority item #:** launch — Final Path Mark 2
 - **Module:** operations / governance
-- **Status:** blocked
+- **Status:** blocked — operator action in Vercel required
 - **Branch:** main
 
 ### What was just completed
 
-- **Launch repo work (commit `1168e4f`):** durable Blob-backed sqlite persistence, launch-verification secret path, blob reader hardening, launch script timeout/retry, tests, and truth-matching notes in `README.md` and `AGENTS.md`
-- Deployed `/api/persistence/runtime` now reports `sqlite`, `storageBackend: vercel-blob`, `dataDirectory: vercel-blob://switch-live-data`, `isEphemeralStorage: false`, `recoveryReady: true`
-- Local verification passed: `npm test`, `npm run lint`, `npm run type-check`, `npm run build`
+- Added `npm run verify:blob-health` as the first step in the final live launch sequence
+- Blob suspended-store detection now surfaces through recovery, persistence runtime summary, governance checks, admin runtime, and item 22 truth-match
+- Updated `FINAL_LAUNCH_RUNBOOK.md`, `AGENTS.md`, and launch orchestration scripts with Blob repair steps
+- Local verification passed: 84 tests, lint, type-check, build
 
 ### What is next
 
-**Operator action required (platform-side — not repo code):**
+**Operator action in Vercel (blocks items 18–22):**
 
-1. In Vercel: unsuspend the `switch-live-data` Blob store **or** replace it with another real shared durable store and update live env vars accordingly
-2. Confirm production reads succeed for `switch-live-data/switch-live.sqlite` (no `BlobStoreSuspendedError` / 403)
-3. Confirm protected live routes stop returning 500 — especially `/dashboard`, `/account`, `/results`, `/api/dashboard/home`, `/api/results/overview`
-4. Rerun the final live command sequence in order:
+1. Unsuspend the live Blob store **or** replace it and update `BLOB_READ_WRITE_TOKEN` + `SWITCH_DATA_DIRECTORY`
+2. Run `npm run verify:blob-health` against the live env until primary sqlite path is `healthy` or safely `missing`
+3. If missing, run `npm run persistence:migrate-to-sqlite`
+4. Rerun full sequence:
    - `npm run verify:launch-status`
+   - `npm run verify:blob-health`
    - `npm run verify:live-readiness`
    - `npm run verify:persistence-recovery`
    - `npm run verify:live-walkthrough`
    - `npm run verify:launch-signoff`
    - `npm run verify:launch-complete`
-   - `npm run verify:live-truth-match` (item 22)
-5. Store permanent release evidence and confirm README, admin launch view, runtime state, and evidence all match
-
-**After launch closeout unblocks:** resume build-priority #1 Exam Engine work
+   - `npm run verify:live-truth-match`
+5. Store release evidence; confirm README, admin, runtime, and evidence match (item 22)
 
 ### Blockers
 
-- **Live Vercel Blob store suspended:** direct production SDK probe for `switch-live-data/switch-live.sqlite` returns `BlobStoreSuspendedError: Vercel Blob: This store has been suspended`
-- **Protected routes failing:** fresh production walkthrough fails at `/dashboard` with 500 because shared-store reads return 403 Forbidden
-- **Full End-to-End Completion List item 22 remains open** until deployed runtime matches recorded evidence and the final verification chain passes cleanly
+- **Live Vercel Blob store suspended** on production (`switch-live-data/switch-live.sqlite` → `BlobStoreSuspendedError`)
+- Protected live routes still return 500 until Blob byte reads succeed
+- **Item 22 remains open**
 
 ### Verification last run
 
 - [x] `npm run lint`
 - [x] `npm run type-check`
-- [x] `npm run test` (83 passing)
+- [x] `npm run test` (84 passing)
 - [x] `npm run build`
+- [x] `npm run verify:launch-status`
+- [x] `npm run verify:blob-health` (local env — not applicable; production still blocked)
 - [ ] `npm run verify:live-walkthrough` (blocked — Blob store suspended)
 - [ ] `npm run verify:live-truth-match` (item 22 — blocked)
-- [x] Pushed to GitHub
+- [ ] Pushed to GitHub
 
 ---
 
@@ -261,6 +263,8 @@ Special labels:
 
 **Remaining blocker (platform-side, not repo):** the Vercel Blob store backing `vercel-blob://switch-live-data` is suspended. Metadata may still resolve, but signed reads for `switch-live-data/switch-live.sqlite` fail with `BlobStoreSuspendedError`.
 
+**Repo-side closeout tooling now includes:** `npm run verify:blob-health` as the first command in the final live sequence. Run it against the live environment before walkthrough, sign-off, and truth-match.
+
 **Do not describe the platform as fully complete, fully live, or 100% end-to-end** until item 22 passes and the full verification chain reruns cleanly after the Blob store is restored or replaced.
 
 ---
@@ -403,6 +407,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Final Path Mark 2 blob-health closeout tooling
+
+- Branch: main
+- Module: operations / governance
+- Priority #: launch — Final Path Mark 2
+- Done: added verify:blob-health; suspended Blob detection in runtime/governance/admin; updated launch runbook and sequence
+- Next: operator unsuspends/replaces Vercel Blob store, then reruns full live verification chain including item 22
+- Blocker: production Blob store suspended; `/dashboard` 500 on live walkthrough
 
 ### 2026-06-21 — Cursor — Final Path Mark 2 handoff (Blob store blocked)
 

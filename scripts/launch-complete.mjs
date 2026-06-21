@@ -11,6 +11,7 @@ const npmExecPath =
   path.join(repoRoot, "node_modules", "npm", "bin", "npm-cli.js");
 
 const finalLaunchScripts = [
+  "verify:blob-health",
   "verify:live-readiness",
   "verify:persistence-recovery",
   "verify:live-walkthrough",

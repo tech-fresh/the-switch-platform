@@ -23,6 +23,7 @@
     "verify:launch-signoff": "node scripts/launch-signoff.mjs",
     "verify:launch-complete": "node scripts/launch-complete.mjs",
     "verify:persistence-recovery": "node scripts/persistence-recovery-check.mjs",
+    "verify:blob-health": "node scripts/verify-blob-health.mjs",
     "persistence:migrate-to-sqlite": "node scripts/persistence-migrate-to-sqlite.mjs",
     "persistence:restore-from-backup": "node scripts/persistence-restore-from-backup.mjs",
     "storybook": "storybook dev -p 6006",

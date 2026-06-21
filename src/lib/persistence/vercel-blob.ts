@@ -6,9 +6,104 @@ import { BlobNotFoundError, copy, get, head, put } from "@vercel/blob";
 
 const VERCEL_BLOB_SCHEME = "vercel-blob://";
 
+export class VercelBlobStoreSuspendedError extends Error {
+  name = "VercelBlobStoreSuspendedError";
+
+  constructor(message: string) {
+    super(message);
+  }
+}
+
+export type VercelBlobReadHealthStatus =
+  | "not-applicable"
+  | "missing-auth"
+  | "missing"
+  | "suspended"
+  | "unreadable"
+  | "healthy";
+
+export type VercelBlobReadHealth =
+  | { status: "not-applicable" }
+  | { status: "missing-auth"; detail: string }
+  | { status: "missing"; blobPath: string }
+  | { status: "suspended"; blobPath: string; detail: string }
+  | { status: "unreadable"; blobPath: string; detail: string }
+  | { status: "healthy"; blobPath: string; byteLength: number };
+
 export interface DownloadedBlobFile {
   exists: boolean;
   bytes: Buffer;
+}
+
+export function isVercelBlobStoreSuspendedError(error: unknown): boolean {
+  if (error instanceof VercelBlobStoreSuspendedError) {
+    return true;
+  }
+
+  const message = getErrorMessage(error).toLowerCase();
+
+  return message.includes("store has been suspended") || message.includes("blobstoresuspended");
+}
+
+export async function probeVercelBlobReadHealth(blobPath: string): Promise<VercelBlobReadHealth> {
+  if (!isVercelBlobPersistencePath(blobPath)) {
+    return { status: "not-applicable" };
+  }
+
+  const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
+  const storeId = process.env.BLOB_STORE_ID?.trim();
+  const oidcToken = process.env.VERCEL_OIDC_TOKEN?.trim();
+
+  if (!token && !(storeId && oidcToken)) {
+    return {
+      status: "missing-auth",
+      detail: "Set BLOB_READ_WRITE_TOKEN or both BLOB_STORE_ID and VERCEL_OIDC_TOKEN before probing Blob health.",
+    };
+  }
+
+  try {
+    const metadata = await headVercelBlob(blobPath);
+
+    if (!metadata) {
+      return { status: "missing", blobPath };
+    }
+
+    const result = await get(getVercelBlobPathname(blobPath), {
+      access: "private",
+      useCache: false,
+      ...getBlobAuthOptions(),
+    });
+
+    if (!result || result.statusCode !== 200 || !result.stream) {
+      return {
+        status: "unreadable",
+        blobPath,
+        detail: `Blob read returned status ${result?.statusCode ?? "unknown"}.`,
+      };
+    }
+
+    const bytes = Buffer.from(await new Response(result.stream).arrayBuffer());
+
+    return {
+      status: "healthy",
+      blobPath,
+      byteLength: bytes.length,
+    };
+  } catch (error) {
+    if (isVercelBlobStoreSuspendedError(error)) {
+      return {
+        status: "suspended",
+        blobPath,
+        detail: getErrorMessage(error),
+      };
+    }
+
+    return {
+      status: "unreadable",
+      blobPath,
+      detail: getErrorMessage(error),
+    };
+  }
 }
 
 export function isVercelBlobPersistencePath(value: string | null | undefined): value is string {
@@ -49,25 +144,33 @@ export async function readVercelBlobBytes(blobPath: string): Promise<DownloadedB
     };
   }
 
-  const result = await get(getVercelBlobPathname(blobPath), {
-    access: "private",
-    useCache: false,
-    ...getBlobAuthOptions(),
-  });
+  try {
+    const result = await get(getVercelBlobPathname(blobPath), {
+      access: "private",
+      useCache: false,
+      ...getBlobAuthOptions(),
+    });
 
-  if (!result || result.statusCode !== 200 || !result.stream) {
+    if (!result || result.statusCode !== 200 || !result.stream) {
+      return {
+        exists: false,
+        bytes: Buffer.alloc(0),
+      };
+    }
+
+    const bytes = Buffer.from(await new Response(result.stream).arrayBuffer());
+
     return {
-      exists: false,
-      bytes: Buffer.alloc(0),
+      exists: true,
+      bytes,
     };
+  } catch (error) {
+    if (isVercelBlobStoreSuspendedError(error)) {
+      throw new VercelBlobStoreSuspendedError(getErrorMessage(error));
+    }
+
+    throw error;
   }
-
-  const bytes = Buffer.from(await new Response(result.stream).arrayBuffer());
-
-  return {
-    exists: true,
-    bytes,
-  };
 }
 
 export async function headVercelBlob(blobPath: string) {
@@ -149,6 +252,10 @@ export async function withTemporarySqliteFile<T>(
 
 export async function readLocalFileBytes(filePath: string): Promise<Buffer> {
   return readFile(filePath);
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 function getBlobAuthOptions() {

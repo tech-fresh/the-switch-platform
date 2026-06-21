@@ -213,6 +213,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-21 Final Path Mark 2 blob-health closeout tooling
+
+- Added `npm run verify:blob-health` as the first step in the final live launch sequence.
+- Suspended Vercel Blob stores now surface through recovery (`store-suspended`), persistence runtime summary, governance environment checks, admin runtime, and item 22 truth-match.
+- Updated `FINAL_LAUNCH_RUNBOOK.md`, `AGENTS.md`, `launch-complete.mjs`, and `launch-status.mjs` with Blob repair operator steps.
+- Platform label remains `near-launch` until production Blob byte reads succeed and the full live verification chain passes cleanly.
+
 ### 2026-06-21 Exam Engine service test coverage (Priority #1)
 
 - Added `tests/exam-engine-service.test.mjs` with eight automated tests for the highest-priority module.

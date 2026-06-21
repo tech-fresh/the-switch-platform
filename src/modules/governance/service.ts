@@ -1,4 +1,6 @@
 import { getPersistenceRuntimeConfig } from "../../lib/persistence/runtime.ts";
+import type { VercelBlobReadHealthStatus } from "../../lib/persistence/vercel-blob.ts";
+import { probeVercelBlobReadHealth } from "../../lib/persistence/vercel-blob.ts";
 import {
   readLaunchGovernanceRecords,
   writeLaunchGovernanceRecords,
@@ -53,6 +55,8 @@ interface GovernanceRuntimeInput {
   authSecretConfigured: boolean;
   authBaseUrl: string | null;
   persistenceRuntime: ReturnType<typeof getPersistenceRuntimeConfig>;
+  blobStoreHealth: VercelBlobReadHealthStatus;
+  blobStoreHealthDetail: string | null;
   cmsRuntime: ReturnType<typeof getCmsRuntimeConfig>;
   configuredOidcProviderCount: number;
 }
@@ -459,7 +463,7 @@ const knownEnvironmentCheckIds = new Set([
 const knownSmokeCheckIds = new Set(smokeDefinitions.map((definition) => definition.checkId));
 
 export async function getLaunchGovernanceOverview(): Promise<LaunchGovernanceOverview> {
-  const runtimeInput = getGovernanceRuntimeInput();
+  const runtimeInput = await getGovernanceRuntimeInput();
   const storedRecords = await readLaunchGovernanceRecords();
   const reviews = buildReviews(storedRecords);
   const smokeChecks = buildSmokeChecks(storedRecords);
@@ -580,12 +584,68 @@ export async function recordLaunchGovernanceSmokeCheck(input: {
   });
 }
 
-function getGovernanceRuntimeInput(): GovernanceRuntimeInput {
+function getPersistencePathDetail(input: GovernanceRuntimeInput): string {
+  if (input.blobStoreHealth === "suspended") {
+    return `The configured Vercel Blob store appears suspended. Byte reads for ${input.persistenceRuntime.primaryStorePath} are failing, so shared live student data cannot load yet. Unsuspend or replace the Blob store in Vercel, then rerun npm run verify:blob-health and the final launch sequence.`;
+  }
+
+  if (input.blobStoreHealth === "unreadable") {
+    return input.blobStoreHealthDetail
+      ? `Shared live student data is configured at ${input.persistenceRuntime.dataDirectory}, but Blob reads are failing: ${input.blobStoreHealthDetail}`
+      : `Shared live student data is configured at ${input.persistenceRuntime.dataDirectory}, but Blob reads are still failing.`;
+  }
+
+  if (input.blobStoreHealth === "missing-auth") {
+    return input.blobStoreHealthDetail
+      ?? "Blob-backed persistence is configured, but the runtime is missing Blob auth credentials.";
+  }
+
+  if (input.persistenceRuntime.driver === "memory") {
+    return "This runtime would lose student data on restart.";
+  }
+
+  if (input.persistenceRuntime.isEphemeralStorage) {
+    return `Student data is still using an ephemeral serverless path at ${input.persistenceRuntime.dataDirectory}, so it is not one shared live persistence location yet.`;
+  }
+
+  if (input.persistenceRuntime.isPrototypePersistence) {
+    return input.persistenceRuntime.usesDefaultDataDirectory
+      ? `Student data is still using the default local path at ${input.persistenceRuntime.dataDirectory}.`
+      : `Student data is still using a provisional configured path at ${input.persistenceRuntime.dataDirectory}.`;
+  }
+
+  return `Student data is pointed at the explicit runtime path ${input.persistenceRuntime.dataDirectory}.`;
+}
+
+function isPersistencePathReady(input: GovernanceRuntimeInput): boolean {
+  return (
+    input.persistenceRuntime.driver !== "memory" &&
+    !input.persistenceRuntime.isPrototypePersistence &&
+    input.blobStoreHealth !== "suspended" &&
+    input.blobStoreHealth !== "unreadable" &&
+    input.blobStoreHealth !== "missing-auth"
+  );
+}
+
+async function getGovernanceRuntimeInput(): Promise<GovernanceRuntimeInput> {
+  const persistenceRuntime = getPersistenceRuntimeConfig();
+  const blobHealth =
+    persistenceRuntime.storageBackend === "vercel-blob"
+      ? await probeVercelBlobReadHealth(persistenceRuntime.primaryStorePath)
+      : { status: "not-applicable" as const };
+
   return {
     authMode: (process.env.SWITCH_AUTH_MODE ?? "oidc").trim(),
     authSecretConfigured: Boolean(process.env.SWITCH_AUTH_SECRET?.trim()),
     authBaseUrl: process.env.SWITCH_AUTH_BASE_URL?.trim() ?? null,
-    persistenceRuntime: getPersistenceRuntimeConfig(),
+    persistenceRuntime,
+    blobStoreHealth: blobHealth.status,
+    blobStoreHealthDetail:
+      blobHealth.status === "suspended" ||
+      blobHealth.status === "unreadable" ||
+      blobHealth.status === "missing-auth"
+        ? blobHealth.detail
+        : null,
     cmsRuntime: getCmsRuntimeConfig(),
     configuredOidcProviderCount: getConfiguredOidcProviderCount(),
   };
@@ -692,27 +752,12 @@ function buildEnvironmentChecks(
     {
       checkId: "environment-persistence-path",
       label: "Student data location",
-      status:
-        input.persistenceRuntime.driver === "memory" || input.persistenceRuntime.isPrototypePersistence
-          ? "watch"
-          : "ready",
-      detail:
-        input.persistenceRuntime.driver === "memory"
-          ? "This runtime would lose student data on restart."
-          : input.persistenceRuntime.isEphemeralStorage
-            ? `Student data is still using an ephemeral serverless path at ${input.persistenceRuntime.dataDirectory}, so it is not one shared live persistence location yet.`
-          : input.persistenceRuntime.isPrototypePersistence
-            ? input.persistenceRuntime.usesDefaultDataDirectory
-              ? `Student data is still using the default local path at ${input.persistenceRuntime.dataDirectory}.`
-              : `Student data is still using a provisional configured path at ${input.persistenceRuntime.dataDirectory}.`
-            : `Student data is pointed at the explicit runtime path ${input.persistenceRuntime.dataDirectory}.`,
+      status: isPersistencePathReady(input) ? "ready" : "watch",
+      detail: getPersistencePathDetail(input),
       owner: null,
       recordedAt: null,
       environment: null,
-      source:
-        input.persistenceRuntime.driver === "memory" || input.persistenceRuntime.isPrototypePersistence
-          ? "seeded"
-          : "runtime",
+      source: isPersistencePathReady(input) ? "runtime" : "seeded",
     },
     {
       checkId: "environment-cms-mode",

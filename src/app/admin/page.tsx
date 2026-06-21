@@ -148,6 +148,17 @@ export default async function AdminPage() {
                   ? `Backup or restore coverage is still incomplete for ${persistence.dataDirectory}.`
                   : `Runtime directory: ${persistence.dataDirectory}`}
               </p>
+              {persistence.blobStoreHealth === "suspended" ? (
+                <p className="mt-1 text-sm opacity-90">
+                  The configured Vercel Blob store appears suspended. Shared live student data cannot load until the store is unsuspended or replaced in Vercel.
+                </p>
+              ) : null}
+              {persistence.blobStoreHealthDetail &&
+              persistence.blobStoreHealth !== "healthy" &&
+              persistence.blobStoreHealth !== "not-applicable" &&
+              persistence.blobStoreHealth !== "missing" ? (
+                <p className="mt-1 text-sm opacity-90">{persistence.blobStoreHealthDetail}</p>
+              ) : null}
               {persistence.isServerlessRuntime && persistence.isEphemeralStorage ? (
                 <p className="mt-1 text-sm opacity-90">
                   The deployed function is still falling back to ephemeral serverless storage. Final launch truth-match stays open until the runtime points at one durable shared live store.

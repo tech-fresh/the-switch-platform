@@ -6,6 +6,7 @@ import type { PersistenceRuntimeConfig } from "./runtime.ts";
 import { getPersistenceRuntimeConfig } from "./runtime.ts";
 import {
   isVercelBlobPersistencePath,
+  isVercelBlobStoreSuspendedError,
   readVercelBlobBytes,
   withTemporarySqliteFile,
 } from "./vercel-blob.ts";
@@ -32,6 +33,7 @@ export interface PersistenceRecoveryFileStatus {
     | "missing-backup"
     | "orphaned-backup"
     | "backup-drift"
+    | "store-suspended"
     | null;
 }
 
@@ -135,7 +137,7 @@ async function inspectSqliteStore(
       backupExists: backup.exists,
       matchesBackup: false,
       restoreCheckPassed: false,
-      issue: "invalid-active",
+      issue: active.suspended ? "store-suspended" : "invalid-active",
     });
   }
 
@@ -389,7 +391,7 @@ async function readCollectionFile(
 
 async function readSqliteStore(
   filePath: string,
-): Promise<{ exists: boolean; invalid: boolean; recordCount: number; raw: Buffer }> {
+): Promise<{ exists: boolean; invalid: boolean; suspended: boolean; recordCount: number; raw: Buffer }> {
   if (isVercelBlobPersistencePath(filePath)) {
     try {
       const download = await readVercelBlobBytes(filePath);
@@ -398,6 +400,7 @@ async function readSqliteStore(
         return {
           exists: false,
           invalid: false,
+          suspended: false,
           recordCount: 0,
           raw: Buffer.alloc(0),
         };
@@ -414,6 +417,7 @@ async function readSqliteStore(
           return {
             exists: true,
             invalid: false,
+            suspended: false,
             recordCount: Number(row?.recordCount ?? 0),
             raw: download.bytes,
           };
@@ -421,10 +425,21 @@ async function readSqliteStore(
           database.close();
         }
       });
-    } catch {
+    } catch (error) {
+      if (isVercelBlobStoreSuspendedError(error)) {
+        return {
+          exists: true,
+          invalid: true,
+          suspended: true,
+          recordCount: 0,
+          raw: Buffer.alloc(0),
+        };
+      }
+
       return {
         exists: true,
         invalid: true,
+        suspended: false,
         recordCount: 0,
         raw: Buffer.alloc(0),
       };
@@ -443,6 +458,7 @@ async function readSqliteStore(
       return {
         exists: true,
         invalid: false,
+        suspended: false,
         recordCount: Number(row?.recordCount ?? 0),
         raw,
       };
@@ -454,6 +470,7 @@ async function readSqliteStore(
       return {
         exists: false,
         invalid: false,
+        suspended: false,
         recordCount: 0,
         raw: Buffer.alloc(0),
       };
@@ -462,6 +479,7 @@ async function readSqliteStore(
     return {
       exists: true,
       invalid: true,
+      suspended: false,
       recordCount: 0,
       raw: Buffer.alloc(0),
     };

@@ -106,10 +106,12 @@ Do not continue until the dry run is clean or the missing inputs are understood.
 Run these in order, or use the orchestration command:
 
 ```bash
+npm run verify:blob-health
 npm run verify:live-readiness
 npm run verify:persistence-recovery
 npm run verify:live-walkthrough
 npm run verify:launch-signoff
+npm run verify:live-truth-match
 ```
 
 Or:
@@ -117,6 +119,21 @@ Or:
 ```bash
 npm run verify:launch-complete
 ```
+
+## If Vercel Blob Is Suspended
+
+When `npm run verify:blob-health` reports `suspended`:
+
+1. Open the Vercel project Storage / Blob settings for the live store backing `SWITCH_DATA_DIRECTORY`.
+2. Unsuspend the store **or** create a replacement store and update:
+   - `BLOB_READ_WRITE_TOKEN`
+   - `SWITCH_DATA_DIRECTORY` (for example `vercel-blob://switch-live-data`)
+3. Seed or restore the sqlite file:
+   - `npm run persistence:migrate-to-sqlite` for a fresh seed, or
+   - `npm run persistence:restore-from-backup` when a valid backup exists
+4. Rerun the full final live sequence above.
+
+Do not describe the platform as fully complete while Blob byte reads still fail.
 
 ## Evidence To Confirm
 

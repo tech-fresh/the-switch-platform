@@ -39,6 +39,10 @@ New product work, requested additions, previews, mockups, routes, modules, and a
 - This repository should use the committed `.githooks/post-commit` hook so commits can push to GitHub automatically when the current branch already tracks a remote branch.
 - Run `node scripts/enable-auto-push.mjs` once per local clone to point `core.hooksPath` at `.githooks`.
 - Use `SWITCH_SKIP_AUTO_PUSH=1 git commit ...` only when a commit must stay local temporarily.
+- Future sessions should treat automatic git update and push completion as part of the normal closeout path rather than as optional follow-up work.
+- The user should not have to run manual git commands as the default path for ordinary completion.
+- If GitHub authentication expires, the session should proactively repair it and continue the push workflow in the same session.
+- Only ask the user for a browser or device approval step when an external GitHub login confirmation is genuinely unavoidable.
 
 ## Mark 3.2 Product Spec
 

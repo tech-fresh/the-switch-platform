@@ -172,6 +172,9 @@ Before doing any work in this repository:
 - If a push fails because git or GitHub auth is unhealthy, actively diagnose and repair the auth path in the same session instead of waiting for a separate user prompt.
 - Prefer fixing GitHub auth through the current configured remote, `gh auth` status and re-auth flow, or other non-destructive credential repairs before declaring the repo push path blocked.
 - Do not leave a task described as pushed or fully wrapped if the intended commit is still local-only because auth was not repaired.
+- Treat automatic git update and push completion as part of the required end-to-end task closeout path whenever the user expects the work to be updated on GitHub.
+- Do not make the user run manual git commands as the default solution for routine push completion.
+- If an external browser or device approval is required for GitHub auth, keep the user ask as short as possible, then continue the repair and push flow immediately after approval.
 
 ### Current Pushed Baseline
 

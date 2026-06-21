@@ -10,6 +10,9 @@ export interface PersistenceRuntimeConfig {
   primaryStorePath: string;
   backupStorePath: string | null;
   isPrototypePersistence: boolean;
+  usesDefaultDataDirectory: boolean;
+  isServerlessRuntime: boolean;
+  isEphemeralStorage: boolean;
 }
 
 const DEFAULT_DATA_DIRECTORY_NAME = ".codex-data";
@@ -20,15 +23,17 @@ let memoryDriverWarningShown = false;
 export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
   const requestedDriver = process.env.SWITCH_PERSISTENCE_DRIVER;
   const configuredDataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim();
+  const isServerlessRuntime = detectServerlessFilesystemRuntime();
   const driver =
     requestedDriver === "memory"
       ? "memory"
       : requestedDriver === "sqlite"
         ? "sqlite"
         : "local-json";
+  const usesDefaultDataDirectory = !configuredDataDirectory;
   const dataDirectory = configuredDataDirectory
     ? path.resolve(configuredDataDirectory)
-    : getDefaultDataDirectory();
+    : getDefaultDataDirectory(isServerlessRuntime);
   const backupDirectory =
     driver === "memory" ? null : path.join(dataDirectory, "backups");
   const primaryStorePath =
@@ -39,6 +44,12 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
     driver === "sqlite" && backupDirectory
       ? path.join(backupDirectory, SQLITE_DATABASE_FILENAME)
       : backupDirectory;
+  const tempDirectoryRoot = path.resolve(tmpdir());
+  const isEphemeralStorage =
+    driver !== "memory" &&
+    isServerlessRuntime &&
+    (path.resolve(dataDirectory) === tempDirectoryRoot ||
+      path.resolve(dataDirectory).startsWith(`${tempDirectoryRoot}${path.sep}`));
 
   if (driver === "memory" && !memoryDriverWarningShown) {
     memoryDriverWarningShown = true;
@@ -55,18 +66,21 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
     backupStorePath,
     isPrototypePersistence:
       driver === "memory" || driver === "local-json" || !configuredDataDirectory,
+    usesDefaultDataDirectory,
+    isServerlessRuntime,
+    isEphemeralStorage,
   };
 }
 
-function getDefaultDataDirectory(): string {
-  if (isServerlessFilesystemRuntime()) {
+function getDefaultDataDirectory(isServerlessRuntime: boolean): string {
+  if (isServerlessRuntime) {
     return path.join(tmpdir(), DEFAULT_DATA_DIRECTORY_NAME);
   }
 
   return path.join(process.cwd(), DEFAULT_DATA_DIRECTORY_NAME);
 }
 
-function isServerlessFilesystemRuntime(): boolean {
+function detectServerlessFilesystemRuntime(): boolean {
   return Boolean(
     process.env.VERCEL?.trim() ||
       process.env.AWS_LAMBDA_FUNCTION_VERSION?.trim() ||

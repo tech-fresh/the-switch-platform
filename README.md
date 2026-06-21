@@ -155,6 +155,14 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-21 truth-match hardening
+
+- The launch closeout path now has an explicit deployed-runtime truth check through `npm run verify:live-truth-match`.
+- This check compares the deployed admin persistence API and governance API against the intended live auth mode, live callback base URL, sqlite driver, shared data directory, recovery readiness, and final governance readiness.
+- Manual governance records no longer mask a bad deployed runtime. If the live environment falls back to provisional or serverless-temporary persistence, governance now drops back to `watch` instead of pretending launch truth still matches.
+- The admin runtime page now calls out ephemeral serverless persistence directly, so item 22 can stay honest when the deployed runtime is still different from the recorded evidence.
+- Current truth remains unchanged: the repository is stronger and more truthful, but true `Final Path Mark 2` still requires the deployed runtime to stop using temporary serverless storage and to reflect one real shared live persistence path.
+
 ### 1. Mark 3.2 modular MVP foundation
 
 The project was established around these core rules:

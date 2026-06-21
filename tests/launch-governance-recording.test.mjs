@@ -201,3 +201,72 @@ test("launch governance records can be persisted and reflected in the overview",
     }
   });
 });
+
+test("manual persistence-ready records do not mask a runtime persistence mismatch", async () => {
+  await withTempDir(async (tempDir) => {
+    const previousDriver = process.env.SWITCH_PERSISTENCE_DRIVER;
+    const previousDataDirectory = process.env.SWITCH_DATA_DIRECTORY;
+    const previousVercel = process.env.VERCEL;
+    const previousAuthMode = process.env.SWITCH_AUTH_MODE;
+    const previousAuthSecret = process.env.SWITCH_AUTH_SECRET;
+    const previousAuthBaseUrl = process.env.SWITCH_AUTH_BASE_URL;
+    const previousCmsMode = process.env.SWITCH_CMS_BACKEND_MODE;
+
+    try {
+      process.env.SWITCH_PERSISTENCE_DRIVER = "local-json";
+      process.env.SWITCH_DATA_DIRECTORY = tempDir;
+      process.env.VERCEL = "1";
+      process.env.SWITCH_AUTH_MODE = "oidc";
+      process.env.SWITCH_AUTH_SECRET = "governance-test-secret";
+      process.env.SWITCH_AUTH_BASE_URL = "https://switch.example.com";
+      process.env.SWITCH_CMS_BACKEND_MODE = "live";
+
+      const service = await import(
+        `../src/modules/governance/service.ts?test=${Date.now()}-launch-governance-mismatch`
+      );
+
+      await service.recordLaunchGovernanceEnvironmentCheck({
+        checkId: "environment-persistence-path",
+        status: "ready",
+        owner: "Platform lead",
+        detail: "The release checklist says persistence was verified.",
+        environment: "production-eu",
+        recordedAt: "2026-06-21T14:00:00.000Z",
+      });
+
+      await service.recordLaunchGovernanceEvidence({
+        evidenceId: "evidence-persistence-sqlite",
+        status: "recorded",
+        owner: "Student data lead",
+        summary: "The release checklist says the shared sqlite store was proven.",
+        environment: "production-eu",
+        recordedAt: "2026-06-21T14:05:00.000Z",
+      });
+
+      const overview = await service.getLaunchGovernanceOverview();
+      const persistenceCheck = overview.environmentChecks.find(
+        (item) => item.checkId === "environment-persistence-path",
+      );
+      const persistenceEvidence = overview.evidenceRecords.find(
+        (item) => item.evidenceId === "evidence-persistence-sqlite",
+      );
+
+      assert.equal(persistenceCheck?.status, "watch");
+      assert.equal(persistenceCheck?.source, "manual");
+      assert.match(persistenceCheck?.detail ?? "", /runtime mismatch/i);
+      assert.match(persistenceCheck?.detail ?? "", /ephemeral|provisional|default local path/i);
+
+      assert.equal(persistenceEvidence?.status, "still-needed");
+      assert.equal(persistenceEvidence?.source, "manual");
+      assert.match(persistenceEvidence?.summary ?? "", /runtime mismatch/i);
+    } finally {
+      restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
+      restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);
+      restoreEnv("VERCEL", previousVercel);
+      restoreEnv("SWITCH_AUTH_MODE", previousAuthMode);
+      restoreEnv("SWITCH_AUTH_SECRET", previousAuthSecret);
+      restoreEnv("SWITCH_AUTH_BASE_URL", previousAuthBaseUrl);
+      restoreEnv("SWITCH_CMS_BACKEND_MODE", previousCmsMode);
+    }
+  });
+});

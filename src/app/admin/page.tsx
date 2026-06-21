@@ -44,8 +44,13 @@ function getCloseoutClasses(status: "done" | "remaining"): string {
 function getPersistenceClasses(
   driver: "local-json" | "sqlite" | "memory",
   isPrototypePersistence: boolean,
+  isEphemeralStorage: boolean,
 ): string {
   if (driver === "memory") {
+    return "border-rose-300 bg-rose-50 text-rose-950";
+  }
+
+  if (isEphemeralStorage) {
     return "border-rose-300 bg-rose-50 text-rose-950";
   }
 
@@ -126,7 +131,7 @@ export default async function AdminPage() {
               <p className="mt-2 text-lg font-semibold text-stone-950">{cms.editorialWorkflow.length}</p>
               <p className="mt-1 text-sm text-stone-600">{cms.editorialWorkflowSummary.queuedReviewCount} waiting for review</p>
             </div>
-            <div className={`border p-4 ${getPersistenceClasses(persistence.driver, persistence.isPrototypePersistence)}`}>
+            <div className={`border p-4 ${getPersistenceClasses(persistence.driver, persistence.isPrototypePersistence, persistence.isEphemeralStorage)}`}>
               <p className="text-xs uppercase tracking-[0.2em] opacity-75">Persistence driver</p>
               <p className="mt-2 text-lg font-semibold">
                 {persistence.driver}
@@ -134,10 +139,17 @@ export default async function AdminPage() {
               <p className="mt-1 text-sm opacity-90">
                 {persistence.driver === "memory"
                   ? "Memory persistence is active, so student data would reset on restart."
+                  : persistence.isEphemeralStorage
+                  ? `This runtime is writing to a temporary serverless path at ${persistence.dataDirectory}, so it is not one shared live student-data location yet.`
                   : persistence.isPrototypePersistence
                   ? `Backup or restore coverage is still incomplete for ${persistence.dataDirectory}.`
                   : `Runtime directory: ${persistence.dataDirectory}`}
               </p>
+              {persistence.isServerlessRuntime && persistence.isEphemeralStorage ? (
+                <p className="mt-1 text-sm opacity-90">
+                  The deployed function is still falling back to ephemeral serverless storage. Final launch truth-match stays open until the runtime points at one durable shared live store.
+                </p>
+              ) : null}
               <p className="mt-1 text-sm opacity-90">
                 {persistence.backupDirectory
                   ? `Backup directory: ${persistence.backupDirectory}`

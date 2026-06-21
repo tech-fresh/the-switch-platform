@@ -440,6 +440,14 @@ const finalPathSummary: GovernanceFinalPathSummary = buildFinalPathSummary();
 const knownReviewIds = new Set(reviewDefinitions.map((definition) => definition.reviewId));
 const knownSignOffIds = new Set(signOffDefinitions.map((definition) => definition.checkId));
 const knownEvidenceIds = new Set(runtimeEvidenceDefinitions.map((definition) => definition.evidenceId));
+const runtimeEnforcedEvidenceIds = new Set([
+  "evidence-auth-runtime",
+  "evidence-auth-provider",
+  "evidence-persistence-sqlite",
+  "evidence-persistence-recovery",
+  "evidence-editorial-path",
+  "evidence-environment-base-url",
+]);
 const knownEnvironmentCheckIds = new Set([
   "environment-auth-mode",
   "environment-auth-secret",
@@ -691,8 +699,12 @@ function buildEnvironmentChecks(
       detail:
         input.persistenceRuntime.driver === "memory"
           ? "This runtime would lose student data on restart."
+          : input.persistenceRuntime.isEphemeralStorage
+            ? `Student data is still using an ephemeral serverless path at ${input.persistenceRuntime.dataDirectory}, so it is not one shared live persistence location yet.`
           : input.persistenceRuntime.isPrototypePersistence
-            ? `Student data is still using the local default path at ${input.persistenceRuntime.dataDirectory}.`
+            ? input.persistenceRuntime.usesDefaultDataDirectory
+              ? `Student data is still using the default local path at ${input.persistenceRuntime.dataDirectory}.`
+              : `Student data is still using a provisional configured path at ${input.persistenceRuntime.dataDirectory}.`
             : `Student data is pointed at the explicit runtime path ${input.persistenceRuntime.dataDirectory}.`,
       owner: null,
       recordedAt: null,
@@ -722,6 +734,17 @@ function buildEnvironmentChecks(
 
     if (!storedRecord) {
       return check;
+    }
+
+    if (storedRecord.status === "ready" && check.status === "watch") {
+      return {
+        ...check,
+        detail: `${storedRecord.detail} Runtime mismatch: ${check.detail}`,
+        owner: storedRecord.owner,
+        recordedAt: storedRecord.recordedAt,
+        environment: storedRecord.environment,
+        source: "manual",
+      };
     }
 
     return {
@@ -799,9 +822,25 @@ function buildEvidenceRecords(
 ): GovernanceEvidenceRecord[] {
   return runtimeEvidenceDefinitions.map((definition) => {
     const storedRecord = getLatestStoredEvidenceRecord(storedRecords, definition.evidenceId);
+    const runtimeRecord = definition.buildRuntimeRecord(input);
 
     if (!storedRecord) {
-      return definition.buildRuntimeRecord(input);
+      return runtimeRecord;
+    }
+
+    if (
+      runtimeEnforcedEvidenceIds.has(definition.evidenceId) &&
+      storedRecord.status === "recorded" &&
+      runtimeRecord.status === "still-needed"
+    ) {
+      return {
+        ...runtimeRecord,
+        owner: storedRecord.owner,
+        recordedAt: storedRecord.recordedAt,
+        environment: storedRecord.environment,
+        summary: `${storedRecord.summary} Runtime mismatch: ${runtimeRecord.summary}`,
+        source: "manual",
+      };
     }
 
     return {

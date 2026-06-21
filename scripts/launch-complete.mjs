@@ -15,6 +15,7 @@ const finalLaunchScripts = [
   "verify:persistence-recovery",
   "verify:live-walkthrough",
   "verify:launch-signoff",
+  "verify:live-truth-match",
 ];
 const preflight = getLaunchPreflightReport(process.env);
 

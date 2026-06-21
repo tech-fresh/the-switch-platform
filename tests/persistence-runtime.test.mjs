@@ -50,6 +50,9 @@ test("persistence runtime falls back to a writable temp directory in serverless 
   assert.equal(runtime.isPrototypePersistence, true);
   assert.equal(runtime.dataDirectory.includes(".codex-data"), true);
   assert.equal(runtime.dataDirectory.startsWith(tmpdir()), true);
+  assert.equal(runtime.usesDefaultDataDirectory, true);
+  assert.equal(runtime.isServerlessRuntime, true);
+  assert.equal(runtime.isEphemeralStorage, true);
 
   restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
   restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);
@@ -73,6 +76,8 @@ test("persistence runtime still treats explicit local-json storage as provisiona
   assert.equal(runtime.backupDirectory, "/srv/the-switch/data/backups");
   assert.equal(runtime.primaryStorePath, "/srv/the-switch/data");
   assert.equal(runtime.backupStorePath, "/srv/the-switch/data/backups");
+  assert.equal(runtime.usesDefaultDataDirectory, false);
+  assert.equal(runtime.isEphemeralStorage, false);
 
   restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
   restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);
@@ -95,6 +100,9 @@ test("persistence runtime treats sqlite with an explicit data directory as the i
   assert.equal(runtime.backupDirectory, "/srv/the-switch/data/backups");
   assert.equal(runtime.primaryStorePath, "/srv/the-switch/data/switch-live.sqlite");
   assert.equal(runtime.backupStorePath, "/srv/the-switch/data/backups/switch-live.sqlite");
+  assert.equal(runtime.usesDefaultDataDirectory, false);
+  assert.equal(runtime.isServerlessRuntime, false);
+  assert.equal(runtime.isEphemeralStorage, false);
 
   restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
   restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);

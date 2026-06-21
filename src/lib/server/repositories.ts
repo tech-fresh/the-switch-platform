@@ -40,6 +40,9 @@ export interface PersistenceRuntimeSummary {
   primaryStorePath: string;
   backupStorePath: string | null;
   isPrototypePersistence: boolean;
+  usesDefaultDataDirectory: boolean;
+  isServerlessRuntime: boolean;
+  isEphemeralStorage: boolean;
   recoveryReady: boolean;
   recoveryCheckedAt: string | null;
   recoveryIssueCount: number;
@@ -166,6 +169,9 @@ export async function getPersistenceRuntimeSummary(): Promise<PersistenceRuntime
     primaryStorePath: config.primaryStorePath,
     backupStorePath: config.backupStorePath,
     isPrototypePersistence: config.driver === "memory" ? false : config.isPrototypePersistence || !recovery.isReady,
+    usesDefaultDataDirectory: config.usesDefaultDataDirectory,
+    isServerlessRuntime: config.isServerlessRuntime,
+    isEphemeralStorage: config.isEphemeralStorage,
     recoveryReady: recovery.isReady,
     recoveryCheckedAt: recovery.checkedAt,
     recoveryIssueCount: recovery.issueCount,

@@ -309,6 +309,13 @@ Completion language rule:
 - If `Final Path Mark 1` is done but `Final Path Mark 2` is not, describe the platform as near-launch.
 - Only describe the platform as fully complete when both marks are complete.
 
+### 2026-06-21 truth-match guardrail
+
+- Treat `npm run verify:live-truth-match` as part of the real launch proof path for item 22.
+- Do not let manual governance records overrule a bad deployed runtime.
+- If the deployed admin persistence API reports provisional storage, local-json, memory, or an ephemeral serverless path such as `/tmp/.codex-data`, keep item 22 open and describe the platform as near-launch.
+- The admin runtime surface and governance API should reflect the active deployed persistence truth, not just the last manually recorded approval note.
+
 ### Final Path Mark 2 operator note from the June 21, 2026 live run
 
 - In `oidc` mode, there is no separate built-in live admin account record to create inside the product.

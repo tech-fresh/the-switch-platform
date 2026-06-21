@@ -500,6 +500,7 @@ test("launch complete script can report the final sequence in dry-run mode", asy
   assert.match(stdout, /npm run verify:persistence-recovery/i);
   assert.match(stdout, /npm run verify:live-walkthrough/i);
   assert.match(stdout, /npm run verify:launch-signoff/i);
+  assert.match(stdout, /npm run verify:live-truth-match/i);
   assert.match(stdout, /Preflight: missing required live inputs/i);
 });
 

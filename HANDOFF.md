@@ -66,7 +66,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 75dce18 — Document free-tier launch workaround and agent efficiency plan
+- **Last commit:** 0ef6118 — Add Fly.io free-tier deploy path when Vercel is blocked
 - **Platform label:** `near-launch` — **not** true `100% complete`
 
 ### Active task

@@ -106,7 +106,7 @@ Do not continue until the dry run is clean or the missing inputs are understood.
 Run these in order, or use the orchestration command:
 
 ```bash
-npm run verify:blob-health
+npm run verify:persistence-health
 npm run verify:live-readiness
 npm run verify:persistence-recovery
 npm run verify:live-walkthrough
@@ -120,9 +120,11 @@ Or:
 npm run verify:launch-complete
 ```
 
-## If Vercel Blob Is Suspended
+## If Vercel Blob Is Suspended Or You Cannot Redeploy
 
-When `npm run verify:blob-health` reports `suspended`:
+When Vercel is blocked, use **Fly.io** — full steps in [`docs/FREE_TIER_DEPLOY.md`](docs/FREE_TIER_DEPLOY.md).
+
+When `npm run verify:persistence-health` reports Blob `suspended` and you still have Vercel deploy access:
 
 1. Open the Vercel project Storage / Blob settings for the live store backing `SWITCH_DATA_DIRECTORY`.
 2. Unsuspend the store **or** create a replacement store and update:
@@ -133,18 +135,18 @@ When `npm run verify:blob-health` reports `suspended`:
    - `npm run persistence:restore-from-backup` when a valid backup exists
 4. Rerun the full final live sequence above.
 
-Do not describe the platform as fully complete while Blob byte reads still fail.
+Do not describe the platform as fully complete while live persistence reads still fail.
 
-## Free alternative hosts (no Blob)
+## Free alternative hosts (Fly.io — preferred when Vercel blocked)
 
-If Vercel Blob cannot be restored, deploy the same repo to a host with **persistent disk** and set:
+Repo includes `Dockerfile`, `fly.toml`, and `docs/FREE_TIER_DEPLOY.md`.
 
 ```bash
 SWITCH_PERSISTENCE_DRIVER=sqlite
-SWITCH_DATA_DIRECTORY=/var/data
+SWITCH_DATA_DIRECTORY=/data
 ```
 
-Render and Fly.io are documented in `README.md` → **Free-tier launch workaround plan**. No repo code change required for filesystem sqlite.
+Render (paid disk) is documented in `README.md` → **Free-tier launch workaround plan**.
 
 ## Evidence To Confirm
 

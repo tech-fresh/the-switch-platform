@@ -102,78 +102,67 @@ flowchart LR
 
 ### Free-tier launch workaround plan (persistence fix)
 
-Use this when Vercel Blob is suspended or you want a **free** path to finish **Final Path Mark 2** without paying for extra storage yet.
+Use this when **Vercel Blob is suspended**, **Vercel deploy tokens are exhausted**, or you need a **free/cheap** path to finish **Final Path Mark 2**.
 
 #### Plain English — what broke
 
-The live site saves student data in one shared sqlite file. Production points that file at **Vercel Blob**. The store was **suspended**, so the app could not read the file → `/dashboard` and `/account` returned **500**. Auth tokens on Vercel are separate; fixing auth does not fix persistence.
+The live site saves student data in one shared sqlite file. Production on Vercel pointed that file at **Vercel Blob**. The store was **suspended**, so the app could not read the file → `/dashboard` and `/account` returned **500**. If you also **cannot redeploy on Vercel**, you cannot fix Blob there — move the app to a host with a real disk folder.
 
-#### Recommended order (least cost / least new code)
+#### Recommended order
 
-| Step | Option | Cost | Code changes | When to use |
-|------|--------|------|--------------|-------------|
-| **1** | **Unsuspend or recreate Vercel Blob** | Free on Vercel Hobby for modest usage | None — tokens already set | **Try this first** |
-| **2** | **New Blob store in same Vercel project** | Free tier | None — update env + redeploy + seed | Old store cannot be unsuspended |
-| **3** | **Render / Fly.io with disk + sqlite filesystem** | Free/low tiers with volume | None — env only | Blob stays broken; need durable disk |
-| **4** | **Turso / Neon / Supabase** | Free tiers exist | **New adapter needed later** | Only after Option 1–3 fail |
+| Step | Option | Cost | When to use |
+|------|--------|------|-------------|
+| **1 (now)** | **Fly.io + volume + filesystem sqlite** | ~$0.15/mo for 1 GB volume | **Cannot redeploy Vercel** or Blob stays suspended |
+| **2** | Unsuspend / recreate Vercel Blob + redeploy | Free on Hobby | Only if you regain Vercel deploy access |
+| **3** | Render + persistent disk | ~$7/mo (disk needs Starter) | Prefer Fly if cost matters |
+| **4** | Turso / hosted DB | Free tier exists | Needs new adapter — not wired yet |
 
-#### Option 1 — Fix Vercel Blob (recommended first)
+#### Option 1 — Fly.io (use this when Vercel is blocked)
 
-You said Vercel tokens are already set. The remaining step is usually **store status**, not more tokens.
+**Full step-by-step:** [`docs/FREE_TIER_DEPLOY.md`](docs/FREE_TIER_DEPLOY.md)
 
-1. Vercel → Project → **Storage** → open Blob store for `switch-live-data`.
-2. **Unsuspend** the store, or create a **new** Blob store if the old one is permanently suspended.
-3. Production env (already mostly done):
-   - `SWITCH_PERSISTENCE_DRIVER=sqlite`
-   - `SWITCH_DATA_DIRECTORY=vercel-blob://switch-live-data` (or new store name)
-   - `BLOB_READ_WRITE_TOKEN=<token from Vercel Storage settings>`
-4. **Redeploy** production.
-5. From your machine (with the same env in `.env.local`):
+Repo includes `Dockerfile`, `fly.toml`, and auto-seed on first boot.
 
 ```bash
-npm run verify:blob-health
-npm run persistence:migrate-to-sqlite   # only if blob health says missing
+brew install flyctl && fly auth login
+cd "/Users/lloydnwagbara/Documents/THE SWITCH 3"
+fly launch --no-deploy --copy-config
+fly volumes create switch_data --size 1 --region lhr
+fly secrets import < docs/free-tier-secrets.local   # copy from docs/free-tier-secrets.example
+fly deploy
+```
+
+Then on your machine set `SWITCH_LIVE_BASE_URL=https://<app>.fly.dev` and run:
+
+```bash
+npm run verify:persistence-health
 npm run verify:launch-complete
 npm run verify:live-truth-match
 ```
 
-**Success:** `verify:blob-health` shows primary path `healthy`, then walkthrough passes.
+Copy auth secrets from Vercel **Settings → Environment Variables** (no redeploy needed). Update Google OAuth redirect URI to the Fly URL.
 
-#### Option 2 — Free host with a real folder (no Blob)
+#### Option 2 — Fix Vercel Blob (only if you can redeploy)
 
-If Vercel Blob cannot be restored, deploy the **same GitHub repo** to a host with a **persistent disk** and use filesystem sqlite (already supported in code):
+1. Vercel → Storage → unsuspend or recreate Blob store.
+2. Env: `SWITCH_PERSISTENCE_DRIVER=sqlite`, `SWITCH_DATA_DIRECTORY=vercel-blob://switch-live-data`, `BLOB_READ_WRITE_TOKEN=...`
+3. Redeploy → `npm run verify:blob-health`
 
-**Render example**
+#### Option 3 — Render with disk
 
-1. [render.com](https://render.com) → New **Web Service** → connect `tech-fresh/the-switch-platform`.
-2. Add a **persistent disk** (mount path e.g. `/var/data`).
-3. Set env:
-   - `SWITCH_PERSISTENCE_DRIVER=sqlite`
-   - `SWITCH_DATA_DIRECTORY=/var/data`
-   - Same auth env vars as Vercel (`SWITCH_AUTH_MODE=oidc`, secrets, OIDC block, `SWITCH_AUTH_BASE_URL=<Render URL>`).
-4. Deploy → run `npm run persistence:migrate-to-sqlite` once against that env (or seed via shell).
-5. Point `SWITCH_LIVE_BASE_URL` at the Render URL for verification scripts.
-
-**Fly.io** works similarly with a **volume** mounted at `/data`.
-
-**Important:** Vercel serverless **cannot** use a normal folder for live data — `/tmp` resets. That is why Blob or an external disk host is required.
-
-#### Option 3 — Turso (future, not wired yet)
-
-[Turso](https://turso.tech) offers a free sqlite-compatible edge database. It is a good long-term free option but this repo does **not** have a Turso adapter yet. Treat it as a later build item, not tonight's one-click fix.
+Same env as Fly but mount path `/var/data`. Persistent disk requires Render **Starter** plan.
 
 #### What does NOT count as live launch complete
 
-- `SWITCH_PERSISTENCE_DRIVER=local-json` on production
-- `memory` driver
-- Ephemeral `/tmp` sqlite on Vercel
-- Describing the platform as 100% complete while `verify:blob-health` or `verify:live-truth-match` still fails
+- `local-json`, `memory`, or `/tmp` sqlite on serverless
+- Leaving production on suspended Vercel Blob while claiming 100% complete
+- Skipping `verify:live-truth-match` on the **active** live URL
 
-#### After any fix — same closeout sequence
+#### After any fix — closeout sequence
 
 ```bash
 npm run verify:launch-status
-npm run verify:blob-health
+npm run verify:persistence-health
 npm run verify:live-readiness
 npm run verify:persistence-recovery
 npm run verify:live-walkthrough
@@ -181,6 +170,8 @@ npm run verify:launch-signoff
 npm run verify:launch-complete
 npm run verify:live-truth-match
 ```
+
+(`verify:persistence-health` covers Blob **or** filesystem; `verify:blob-health` remains for Blob-only checks.)
 
 Store outputs in `release-evidence/`. Update `HANDOFF.md` when each step passes.
 
@@ -334,6 +325,12 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-21 Fly.io free-tier deploy path (Vercel redeploy blocked)
+
+- Added `Dockerfile`, `fly.toml`, `docs/FREE_TIER_DEPLOY.md`, `docs/free-tier-secrets.example` for Fly.io + persistent volume SQLite.
+- Added `npm run verify:persistence-health` (Blob or filesystem) and first-boot SQLite bootstrap via `scripts/docker-start.sh`.
+- Final launch sequence now uses `verify:persistence-health` instead of Blob-only check.
 
 ### 2026-06-21 Free-tier launch workaround and agent efficiency plan
 

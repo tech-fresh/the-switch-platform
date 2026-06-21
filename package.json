@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "node scripts/repo-lint.mjs",
     "type-check": "tsc --noEmit",
     "test": "tsx --test tests/*.test.mjs",
@@ -24,6 +25,7 @@
     "verify:launch-complete": "node scripts/launch-complete.mjs",
     "verify:persistence-recovery": "node scripts/persistence-recovery-check.mjs",
     "verify:blob-health": "node scripts/verify-blob-health.mjs",
+    "verify:persistence-health": "node scripts/verify-persistence-health.mjs",
     "persistence:migrate-to-sqlite": "node scripts/persistence-migrate-to-sqlite.mjs",
     "persistence:restore-from-backup": "node scripts/persistence-restore-from-backup.mjs",
     "storybook": "storybook dev -p 6006",

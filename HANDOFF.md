@@ -45,7 +45,7 @@ Commit and push when the action produced repo changes, unless a task explicitly 
 | After each task | Update Live session state below (short bullets) |
 | End of session | Verification, commit, push, session log entry, README build record if behavior changed |
 
-**Launch fix right now:** Vercel tokens are set; blocker is **suspended Blob**. See README → **Free-tier launch workaround plan**. Try unsuspend/recreate Blob first, then `npm run verify:blob-health`.
+**Launch fix right now:** Vercel **cannot redeploy** (tokens exhausted) and Blob is **suspended**. Use **Fly.io** — [`docs/FREE_TIER_DEPLOY.md`](docs/FREE_TIER_DEPLOY.md). Then `npm run verify:persistence-health`.
 
 ## Golden rule
 
@@ -73,32 +73,26 @@ Update this section every session.
 
 - **Priority item #:** launch — Final Path Mark 2
 - **Module:** operations / governance
-- **Status:** blocked — operator action in Vercel required
+- **Status:** blocked — deploy to Fly.io (Vercel redeploy not available)
 - **Branch:** main
 
 ### What was just completed
 
-- Added **Free-tier launch workaround plan** and **agent/token efficiency** guidance to `README.md` and `AGENTS.md`
-- Documented fix order: unsuspend/recreate Vercel Blob first (tokens already set), then Render/Fly disk sqlite, Turso later
-- Vercel auth/storage tokens reported done by operator; remaining blocker is Blob **store suspension**, not missing tokens
+- Added `Dockerfile`, `fly.toml`, `docs/FREE_TIER_DEPLOY.md`, `docs/free-tier-secrets.example`
+- Added `verify:persistence-health` (filesystem or Blob), auto SQLite bootstrap on first Fly boot
+- Updated launch sequence to use `verify:persistence-health` instead of Blob-only check
 
 ### What is next
 
-**Recommended free fix (try in order):**
-
-1. **Vercel Dashboard** → Storage → unsuspend Blob **or** create new Blob store → redeploy
-2. Run locally with live env: `npm run verify:blob-health` → must be `healthy` or `missing`
-3. If `missing`: `npm run persistence:migrate-to-sqlite` → verify blob health again
-4. If Blob cannot be fixed: deploy same repo to **Render/Fly with persistent disk**, `SWITCH_DATA_DIRECTORY=/var/data`, sqlite driver (no code change)
-5. Full closeout: `verify:launch-complete` + `verify:live-truth-match` → store evidence → update HANDOFF
-
-See `README.md` → **Free-tier launch workaround plan** for full detail.
+1. Operator: follow `docs/FREE_TIER_DEPLOY.md` — `fly launch`, create volume, import secrets from Vercel, `fly deploy`
+2. Update OIDC redirect URI to Fly URL
+3. Set local `SWITCH_LIVE_BASE_URL` to Fly URL → run full verify chain
+4. Close item 22 when `verify:live-truth-match` passes on Fly
 
 ### Blockers
 
-- **Live Vercel Blob store suspended** — tokens on Vercel are set; byte reads for `switch-live-data/switch-live.sqlite` still fail until store is unsuspended or replaced
-- Protected live routes return 500 until shared persistence reads succeed
-- **Item 22 remains open**
+- **Vercel:** no redeploy tokens + suspended Blob — do not wait on Vercel
+- **Fly:** operator must run deploy (needs Fly account + flyctl)
 
 ### Verification last run
 
@@ -433,6 +427,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Fly.io free-tier deploy (Vercel blocked)
+
+- Branch: main
+- Module: operations / deploy
+- Priority #: launch — Final Path Mark 2
+- Done: Dockerfile, fly.toml, docs/FREE_TIER_DEPLOY.md, verify:persistence-health, bootstrap on first boot
+- Next: operator runs fly deploy; OIDC redirect to Fly URL; full verify chain on Fly
+- Blocker: Vercel no redeploy tokens + suspended Blob
 
 ### 2026-06-21 — Cursor — Free-tier launch plan and efficiency docs
 

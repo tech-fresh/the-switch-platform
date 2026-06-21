@@ -414,7 +414,7 @@ Completion rule:
 Recommended final live command order:
 
 1. `npm run verify:launch-status`
-2. `npm run verify:blob-health`
+2. `npm run verify:persistence-health`
 3. `npm run verify:live-readiness`
 4. `npm run verify:persistence-recovery`
 5. `npm run verify:live-walkthrough`

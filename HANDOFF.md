@@ -33,7 +33,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** (pending — blob health closeout tooling)
+- **Last commit:** 4f8f48e — Add blob-health verification for Final Path Mark 2 closeout
 - **Platform label:** `near-launch` — **not** true `100% complete`
 
 ### Active task
@@ -84,7 +84,7 @@ Update this section every session.
 - [x] `npm run verify:blob-health` (local env — not applicable; production still blocked)
 - [ ] `npm run verify:live-walkthrough` (blocked — Blob store suspended)
 - [ ] `npm run verify:live-truth-match` (item 22 — blocked)
-- [ ] Pushed to GitHub
+- [x] Pushed to GitHub
 
 ---
 

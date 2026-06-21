@@ -53,6 +53,26 @@ Then let the agent read `AGENTS.md` and this file's priority order.
 
 At every session end, update the **Live session state** section in `HANDOFF.md` before stopping or switching tools.
 
+#### Before each action — consult first
+
+Before **every** action — code, docs, commands, git, planning, or review — consult in order:
+
+1. `HANDOFF.md` → Live session state, What is next, Blockers
+2. `AGENTS.md` → Architecture, session rules, completion standard
+3. `README.md` → Non-negotiable development rules + Active build priority order
+
+Do not start until the action still matches live state and build priorities.
+
+#### After each action — update HANDOFF.md
+
+After **every** completed action — not only at session end:
+
+1. Refresh **Live session state** in `HANDOFF.md`
+2. Add or refresh a **Session log** entry when blockers or next steps changed
+3. Append to **Ordered Build Record** below when routes, modules, or behavior changed
+
+Commit and push when the action produced repo changes, unless a task explicitly requires a local-only commit.
+
 #### Every session must
 
 1. Tell the agent: **Read HANDOFF.md first**
@@ -212,6 +232,12 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-21 Consult-before-act and update-HANDOFF-after-each-action rules
+
+- Documented that agents must consult `HANDOFF.md`, `AGENTS.md`, and `README.md` **before each action**, not only at session start.
+- Documented that agents must update `HANDOFF.md` **Live session state after each action**, not only at session end.
+- Updated `AGENTS.md`, `README.md`, `HANDOFF.md`, and `.cursor/rules/00-source-of-truth.mdc`.
 
 ### 2026-06-21 Final Path Mark 2 blob-health closeout tooling
 

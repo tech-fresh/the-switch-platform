@@ -14,6 +14,28 @@ Read HANDOFF.md first.
 
 **Session end:** update the **Live session state** section below before stopping or switching tools.
 
+## Before each action — consult first
+
+Before **every** action — code, docs, commands, git, planning, or review — consult in order:
+
+1. This file (`HANDOFF.md`) → Live session state, What is next, Blockers
+2. `AGENTS.md` → Architecture, session rules, completion standard
+3. `README.md` → Non-negotiable development rules + Active build priority order
+
+Do not start until the action still matches live state and build priorities.
+
+If the action touches a module, also read `src/modules/<module>/README.md`.
+
+## After each action — update this file
+
+After **every** completed action — not only at session end:
+
+1. Refresh **Live session state** below (What was just completed, What is next, Blockers, Verification last run)
+2. Add or refresh a **Session log** entry when the action materially changed repo state, blockers, or next steps
+3. Append `README.md` Ordered Build Record when routes, modules, or behavior changed
+
+Commit and push when the action produced repo changes, unless a task explicitly requires a local-only commit.
+
 ## Golden rule
 
 **Never switch between Cursor and Codex without updating this file first.**
@@ -45,10 +67,8 @@ Update this section every session.
 
 ### What was just completed
 
-- Added `npm run verify:blob-health` as the first step in the final live launch sequence
-- Blob suspended-store detection now surfaces through recovery, persistence runtime summary, governance checks, admin runtime, and item 22 truth-match
-- Updated `FINAL_LAUNCH_RUNBOOK.md`, `AGENTS.md`, and launch orchestration scripts with Blob repair steps
-- Local verification passed: 84 tests, lint, type-check, build
+- Documented **consult before each action** and **update HANDOFF after each action** in `AGENTS.md`, `README.md`, `HANDOFF.md`, and `.cursor/rules/00-source-of-truth.mdc`
+- Agents must read `HANDOFF.md` → `AGENTS.md` → `README.md` before every action, and refresh Live session state after every completed action
 
 ### What is next
 
@@ -407,6 +427,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Consult-before-act workflow rules
+
+- Branch: main
+- Module: project-workflow
+- Priority #: setup — multi-agent workflow
+- Done: added consult-before-each-action and update-HANDOFF-after-each-action rules to AGENTS, README, HANDOFF, and `.cursor/rules/`
+- Next: operator unsuspends/replaces Vercel Blob store; rerun full live verification chain
+- Blocker: production Blob store suspended
 
 ### 2026-06-21 — Cursor — Final Path Mark 2 blob-health closeout tooling
 

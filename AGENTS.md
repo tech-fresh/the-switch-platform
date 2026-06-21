@@ -22,13 +22,17 @@ Read HANDOFF.md first.
 
 Then read `AGENTS.md` and `README.md` priorities before making changes.
 
-**At session end:** update the **Live session state** section in `HANDOFF.md` before stopping or switching tools.
+**Before each action:** consult `HANDOFF.md`, then `AGENTS.md`, then `README.md` priorities. Do not act until the task still matches live state and build priorities. If the action touches a module, also read `src/modules/<module>/README.md`.
+
+**After each action:** update **Live session state** in `HANDOFF.md` (not only at session end). Append `README.md` Ordered Build Record when routes, modules, or behavior changed. Commit and push when the action produced repo changes, unless a task explicitly requires a local-only commit.
+
+**At session end:** run verification, confirm push, refresh **Live session state** again, and add a **Session log** entry if not already recorded for the final action.
 
 ## Source Of Truth
 
 - Active local folder: `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - GitHub: `https://github.com/tech-fresh/the-switch-platform`
-- Session handoff: `HANDOFF.md` — read at session start; update at session end
+- Session handoff: `HANDOFF.md` — read at session start; consult before each action; update after each action and at session end
 - Recovery files: `PROJECT_RECOVERY.md`, `RESTORED_CHATS.md`
 - Product history: `README.md` (cumulative — append only)
 - Agent contract: `AGENTS.md` (this file)
@@ -603,7 +607,9 @@ Use this section as the current website mockup direction until a newer named cha
 - When a source-of-truth or recovery path is mentioned, name `THE SWITCH 3` explicitly and use `/Users/lloydnwagbara/Documents/THE SWITCH 3` as the active folder path.
 - Treat `HANDOFF.md` as the live session handoff file between Cursor and Codex.
 - At session start, tell the agent: **Read HANDOFF.md first**.
-- At session end, update the **Live session state** section in `HANDOFF.md`.
+- Before each action, consult `HANDOFF.md`, `AGENTS.md`, and `README.md` priorities.
+- After each action, update the **Live session state** section in `HANDOFF.md`.
+- At session end, update **Live session state** again if anything changed since the last action update.
 - Treat `.cursor/rules/` as active Cursor enforcement — not optional setup.
 - When adding new project truth, recovery notes, deployment notes, architecture notes, auth notes, or completion notes, append them to `README.md` and `AGENTS.md`.
 - Do not overwrite earlier records unless the earlier content is genuinely wrong or obsolete and the replacement is stated explicitly.

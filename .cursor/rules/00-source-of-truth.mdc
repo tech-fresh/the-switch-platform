@@ -11,10 +11,19 @@ alwaysApply: true
 
 # Session start
 
-1. Read `AGENTS.md`, `HANDOFF.md`, and `README.md` priorities
-2. Read relevant `src/modules/<module>/README.md`
-3. Work on one module per session
-4. State which build-priority item the task serves
+1. Read `HANDOFF.md` first
+2. Read `AGENTS.md` and `README.md` priorities
+3. Read relevant `src/modules/<module>/README.md`
+4. Work on one module per session
+5. State which build-priority item the task serves
+
+# Before each action
+
+Consult `HANDOFF.md`, then `AGENTS.md`, then `README.md` priorities before code, docs, commands, git, or review work.
+
+# After each action
+
+Update `HANDOFF.md` **Live session state** after every completed action. Append `README.md` Ordered Build Record when behavior changed.
 
 # Session end
 

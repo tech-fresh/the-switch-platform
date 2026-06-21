@@ -23,7 +23,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** not committed yet — HANDOFF.md expanded with full workflow guidance
+- **Last commit:** df20612 — Add HANDOFF.md and consolidate multi-agent workflow in AGENTS.md
 
 ### Active task
 
@@ -56,7 +56,7 @@ Update this section every session.
 - [ ] `npm run test`
 - [ ] `npm run test:smoke` (only if routes changed)
 - [ ] `npm run verify:release` (if bigger release or launch-path change)
-- [ ] Pushed to GitHub
+- [x] Pushed to GitHub
 
 ---
 

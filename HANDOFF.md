@@ -66,7 +66,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 5cf2a6b — Document consult-before-act and update-HANDOFF-after-each-action rules
+- **Last commit:** 75dce18 — Document free-tier launch workaround and agent efficiency plan
 - **Platform label:** `near-launch` — **not** true `100% complete`
 
 ### Active task

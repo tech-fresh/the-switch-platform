@@ -100,6 +100,108 @@ flowchart LR
     F --> C
 ```
 
+### Free-tier launch workaround plan (persistence fix)
+
+Use this when Vercel Blob is suspended or you want a **free** path to finish **Final Path Mark 2** without paying for extra storage yet.
+
+#### Plain English — what broke
+
+The live site saves student data in one shared sqlite file. Production points that file at **Vercel Blob**. The store was **suspended**, so the app could not read the file → `/dashboard` and `/account` returned **500**. Auth tokens on Vercel are separate; fixing auth does not fix persistence.
+
+#### Recommended order (least cost / least new code)
+
+| Step | Option | Cost | Code changes | When to use |
+|------|--------|------|--------------|-------------|
+| **1** | **Unsuspend or recreate Vercel Blob** | Free on Vercel Hobby for modest usage | None — tokens already set | **Try this first** |
+| **2** | **New Blob store in same Vercel project** | Free tier | None — update env + redeploy + seed | Old store cannot be unsuspended |
+| **3** | **Render / Fly.io with disk + sqlite filesystem** | Free/low tiers with volume | None — env only | Blob stays broken; need durable disk |
+| **4** | **Turso / Neon / Supabase** | Free tiers exist | **New adapter needed later** | Only after Option 1–3 fail |
+
+#### Option 1 — Fix Vercel Blob (recommended first)
+
+You said Vercel tokens are already set. The remaining step is usually **store status**, not more tokens.
+
+1. Vercel → Project → **Storage** → open Blob store for `switch-live-data`.
+2. **Unsuspend** the store, or create a **new** Blob store if the old one is permanently suspended.
+3. Production env (already mostly done):
+   - `SWITCH_PERSISTENCE_DRIVER=sqlite`
+   - `SWITCH_DATA_DIRECTORY=vercel-blob://switch-live-data` (or new store name)
+   - `BLOB_READ_WRITE_TOKEN=<token from Vercel Storage settings>`
+4. **Redeploy** production.
+5. From your machine (with the same env in `.env.local`):
+
+```bash
+npm run verify:blob-health
+npm run persistence:migrate-to-sqlite   # only if blob health says missing
+npm run verify:launch-complete
+npm run verify:live-truth-match
+```
+
+**Success:** `verify:blob-health` shows primary path `healthy`, then walkthrough passes.
+
+#### Option 2 — Free host with a real folder (no Blob)
+
+If Vercel Blob cannot be restored, deploy the **same GitHub repo** to a host with a **persistent disk** and use filesystem sqlite (already supported in code):
+
+**Render example**
+
+1. [render.com](https://render.com) → New **Web Service** → connect `tech-fresh/the-switch-platform`.
+2. Add a **persistent disk** (mount path e.g. `/var/data`).
+3. Set env:
+   - `SWITCH_PERSISTENCE_DRIVER=sqlite`
+   - `SWITCH_DATA_DIRECTORY=/var/data`
+   - Same auth env vars as Vercel (`SWITCH_AUTH_MODE=oidc`, secrets, OIDC block, `SWITCH_AUTH_BASE_URL=<Render URL>`).
+4. Deploy → run `npm run persistence:migrate-to-sqlite` once against that env (or seed via shell).
+5. Point `SWITCH_LIVE_BASE_URL` at the Render URL for verification scripts.
+
+**Fly.io** works similarly with a **volume** mounted at `/data`.
+
+**Important:** Vercel serverless **cannot** use a normal folder for live data — `/tmp` resets. That is why Blob or an external disk host is required.
+
+#### Option 3 — Turso (future, not wired yet)
+
+[Turso](https://turso.tech) offers a free sqlite-compatible edge database. It is a good long-term free option but this repo does **not** have a Turso adapter yet. Treat it as a later build item, not tonight's one-click fix.
+
+#### What does NOT count as live launch complete
+
+- `SWITCH_PERSISTENCE_DRIVER=local-json` on production
+- `memory` driver
+- Ephemeral `/tmp` sqlite on Vercel
+- Describing the platform as 100% complete while `verify:blob-health` or `verify:live-truth-match` still fails
+
+#### After any fix — same closeout sequence
+
+```bash
+npm run verify:launch-status
+npm run verify:blob-health
+npm run verify:live-readiness
+npm run verify:persistence-recovery
+npm run verify:live-walkthrough
+npm run verify:launch-signoff
+npm run verify:launch-complete
+npm run verify:live-truth-match
+```
+
+Store outputs in `release-evidence/`. Update `HANDOFF.md` when each step passes.
+
+### Agent and token efficiency (keep the project 100% efficient)
+
+Agents and operators should **not** re-read the entire README on every small action. Use this order:
+
+| File | Read when | Purpose |
+|------|-----------|---------|
+| `HANDOFF.md` | **Every action** | Small live state — active task, blockers, next step |
+| `AGENTS.md` | Session start + when rules/architecture matter | How to work, completion standard |
+| `README.md` | When behavior/history/priorities change | Deep spec — read **sections**, not the whole file unless needed |
+
+**After every completed task**
+
+1. Update `HANDOFF.md` Live session state (short bullets).
+2. Append **one** README build-record entry per session or major milestone — not per tiny edit.
+3. Commit and push when repo files changed.
+
+This keeps Cursor/Codex context small, avoids wasted tokens, and stops agents repeating work.
+
 ### Critical git workflow rule
 
 - Treat git state review as mandatory before making code or release decisions.
@@ -232,6 +334,13 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-21 Free-tier launch workaround and agent efficiency plan
+
+- Added README section **Free-tier launch workaround plan**: unsuspend/recreate Vercel Blob first (tokens already set on Vercel), then Render/Fly disk sqlite without code changes, Turso noted as future adapter.
+- Added **Agent and token efficiency** guidance: HANDOFF every action, AGENTS for rules, README sections only when needed, one build-record entry per session/milestone.
+- Added matching **Efficiency learning notes** to `AGENTS.md` and **Efficiency quick reference** to `HANDOFF.md`.
+- Documented `BLOB_READ_WRITE_TOKEN` in `.env.example`.
 
 ### 2026-06-21 Consult-before-act and update-HANDOFF-after-each-action rules
 

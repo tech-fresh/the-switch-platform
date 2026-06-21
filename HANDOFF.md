@@ -36,6 +36,17 @@ After **every** completed action — not only at session end:
 
 Commit and push when the action produced repo changes, unless a task explicitly requires a local-only commit.
 
+## Efficiency quick reference (read this every session)
+
+| Step | Action |
+|------|--------|
+| Before each task | Read `HANDOFF.md` → `AGENTS.md` → README **sections only** (not whole README unless needed) |
+| During task | One module, one priority, match architecture gate |
+| After each task | Update Live session state below (short bullets) |
+| End of session | Verification, commit, push, session log entry, README build record if behavior changed |
+
+**Launch fix right now:** Vercel tokens are set; blocker is **suspended Blob**. See README → **Free-tier launch workaround plan**. Try unsuspend/recreate Blob first, then `npm run verify:blob-health`.
+
 ## Golden rule
 
 **Never switch between Cursor and Codex without updating this file first.**
@@ -67,31 +78,26 @@ Update this section every session.
 
 ### What was just completed
 
-- Documented **consult before each action** and **update HANDOFF after each action** in `AGENTS.md`, `README.md`, `HANDOFF.md`, and `.cursor/rules/00-source-of-truth.mdc`
-- Agents must read `HANDOFF.md` → `AGENTS.md` → `README.md` before every action, and refresh Live session state after every completed action
+- Added **Free-tier launch workaround plan** and **agent/token efficiency** guidance to `README.md` and `AGENTS.md`
+- Documented fix order: unsuspend/recreate Vercel Blob first (tokens already set), then Render/Fly disk sqlite, Turso later
+- Vercel auth/storage tokens reported done by operator; remaining blocker is Blob **store suspension**, not missing tokens
 
 ### What is next
 
-**Operator action in Vercel (blocks items 18–22):**
+**Recommended free fix (try in order):**
 
-1. Unsuspend the live Blob store **or** replace it and update `BLOB_READ_WRITE_TOKEN` + `SWITCH_DATA_DIRECTORY`
-2. Run `npm run verify:blob-health` against the live env until primary sqlite path is `healthy` or safely `missing`
-3. If missing, run `npm run persistence:migrate-to-sqlite`
-4. Rerun full sequence:
-   - `npm run verify:launch-status`
-   - `npm run verify:blob-health`
-   - `npm run verify:live-readiness`
-   - `npm run verify:persistence-recovery`
-   - `npm run verify:live-walkthrough`
-   - `npm run verify:launch-signoff`
-   - `npm run verify:launch-complete`
-   - `npm run verify:live-truth-match`
-5. Store release evidence; confirm README, admin, runtime, and evidence match (item 22)
+1. **Vercel Dashboard** → Storage → unsuspend Blob **or** create new Blob store → redeploy
+2. Run locally with live env: `npm run verify:blob-health` → must be `healthy` or `missing`
+3. If `missing`: `npm run persistence:migrate-to-sqlite` → verify blob health again
+4. If Blob cannot be fixed: deploy same repo to **Render/Fly with persistent disk**, `SWITCH_DATA_DIRECTORY=/var/data`, sqlite driver (no code change)
+5. Full closeout: `verify:launch-complete` + `verify:live-truth-match` → store evidence → update HANDOFF
+
+See `README.md` → **Free-tier launch workaround plan** for full detail.
 
 ### Blockers
 
-- **Live Vercel Blob store suspended** on production (`switch-live-data/switch-live.sqlite` → `BlobStoreSuspendedError`)
-- Protected live routes still return 500 until Blob byte reads succeed
+- **Live Vercel Blob store suspended** — tokens on Vercel are set; byte reads for `switch-live-data/switch-live.sqlite` still fail until store is unsuspended or replaced
+- Protected live routes return 500 until shared persistence reads succeed
 - **Item 22 remains open**
 
 ### Verification last run
@@ -427,6 +433,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Free-tier launch plan and efficiency docs
+
+- Branch: main
+- Module: operations / project-workflow
+- Priority #: launch — Final Path Mark 2
+- Done: README free-tier workaround plan; AGENTS/HANDOFF efficiency learning notes; `.env.example` Blob token
+- Next: unsuspend/recreate Vercel Blob (tokens done); verify:blob-health; full launch sequence
+- Blocker: Blob store suspended (not missing tokens)
 
 ### 2026-06-21 — Cursor — Consult-before-act workflow rules
 

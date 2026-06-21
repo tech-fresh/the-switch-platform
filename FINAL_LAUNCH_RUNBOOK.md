@@ -135,6 +135,17 @@ When `npm run verify:blob-health` reports `suspended`:
 
 Do not describe the platform as fully complete while Blob byte reads still fail.
 
+## Free alternative hosts (no Blob)
+
+If Vercel Blob cannot be restored, deploy the same repo to a host with **persistent disk** and set:
+
+```bash
+SWITCH_PERSISTENCE_DRIVER=sqlite
+SWITCH_DATA_DIRECTORY=/var/data
+```
+
+Render and Fly.io are documented in `README.md` → **Free-tier launch workaround plan**. No repo code change required for filesystem sqlite.
+
 ## Evidence To Confirm
 
 ### 1. Live environment proof

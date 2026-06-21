@@ -601,6 +601,28 @@ Use this section as the current website mockup direction until a newer named cha
 - Keep Google OIDC as the preferred auth-provider direction for `Full End-to-End Completion List` item 1 unless the user explicitly reprioritises auth strategy.
 - Do not overwrite existing deployment or auth notes when adding newer guidance; append new Vercel-related notes cumulatively.
 
+## Efficiency learning notes (operators and agents)
+
+Plain English goal: **small live state, big stable rules, deep history only when needed.**
+
+### What each file is for
+
+- **`HANDOFF.md`** — the dashboard. What is active right now, what blocked, what is next. Always read first. Always update after each task.
+- **`AGENTS.md`** — the rulebook. Architecture, priorities, completion standard, launch lists. Read when starting work or when unsure how to finish properly.
+- **`README.md`** — the project diary and product spec. Cumulative history. Read the **Active build priority order**, **Free-tier launch workaround plan**, and relevant build-record entries — not the entire file every time.
+
+### How to stay efficient (fewer tokens, less repetition)
+
+1. **Before each action:** `HANDOFF.md` → `AGENTS.md` → only the **README sections** the handoff points to.
+2. **During work:** one module, one priority item, one branch of tasks.
+3. **After each action:** update `HANDOFF.md` Live session state in **short bullets** (what done, what next, blockers).
+4. **README build record:** append **once per session or major milestone**, not after every single file edit.
+5. **Do not** mark the platform 100% complete until `AGENTS.md` Full End-to-End Completion List item 22 passes in the real environment.
+
+### Launch persistence — learning note
+
+Student data on production must live in **one shared durable place**. Vercel Blob (`vercel-blob://...`) is the current production path. If Blob is suspended, protected routes fail even when auth tokens are correct. See **README.md → Free-tier launch workaround plan** for fix order: unsuspend/recreate Blob first, then disk host, then future Turso adapter.
+
 ## Documentation Rule
 
 - Keep workspace references aligned on `THE SWITCH 3` across `AGENTS.md`, `README.md`, `HANDOFF.md`, `PROJECT_RECOVERY.md`, and `RESTORED_CHATS.md`.

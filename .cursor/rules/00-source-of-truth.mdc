@@ -23,7 +23,7 @@ Consult `HANDOFF.md`, then `AGENTS.md`, then `README.md` priorities before code,
 
 # After each action
 
-Update `HANDOFF.md` **Live session state** after every completed action. Append `README.md` Ordered Build Record when behavior changed.
+Update `HANDOFF.md` **Live session state** after every completed action. Append `README.md` Ordered Build Record once per session/milestone. Read README **sections** only — not the whole file every time — see AGENTS.md Efficiency learning notes.
 
 # Session end
 

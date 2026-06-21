@@ -2675,8 +2675,8 @@ A later June 21, 2026 live run moved the project further forward:
 
 Important remaining truth:
 
-- the recorded sign-off output still used placeholder ownership values such as `YOUR_REAL_APPROVER` and `YOUR_REAL_STOP_AUTHORITY`
-- the final system-wide truth match across README, admin runtime view, runtime state, and recorded evidence still needs one explicit closeout check
+- a later same-day rerun replaced the placeholder ownership values with `TF Solutions` in the local evidence path
+- the final system-wide truth match across README, admin runtime view, runtime state, and recorded evidence was then checked explicitly and found a remaining deployed-runtime mismatch
 
 Because of those remaining gaps, the honest label remains `near-launch` rather than final true `100% complete`.
 
@@ -4351,7 +4351,7 @@ What this proves:
 
 What it does not yet prove on its own:
 
-- that the final approver and stop-release authority were recorded with named real-world values instead of placeholders
+- that the deployed admin runtime already matches the same persistence and governance truth recorded in the local evidence path
 - that every final truth surface already matches without one last explicit operator check
 
 Plain-English explanation:
@@ -4359,6 +4359,34 @@ Plain-English explanation:
 - the hardest live command sequence now has evidence saved in the project
 - this is stronger than screenshots alone because the repo now carries the recorded output
 - the project is much closer to final closeout, but it should still stay truthful about any placeholder approvals or remaining surface mismatches
+
+### 49. Explicit item 22 truth-match check found a live runtime mismatch (Recorded)
+
+The repo now has an explicit record of the final item 22 truth-match check, and that check did not fully pass yet.
+
+What was checked:
+
+- the recorded release evidence
+- the README truth
+- the deployed admin runtime APIs using the live admin session
+
+What was found:
+
+- the local evidence path recorded `sqlite` with the explicit data directory `/Users/lloydnwagbara/Documents/THE SWITCH 3/.codex-data/live-data`
+- the deployed admin persistence API returned `local-json` with `/tmp/.codex-data`
+- the deployed governance overview still returned seeded `watch` review records instead of a fully aligned final ready-state closeout picture
+
+Why this matters:
+
+- item 22 requires README, admin launch view, runtime state, and recorded evidence to match exactly
+- right now they do not match exactly
+- that means the platform still cannot be described honestly as true final `100% complete`
+
+Plain-English explanation:
+
+- the final command sequence passed in the local live-check path
+- but the deployed admin runtime is still telling a different story about persistence and governance state
+- until that deployed runtime story matches the final evidence story, the project remains `near-launch`
 
 - `netlify.toml` for deployment configuration
 - stronger completion language that points back to the full end-to-end launch criteria

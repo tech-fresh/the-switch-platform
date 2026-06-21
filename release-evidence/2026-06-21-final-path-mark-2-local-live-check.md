@@ -20,9 +20,9 @@ What passed in this recorded run:
 
 Important truth that still remains:
 
-- the recorded sign-off output still used placeholder owner values for final approver and stop-release authority
-- the platform should not yet be described as true 100% complete until named real-world ownership and full system-wide truth matching are confirmed
-- the admin runtime view previously shown in the live site still needs to be checked against the final runtime and evidence state so item 22 can be called complete honestly
+- the final sign-off placeholders were later replaced locally with `TF Solutions` and the sign-off scripts were rerun successfully
+- the platform should not yet be described as true 100% complete until the live admin runtime surfaces match the recorded evidence and README truth exactly
+- the final explicit item 22 truth-match check was run and found a real mismatch in the currently deployed admin APIs
 
 ## Command Outputs
 
@@ -132,10 +132,78 @@ Final launch completion sequence passed.
 This run proved live environment readiness, persistence recovery, deployed route walkthrough, and final trust sign-off in one repeatable sequence.
 ```
 
+## Later Same-Day Sign-off Refresh
+
+After replacing the placeholder local sign-off values, the final sign-off commands were rerun again.
+
+### Refreshed `npm run verify:launch-signoff`
+
+```text
+> the-switch-platform@0.1.0 verify:launch-signoff
+> node scripts/launch-signoff.mjs
+
+Launch sign-off recording passed:
+- Environment: local-live-check
+- Final approver: TF Solutions
+- Stop-release authority: TF Solutions
+- Privacy, safeguarding, incident ownership, and release approval records were written to launch governance.
+```
+
+### Refreshed `npm run verify:launch-complete`
+
+```text
+> the-switch-platform@0.1.0 verify:launch-complete
+> node scripts/launch-complete.mjs
+
+
+> Running verify:live-readiness
+
+> Running verify:persistence-recovery
+
+> Running verify:live-walkthrough
+
+> Running verify:launch-signoff
+
+Final launch completion sequence passed.
+This run proved live environment readiness, persistence recovery, deployed route walkthrough, and final trust sign-off in one repeatable sequence.
+```
+
+## Final Explicit Item 22 Truth-Match Check
+
+The final explicit truth-match check was performed against the deployed admin APIs using the current live admin session cookie.
+
+Observed live API results:
+
+### `GET https://theswitchplatform.com/api/persistence/runtime`
+
+```json
+{
+  "persistence": {
+    "driver": "local-json",
+    "dataDirectory": "/tmp/.codex-data",
+    "backupDirectory": "/tmp/.codex-data/backups",
+    "primaryStorePath": "/tmp/.codex-data",
+    "backupStorePath": "/tmp/.codex-data/backups",
+    "isPrototypePersistence": true,
+    "recoveryReady": true,
+    "recoveryCheckedAt": "2026-06-21T13:02:09.205Z",
+    "recoveryIssueCount": 0
+  }
+}
+```
+
+### `GET https://theswitchplatform.com/api/governance/overview`
+
+The deployed route returned `200`, but the overview still contained seeded `watch` review records rather than the later recorded ready-state closeout picture.
+
 ## Current Honest Status After This Evidence Run
 
-- Live walkthrough proof is now recorded.
-- Launch completion sequence is now recorded.
-- Permanent repo-side evidence storage is now present in this file.
-- Real owner placeholders still need replacement before true final live approval can be described as complete.
-- README, admin runtime view, runtime state, and recorded evidence still need one final explicit truth-match check before the platform can be described as fully complete and 100% end to end.
+- Live walkthrough proof is recorded.
+- Launch sign-off proof is recorded with non-placeholder owner names in the local evidence path.
+- Launch completion sequence is recorded.
+- Permanent repo-side evidence storage is present in this file.
+- Item 22 is still not complete because the deployed admin runtime surfaces do not yet match the recorded local live-check evidence:
+  - recorded local evidence says `sqlite` and an explicit live data directory
+  - deployed admin persistence API still says `local-json` under `/tmp/.codex-data`
+  - deployed governance overview still shows seeded `watch` review state
+- Because of that mismatch, the project must still be described as `near-launch`, not true final `100% complete`.

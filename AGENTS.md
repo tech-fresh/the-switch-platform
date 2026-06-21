@@ -323,7 +323,9 @@ Completion language rule:
 
 - A later June 21, 2026 live run then passed `verify:live-walkthrough`, `verify:launch-signoff`, and `verify:launch-complete`.
 - Permanent command-output evidence for that later run is now stored in `release-evidence/2026-06-21-final-path-mark-2-local-live-check.md`.
-- Do not overstate this as final true `100% completion` if the recorded sign-off still uses placeholder owner names or if the final surface-to-surface truth match has not been explicitly checked yet.
+- The placeholder sign-off owner names were later replaced in the local evidence path with `TF Solutions`, and the sign-off commands were rerun successfully.
+- The final explicit item 22 truth-match check then found a remaining deployed-runtime mismatch: the live admin persistence API still reported `local-json` under `/tmp/.codex-data`, and the deployed governance overview still showed seeded `watch` review state.
+- Do not overstate this as final true `100% completion` while that deployed admin/runtime mismatch still exists, even though the local live-check evidence bundle is stronger now.
 - Use the evidence file as the current source of truth for what was actually captured in the later successful live run.
 
 ## Exact User-Posted Addition

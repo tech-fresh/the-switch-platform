@@ -33,38 +33,55 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** b3595ff — Update HANDOFF after Exam Engine service test session (substantive: d35aa15)
+- **Last commit:** 3530251 — current HEAD (launch substantive: `1168e4f`; exam-engine tests: `d35aa15`)
+- **Platform label:** `near-launch` — **not** true `100% complete`
 
 ### Active task
 
-- **Priority item #:** 1 — Exam Engine
-- **Module:** exam-engine
-- **Status:** in progress
+- **Priority item #:** launch — Final Path Mark 2
+- **Module:** operations / governance
+- **Status:** blocked
 - **Branch:** main
 
 ### What was just completed
 
-- Added `tests/exam-engine-service.test.mjs` with 8 service-level tests covering papers, first attempt, resume, variant rotation, save, submit, and error handling
-- Switched `npm run test` to `tsx --test` so module service imports resolve TypeScript path aliases
-- Updated `src/modules/exam-engine/README.md` to document the new automated test coverage
+- **Launch repo work (commit `1168e4f`):** durable Blob-backed sqlite persistence, launch-verification secret path, blob reader hardening, launch script timeout/retry, tests, and truth-matching notes in `README.md` and `AGENTS.md`
+- Deployed `/api/persistence/runtime` now reports `sqlite`, `storageBackend: vercel-blob`, `dataDirectory: vercel-blob://switch-live-data`, `isEphemeralStorage: false`, `recoveryReady: true`
+- Local verification passed: `npm test`, `npm run lint`, `npm run type-check`, `npm run build`
 
 ### What is next
 
-- Continue Exam Engine priority #1 work — expand coverage (e.g. access-arrangement duration, submitted-state resume, API route validation)
-- Consider exam API route smoke checks in `npm run test:smoke`
-- At session end: update this file and commit/push
+**Operator action required (platform-side — not repo code):**
+
+1. In Vercel: unsuspend the `switch-live-data` Blob store **or** replace it with another real shared durable store and update live env vars accordingly
+2. Confirm production reads succeed for `switch-live-data/switch-live.sqlite` (no `BlobStoreSuspendedError` / 403)
+3. Confirm protected live routes stop returning 500 — especially `/dashboard`, `/account`, `/results`, `/api/dashboard/home`, `/api/results/overview`
+4. Rerun the final live command sequence in order:
+   - `npm run verify:launch-status`
+   - `npm run verify:live-readiness`
+   - `npm run verify:persistence-recovery`
+   - `npm run verify:live-walkthrough`
+   - `npm run verify:launch-signoff`
+   - `npm run verify:launch-complete`
+   - `npm run verify:live-truth-match` (item 22)
+5. Store permanent release evidence and confirm README, admin launch view, runtime state, and evidence all match
+
+**After launch closeout unblocks:** resume build-priority #1 Exam Engine work
 
 ### Blockers
 
-- none
+- **Live Vercel Blob store suspended:** direct production SDK probe for `switch-live-data/switch-live.sqlite` returns `BlobStoreSuspendedError: Vercel Blob: This store has been suspended`
+- **Protected routes failing:** fresh production walkthrough fails at `/dashboard` with 500 because shared-store reads return 403 Forbidden
+- **Full End-to-End Completion List item 22 remains open** until deployed runtime matches recorded evidence and the final verification chain passes cleanly
 
 ### Verification last run
 
 - [x] `npm run lint`
 - [x] `npm run type-check`
-- [x] `npm run test`
-- [ ] `npm run test:smoke` (only if routes changed)
-- [ ] `npm run verify:release` (if bigger release or launch-path change)
+- [x] `npm run test` (83 passing)
+- [x] `npm run build`
+- [ ] `npm run verify:live-walkthrough` (blocked — Blob store suspended)
+- [ ] `npm run verify:live-truth-match` (item 22 — blocked)
 - [x] Pushed to GitHub
 
 ---
@@ -115,14 +132,15 @@ flowchart LR
 
 Before any code or doc change:
 
-1. Read `AGENTS.md`
-2. Read `README.md` → Non-negotiable development rules + Active build priority order
-3. Read this file (`HANDOFF.md`) → Live session state + What is next
-4. Read `PROJECT_RECOVERY.md` if folder or history context is unclear
-5. Read the relevant `src/modules/<module>/README.md`
-6. Run `git status` and `git pull origin main` (or checkout the active feature branch)
-7. Confirm the task maps to **one module** and one build-priority item
-8. Paste the standard session prompt below into the active tool
+1. Tell the agent: `Read HANDOFF.md first.`
+2. Read this file (`HANDOFF.md`) → Live session state + What is next
+3. Read `AGENTS.md` → Session rules, architecture, and completion standard
+4. Read `README.md` → Non-negotiable development rules + Active build priority order
+5. Read `PROJECT_RECOVERY.md` if folder or history context is unclear
+6. Read the relevant `src/modules/<module>/README.md`
+7. Run `git status` and `git pull origin main` (or checkout the active feature branch)
+8. Confirm the task maps to **one module** and one build-priority item
+9. Paste the standard session prompt below into the active tool
 
 ---
 
@@ -150,10 +168,12 @@ Project: The Switch Platform Mark 3.2
 Root: /Users/lloydnwagbara/Documents/THE SWITCH 3
 GitHub: https://github.com/tech-fresh/the-switch-platform
 
+Session start instruction: Read HANDOFF.md first.
+
 Read first:
-1. AGENTS.md
-2. README.md priorities and non-negotiable rules
-3. HANDOFF.md
+1. HANDOFF.md
+2. AGENTS.md
+3. README.md priorities and non-negotiable rules
 4. src/modules/<relevant-module>/README.md
 
 Task: [one module only]
@@ -223,6 +243,25 @@ Special labels:
 
 - `setup` — project workflow, docs, multi-agent process
 - `launch — Final Path Mark 2` — live deployment, auth, persistence, governance verification
+
+---
+
+## Final Path Mark 2 — live state (June 21, 2026)
+
+**Authoritative completion list:** `AGENTS.md` → Full End-to-End Completion List (22 items).
+
+| Area | Status |
+|------|--------|
+| Repo-side durable persistence + launch verification | Done — commit `1168e4f` on `main` |
+| Deployed persistence API surface | Reports durable Blob-backed sqlite |
+| Production Blob byte reads | **Blocked** — store suspended |
+| Protected live routes (`/dashboard`, etc.) | **Failing** — 500 under walkthrough |
+| Item 22 truth-match | **Open** |
+| Honest platform label | `near-launch` |
+
+**Remaining blocker (platform-side, not repo):** the Vercel Blob store backing `vercel-blob://switch-live-data` is suspended. Metadata may still resolve, but signed reads for `switch-live-data/switch-live.sqlite` fail with `BlobStoreSuspendedError`.
+
+**Do not describe the platform as fully complete, fully live, or 100% end-to-end** until item 22 passes and the full verification chain reruns cleanly after the Blob store is restored or replaced.
 
 ---
 
@@ -364,6 +403,16 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Final Path Mark 2 handoff (Blob store blocked)
+
+- Branch: main
+- Module: operations / governance
+- Priority #: launch — Final Path Mark 2
+- Done: aligned HANDOFF live state with `1168e4f` launch repo completion; recorded suspended Blob blocker and item 22 open status; verified local test/lint/type-check/build pass
+- Next: operator unsuspends or replaces Vercel Blob store, then reruns full live verification chain; resume Exam Engine (#1) after launch closeout
+- Blocker: `BlobStoreSuspendedError` on `switch-live-data/switch-live.sqlite`; `/dashboard` 500 on production walkthrough
+- Launch commit: 1168e4f
 
 ### 2026-06-21 — Cursor — Exam Engine service test coverage
 

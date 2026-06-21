@@ -33,7 +33,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 530eaf4 — Update HANDOFF.md after session operator rules push
+- **Last commit:** 0bebb80 — Sync HANDOFF live state with Git and set Exam Engine as active task
 
 ### Active task
 
@@ -372,7 +372,7 @@ Add a new entry here at the end of every session. Do not delete older entries.
 - Priority #: 1 — Exam Engine
 - Done: fixed Last commit drift (530eaf4); set active task to Exam Engine; workflow setup marked complete
 - Next: begin Exam Engine work — read `src/modules/exam-engine/README.md`
-- Commit: pending this session
+- Commit: 0bebb80
 
 ### 2026-06-21 — Cursor — Session operating priorities documented
 

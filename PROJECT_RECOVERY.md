@@ -7,7 +7,7 @@ The Switch.
 
 The active project is:
 
-`/Users/lloydnwagbara/Documents/THE SWITCH 2`
+`/Users/lloydnwagbara/Documents/THE SWITCH 3`
 
 This folder contains the current website-first MVP, source code, README, Git
 history, modules, routes, data files, and preview assets.
@@ -21,7 +21,7 @@ The connected GitHub remote is:
 The following related folders were found:
 
 - `/Users/lloydnwagbara/Documents/THE SWITCH`
-- `/Users/lloydnwagbara/Documents/THE SWITCH 2`
+- `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - `/Users/lloydnwagbara/Documents/Codex/2026-06-05/i-am-building-the-switch-platform`
 
 The older `/Users/lloydnwagbara/Documents/THE SWITCH` folder currently contains
@@ -31,7 +31,7 @@ visible there during recovery.
 The Codex folder from June 5 did not contain project files in its `work` or
 `outputs` folders during recovery.
 
-## Current Git History In THE SWITCH 2
+## Current Git History In THE SWITCH 3
 
 The current project has a visible commit history from June 5 to June 7. Recent
 commits include:
@@ -124,7 +124,7 @@ The current README is the main cumulative build record. It includes:
 Previous Codex chat text was not visible as recoverable project files. The app
 only showed the current active thread for this workspace. The durable project
 information that could be restored is the codebase, README record, Git history,
-module structure, and local project files inside `THE SWITCH 2`.
+module structure, and local project files inside `THE SWITCH 3`.
 
 The recoverable chat record has been written to:
 

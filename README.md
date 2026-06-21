@@ -10,7 +10,7 @@ mode, open these files first:
 
 The active local project folder is:
 
-`/Users/lloydnwagbara/Documents/THE SWITCH 2`
+`/Users/lloydnwagbara/Documents/THE SWITCH 3`
 
 The local project has been checked against GitHub `origin/main`, and the local
 website has been verified with a successful production build.

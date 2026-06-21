@@ -2660,6 +2660,22 @@ Current recorded blocker state from that same live run:
 
 The honest project label remains `near-launch` until the walkthrough, sign-off, launch-complete, permanent evidence storage, and system-wide truth-match steps are all complete.
 
+#### June 21, 2026 later live-run update
+
+A later June 21, 2026 live run moved the project further forward:
+
+- `npm run verify:live-walkthrough` passed
+- `npm run verify:launch-signoff` passed
+- `npm run verify:launch-complete` passed
+- the command outputs were stored in `release-evidence/2026-06-21-final-path-mark-2-local-live-check.md`
+
+Important remaining truth:
+
+- the recorded sign-off output still used placeholder ownership values such as `YOUR_REAL_APPROVER` and `YOUR_REAL_STOP_AUTHORITY`
+- the final system-wide truth match across README, admin runtime view, runtime state, and recorded evidence still needs one explicit closeout check
+
+Because of those remaining gaps, the honest label remains `near-launch` rather than final true `100% complete`.
+
 ### Final target architecture
 
 ```mermaid
@@ -4305,6 +4321,40 @@ Current recommendation:
 
 - for the present launch path, keep one sign-in and role-based admin access
 - only add a password-first admin login if there is a clear business or operational need that the current OIDC path cannot meet safely
+
+### 48. Final live walkthrough, sign-off, and launch-complete evidence stored (Recorded)
+
+The repository now contains a permanent release-evidence record for the June 21, 2026 final live verification pass.
+
+Recorded evidence now includes:
+
+- direct command output for `verify:launch-status`
+- direct command output for `verify:live-readiness`
+- direct command output for `verify:persistence-recovery`
+- direct command output for `verify:live-walkthrough`
+- direct command output for `verify:launch-signoff`
+- direct command output for `verify:launch-complete`
+
+The evidence file is:
+
+- `release-evidence/2026-06-21-final-path-mark-2-local-live-check.md`
+
+What this proves:
+
+- the deployed route walkthrough passed across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin
+- the final launch completion sequence passed in one repeatable run
+- the repo now has a permanent stored record for those command outputs instead of relying only on chat history or screenshots
+
+What it does not yet prove on its own:
+
+- that the final approver and stop-release authority were recorded with named real-world values instead of placeholders
+- that every final truth surface already matches without one last explicit operator check
+
+Plain-English explanation:
+
+- the hardest live command sequence now has evidence saved in the project
+- this is stronger than screenshots alone because the repo now carries the recorded output
+- the project is much closer to final closeout, but it should still stay truthful about any placeholder approvals or remaining surface mismatches
 
 - `netlify.toml` for deployment configuration
 - stronger completion language that points back to the full end-to-end launch criteria

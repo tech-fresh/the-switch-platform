@@ -316,6 +316,13 @@ Completion language rule:
 - The June 21, 2026 recorded live state was: `verify:live-readiness` passed, `verify:persistence-recovery` passed, `verify:live-walkthrough` failed on authenticated `/assessments` returning `500`, and `verify:launch-complete` failed downstream because walkthrough was still failing.
 - Until that walkthrough and its dependent final steps pass, continue to describe the platform as `near-launch`.
 
+### Final Path Mark 2 later June 21, 2026 evidence update
+
+- A later June 21, 2026 live run then passed `verify:live-walkthrough`, `verify:launch-signoff`, and `verify:launch-complete`.
+- Permanent command-output evidence for that later run is now stored in `release-evidence/2026-06-21-final-path-mark-2-local-live-check.md`.
+- Do not overstate this as final true `100% completion` if the recorded sign-off still uses placeholder owner names or if the final surface-to-surface truth match has not been explicitly checked yet.
+- Use the evidence file as the current source of truth for what was actually captured in the later successful live run.
+
 ## Exact User-Posted Addition
 
 The following block is appended exactly as provided by the user:

@@ -33,26 +33,26 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 3b001b5 — Document session start and end operator rules in core docs
+- **Last commit:** 530eaf4 — Update HANDOFF.md after session operator rules push
 
 ### Active task
 
-- **Priority item #:** setup — multi-agent workflow
-- **Module:** project-workflow
-- **Status:** done
+- **Priority item #:** 1 — Exam Engine
+- **Module:** exam-engine
+- **Status:** not started
 - **Branch:** main
 
 ### What was just completed
 
-- Documented session operating priorities in `AGENTS.md`, `README.md`, and `HANDOFF.md`
-- Session start rule: tell agent **Read HANDOFF.md first**
-- Session end rule: update **Live session state** in this file
-- Marked `.cursor/rules/` as active (4 rule files)
+- Multi-agent workflow setup complete (`HANDOFF.md`, `AGENTS.md`, `.cursor/rules/`, recovery files)
+- Session rules documented: **Read HANDOFF.md first** at start; update **Live session state** at end
+- Synced Live session state with latest Git commit (`530eaf4`)
 
 ### What is next
 
-- Start real product work from build priority #1 (Exam Engine)
-- At every session: **Read HANDOFF.md first** → work → update Live session state
+- Begin Exam Engine work (build priority #1)
+- Read `src/modules/exam-engine/README.md` before making changes
+- At session end: update this file and commit/push
 
 ### Blockers
 
@@ -364,6 +364,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Sync HANDOFF live state with Git
+
+- Branch: main
+- Module: exam-engine
+- Priority #: 1 — Exam Engine
+- Done: fixed Last commit drift (530eaf4); set active task to Exam Engine; workflow setup marked complete
+- Next: begin Exam Engine work — read `src/modules/exam-engine/README.md`
+- Commit: pending this session
 
 ### 2026-06-21 — Cursor — Session operating priorities documented
 

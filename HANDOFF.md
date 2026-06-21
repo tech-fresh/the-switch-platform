@@ -23,7 +23,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 6c0dc37 — Update HANDOFF.md with commit hash after workflow push
+- **Last commit:** 0fb58a8 — Complete multi-agent workflow integration across core docs
 
 ### Active task
 
@@ -56,7 +56,7 @@ Update this section every session.
 - [ ] `npm run test`
 - [ ] `npm run test:smoke` (only if routes changed)
 - [ ] `npm run verify:release` (if bigger release or launch-path change)
-- [ ] Pushed to GitHub
+- [x] Pushed to GitHub
 
 ---
 
@@ -363,7 +363,7 @@ Add a new entry here at the end of every session. Do not delete older entries.
 - Priority #: setup — multi-agent workflow
 - Done: added `.cursor/rules/`, cleaned AGENTS.md duplicates, fixed README build record, updated recovery files
 - Next: use HANDOFF.md every session; start priority #1 Exam Engine work
-- Commit: pending this session
+- Commit: 0fb58a8
 
 ### 2026-06-21 — Cursor — Commit multi-agent handoff workflow
 

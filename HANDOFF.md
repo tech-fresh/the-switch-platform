@@ -33,7 +33,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 5e26d48 — Align HANDOFF Last commit with current Git HEAD
+- **Last commit:** 94286b7 — Set HANDOFF Last commit to current HEAD (substantive sync: 0bebb80)
 
 ### Active task
 
@@ -372,7 +372,7 @@ Add a new entry here at the end of every session. Do not delete older entries.
 - Priority #: 1 — Exam Engine
 - Done: fixed Last commit drift (530eaf4); set active task to Exam Engine; workflow setup marked complete
 - Next: begin Exam Engine work — read `src/modules/exam-engine/README.md`
-- Commit: 0bebb80
+- Commit: 0bebb80 (substantive); meta sync through 94286b7
 
 ### 2026-06-21 — Cursor — Session operating priorities documented
 

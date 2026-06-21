@@ -33,7 +33,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** pending — session operating priorities update
+- **Last commit:** 3b001b5 — Document session start and end operator rules in core docs
 
 ### Active task
 
@@ -364,6 +364,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Session operating priorities documented
+
+- Branch: main
+- Module: project-workflow
+- Priority #: setup — multi-agent workflow
+- Done: added Read HANDOFF.md first + Live session state update rules to AGENTS, README, HANDOFF, PROJECT_RECOVERY
+- Next: start priority #1 Exam Engine work
+- Commit: 3b001b5
 
 ### 2026-06-21 — Cursor — Full multi-agent workflow integration
 

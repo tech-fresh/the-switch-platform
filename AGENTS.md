@@ -2,86 +2,80 @@
 
 ## CRITICAL RULE — READ THIS FIRST
 
+Before doing ANY work in this repository — writing code, creating files, editing files, refactoring, anything — you MUST first:
+
+1. Read `AGENTS.md` (this file)
+2. Read `HANDOFF.md` for live session state, next steps, and blockers
+3. Read `README.md` for product priorities and non-negotiable rules
+4. Read `PROJECT_RECOVERY.md` and `RESTORED_CHATS.md` if folder or history context is unclear
+5. Read the relevant `src/modules/<module>/README.md` before module work
+
+Never switch between Cursor and Codex without updating `HANDOFF.md` and pushing committed work first.
+
 ## Source Of Truth
 
-## Multi-Agent Workflow (Cursor + Codex)
+- Active local folder: `/Users/lloydnwagbara/Documents/THE SWITCH 3`
+- GitHub: `https://github.com/tech-fresh/the-switch-platform`
+- Session handoff: `HANDOFF.md` — read at session start; update at session end
+- Recovery files: `PROJECT_RECOVERY.md`, `RESTORED_CHATS.md`
+- Product history: `README.md` (cumulative — append only)
+- Agent contract: `AGENTS.md` (this file)
+- Cursor-only rules: `.cursor/rules/` (when present)
+- Older folders (`THE SWITCH`, `THE SWITCH 2`) are not active — do not edit
 
 ## Multi-Agent Workflow (Cursor + Codex)
 
-### Session Start Prompt
+Both **Cursor Agent** and **Codex** work on this single repo. Git is the handoff layer between tools.
 
-At the start of every session, Cursor Agent and Codex must read this file first, then review the README, PROJECT_RECOVERY.md, and RESTORED_CHATS.md before making changes.
+**Authoritative session workflow:** `HANDOFF.md` contains the live session state, checklists, standard session prompt, build priorities, architecture gate, tool split, and session log. Read and update it every session.
 
-### Source Folder
+| Document | Purpose |
+|----------|---------|
+| `AGENTS.md` | Architecture, priorities, session rules, completion standard |
+| `HANDOFF.md` | Live session state and handover between Cursor and Codex |
+| `README.md` | Cumulative product spec and build record |
+| `.cursor/rules/` | Cursor-specific enforcement mirroring `AGENTS.md` |
 
-Both agents must use:
+### Session start
 
-`/Users/lloydnwagbara/Documents/THE SWITCH 3`
+1. Read this file (`AGENTS.md`)
+2. Read `HANDOFF.md` → Live session state, What is next, Blockers
+3. Read `README.md` → Non-negotiable development rules + Active build priority order
+4. Read relevant `src/modules/<module>/README.md`
+5. Run `git status` and `git pull origin main` (or checkout active feature branch)
+6. Confirm the task maps to **one module** and one build-priority item
+7. Paste the standard session prompt from `HANDOFF.md`
 
-No work should be done in THE SWITCH 2 or any other legacy folder.
+### Session end
 
-### GitHub Remote
+1. Run `npm run lint && npm run type-check && npm run test`
+2. Run `npm run test:smoke` if routes or pages changed
+3. Commit and confirm push to GitHub succeeded
+4. Update `HANDOFF.md` live session state and add a session log entry
+5. Append `README.md` Ordered Build Record if routes, modules, or behavior changed
 
-Both agents must use the same GitHub remote:
+### Tool split
 
-`https://github.com/tech-fresh/the-switch-platform.git`
+- **Cursor Agent:** file edits, refactors, UI changes, code navigation, multi-file work, terminal verification
+- **Codex:** planning, reviewing, debugging, explaining changes, focused module logic
 
-### Tool Split
+### Handoff rule
 
-Cursor Agent should be used for file edits, refactors, UI changes, and code navigation.
+Before switching between Cursor and Codex:
 
-Codex should be used for planning, reviewing, debugging, explaining changes, generating prompts, and checking build logic.
+- Update `HANDOFF.md` with what changed, what is next, and any blockers
+- Commit and push unless a task explicitly requires a local-only commit
+- Never leave uncommitted work when switching tools
 
-### Handoff Rule
+### Branch rule
 
-Before switching between Cursor and Codex, the active agent must clearly state:
+- Default branch: `main`
+- Use `feature/<module>-<short-description>` only when specifically requested
+- Do not create branches unless asked
 
-- What was changed
-- Which files were edited
-- What still needs doing
-- Whether the project builds
-- Whether changes were committed or not
-
-### Branch Rule
-
-Default branch is:
-
-`main`
-
-Do not create new branches unless specifically requested.
-
-### Safety Rule
+### Safety rule
 
 Do not delete rules, routes, modules, or documentation unless the user clearly asks for removal.
-
-## Architecture
-
-## Core MVP
-
-## Development Rules
-
-## Build Priority
-
-## Design System Index
-
-## Design System Rules
-
-## UI Change Checklist
-
-## Repository Map
-
-## Key Files To Read Early
-
-## Git Decision Rule
-
-## Completion Standard
-
-## Final Path Mark 2
-
-## Changes 1.0
-
-## Documentation Rule
-# The Switch Platform Mark 3.2
 
 ## Architecture
 
@@ -835,6 +829,9 @@ Use this section as the current website mockup direction until a newer named cha
 
 ## Documentation Rule
 
+- Keep workspace references aligned on `THE SWITCH 3` across `AGENTS.md`, `README.md`, `HANDOFF.md`, `PROJECT_RECOVERY.md`, and `RESTORED_CHATS.md`.
+- When a source-of-truth or recovery path is mentioned, name `THE SWITCH 3` explicitly and use `/Users/lloydnwagbara/Documents/THE SWITCH 3` as the active folder path.
+- Treat `HANDOFF.md` as the live session handoff file between Cursor and Codex; update it at the end of every session.
 - When adding new project truth, recovery notes, deployment notes, architecture notes, auth notes, or completion notes, append them to `README.md` and `AGENTS.md`.
 - Do not overwrite earlier records unless the earlier content is genuinely wrong or obsolete and the replacement is stated explicitly.
 - Prefer cumulative history over replacement history.

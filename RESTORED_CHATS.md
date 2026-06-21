@@ -1,7 +1,7 @@
-# Restored Chats For The Switch
+# Restored Chats For THE SWITCH 3
 
 This file records every Codex chat that could be recovered locally for the
-current project workspace.
+current `THE SWITCH 3` project workspace.
 
 ## Recovery Result
 

@@ -1,6 +1,6 @@
 # The Switch Platform
 
-## Local Restore Notes
+## Local Restore Notes For THE SWITCH 3
 
 If project information appears to have disappeared after switching to local
 mode, open these files first:
@@ -8,7 +8,7 @@ mode, open these files first:
 - `PROJECT_RECOVERY.md`
 - `RESTORED_CHATS.md`
 
-The active local project folder is:
+The active local project folder for `THE SWITCH 3` is:
 
 `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 
@@ -28,11 +28,55 @@ New product work, requested additions, previews, mockups, routes, modules, and a
 - Do not let a new feature section interrupt the opening product explanation.
 - Only replace earlier README content when that older content is genuinely wrong or obsolete.
 
+### Multi-agent development workflow
+
+This project is built with **Cursor Agent** and **Codex** on the same repo.
+
+| Document | Purpose |
+|----------|---------|
+| `AGENTS.md` | Architecture, priorities, session rules, completion standard |
+| `HANDOFF.md` | Live session state between Cursor and Codex |
+| `README.md` | Cumulative product spec and build record (this file) |
+| `.cursor/rules/` | Cursor-specific enforcement (mirrors AGENTS.md) |
+
+#### Every session must
+
+1. Read `AGENTS.md` and this file's priority order
+2. Read `HANDOFF.md`
+3. Work on one module / one feature branch
+4. Run `npm run lint && npm run type-check && npm run test` before closeout
+5. Commit, push, update `HANDOFF.md`
+6. Append to Ordered Build Record below
+
+#### Handoff rule
+
+Never switch between Cursor and Codex with uncommitted work. Commit + push + update `HANDOFF.md` first. Full workflow details live in `HANDOFF.md`.
+
+### Agent workflow diagram
+
+```mermaid
+flowchart LR
+    A["AGENTS.md + README priorities"] --> B["Cursor Agent"]
+    A --> C["Codex"]
+    B --> D["Feature branch + commit"]
+    C --> D
+    D --> E["HANDOFF.md update"]
+    E --> F["GitHub origin/main"]
+    F --> B
+    F --> C
+```
+
 ### Critical git workflow rule
 
 - Treat git state review as mandatory before making code or release decisions.
 - Check the current branch, `git status`, and whether local work still needs to be committed or pushed before changing implementation.
 - Before calling work complete, verify the intended commit is present locally and confirm the branch has been pushed to GitHub successfully.
+
+### Priority enforcement rule
+
+- Agents must not skip higher-priority modules for lower-priority work unless the user explicitly overrides.
+- Before starting a task, state which priority item it serves.
+- If completing a lower-priority item while a higher-priority gap exists, record the reason in `HANDOFF.md` and README build record.
 
 ### Automatic GitHub push rule
 
@@ -43,6 +87,12 @@ New product work, requested additions, previews, mockups, routes, modules, and a
 - The user should not have to run manual git commands as the default path for ordinary completion.
 - If GitHub authentication expires, the session should proactively repair it and continue the push workflow in the same session.
 - Only ask the user for a browser or device approval step when an external GitHub login confirmation is genuinely unavoidable.
+
+The active local project folder is:
+
+`/Users/lloydnwagbara/Documents/THE SWITCH 3`
+
+Both Cursor Agent and Codex must use this folder. See `AGENTS.md` → Multi-Agent Workflow.
 
 ## Mark 3.2 Product Spec
 

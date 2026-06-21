@@ -1,11 +1,11 @@
-# The Switch Project Recovery Note
+# THE SWITCH 3 Project Recovery Note
 
-This file records what was found while restoring information for the project called
-The Switch.
+This file records what was found while restoring information for the active
+project workspace, `THE SWITCH 3`.
 
 ## Source Of Truth
 
-The active project is:
+The active `THE SWITCH 3` project is:
 
 `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 
@@ -18,10 +18,10 @@ The connected GitHub remote is:
 
 ## Other Folders Found
 
-The following related folders were found:
+The following related folders were found during recovery:
 
 - `/Users/lloydnwagbara/Documents/THE SWITCH`
-- `/Users/lloydnwagbara/Documents/THE SWITCH 3`
+- `/Users/lloydnwagbara/Documents/THE SWITCH 3`  ← active source-of-truth folder
 - `/Users/lloydnwagbara/Documents/Codex/2026-06-05/i-am-building-the-switch-platform`
 
 The older `/Users/lloydnwagbara/Documents/THE SWITCH` folder currently contains

@@ -33,7 +33,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** (pending — exam-engine service tests)
+- **Last commit:** d35aa15 — Add Exam Engine service tests and enable tsx test runner
 
 ### Active task
 
@@ -65,7 +65,7 @@ Update this section every session.
 - [x] `npm run test`
 - [ ] `npm run test:smoke` (only if routes changed)
 - [ ] `npm run verify:release` (if bigger release or launch-path change)
-- [ ] Pushed to GitHub
+- [x] Pushed to GitHub
 
 ---
 
@@ -364,6 +364,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-21 — Cursor — Exam Engine service test coverage
+
+- Branch: main
+- Module: exam-engine
+- Priority #: 1 — Exam Engine
+- Done: added 8 service-level tests; switched test runner to tsx for `@/` alias resolution; updated module README and build record
+- Next: expand Exam Engine coverage (access-arrangement duration, submitted resume, API smoke)
+- Commit: d35aa15
 
 ### 2026-06-21 — Cursor — Sync HANDOFF live state with Git
 

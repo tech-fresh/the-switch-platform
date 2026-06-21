@@ -302,6 +302,16 @@ Completion language rule:
 - If `Final Path Mark 1` is done but `Final Path Mark 2` is not, describe the platform as near-launch.
 - Only describe the platform as fully complete when both marks are complete.
 
+### Final Path Mark 2 operator note from the June 21, 2026 live run
+
+- In `oidc` mode, there is no separate built-in live admin account record to create inside the product.
+- Treat live admin access as email-allowlist driven through `SWITCH_AUTH_ADMIN_EMAILS`.
+- If the same live user should access editorial and admin surfaces, also include that same email in `SWITCH_AUTH_EDITOR_EMAILS`.
+- Treat placeholder `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE` values as incomplete for `Full End-to-End Completion List` item 14 even if manual live sign-in already works in the browser.
+- The walkthrough runtime still requires real deployed `switch_auth_session=...` cookie values for both student and admin proof paths.
+- The June 21, 2026 recorded live state was: `verify:live-readiness` passed, `verify:persistence-recovery` passed, `verify:live-walkthrough` failed on authenticated `/assessments` returning `500`, and `verify:launch-complete` failed downstream because walkthrough was still failing.
+- Until that walkthrough and its dependent final steps pass, continue to describe the platform as `near-launch`.
+
 ## Exact User-Posted Addition
 
 The following block is appended exactly as provided by the user:
@@ -722,3 +732,4 @@ Use this section as the current website mockup direction until a newer named cha
 - A signed-in preview session can still show a provider label such as `google`, but that does not by itself prove a real external Google identity round-trip happened.
 - The real live auth goal is: deployed runtime in `oidc` mode, full provider block present, redirect callback succeeds, session is created, sign-out works, and protected routes behave correctly.
 - Microsoft support has now been added in code alongside Google, Apple, and Email Magic Link provider slots.
+- In live `oidc` mode, admin access is currently derived from mapped roles on the signed-in email address, with `SWITCH_AUTH_ADMIN_EMAILS` and `SWITCH_AUTH_EDITOR_EMAILS` acting as the current role-allowlist boundary.

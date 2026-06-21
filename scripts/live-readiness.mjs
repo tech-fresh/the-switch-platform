@@ -11,7 +11,7 @@ const dataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim() ?? "";
 const cmsBackendMode = (process.env.SWITCH_CMS_BACKEND_MODE ?? "live").trim();
 const liveBaseUrl = process.env.SWITCH_LIVE_BASE_URL?.trim() ?? "";
 
-const configuredProviders = ["EMAIL_MAGIC_LINK", "GOOGLE", "APPLE"].filter((prefix) =>
+const configuredProviders = ["EMAIL_MAGIC_LINK", "GOOGLE", "APPLE", "MICROSOFT"].filter((prefix) =>
   [
     process.env[`SWITCH_OIDC_${prefix}_CLIENT_ID`]?.trim(),
     process.env[`SWITCH_OIDC_${prefix}_CLIENT_SECRET`]?.trim(),

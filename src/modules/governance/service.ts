@@ -980,7 +980,7 @@ function getLatestStoredSmokeRecord(
 }
 
 function getConfiguredOidcProviderCount(): number {
-  return ["EMAIL_MAGIC_LINK", "GOOGLE", "APPLE"].filter((prefix) =>
+  return ["EMAIL_MAGIC_LINK", "GOOGLE", "APPLE", "MICROSOFT"].filter((prefix) =>
     [
       process.env[`SWITCH_OIDC_${prefix}_CLIENT_ID`]?.trim(),
       process.env[`SWITCH_OIDC_${prefix}_CLIENT_SECRET`]?.trim(),

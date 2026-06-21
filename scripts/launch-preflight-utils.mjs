@@ -59,6 +59,7 @@ function requireAnyProvider(missing, env) {
     "SWITCH_OIDC_EMAIL_MAGIC_LINK",
     "SWITCH_OIDC_GOOGLE",
     "SWITCH_OIDC_APPLE",
+    "SWITCH_OIDC_MICROSOFT",
   ];
   const hasProvider = providerPrefixes.some((prefix) =>
     [

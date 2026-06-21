@@ -15,6 +15,7 @@ import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import { getStudentRecommendations } from "@/modules/recommendations/service";
 import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
 import { getMockSubjects } from "@/modules/subjects/service";
+import { buildSignedOutAccountCopy } from "./account-copy";
 import type {
   AccountLink,
   AccountMetric,
@@ -215,16 +216,19 @@ export async function getAccountOverview(
   const configuredProviders = runtime.mode === "oidc" ? getConfiguredOidcProviders() : [];
   const hasConfiguredProductionProviders = configuredProviders.length > 0;
   const authReadiness = getAuthReadinessSummary();
+  const signedOutCopy = buildSignedOutAccountCopy({
+    runtimeMode: runtime.mode,
+    hasConfiguredProductionProviders,
+    configuredProviderCount: configuredProviders.length,
+  });
   const signedInLabel =
-    session.status === "authenticated" ? session.user.displayName : "Guest preview";
+    session.status === "authenticated"
+      ? session.user.displayName
+      : signedOutCopy.signedInLabel;
   const signedInDetail =
     session.status === "authenticated"
       ? session.user.yearGroup + " • " + session.user.email
-      : runtime.mode === "oidc" && hasConfiguredProductionProviders
-        ? "Sign in through the configured identity provider to keep saved progress, support settings, and session recovery tied to one student profile."
-        : runtime.mode === "oidc"
-          ? "Production auth is active, but a live sign-in provider still needs to be configured for this runtime."
-        : "Sign in to keep saved progress, support settings, and session recovery tied to a named student profile.";
+      : signedOutCopy.signedInDetail;
 
   const metrics: AccountMetric[] = [
     {
@@ -237,7 +241,7 @@ export async function getAccountOverview(
       value:
         session.status === "authenticated"
           ? session.user.roles.join(", ")
-          : "Guest preview",
+          : signedOutCopy.accessLevelLabel,
       detail:
         session.status === "authenticated"
           ? "Role-aware route protection now uses these account roles."
@@ -285,31 +289,13 @@ export async function getAccountOverview(
         ? accessibility.studentAccessProfile.textToSpeechEnabled
           ? "Text to speech is enabled in the current profile and can travel with saved sessions."
           : "Support settings are account-linked and ready to carry through future web and app clients."
-        : runtime.mode === "oidc" && hasConfiguredProductionProviders
-          ? `Configured production provider${configuredProviders.length === 1 ? "" : "s"} can now anchor support preferences, accessibility settings, and saved session recovery to one learner account.`
-          : runtime.mode === "oidc"
-            ? "Production auth is now the default path, and this runtime still needs at least one live identity provider configured before student sign-in can complete."
-          : "Sign in to keep support preferences, accessibility settings, and saved session snapshots tied to one student account.",
+        : signedOutCopy.supportSummary,
     nextBestAction:
       session.status === "authenticated"
         ? recommendations[0]?.title ?? summary.nextBestAction
-        : runtime.mode === "oidc" && hasConfiguredProductionProviders
-          ? "Sign in through the production auth provider to keep progress, support settings, and resume links connected."
-          : runtime.mode === "oidc"
-            ? "Configure at least one production sign-in provider so student accounts can be used outside preview mode."
-          : "Sign in to keep progress, support settings, and resume links connected.",
-    signedOutTitle:
-      runtime.mode === "oidc" && hasConfiguredProductionProviders
-        ? "Sign in through the production identity provider to turn the preview into a personal study account."
-        : runtime.mode === "oidc"
-          ? "Production auth is now the default sign-in path for this product."
-        : "Sign in to turn the preview into a personal study account.",
-    signedOutDescription:
-      runtime.mode === "oidc" && hasConfiguredProductionProviders
-        ? "The website can still load in preview mode, but production auth is what keeps saved sessions, support settings, and account-linked recovery paths connected to the same learner."
-        : runtime.mode === "oidc"
-          ? "Local preview still exists for development, but launch readiness now depends on wiring this runtime to a real identity provider instead of relying on demo sign-in."
-        : "The website can still load in preview mode, but signed-in auth is what keeps saved sessions, support settings, and account-linked recovery paths connected to the same learner.",
+        : signedOutCopy.nextBestAction,
+    signedOutTitle: signedOutCopy.signedOutTitle,
+    signedOutDescription: signedOutCopy.signedOutDescription,
   };
 }
 

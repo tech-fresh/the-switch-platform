@@ -2634,6 +2634,32 @@ The platform should only be called fully complete when:
 
 Until then, the honest description remains near-launch rather than fully complete.
 
+#### Final Path Mark 2 operator note from the June 21, 2026 live run
+
+The June 21, 2026 live-launch session established these additional operator truths for the current OIDC release path:
+
+- In OIDC mode, there is no separate built-in live admin user record to create inside the app.
+- Live admin access is assigned from the signed-in OIDC email address through `SWITCH_AUTH_ADMIN_EMAILS`.
+- If the same live user should be able to enter both editorial and admin-protected routes, that same email should also be included in `SWITCH_AUTH_EDITOR_EMAILS`.
+- `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE` must contain real signed-in `switch_auth_session=...` values copied from the deployed browser session. Placeholder values do not count as live route test access.
+- A live manual sign-in success does not by itself complete `Full End-to-End Completion List` item 14. The walkthrough runtime still needs those two real cookie values for the scripted proof path.
+
+Recommended live admin configuration pattern for the current Google OIDC path:
+
+```bash
+SWITCH_AUTH_EDITOR_EMAILS=your-real-google-email@example.com
+SWITCH_AUTH_ADMIN_EMAILS=your-real-google-email@example.com
+```
+
+Current recorded blocker state from that same live run:
+
+- `npm run verify:live-readiness` passed
+- `npm run verify:persistence-recovery` passed
+- `npm run verify:live-walkthrough` failed because authenticated `/assessments` returned `500`
+- `npm run verify:launch-complete` failed because it depends on `verify:live-walkthrough`
+
+The honest project label remains `near-launch` until the walkthrough, sign-off, launch-complete, permanent evidence storage, and system-wide truth-match steps are all complete.
+
 ### Final target architecture
 
 ```mermaid
@@ -4153,6 +4179,32 @@ The repo now includes a fuller written audit of what is built, what is still pro
 Added guidance includes:
 
 - a clearer full-project audit and launch-completion path in the repository documentation
+
+### 45. June 21, 2026 live-launch verification findings (Recorded)
+
+Today’s live launch work clarified the real remaining gap between a working deployed sign-in path and a fully evidenced `Final Path Mark 2` closeout.
+
+Added repository truth includes:
+
+- the live custom domain and OIDC provider path can be configured successfully without that alone proving the final walkthrough
+- live readiness can pass while final walkthrough is still incomplete
+- live persistence recovery can pass while final walkthrough is still incomplete
+- the current OIDC admin path is email-allowlist driven through `SWITCH_AUTH_ADMIN_EMAILS` and `SWITCH_AUTH_EDITOR_EMAILS`
+- the final walkthrough still depends on real `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE` values from the deployed signed-in browser sessions
+- the current recorded live blocker is authenticated `/assessments` returning `500` during `npm run verify:live-walkthrough`
+- `npm run verify:launch-complete` currently fails as a downstream consequence of that walkthrough failure rather than as a separate root-cause failure
+
+Why this matters in architecture terms:
+
+- it separates auth configuration success from full launch-proof success
+- it keeps the scripted live-proof path honest instead of treating a partial live success as full completion
+- it documents that role mapping for the live admin path belongs to the auth module and environment boundary, not to an ad hoc account-creation UI
+
+Plain-English explanation:
+
+- the site can look live and still not be fully signed off
+- a successful sign-in is good progress, but the project only becomes fully complete when the scripted proof path also passes
+- the current job is not to invent a fake admin account, but to make sure the real signed-in email is allowed to act as admin and that the walkthrough can prove it end to end
 - stronger separation between repository-complete work and live-environment-only completion work
 - a more explicit rule that the platform should not be described as fully complete until the real deployment path is proven
 

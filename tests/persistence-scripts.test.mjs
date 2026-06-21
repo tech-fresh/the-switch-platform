@@ -8,6 +8,20 @@ import test from "node:test";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
+const scriptEnvKeysToUnset = [
+  "SWITCH_LIVE_BASE_URL",
+  "SWITCH_LIVE_STUDENT_COOKIE",
+  "SWITCH_LIVE_ADMIN_COOKIE",
+  "SWITCH_AUTH_EDITOR_EMAILS",
+  "SWITCH_AUTH_ADMIN_EMAILS",
+  "SWITCH_OIDC_GOOGLE_CLIENT_ID",
+  "SWITCH_OIDC_GOOGLE_CLIENT_SECRET",
+  "SWITCH_OIDC_GOOGLE_AUTHORIZATION_URL",
+  "SWITCH_OIDC_GOOGLE_TOKEN_URL",
+  "SWITCH_OIDC_GOOGLE_USERINFO_URL",
+  "SWITCH_OIDC_GOOGLE_SCOPES",
+  "SWITCH_OIDC_GOOGLE_PROMPT",
+];
 
 function restoreEnv(name, value) {
   if (value === undefined) {
@@ -16,6 +30,21 @@ function restoreEnv(name, value) {
   }
 
   process.env[name] = value;
+}
+
+function buildIsolatedScriptEnv(overrides = {}) {
+  const env = {
+    ...process.env,
+  };
+
+  for (const key of scriptEnvKeysToUnset) {
+    env[key] = "";
+  }
+
+  return {
+    ...env,
+    ...overrides,
+  };
 }
 
 async function withTempDir(callback) {
@@ -126,8 +155,7 @@ test("live readiness script passes for an environment-only live configuration", 
     const scriptPath = path.join(process.cwd(), "scripts", "live-readiness.mjs");
     const { stdout } = await execFileAsync(process.execPath, [scriptPath], {
       cwd: process.cwd(),
-      env: {
-        ...process.env,
+      env: buildIsolatedScriptEnv({
         SWITCH_AUTH_MODE: "oidc",
         SWITCH_AUTH_SECRET: "live-readiness-secret",
         SWITCH_AUTH_BASE_URL: "https://switch.example.com",
@@ -139,7 +167,7 @@ test("live readiness script passes for an environment-only live configuration", 
         SWITCH_OIDC_EMAIL_MAGIC_LINK_AUTHORIZATION_URL: "https://id.example.com/authorize",
         SWITCH_OIDC_EMAIL_MAGIC_LINK_TOKEN_URL: "https://id.example.com/token",
         SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL: "https://id.example.com/userinfo",
-      },
+      }),
     });
 
     assert.match(stdout, /Live readiness passed/);
@@ -154,8 +182,7 @@ test("live readiness script can record governance evidence when explicitly enabl
     const scriptPath = path.join(process.cwd(), "scripts", "live-readiness.mjs");
     const { stdout } = await execFileAsync(process.execPath, [scriptPath], {
       cwd: process.cwd(),
-      env: {
-        ...process.env,
+      env: buildIsolatedScriptEnv({
         SWITCH_AUTH_MODE: "oidc",
         SWITCH_AUTH_SECRET: "live-readiness-secret",
         SWITCH_AUTH_BASE_URL: "https://switch.example.com",
@@ -169,7 +196,7 @@ test("live readiness script can record governance evidence when explicitly enabl
         SWITCH_OIDC_EMAIL_MAGIC_LINK_USERINFO_URL: "https://id.example.com/userinfo",
         SWITCH_RECORD_GOVERNANCE: "1",
         SWITCH_GOVERNANCE_ENVIRONMENT: "staging-eu",
-      },
+      }),
     });
 
     assert.match(stdout, /Launch governance recording updated/i);
@@ -463,10 +490,9 @@ test("launch complete script can report the final sequence in dry-run mode", asy
   const scriptPath = path.join(process.cwd(), "scripts", "launch-complete.mjs");
   const { stdout } = await execFileAsync(process.execPath, [scriptPath], {
     cwd: process.cwd(),
-    env: {
-      ...process.env,
+    env: buildIsolatedScriptEnv({
       SWITCH_LAUNCH_COMPLETE_DRY_RUN: "1",
-    },
+    }),
   });
 
   assert.match(stdout, /Final launch completion sequence/i);
@@ -521,6 +547,37 @@ test("launch preflight report validates live launch requirements by auth mode", 
   assert.equal(readyReport.ready, true);
   assert.deepEqual(readyReport.missing, []);
 
+  const microsoftOidcReadyReport = getLaunchPreflightReport({
+    SWITCH_AUTH_MODE: "oidc",
+    SWITCH_AUTH_SECRET: "secret",
+    SWITCH_AUTH_BASE_URL: "https://switch.example.com",
+    SWITCH_PERSISTENCE_DRIVER: "sqlite",
+    SWITCH_DATA_DIRECTORY: "/srv/switch/data",
+    SWITCH_CMS_BACKEND_MODE: "live",
+    SWITCH_LIVE_BASE_URL: "https://switch.example.com",
+    SWITCH_RECORD_GOVERNANCE: "1",
+    SWITCH_GOVERNANCE_ENVIRONMENT: "production-eu",
+    SWITCH_LAUNCH_APPROVER: "Release board",
+    SWITCH_LAUNCH_STOP_AUTHORITY: "Platform lead",
+    SWITCH_GOVERNANCE_PRIVACY_REVIEW_NOTE: "done",
+    SWITCH_GOVERNANCE_SAFEGUARDING_REVIEW_NOTE: "done",
+    SWITCH_GOVERNANCE_RELEASE_REVIEW_NOTE: "done",
+    SWITCH_GOVERNANCE_PRIVACY_SIGNOFF_NOTE: "done",
+    SWITCH_GOVERNANCE_SAFEGUARDING_SIGNOFF_NOTE: "done",
+    SWITCH_GOVERNANCE_ALERTS_SIGNOFF_NOTE: "done",
+    SWITCH_GOVERNANCE_INCIDENT_SIGNOFF_NOTE: "done",
+    SWITCH_GOVERNANCE_RELEASE_SIGNOFF_NOTE: "done",
+    SWITCH_LIVE_STUDENT_COOKIE: "switch_auth_session=student-cookie",
+    SWITCH_LIVE_ADMIN_COOKIE: "switch_auth_session=admin-cookie",
+    SWITCH_OIDC_MICROSOFT_CLIENT_ID: "microsoft-client-id",
+    SWITCH_OIDC_MICROSOFT_CLIENT_SECRET: "microsoft-client-secret",
+    SWITCH_OIDC_MICROSOFT_AUTHORIZATION_URL: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+    SWITCH_OIDC_MICROSOFT_TOKEN_URL: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+    SWITCH_OIDC_MICROSOFT_USERINFO_URL: "https://graph.microsoft.com/oidc/userinfo",
+  });
+  assert.equal(microsoftOidcReadyReport.ready, true);
+  assert.deepEqual(microsoftOidcReadyReport.missing, []);
+
   const previewReport = getLaunchPreflightReport({
     SWITCH_AUTH_MODE: "preview-cookie",
     SWITCH_AUTH_SECRET: "secret",
@@ -554,10 +611,9 @@ test("launch status script reports code-complete and missing live inputs", async
   const scriptPath = path.join(process.cwd(), "scripts", "launch-status.mjs");
   const { stdout } = await execFileAsync(process.execPath, [scriptPath], {
     cwd: process.cwd(),
-    env: {
-      ...process.env,
+    env: buildIsolatedScriptEnv({
       SWITCH_AUTH_MODE: "oidc",
-    },
+    }),
   });
 
   assert.match(stdout, /Final Path Mark 1 launch status/i);

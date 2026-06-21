@@ -1,5 +1,88 @@
 # The Switch Platform Mark 3.2
 
+## CRITICAL RULE — READ THIS FIRST
+
+## Source Of Truth
+
+## Multi-Agent Workflow (Cursor + Codex)
+
+## Multi-Agent Workflow (Cursor + Codex)
+
+### Session Start Prompt
+
+At the start of every session, Cursor Agent and Codex must read this file first, then review the README, PROJECT_RECOVERY.md, and RESTORED_CHATS.md before making changes.
+
+### Source Folder
+
+Both agents must use:
+
+`/Users/lloydnwagbara/Documents/THE SWITCH 3`
+
+No work should be done in THE SWITCH 2 or any other legacy folder.
+
+### GitHub Remote
+
+Both agents must use the same GitHub remote:
+
+`https://github.com/tech-fresh/the-switch-platform.git`
+
+### Tool Split
+
+Cursor Agent should be used for file edits, refactors, UI changes, and code navigation.
+
+Codex should be used for planning, reviewing, debugging, explaining changes, generating prompts, and checking build logic.
+
+### Handoff Rule
+
+Before switching between Cursor and Codex, the active agent must clearly state:
+
+- What was changed
+- Which files were edited
+- What still needs doing
+- Whether the project builds
+- Whether changes were committed or not
+
+### Branch Rule
+
+Default branch is:
+
+`main`
+
+Do not create new branches unless specifically requested.
+
+### Safety Rule
+
+Do not delete rules, routes, modules, or documentation unless the user clearly asks for removal.
+
+## Architecture
+
+## Core MVP
+
+## Development Rules
+
+## Build Priority
+
+## Design System Index
+
+## Design System Rules
+
+## UI Change Checklist
+
+## Repository Map
+
+## Key Files To Read Early
+
+## Git Decision Rule
+
+## Completion Standard
+
+## Final Path Mark 2
+
+## Changes 1.0
+
+## Documentation Rule
+# The Switch Platform Mark 3.2
+
 ## Architecture
 
 - Modular MVP

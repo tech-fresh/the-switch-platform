@@ -4,6 +4,16 @@
 > Read it at the start of every session. Update it at the end of every session.
 > Do not delete session history — add new entries at the top of the Session Log.
 
+## Operator rule — every session
+
+**Session start:** tell Cursor or Codex:
+
+```text
+Read HANDOFF.md first.
+```
+
+**Session end:** update the **Live session state** section below before stopping or switching tools.
+
 ## Golden rule
 
 **Never switch between Cursor and Codex without updating this file first.**
@@ -23,7 +33,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 0fb58a8 — Complete multi-agent workflow integration across core docs
+- **Last commit:** pending — session operating priorities update
 
 ### Active task
 
@@ -34,16 +44,15 @@ Update this section every session.
 
 ### What was just completed
 
-- Full multi-agent workflow integration completed
-- Added `.cursor/rules/` for Cursor enforcement
-- Removed duplicate temporary blocks from `AGENTS.md`
-- Fixed `README.md` build record structure and duplicates
-- Updated `PROJECT_RECOVERY.md` and `RESTORED_CHATS.md`
+- Documented session operating priorities in `AGENTS.md`, `README.md`, and `HANDOFF.md`
+- Session start rule: tell agent **Read HANDOFF.md first**
+- Session end rule: update **Live session state** in this file
+- Marked `.cursor/rules/` as active (4 rule files)
 
 ### What is next
 
-- Use `HANDOFF.md` at the start and end of every Cursor and Codex session
 - Start real product work from build priority #1 (Exam Engine)
+- At every session: **Read HANDOFF.md first** → work → update Live session state
 
 ### Blockers
 
@@ -71,7 +80,7 @@ Update this section every session.
 | Product history | `README.md` (cumulative — append only) |
 | Recovery notes | `PROJECT_RECOVERY.md`, `RESTORED_CHATS.md` |
 | Session handoff | `HANDOFF.md` (this file) |
-| Cursor-only rules | `.cursor/rules/` |
+| Cursor-only rules | `.cursor/rules/` (active — 4 rule files) |
 
 ---
 

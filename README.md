@@ -37,15 +37,29 @@ This project is built with **Cursor Agent** and **Codex** on the same repo.
 | `AGENTS.md` | Architecture, priorities, session rules, completion standard |
 | `HANDOFF.md` | Live session state between Cursor and Codex |
 | `README.md` | Cumulative product spec and build record (this file) |
-| `.cursor/rules/` | Cursor-specific enforcement mirroring `AGENTS.md` |
+| `.cursor/rules/` | Cursor-specific enforcement mirroring `AGENTS.md` (active — 4 rule files) |
+
+#### Session start — tell the agent
+
+At every session start, tell Cursor or Codex:
+
+```text
+Read HANDOFF.md first.
+```
+
+Then let the agent read `AGENTS.md` and this file's priority order.
+
+#### Session end — update HANDOFF.md
+
+At every session end, update the **Live session state** section in `HANDOFF.md` before stopping or switching tools.
 
 #### Every session must
 
-1. Read `AGENTS.md` and this file's priority order
-2. Read `HANDOFF.md`
+1. Tell the agent: **Read HANDOFF.md first**
+2. Read `AGENTS.md` and this file's priority order
 3. Work on one module / one feature branch
 4. Run `npm run lint && npm run type-check && npm run test` before closeout
-5. Commit, push, update `HANDOFF.md`
+5. Commit, push, update **Live session state** in `HANDOFF.md`
 6. Append to Ordered Build Record below
 
 #### Handoff rule
@@ -206,6 +220,13 @@ This section is the running record of what has been requested, added, and commit
 - Consolidated `AGENTS.md` multi-agent workflow and removed duplicate temporary agent blocks.
 - Aligned `README.md`, `PROJECT_RECOVERY.md`, and `RESTORED_CHATS.md` on `THE SWITCH 3` as the only active folder.
 - Integrated git closeout rules: read `HANDOFF.md` at session start, update at session end, commit and push before switching tools.
+
+### 2026-06-21 Session operating priorities documented
+
+- Documented the operator rule in `AGENTS.md`, `README.md`, and `HANDOFF.md`.
+- At session start: tell Cursor or Codex **Read HANDOFF.md first**.
+- At session end: update the **Live session state** section in `HANDOFF.md`.
+- Marked `.cursor/rules/` as active with 4 rule files — no longer optional setup.
 
 ### 2026-06-21 Source-of-Truth Migration to THE SWITCH 3
 

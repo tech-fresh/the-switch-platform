@@ -12,6 +12,18 @@ Before doing ANY work in this repository — writing code, creating files, editi
 
 Never switch between Cursor and Codex without updating `HANDOFF.md` and pushing committed work first.
 
+### Operator rule — every session
+
+**At session start:** tell Cursor or Codex:
+
+```text
+Read HANDOFF.md first.
+```
+
+Then read `AGENTS.md` and `README.md` priorities before making changes.
+
+**At session end:** update the **Live session state** section in `HANDOFF.md` before stopping or switching tools.
+
 ## Source Of Truth
 
 - Active local folder: `/Users/lloydnwagbara/Documents/THE SWITCH 3`
@@ -34,7 +46,17 @@ Both **Cursor Agent** and **Codex** work on this single repo. Git is the handoff
 | `AGENTS.md` | Architecture, priorities, session rules, completion standard |
 | `HANDOFF.md` | Live session state and handover between Cursor and Codex |
 | `README.md` | Cumulative product spec and build record |
-| `.cursor/rules/` | Cursor-specific enforcement mirroring `AGENTS.md` |
+| `.cursor/rules/` | Cursor-specific enforcement mirroring `AGENTS.md` (active — 4 rule files) |
+
+### Session start prompt
+
+Tell Cursor or Codex at the start of every session:
+
+```text
+Read HANDOFF.md first.
+```
+
+Then read `AGENTS.md`, this file's priority order, and the relevant module README.
 
 ### Session start
 
@@ -51,7 +73,7 @@ Both **Cursor Agent** and **Codex** work on this single repo. Git is the handoff
 1. Run `npm run lint && npm run type-check && npm run test`
 2. Run `npm run test:smoke` if routes or pages changed
 3. Commit and confirm push to GitHub succeeded
-4. Update `HANDOFF.md` live session state and add a session log entry
+4. Update the **Live session state** section in `HANDOFF.md` and add a session log entry
 5. Append `README.md` Ordered Build Record if routes, modules, or behavior changed
 
 ### Tool split
@@ -578,7 +600,10 @@ Use this section as the current website mockup direction until a newer named cha
 
 - Keep workspace references aligned on `THE SWITCH 3` across `AGENTS.md`, `README.md`, `HANDOFF.md`, `PROJECT_RECOVERY.md`, and `RESTORED_CHATS.md`.
 - When a source-of-truth or recovery path is mentioned, name `THE SWITCH 3` explicitly and use `/Users/lloydnwagbara/Documents/THE SWITCH 3` as the active folder path.
-- Treat `HANDOFF.md` as the live session handoff file between Cursor and Codex; update it at the end of every session.
+- Treat `HANDOFF.md` as the live session handoff file between Cursor and Codex.
+- At session start, tell the agent: **Read HANDOFF.md first**.
+- At session end, update the **Live session state** section in `HANDOFF.md`.
+- Treat `.cursor/rules/` as active Cursor enforcement — not optional setup.
 - When adding new project truth, recovery notes, deployment notes, architecture notes, auth notes, or completion notes, append them to `README.md` and `AGENTS.md`.
 - Do not overwrite earlier records unless the earlier content is genuinely wrong or obsolete and the replacement is stated explicitly.
 - Prefer cumulative history over replacement history.

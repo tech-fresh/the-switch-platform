@@ -25,9 +25,10 @@ Both **Cursor Agent** and **Codex** must use this folder only.
 | `AGENTS.md` | Architecture, priorities, completion standard |
 | `HANDOFF.md` | Live session handoff between tools |
 | `README.md` | Cumulative product spec and build record |
-| `.cursor/rules/` | Cursor-specific enforcement |
+| `.cursor/rules/` | Cursor-specific enforcement (active — 4 rule files) |
 
-Read `HANDOFF.md` at session start. Update it at session end before switching tools.
+Read `HANDOFF.md` at session start — tell the agent **Read HANDOFF.md first**.
+Update the **Live session state** section in `HANDOFF.md` at session end before switching tools.
 
 ## Other Folders Found
 

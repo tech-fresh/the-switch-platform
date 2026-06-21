@@ -33,7 +33,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** d35aa15 — Add Exam Engine service tests and enable tsx test runner
+- **Last commit:** b3595ff — Update HANDOFF after Exam Engine service test session (substantive: d35aa15)
 
 ### Active task
 

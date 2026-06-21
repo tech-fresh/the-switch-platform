@@ -67,7 +67,7 @@ function getOperationsClasses(status: "healthy" | "warning" | "critical"): strin
 }
 
 export default async function AdminPage() {
-  await requireRequestSessionRoles(["editor", "admin"]);
+  const session = await requireRequestSessionRoles(["editor", "admin"]);
   const [cms, papers, operations, governance, persistence] = await Promise.all([
     getCmsOverviewApiData(),
     getPastPaperCatalogApiData(),
@@ -75,6 +75,15 @@ export default async function AdminPage() {
     getLaunchGovernanceOverviewApiData(),
     getPersistenceRuntimeSummaryApiData(),
   ]);
+  const readyEnvironmentChecks = governance.environmentChecks.filter((check) => check.status === "ready").length;
+  const readySignOffChecks = governance.signOffChecks.filter((check) => check.status === "ready").length;
+  const recordedEvidenceCount = governance.evidenceRecords.filter((record) => record.status === "recorded").length;
+  const recommendedActions = buildOperatorRecommendations({
+    operations,
+    governance,
+    cms,
+    persistence,
+  });
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -92,6 +101,11 @@ export default async function AdminPage() {
                 This route now exposes the real operating path for reviewed learning content and
                 curated past-paper updates, including where live workflow control ends and future
                 source-provider replacement can begin safely.
+              </p>
+              <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
+                One sign-in now powers both student and admin access. This page is visible because
+                the current signed-in email is mapped to the {session.user.roles.join(", ")} role
+                path.
               </p>
             </div>
           </div>
@@ -155,6 +169,89 @@ export default async function AdminPage() {
               </p>
             </div>
           </div>
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <article className="border border-stone-200 bg-white p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Signed in as</p>
+            <p className="mt-2 text-lg font-semibold text-stone-950">{session.user.displayName}</p>
+            <p className="mt-1 text-sm text-stone-600">{session.user.email}</p>
+            <p className="mt-1 text-sm text-stone-600">Roles: {session.user.roles.join(", ")}</p>
+          </article>
+          <article className="border border-stone-200 bg-white p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Launch environment checks</p>
+            <p className="mt-2 text-2xl font-semibold text-stone-950">
+              {readyEnvironmentChecks} / {governance.environmentChecks.length}
+            </p>
+            <p className="mt-1 text-sm text-stone-600">recorded as ready in the current governance view</p>
+          </article>
+          <article className="border border-stone-200 bg-white p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Sign-off checks</p>
+            <p className="mt-2 text-2xl font-semibold text-stone-950">
+              {readySignOffChecks} / {governance.signOffChecks.length}
+            </p>
+            <p className="mt-1 text-sm text-stone-600">launch trust checks marked ready</p>
+          </article>
+          <article className="border border-stone-200 bg-white p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Recorded evidence</p>
+            <p className="mt-2 text-2xl font-semibold text-stone-950">
+              {recordedEvidenceCount} / {governance.evidenceRecords.length}
+            </p>
+            <p className="mt-1 text-sm text-stone-600">evidence bundles already captured for the release path</p>
+          </article>
+        </section>
+
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <article className="border border-stone-200 bg-white p-5 sm:p-6">
+            <div className="border-b border-stone-200 pb-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                Recommended operator focus
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                The next things you should watch, fix, or verify from this admin surface.
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-stone-600">
+                These recommendations are derived from the current operations, governance, editorial,
+                and persistence state already loaded by this route.
+              </p>
+            </div>
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {recommendedActions.map((action) => (
+                <article key={action.title} className={`border p-4 ${action.tone}`}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] opacity-75">
+                    {action.eyebrow}
+                  </p>
+                  <p className="mt-2 text-lg font-semibold">{action.title}</p>
+                  <p className="mt-2 text-sm leading-6 opacity-90">{action.detail}</p>
+                </article>
+              ))}
+            </div>
+          </article>
+
+          <aside className="space-y-4">
+            <section className="border border-stone-200 bg-white p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                Admin access path
+              </h2>
+              <div className="mt-4 space-y-3 text-sm leading-6 text-stone-600">
+                <p>Use one main sign-in flow for the website.</p>
+                <p>The signed-in email becomes admin-capable only when it is allowlisted through the auth environment.</p>
+                <p>This keeps auth, route protection, and future mobile reuse on one session model instead of splitting student and admin into two disconnected login systems.</p>
+              </div>
+            </section>
+            <section className="border border-stone-200 bg-white p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                Metrics this page already exposes
+              </h2>
+              <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
+                <li>Editorial queue and content visibility</li>
+                <li>Paper catalog and source-provider readiness</li>
+                <li>Persistence driver, backup path, and recovery status</li>
+                <li>Operations alerts, budgets, and domain watch points</li>
+                <li>Launch governance ownership, reviews, smoke checks, and sign-off state</li>
+              </ul>
+            </section>
+          </aside>
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
@@ -809,4 +906,67 @@ export default async function AdminPage() {
       </div>
     </main>
   );
+}
+
+function buildOperatorRecommendations(options: {
+  operations: Awaited<ReturnType<typeof getOperationsOverviewApiData>>;
+  governance: Awaited<ReturnType<typeof getLaunchGovernanceOverviewApiData>>;
+  cms: Awaited<ReturnType<typeof getCmsOverviewApiData>>;
+  persistence: Awaited<ReturnType<typeof getPersistenceRuntimeSummaryApiData>>;
+}) {
+  const recommendations: Array<{
+    eyebrow: string;
+    title: string;
+    detail: string;
+    tone: string;
+  }> = [];
+
+  const highestAlert = options.operations.alerts[0];
+  if (highestAlert) {
+    recommendations.push({
+      eyebrow: "Operations",
+      title: highestAlert.title,
+      detail: `${highestAlert.detail} Recommended action: ${highestAlert.recommendedAction}`,
+      tone:
+        highestAlert.severity === "critical"
+          ? "border-rose-300 bg-rose-50 text-rose-950"
+          : "border-amber-300 bg-amber-50 text-amber-950",
+    });
+  }
+
+  const remainingCloseout = options.governance.finalPathSummary.closeoutItems.find(
+    (item) => item.status === "remaining",
+  );
+  if (remainingCloseout) {
+    recommendations.push({
+      eyebrow: "Launch path",
+      title: remainingCloseout.title,
+      detail: remainingCloseout.detail,
+      tone: "border-sky-300 bg-sky-50 text-sky-950",
+    });
+  }
+
+  if (options.cms.editorialWorkflowSummary.queuedReviewCount > 0) {
+    recommendations.push({
+      eyebrow: "Editorial queue",
+      title: `${options.cms.editorialWorkflowSummary.queuedReviewCount} content item${options.cms.editorialWorkflowSummary.queuedReviewCount === 1 ? "" : "s"} waiting for review`,
+      detail: "Keep the queue moving so reviewed-only student visibility stays truthful and launch-safe.",
+      tone: "border-amber-300 bg-amber-50 text-amber-950",
+    });
+  }
+
+  recommendations.push({
+    eyebrow: "Persistence",
+    title: options.persistence.recoveryReady
+      ? "Backup and recovery path is ready"
+      : "Backup and recovery still need attention",
+    detail: options.persistence.recoveryReady
+      ? `The current runtime is using ${options.persistence.driver} with a recovery-ready path at ${options.persistence.dataDirectory}.`
+      : `Recovery checks are still incomplete for ${options.persistence.dataDirectory}.`,
+    tone: options.persistence.recoveryReady
+      ? "border-emerald-300 bg-emerald-50 text-emerald-950"
+      : "border-amber-300 bg-amber-50 text-amber-950",
+  });
+
+  return recommendations.slice(0, 4);
 }

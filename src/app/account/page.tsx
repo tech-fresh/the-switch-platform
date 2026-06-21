@@ -16,6 +16,18 @@ function getAuthReadinessClasses(status: "development-only" | "needs-provider-se
   return "border-amber-300 bg-amber-50 text-amber-950";
 }
 
+function getRoleClasses(role: "student" | "editor" | "admin"): string {
+  if (role === "admin") {
+    return "border-sky-300 bg-sky-50 text-sky-950";
+  }
+
+  if (role === "editor") {
+    return "border-emerald-300 bg-emerald-50 text-emerald-950";
+  }
+
+  return "border-stone-300 bg-stone-100 text-stone-800";
+}
+
 function formatSignedInAt(timestamp: string): string {
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -69,6 +81,8 @@ export default async function AccountPage({
   ]);
   const authenticatedSession =
     account.session.status === "authenticated" ? account.session : null;
+  const canOpenAdmin =
+    authenticatedSession?.user.roles.some((role) => role === "editor" || role === "admin") ?? false;
   const rawAuthError = resolvedSearchParams.authError;
   const authError = Array.isArray(rawAuthError) ? rawAuthError[0] : rawAuthError;
   const authErrorMessage = getAuthErrorMessage(authError);
@@ -119,12 +133,25 @@ export default async function AccountPage({
                 <p className="text-sm text-stone-600">
                   Session expires at {formatSessionExpiry(authenticatedSession.expiresAt)}
                 </p>
+                {canOpenAdmin ? (
+                  <div className="pt-2">
+                    <Link
+                      href="/admin"
+                      className="inline-flex border border-sky-300 bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-900 transition hover:bg-white"
+                    >
+                      Open admin dashboard
+                    </Link>
+                  </div>
+                ) : null}
               </>
             ) : (
               <>
                 <p className="text-lg font-semibold text-stone-950">Signed out</p>
                 <p className="text-sm text-stone-600">
                   Sign in to keep progress, support settings, and resume links tied to one student account.
+                </p>
+                <p className="text-sm text-stone-600">
+                  Use the same sign-in for student and admin access. Admin tools open after sign-in when this email is allowlisted for editor or admin roles.
                 </p>
               </>
             )}
@@ -185,6 +212,37 @@ export default async function AccountPage({
 	                  Mode: {account.authReadiness.mode} • Configured providers: {account.authReadiness.configuredProviderCount}
 	                </p>
 	              </div>
+                <div className="border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    One sign-in, role-based access
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-stone-700">
+                    The website now uses one main sign-in path. Student routes open for every authenticated learner, and admin tools appear automatically when the signed-in email is mapped to editor or admin roles through the auth environment.
+                  </p>
+                  {authenticatedSession ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {authenticatedSession.user.roles.map((role) => (
+                        <span
+                          key={role}
+                          className={`border px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${getRoleClasses(role)}`}
+                        >
+                          {role}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                  <p className="mt-3 text-sm leading-6 text-stone-600">
+                    If this account should open the admin area, add the signed-in email to `SWITCH_AUTH_EDITOR_EMAILS` or `SWITCH_AUTH_ADMIN_EMAILS`, redeploy, then sign in again.
+                  </p>
+                  {canOpenAdmin ? (
+                    <Link
+                      href="/admin"
+                      className="mt-4 inline-flex border border-sky-300 bg-white px-3 py-2 text-sm font-semibold text-sky-900 transition hover:bg-sky-50"
+                    >
+                      Go to admin metrics
+                    </Link>
+                  ) : null}
+                </div>
 	              <div className="grid gap-5 lg:grid-cols-2">
 	                <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
@@ -240,6 +298,7 @@ export default async function AccountPage({
               <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
                 <li>Student identity now has a real signed session boundary instead of a hardcoded signed-in default.</li>
                 <li>Session expiry and protected admin access now behave more like a real launch path.</li>
+                <li>One login path can serve student and admin journeys without splitting auth into two disconnected account systems.</li>
                 <li>Account data can aggregate module outputs without moving their logic into the page.</li>
                 <li>Website and future mobile clients can consume the same account contracts through an API layer.</li>
               </ul>

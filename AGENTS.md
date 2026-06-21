@@ -168,6 +168,10 @@ Before doing any work in this repository:
 - Before changing code, check the current branch, `git status`, and whether local work still needs to be committed or pushed.
 - Before reporting work complete, verify the intended commit is present locally and confirm the branch has been pushed to GitHub successfully.
 - Keep the repo-managed `.githooks/post-commit` hook enabled through local `core.hooksPath` so tracked branches push to GitHub automatically after commits unless a task explicitly requires a local-only commit.
+- Treat broken git authentication, stale GitHub CLI tokens, failed auto-push hooks, and failed manual pushes as priority blockers for completion reporting.
+- If a push fails because git or GitHub auth is unhealthy, actively diagnose and repair the auth path in the same session instead of waiting for a separate user prompt.
+- Prefer fixing GitHub auth through the current configured remote, `gh auth` status and re-auth flow, or other non-destructive credential repairs before declaring the repo push path blocked.
+- Do not leave a task described as pushed or fully wrapped if the intended commit is still local-only because auth was not repaired.
 
 ### Current Pushed Baseline
 
@@ -733,3 +737,6 @@ Use this section as the current website mockup direction until a newer named cha
 - The real live auth goal is: deployed runtime in `oidc` mode, full provider block present, redirect callback succeeds, session is created, sign-out works, and protected routes behave correctly.
 - Microsoft support has now been added in code alongside Google, Apple, and Email Magic Link provider slots.
 - In live `oidc` mode, admin access is currently derived from mapped roles on the signed-in email address, with `SWITCH_AUTH_ADMIN_EMAILS` and `SWITCH_AUTH_EDITOR_EMAILS` acting as the current role-allowlist boundary.
+- Prefer one main sign-in path with role-based admin access over two disconnected student/admin login systems unless the user explicitly reprioritises the auth architecture.
+- If a future task introduces a true email-and-password admin login, treat it as a separate auth hardening deliverable rather than a small UI tweak.
+- Do not describe a password-first admin path as complete unless it includes secure password hashing, account recovery, role-protected admin routing, abuse protection, and tests proving both valid admin access and blocked student access.

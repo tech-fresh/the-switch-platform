@@ -277,6 +277,19 @@ export async function getAccountOverview(
     buildAccountLink("/accessibility", routeCopy["/accessibility"].label, routeCopy["/accessibility"].description),
   ];
 
+  if (
+    session.status === "authenticated" &&
+    session.user.roles.some((role) => role === "editor" || role === "admin")
+  ) {
+    quickLinks.push(
+      buildAccountLink(
+        "/admin",
+        "Admin dashboard",
+        "Open operations status, launch governance, editorial workflow, and runtime metrics from the same signed-in account.",
+      ),
+    );
+  }
+
   return {
     isAuthenticated: session.status === "authenticated",
     session,

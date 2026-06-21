@@ -4234,6 +4234,78 @@ The repo now includes the Netlify deployment configuration and the clearer compl
 
 Added guidance includes:
 
+### 47. One-login admin path and password-admin hardening plan (Recorded)
+
+The website now follows one main sign-in path for both student and admin journeys.
+
+Current live admin truth:
+
+- students and admins should use the same primary sign-in route
+- the signed-in account is distinguished by role after sign-in rather than by a second disconnected login page
+- the current live admin rule is email-based role mapping through `SWITCH_AUTH_EDITOR_EMAILS` and `SWITCH_AUTH_ADMIN_EMAILS`
+- the account page now explains the one-login role-based access path
+- the account page now links admin-capable users directly into `/admin`
+- the admin page now explains why the signed-in account can see admin tools and surfaces the key launch, operations, editorial, and persistence metrics already available in the product
+
+Why this matters:
+
+- it keeps auth architecture simpler and safer for the current launch path
+- it avoids building two separate session systems for student and admin users
+- it matches the repo rule that business logic should stay in shared modules instead of being split into fragile page-only auth behavior
+
+Plain-English explanation:
+
+- everyone signs in through one front door
+- the website then checks who you are allowed to be
+- normal learners see learner pages
+- allowlisted staff or operators can also open admin pages from the same signed-in account
+
+#### If a password-based admin login is later required
+
+This is not the current live auth path, and it should not be treated as complete just because the idea exists in documentation.
+
+If the project later decides to add a true email-and-password admin login, the work should be treated as a separate auth hardening deliverable and should only be called complete when all of the following are done:
+
+1. Create a dedicated password-capable auth mode or provider boundary instead of mixing raw password checks directly into pages.
+2. Add a secure admin-user store with hashed passwords only.
+3. Add admin account creation rules and ownership controls.
+4. Add password reset and account recovery.
+5. Add brute-force protection, lockout or rate limiting, and audit visibility.
+6. Add clear session rules for admin expiry and sign-out.
+7. Keep the student auth path and admin auth path consuming the same shared role and session contracts where possible.
+8. Add tests proving that ordinary student accounts cannot reach admin routes.
+9. Add tests proving that valid admin credentials can reach the admin route and see the intended metrics.
+10. Update launch verification so the chosen production auth path is still proven honestly.
+
+#### Step-by-step non-coder guide for future password-admin work
+
+If you later decide you truly need a password-first admin login, use this order:
+
+```mermaid
+flowchart TD
+    A["Decide that Google OIDC plus admin-email allowlist is not enough"] --> B["Define a separate admin auth mode"]
+    B --> C["Add secure admin-user storage with hashed passwords"]
+    C --> D["Add admin sign-in, reset, and session rules"]
+    D --> E["Protect /admin with the shared role system"]
+    E --> F["Test valid admin access and blocked student access"]
+    F --> G["Update README, AGENTS, and launch verification truth"]
+```
+
+Simple explanation of those steps:
+
+1. Decide why the current Google sign-in plus admin-email allowlist is not enough.
+2. Choose a real password system rather than adding a quick insecure password box.
+3. Store hashed passwords, never plain passwords.
+4. Add password reset before calling the system usable.
+5. Keep admin routes behind role checks, not just behind the existence of a form.
+6. Test that normal student users still cannot open admin pages.
+7. Update the documentation and completion rules so the repo stays honest about the real auth path.
+
+Current recommendation:
+
+- for the present launch path, keep one sign-in and role-based admin access
+- only add a password-first admin login if there is a clear business or operational need that the current OIDC path cannot meet safely
+
 - `netlify.toml` for deployment configuration
 - stronger completion language that points back to the full end-to-end launch criteria
 - a more explicit release record in the repo history

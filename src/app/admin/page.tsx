@@ -137,6 +137,9 @@ export default async function AdminPage() {
                 {persistence.driver}
               </p>
               <p className="mt-1 text-sm opacity-90">
+                Storage backend: {persistence.storageBackend}
+              </p>
+              <p className="mt-1 text-sm opacity-90">
                 {persistence.driver === "memory"
                   ? "Memory persistence is active, so student data would reset on restart."
                   : persistence.isEphemeralStorage

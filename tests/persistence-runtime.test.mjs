@@ -25,6 +25,7 @@ test("persistence runtime treats the default workspace data directory as provisi
   const runtime = getPersistenceRuntimeConfig();
 
   assert.equal(runtime.driver, "local-json");
+  assert.equal(runtime.storageBackend, "filesystem");
   assert.equal(runtime.isPrototypePersistence, true);
   assert.equal(runtime.dataDirectory.endsWith(".codex-data"), true);
 
@@ -47,6 +48,7 @@ test("persistence runtime falls back to a writable temp directory in serverless 
   const runtime = getPersistenceRuntimeConfig();
 
   assert.equal(runtime.driver, "local-json");
+  assert.equal(runtime.storageBackend, "filesystem");
   assert.equal(runtime.isPrototypePersistence, true);
   assert.equal(runtime.dataDirectory.includes(".codex-data"), true);
   assert.equal(runtime.dataDirectory.startsWith(tmpdir()), true);
@@ -71,6 +73,7 @@ test("persistence runtime still treats explicit local-json storage as provisiona
   const runtime = getPersistenceRuntimeConfig();
 
   assert.equal(runtime.driver, "local-json");
+  assert.equal(runtime.storageBackend, "filesystem");
   assert.equal(runtime.isPrototypePersistence, true);
   assert.equal(runtime.dataDirectory, "/srv/the-switch/data");
   assert.equal(runtime.backupDirectory, "/srv/the-switch/data/backups");
@@ -95,6 +98,7 @@ test("persistence runtime treats sqlite with an explicit data directory as the i
   const runtime = getPersistenceRuntimeConfig();
 
   assert.equal(runtime.driver, "sqlite");
+  assert.equal(runtime.storageBackend, "filesystem");
   assert.equal(runtime.isPrototypePersistence, false);
   assert.equal(runtime.dataDirectory, "/srv/the-switch/data");
   assert.equal(runtime.backupDirectory, "/srv/the-switch/data/backups");
@@ -102,6 +106,33 @@ test("persistence runtime treats sqlite with an explicit data directory as the i
   assert.equal(runtime.backupStorePath, "/srv/the-switch/data/backups/switch-live.sqlite");
   assert.equal(runtime.usesDefaultDataDirectory, false);
   assert.equal(runtime.isServerlessRuntime, false);
+  assert.equal(runtime.isEphemeralStorage, false);
+
+  restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
+  restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);
+});
+
+test("persistence runtime treats vercel-blob sqlite storage as a shared durable path", async () => {
+  const previousDriver = process.env.SWITCH_PERSISTENCE_DRIVER;
+  const previousDataDirectory = process.env.SWITCH_DATA_DIRECTORY;
+  process.env.SWITCH_PERSISTENCE_DRIVER = "sqlite";
+  process.env.SWITCH_DATA_DIRECTORY = "vercel-blob://switch-live-data";
+
+  const { getPersistenceRuntimeConfig } = await import(
+    `../src/lib/persistence/runtime.ts?test=${Date.now()}-blob-sqlite-persistence`
+  );
+  const runtime = getPersistenceRuntimeConfig();
+
+  assert.equal(runtime.driver, "sqlite");
+  assert.equal(runtime.storageBackend, "vercel-blob");
+  assert.equal(runtime.isPrototypePersistence, false);
+  assert.equal(runtime.dataDirectory, "vercel-blob://switch-live-data");
+  assert.equal(runtime.backupDirectory, "vercel-blob://switch-live-data/backups");
+  assert.equal(runtime.primaryStorePath, "vercel-blob://switch-live-data/switch-live.sqlite");
+  assert.equal(
+    runtime.backupStorePath,
+    "vercel-blob://switch-live-data/backups/switch-live.sqlite",
+  );
   assert.equal(runtime.isEphemeralStorage, false);
 
   restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);

@@ -52,3 +52,32 @@ test("live walkthrough config builds signed external headers", async () => {
     "string",
   );
 });
+
+test("live walkthrough config prefers launch verification headers when the secret is present", async () => {
+  const { getLiveWalkthroughConfig } = await import(
+    `../scripts/live-walkthrough-utils.mjs?test=${Date.now()}-launch-verification`
+  );
+
+  const config = getLiveWalkthroughConfig({
+    SWITCH_AUTH_MODE: "oidc",
+    SWITCH_LAUNCH_VERIFICATION_SECRET: "launch-secret",
+    SWITCH_LIVE_BASE_URL: "https://switch.example.com",
+  });
+
+  assert.equal(
+    config.studentHeaders["x-switch-launch-verification"],
+    "launch-secret",
+  );
+  assert.equal(
+    config.adminHeaders["x-switch-launch-verification"],
+    "launch-secret",
+  );
+  assert.equal(
+    config.studentHeaders["x-switch-launch-roles"],
+    "student",
+  );
+  assert.equal(
+    config.adminHeaders["x-switch-launch-roles"],
+    "admin,editor,student",
+  );
+});

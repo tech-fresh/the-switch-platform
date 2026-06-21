@@ -1,5 +1,8 @@
 export function getLaunchPreflightReport(env = process.env) {
   const authMode = (env.SWITCH_AUTH_MODE ?? "oidc").trim();
+  const hasLaunchVerificationSecret = Boolean(
+    env.SWITCH_LAUNCH_VERIFICATION_SECRET?.trim(),
+  );
   const missing = [];
 
   if (authMode === "preview-cookie") {
@@ -27,8 +30,10 @@ export function getLaunchPreflightReport(env = process.env) {
   if (authMode === "oidc") {
     requireValue(missing, env, "SWITCH_AUTH_BASE_URL");
     requireAnyProvider(missing, env);
-    requireValue(missing, env, "SWITCH_LIVE_STUDENT_COOKIE");
-    requireValue(missing, env, "SWITCH_LIVE_ADMIN_COOKIE");
+    if (!hasLaunchVerificationSecret) {
+      requireValue(missing, env, "SWITCH_LIVE_STUDENT_COOKIE");
+      requireValue(missing, env, "SWITCH_LIVE_ADMIN_COOKIE");
+    }
   }
 
   if (authMode === "external-header") {

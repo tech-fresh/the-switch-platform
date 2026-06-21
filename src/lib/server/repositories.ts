@@ -35,6 +35,7 @@ export interface LaunchGovernanceRepository {
 
 export interface PersistenceRuntimeSummary {
   driver: ReturnType<typeof getPersistenceRuntimeConfig>["driver"];
+  storageBackend: ReturnType<typeof getPersistenceRuntimeConfig>["storageBackend"];
   dataDirectory: string;
   backupDirectory: string | null;
   primaryStorePath: string;
@@ -164,6 +165,7 @@ export async function getPersistenceRuntimeSummary(): Promise<PersistenceRuntime
 
   return {
     driver: config.driver,
+    storageBackend: config.storageBackend,
     dataDirectory: config.dataDirectory,
     backupDirectory: config.backupDirectory,
     primaryStorePath: config.primaryStorePath,

@@ -163,6 +163,18 @@ This section is the running record of what has been requested, added, and commit
 - The admin runtime page now calls out ephemeral serverless persistence directly, so item 22 can stay honest when the deployed runtime is still different from the recorded evidence.
 - Current truth remains unchanged: the repository is stronger and more truthful, but true `Final Path Mark 2` still requires the deployed runtime to stop using temporary serverless storage and to reflect one real shared live persistence path.
 
+### 2026-06-21 durable live persistence and launch-verification update
+
+- Production persistence on `https://theswitchplatform.com` now reports `sqlite` with `storageBackend: vercel-blob`, `dataDirectory: vercel-blob://switch-live-data`, `isEphemeralStorage: false`, and `recoveryReady: true` through the deployed `/api/persistence/runtime` API.
+- The repo now supports a narrow `SWITCH_LAUNCH_VERIFICATION_SECRET` header path so protected live route checks can be automated without repeatedly extracting browser cookies by hand.
+- Internal server-to-server page API fetches now forward launch-verification headers, and the launch fetch helpers now apply timeout-and-retry handling so transient production stalls fail honestly instead of hanging forever.
+- The blob-backed sqlite helper now creates local backup temp directories before opening mirrored backup databases, which fixed the deployed `/api/governance/overview` crash that originally blocked the item 22 truth check.
+- The blob-backed sqlite reader now probes metadata before reading bytes and prefers the real `BLOB_READ_WRITE_TOKEN` path ahead of the fallback OIDC path, so the repo no longer treats a missing blob or the weaker auth path as the default cause of the live failure.
+- Current truth is still not `100% complete`: the latest deployed `dashboard`, `account`, `results`, `/api/dashboard/home`, and `/api/results/overview` routes still fail under live launch verification because shared-store reads are returning `Vercel Blob: Failed to fetch blob: 403 Forbidden`.
+- A direct production Blob SDK probe confirmed the deeper platform-side blocker: the control plane can still return sqlite blob metadata, but issuing a signed read for `switch-live-data/switch-live.sqlite` fails with `BlobStoreSuspendedError: Vercel Blob: This store has been suspended.`
+- Until that live Blob store is unsuspended in Vercel or replaced with another real shared durable store, the final walkthrough, final sign-off, final launch-complete run, and item 22 truth-match cannot be called complete honestly.
+- Because those protected live routes still fail and the final walkthrough cannot yet finish cleanly against the deployed runtime, the honest platform label remains `near-launch`.
+
 ### 1. Mark 3.2 modular MVP foundation
 
 The project was established around these core rules:

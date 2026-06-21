@@ -99,6 +99,45 @@ function buildCookieHeaders(audience, env) {
   };
 }
 
+function buildLaunchVerificationHeaders(audience, env) {
+  const prefix = audience === "admin" ? "SWITCH_LIVE_ADMIN" : "SWITCH_LIVE_STUDENT";
+  const userId =
+    env[`${prefix}_USER_ID`]?.trim() ?? (audience === "admin" ? "launch-admin" : "launch-student");
+  const displayName =
+    env[`${prefix}_DISPLAY_NAME`]?.trim() ??
+    (audience === "admin" ? "Launch Admin" : "Launch Student");
+  const email =
+    env[`${prefix}_EMAIL`]?.trim() ??
+    (audience === "admin"
+      ? "admin@launch-verification.switch.local"
+      : "student@launch-verification.switch.local");
+  const roles =
+    audience === "admin"
+      ? splitList(env[`${prefix}_ROLES`], ["admin", "editor", "student"]).join(",")
+      : splitList(env[`${prefix}_ROLES`], ["student"]).join(",");
+
+  return {
+    "x-switch-launch-verification": env.SWITCH_LAUNCH_VERIFICATION_SECRET.trim(),
+    "x-switch-launch-session-id":
+      env[`${prefix}_SESSION_ID`]?.trim() ?? `${audience}-launch-verification`,
+    "x-switch-launch-user-id": userId,
+    "x-switch-launch-display-name": displayName,
+    "x-switch-launch-email": email,
+    "x-switch-launch-provider": env[`${prefix}_PROVIDER`]?.trim() ?? "google",
+    "x-switch-launch-roles": roles,
+    "x-switch-launch-year-group":
+      env[`${prefix}_YEAR_GROUP`]?.trim() ??
+      (audience === "admin" ? "Operations" : "Year 11"),
+    "x-switch-launch-target-qualifications":
+      splitList(env[`${prefix}_TARGET_QUALIFICATIONS`], ["GCSE"]).join(","),
+    "x-switch-launch-signed-in-at":
+      env[`${prefix}_SIGNED_IN_AT`]?.trim() ?? new Date().toISOString(),
+    "x-switch-launch-expires-at":
+      env[`${prefix}_EXPIRES_AT`]?.trim() ??
+      new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+  };
+}
+
 export function getLiveWalkthroughConfig(env = process.env) {
   const authMode = (env.SWITCH_AUTH_MODE ?? "oidc").trim();
   const liveBaseUrl = env.SWITCH_LIVE_BASE_URL?.trim();
@@ -106,12 +145,19 @@ export function getLiveWalkthroughConfig(env = process.env) {
   assert(liveBaseUrl, "SWITCH_LIVE_BASE_URL is required for the live route walkthrough.");
 
   const baseUrl = normalizeBaseUrl(liveBaseUrl);
+  const useLaunchVerificationHeaders = Boolean(
+    env.SWITCH_LAUNCH_VERIFICATION_SECRET?.trim(),
+  );
   const studentHeaders =
-    authMode === "external-header"
+    useLaunchVerificationHeaders
+      ? buildLaunchVerificationHeaders("student", env)
+      : authMode === "external-header"
       ? buildExternalHeaders("student", env)
       : buildCookieHeaders("student", env);
   const adminHeaders =
-    authMode === "external-header"
+    useLaunchVerificationHeaders
+      ? buildLaunchVerificationHeaders("admin", env)
+      : authMode === "external-header"
       ? buildExternalHeaders("admin", env)
       : buildCookieHeaders("admin", env);
 

@@ -45,10 +45,12 @@ async function getRequestOrigin(): Promise<string> {
 async function fetchApiJson<T>(path: string): Promise<T> {
   const origin = await getRequestOrigin();
   const headerStore = await headers();
+  const forwardedHeaders = buildForwardedAuthHeaders(headerStore);
   const response = await fetch(`${origin}${path}`, {
     cache: "no-store",
     headers: {
       cookie: headerStore.get("cookie") ?? "",
+      ...forwardedHeaders,
     },
   });
 
@@ -57,6 +59,44 @@ async function fetchApiJson<T>(path: string): Promise<T> {
   }
 
   return (await response.json()) as T;
+}
+
+function buildForwardedAuthHeaders(headerStore: Headers): Record<string, string> {
+  const forwardedHeaders: Record<string, string> = {};
+
+  for (const headerName of [
+    "x-switch-launch-verification",
+    "x-switch-launch-session-id",
+    "x-switch-launch-user-id",
+    "x-switch-launch-display-name",
+    "x-switch-launch-email",
+    "x-switch-launch-provider",
+    "x-switch-launch-roles",
+    "x-switch-launch-year-group",
+    "x-switch-launch-target-qualifications",
+    "x-switch-launch-signed-in-at",
+    "x-switch-launch-expires-at",
+    "x-switch-auth-session-id",
+    "x-switch-auth-user-id",
+    "x-switch-auth-display-name",
+    "x-switch-auth-email",
+    "x-switch-auth-provider",
+    "x-switch-auth-roles",
+    "x-switch-auth-year-group",
+    "x-switch-auth-target-qualifications",
+    "x-switch-auth-signed-in-at",
+    "x-switch-auth-expires-at",
+    "x-switch-auth-timestamp",
+    "x-switch-auth-signature",
+  ]) {
+    const value = headerStore.get(headerName);
+
+    if (value) {
+      forwardedHeaders[headerName] = value;
+    }
+  }
+
+  return forwardedHeaders;
 }
 
 export async function getDashboardHomeApiData(): Promise<DashboardHomeData> {

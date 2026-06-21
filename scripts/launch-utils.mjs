@@ -194,8 +194,11 @@ export function getSessionCookie(setCookieHeaders) {
   return cookie.split(";", 1)[0];
 }
 
+const DEFAULT_FETCH_TIMEOUT_MS = 45000;
+const DEFAULT_FETCH_ATTEMPTS = 3;
+
 export async function fetchText(url, options) {
-  const response = await fetch(url, options);
+  const response = await fetchWithRetry(url, options);
   const body = await response.text();
 
   return {
@@ -205,7 +208,7 @@ export async function fetchText(url, options) {
 }
 
 export async function fetchJson(url, options) {
-  const response = await fetch(url, options);
+  const response = await fetchWithRetry(url, options);
   const body = await response.text();
   const json = body ? JSON.parse(body) : null;
 
@@ -214,4 +217,40 @@ export async function fetchJson(url, options) {
     json,
     body,
   };
+}
+
+async function fetchWithRetry(url, options = {}) {
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= DEFAULT_FETCH_ATTEMPTS; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), DEFAULT_FETCH_TIMEOUT_MS);
+
+    try {
+      return await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+    } catch (error) {
+      lastError = error;
+
+      if (!isRetryableFetchError(error) || attempt === DEFAULT_FETCH_ATTEMPTS) {
+        throw error;
+      }
+
+      await delay(750 * attempt);
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  throw lastError ?? new Error(`Fetch failed for ${url}.`);
+}
+
+function isRetryableFetchError(error) {
+  return (
+    error?.name === "AbortError" ||
+    error?.cause?.code === "ECONNRESET" ||
+    error?.cause?.code === "ETIMEDOUT"
+  );
 }

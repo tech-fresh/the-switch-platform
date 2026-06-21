@@ -1,10 +1,18 @@
 import { tmpdir } from "node:os";
 import path from "node:path";
 
+import {
+  isVercelBlobPersistencePath,
+  joinVercelBlobPersistencePath,
+  normalizeVercelBlobPersistencePath,
+} from "./vercel-blob.ts";
+
 export type PersistenceDriver = "local-json" | "sqlite" | "memory";
+export type PersistenceStorageBackend = "filesystem" | "vercel-blob";
 
 export interface PersistenceRuntimeConfig {
   driver: PersistenceDriver;
+  storageBackend: PersistenceStorageBackend;
   dataDirectory: string;
   backupDirectory: string | null;
   primaryStorePath: string;
@@ -24,29 +32,44 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
   const requestedDriver = process.env.SWITCH_PERSISTENCE_DRIVER;
   const configuredDataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim();
   const isServerlessRuntime = detectServerlessFilesystemRuntime();
+  const usesBlobStorageBackend = isVercelBlobPersistencePath(configuredDataDirectory);
   const driver =
     requestedDriver === "memory"
       ? "memory"
       : requestedDriver === "sqlite"
         ? "sqlite"
         : "local-json";
+  const storageBackend: PersistenceStorageBackend =
+    driver !== "memory" && usesBlobStorageBackend ? "vercel-blob" : "filesystem";
   const usesDefaultDataDirectory = !configuredDataDirectory;
-  const dataDirectory = configuredDataDirectory
-    ? path.resolve(configuredDataDirectory)
-    : getDefaultDataDirectory(isServerlessRuntime);
+  const dataDirectory =
+    configuredDataDirectory && usesBlobStorageBackend
+      ? normalizeVercelBlobPersistencePath(configuredDataDirectory)
+      : configuredDataDirectory
+        ? path.resolve(configuredDataDirectory)
+        : getDefaultDataDirectory(isServerlessRuntime);
   const backupDirectory =
-    driver === "memory" ? null : path.join(dataDirectory, "backups");
+    driver === "memory"
+      ? null
+      : storageBackend === "vercel-blob"
+        ? joinVercelBlobPersistencePath(dataDirectory, "backups")
+        : path.join(dataDirectory, "backups");
   const primaryStorePath =
     driver === "sqlite"
-      ? path.join(dataDirectory, SQLITE_DATABASE_FILENAME)
+      ? storageBackend === "vercel-blob"
+        ? joinVercelBlobPersistencePath(dataDirectory, SQLITE_DATABASE_FILENAME)
+        : path.join(dataDirectory, SQLITE_DATABASE_FILENAME)
       : dataDirectory;
   const backupStorePath =
     driver === "sqlite" && backupDirectory
-      ? path.join(backupDirectory, SQLITE_DATABASE_FILENAME)
+      ? storageBackend === "vercel-blob"
+        ? joinVercelBlobPersistencePath(backupDirectory, SQLITE_DATABASE_FILENAME)
+        : path.join(backupDirectory, SQLITE_DATABASE_FILENAME)
       : backupDirectory;
   const tempDirectoryRoot = path.resolve(tmpdir());
   const isEphemeralStorage =
     driver !== "memory" &&
+    storageBackend === "filesystem" &&
     isServerlessRuntime &&
     (path.resolve(dataDirectory) === tempDirectoryRoot ||
       path.resolve(dataDirectory).startsWith(`${tempDirectoryRoot}${path.sep}`));
@@ -60,6 +83,7 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
 
   return {
     driver,
+    storageBackend,
     dataDirectory,
     backupDirectory,
     primaryStorePath,

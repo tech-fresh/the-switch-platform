@@ -335,6 +335,15 @@ Completion language rule:
 - Do not overstate this as final true `100% completion` while that deployed admin/runtime mismatch still exists, even though the local live-check evidence bundle is stronger now.
 - Use the evidence file as the current source of truth for what was actually captured in the later successful live run.
 
+### Final Path Mark 2 later June 21, 2026 deployed-runtime repair update
+
+- A later June 21, 2026 repair run moved the deployed persistence API onto `sqlite` with `storageBackend: vercel-blob`, `dataDirectory: vercel-blob://switch-live-data`, and `isEphemeralStorage: false`.
+- The repo now includes a narrow `SWITCH_LAUNCH_VERIFICATION_SECRET` path for automated protected-route launch checks. Use it to verify deployed truth without replacing the main auth model.
+- The blob-backed sqlite reader now checks metadata before attempting a byte read and prefers the real `BLOB_READ_WRITE_TOKEN` path before the fallback OIDC path, so the repo-side persistence wrapper is no longer the first unverified assumption in the deployed failure path.
+- Do not treat that verification secret as a substitute for ordinary student or admin sign-in. It is a launch-automation path only.
+- A direct production Blob SDK probe later confirmed the remaining blocker is platform-side: signed reads for `switch-live-data/switch-live.sqlite` fail with `BlobStoreSuspendedError`, even though the control plane still returns blob metadata.
+- Even after the durable persistence repair, keep the platform label at `near-launch` until that suspended live Blob store is unsuspended or replaced with another real shared durable store, the deployed `dashboard`, `account`, `results`, `/api/dashboard/home`, and `/api/results/overview` routes stop failing under live verification, and the final walkthrough, sign-off, launch-complete, permanent evidence, and item 22 truth-match can all be rerun cleanly.
+
 ## Exact User-Posted Addition
 
 The following block is appended exactly as provided by the user:

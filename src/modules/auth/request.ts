@@ -27,10 +27,16 @@ function parseExternalRoles(value: string | null): AuthRole[] {
 }
 
 export async function getRequestAuthSession(): Promise<AuthSession> {
+  const headerStore = await headers();
+  const launchVerificationSession = getLaunchVerificationSession(headerStore);
+
+  if (launchVerificationSession) {
+    return launchVerificationSession;
+  }
+
   const runtime = getAuthRuntimeConfig();
 
   if (runtime.mode === "external-header") {
-    const headerStore = await headers();
     const userId = headerStore.get("x-switch-auth-user-id");
 
     if (!userId) {
@@ -91,6 +97,71 @@ export async function getRequestAuthSession(): Promise<AuthSession> {
   return getCurrentAuthSession({
     sessionToken: cookieStore.get(AUTH_SESSION_COOKIE_NAME)?.value,
   });
+}
+
+function getLaunchVerificationSession(
+  headerStore: Headers,
+): AuthenticatedAuthSession | null {
+  const configuredSecret = process.env.SWITCH_LAUNCH_VERIFICATION_SECRET?.trim();
+  const providedSecret = headerStore.get("x-switch-launch-verification");
+
+  if (!configuredSecret && !providedSecret) {
+    return null;
+  }
+
+  if (
+    !configuredSecret ||
+    !providedSecret ||
+    !safeCompare(providedSecret, configuredSecret)
+  ) {
+    return null;
+  }
+
+  const userId = headerStore.get("x-switch-launch-user-id")?.trim() || "launch-verifier";
+  const displayName =
+    headerStore.get("x-switch-launch-display-name")?.trim() || "Launch Verification";
+  const [firstName, ...remainingNameParts] = displayName.split(" ");
+  const email =
+    headerStore.get("x-switch-launch-email")?.trim() ||
+    `${userId}@launch-verification.switch.local`;
+  const providerHeader = headerStore.get("x-switch-launch-provider");
+  const provider =
+    providerHeader === "apple" ||
+    providerHeader === "email-magic-link" ||
+    providerHeader === "google" ||
+    providerHeader === "microsoft"
+      ? providerHeader
+      : "google";
+  const signedInAt =
+    headerStore.get("x-switch-launch-signed-in-at") ?? new Date().toISOString();
+  const expiresAt =
+    headerStore.get("x-switch-launch-expires-at") ??
+    new Date(Date.now() + 60 * 60 * 1000).toISOString();
+
+  return {
+    sessionId:
+      headerStore.get("x-switch-launch-session-id") ?? `launch-verification-${userId}`,
+    user: {
+      userId,
+      firstName: firstName || userId,
+      lastName: remainingNameParts.join(" ") || "Verifier",
+      displayName,
+      email,
+      yearGroup:
+        headerStore.get("x-switch-launch-year-group") ?? "Launch verification",
+      targetQualifications:
+        headerStore
+          .get("x-switch-launch-target-qualifications")
+          ?.split(",")
+          .map((item) => item.trim())
+          .filter(Boolean) ?? [],
+      roles: parseExternalRoles(headerStore.get("x-switch-launch-roles")),
+    },
+    provider,
+    signedInAt,
+    expiresAt,
+    status: "authenticated",
+  };
 }
 
 export async function getRequestUserId(): Promise<string> {

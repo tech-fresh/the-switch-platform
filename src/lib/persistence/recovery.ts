@@ -4,6 +4,11 @@ import { DatabaseSync } from "node:sqlite";
 
 import type { PersistenceRuntimeConfig } from "./runtime.ts";
 import { getPersistenceRuntimeConfig } from "./runtime.ts";
+import {
+  isVercelBlobPersistencePath,
+  readVercelBlobBytes,
+  withTemporarySqliteFile,
+} from "./vercel-blob.ts";
 
 interface RecoveryTrackedFile {
   filename: string;
@@ -385,6 +390,47 @@ async function readCollectionFile(
 async function readSqliteStore(
   filePath: string,
 ): Promise<{ exists: boolean; invalid: boolean; recordCount: number; raw: Buffer }> {
+  if (isVercelBlobPersistencePath(filePath)) {
+    try {
+      const download = await readVercelBlobBytes(filePath);
+
+      if (!download.exists) {
+        return {
+          exists: false,
+          invalid: false,
+          recordCount: 0,
+          raw: Buffer.alloc(0),
+        };
+      }
+
+      return withTemporarySqliteFile(filePath, null, async ({ localDatabasePath }) => {
+        const database = new DatabaseSync(localDatabasePath, { readOnly: true });
+
+        try {
+          const row = database
+            .prepare("SELECT COALESCE(SUM(json_array_length(payload)), 0) AS recordCount FROM collection_store")
+            .get() as { recordCount?: number } | undefined;
+
+          return {
+            exists: true,
+            invalid: false,
+            recordCount: Number(row?.recordCount ?? 0),
+            raw: download.bytes,
+          };
+        } finally {
+          database.close();
+        }
+      });
+    } catch {
+      return {
+        exists: true,
+        invalid: true,
+        recordCount: 0,
+        raw: Buffer.alloc(0),
+      };
+    }
+  }
+
   try {
     const raw = await readFile(filePath);
     const database = new DatabaseSync(filePath, { readOnly: true });

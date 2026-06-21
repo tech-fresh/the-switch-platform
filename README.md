@@ -152,7 +152,11 @@ The current homepage now presents both the website-first preview and the future 
 ![The Switch app mockup](public/readme/app-mockup.svg)
 
 ## Ordered Build Record
+### 2026-06-21 Source-of-Truth Migration to THE SWITCH 3
 
+- Confirmed `/Users/lloydnwagbara/Documents/THE SWITCH 3` as the only active local project folder.
+- Updated recovery notes and multi-agent workflow documentation.
+- Cursor Agent and Codex must both use this folder and the same GitHub remote.
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
 ### 2026-06-21 truth-match hardening
@@ -4549,3 +4553,9 @@ Documentation rule for future sessions:
 - append to `README.md` and `AGENTS.md`
 - do not silently overwrite earlier project record unless the earlier material is truly obsolete or incorrect
 - add diagrams when they make the system easier to understand for the next operator
+
+### 2026-06-21 Source-of-Truth Migration to THE SWITCH 3
+
+- Confirmed `/Users/lloydnwagbara/Documents/THE SWITCH 3` as the only active local project folder.
+- Updated recovery notes and multi-agent workflow documentation.
+- Cursor Agent and Codex must both use this folder and the same GitHub remote.

@@ -55,7 +55,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 4f8f48e — Add blob-health verification for Final Path Mark 2 closeout
+- **Last commit:** 5cf2a6b — Document consult-before-act and update-HANDOFF-after-each-action rules
 - **Platform label:** `near-launch` — **not** true `100% complete`
 
 ### Active task

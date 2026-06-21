@@ -33,7 +33,7 @@ Update this section every session.
 - **Current branch:** main
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-21
-- **Last commit:** 3530251 — current HEAD (launch substantive: `1168e4f`; exam-engine tests: `d35aa15`)
+- **Last commit:** a098c6b — Record Final Path Mark 2 blocked state in HANDOFF (launch substantive: `1168e4f`)
 - **Platform label:** `near-launch` — **not** true `100% complete`
 
 ### Active task

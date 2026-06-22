@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 import { getConfiguredOidcProvider, mapOidcProfileToAuthUser } from "@/modules/auth/provider";
+import { getAuthCallbackUrl, getAuthRedirectUrl } from "@/modules/auth/public-origin";
 import { getAuthRuntimeConfig } from "@/modules/auth/runtime";
 import {
   AUTH_FLOW_COOKIE_NAME,
@@ -92,7 +93,7 @@ export async function GET(request: Request) {
     const profile = await userInfoResponse.json();
     const user = mapOidcProfileToAuthUser(profile);
     const { sessionToken } = await createProviderSession(flowState.provider, user);
-    const response = NextResponse.redirect(new URL(flowState.returnTo, requestUrl));
+    const response = NextResponse.redirect(getAuthRedirectUrl(requestUrl, flowState.returnTo));
 
     response.cookies.set(AUTH_SESSION_COOKIE_NAME, sessionToken, getAuthCookieSettings());
     response.cookies.set(AUTH_FLOW_COOKIE_NAME, "", {
@@ -107,7 +108,7 @@ export async function GET(request: Request) {
 }
 
 function clearFlowAndRedirect(requestUrl: URL, path: string): NextResponse {
-  const response = NextResponse.redirect(new URL(path, requestUrl));
+  const response = NextResponse.redirect(getAuthRedirectUrl(requestUrl, path));
 
   response.cookies.set(AUTH_FLOW_COOKIE_NAME, "", {
     ...getAuthFlowCookieSettings(),
@@ -117,12 +118,3 @@ function clearFlowAndRedirect(requestUrl: URL, path: string): NextResponse {
   return response;
 }
 
-function getAuthCallbackUrl(requestUrl: URL): string {
-  const configuredBaseUrl = process.env.SWITCH_AUTH_BASE_URL?.trim();
-
-  if (configuredBaseUrl) {
-    return new URL("/api/auth/callback", configuredBaseUrl).toString();
-  }
-
-  return new URL("/api/auth/callback", requestUrl).toString();
-}

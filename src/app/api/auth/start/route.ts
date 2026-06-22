@@ -3,6 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import { getConfiguredOidcProvider } from "@/modules/auth/provider";
+import { getAuthCallbackUrl, getAuthRedirectUrl } from "@/modules/auth/public-origin";
 import { getAuthRuntimeConfig } from "@/modules/auth/runtime";
 import {
   AUTH_FLOW_COOKIE_NAME,
@@ -24,12 +25,12 @@ export async function GET(request: Request) {
   const returnTo = sanitizeReturnTo(requestUrl.searchParams.get("returnTo"));
 
   if (!provider || !supportedProviders.has(provider as AuthProvider)) {
-    return NextResponse.redirect(new URL(`/account?authError=unknown-provider`, requestUrl));
+    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/account?authError=unknown-provider`));
   }
 
   if (runtime.mode === "preview-cookie") {
     const { sessionToken } = await createAuthSession(provider as AuthProvider);
-    const response = NextResponse.redirect(new URL(returnTo, requestUrl));
+    const response = NextResponse.redirect(getAuthRedirectUrl(requestUrl, returnTo));
 
     response.cookies.set(AUTH_SESSION_COOKIE_NAME, sessionToken, getAuthCookieSettings());
 
@@ -37,13 +38,13 @@ export async function GET(request: Request) {
   }
 
   if (runtime.mode !== "oidc") {
-    return NextResponse.redirect(new URL(`/account?authError=external-managed`, requestUrl));
+    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/account?authError=external-managed`));
   }
 
   const oidcProvider = getConfiguredOidcProvider(provider as AuthProvider);
 
   if (!oidcProvider) {
-    return NextResponse.redirect(new URL(`/account?authError=provider-not-configured`, requestUrl));
+    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/account?authError=provider-not-configured`));
   }
 
   const state = randomBytes(18).toString("base64url");
@@ -93,14 +94,4 @@ function sanitizeReturnTo(value: string | null): string {
   }
 
   return value;
-}
-
-function getAuthCallbackUrl(requestUrl: URL): string {
-  const configuredBaseUrl = process.env.SWITCH_AUTH_BASE_URL?.trim();
-
-  if (configuredBaseUrl) {
-    return new URL("/api/auth/callback", configuredBaseUrl).toString();
-  }
-
-  return new URL("/api/auth/callback", requestUrl).toString();
 }

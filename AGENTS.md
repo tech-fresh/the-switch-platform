@@ -462,7 +462,23 @@ Completion language rule:
 - A direct production Blob SDK probe later confirmed the remaining blocker is platform-side: signed reads for `switch-live-data/switch-live.sqlite` fail with `BlobStoreSuspendedError`, even though the control plane still returns blob metadata.
 - Even after the durable persistence repair, keep the platform label at `near-launch` until that suspended live Blob store is unsuspended or replaced with another real shared durable store, the deployed `dashboard`, `account`, `results`, `/api/dashboard/home`, and `/api/results/overview` routes stop failing under live verification, and the final walkthrough, sign-off, launch-complete, permanent evidence, and item 22 truth-match can all be rerun cleanly.
 
-## Changes 1.0
+### Final Path Mark 2 — June 23, 2026 item 22 complete (Fly production)
+
+- **Live host:** https://theswitchplatform.com (Fly.io, sqlite on `/data`)
+- **Item 22:** `npm run verify:live-truth-match` passed — README, admin launch view, runtime API, and governance records align
+- **Evidence file:** `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
+- **Sign-off recording:** run on Fly via `fly ssh console` (Mac local signoff fails without `/data` — documented, not a live blocker)
+- **Browser proof:** `lloydnwag@gmail.com` via Microsoft; admin launch view 6/6 · 5/5 · 8/8
+- **Platform label:** may be described as **fully complete** / **100% end to end** per the Full End-to-End Completion List when this evidence bundle is current
+
+```mermaid
+flowchart LR
+    A["Items 16-18 verify scripts"] --> B["Item 19 signoff on Fly"]
+    B --> C["Item 21 evidence file"]
+    C --> D["Item 22 truth-match"]
+    D --> E["README + admin + runtime align"]
+```
+
 
 Use this section as the current website mockup direction until a newer named change set replaces it.
 

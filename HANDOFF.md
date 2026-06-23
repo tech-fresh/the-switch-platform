@@ -66,47 +66,38 @@ Update this section every session.
 - **Current branch:** `cursor/unified-login-sign-in-page`
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-23 (afternoon — live Microsoft browser sign-in confirmed)
-- **Platform label:** `near-launch` — Final Path Mark 2 auth + item 22 truth-match green on Fly; merge PR #4 to `main`
+- **Platform label:** `fully complete` — Final Path Mark 2 item 22 closed (23 June 2026)
 
 ### Active task
 
-- **Priority item #:** release — merge unified login + Microsoft branch
-- **Module:** auth / launch
-- **Status:** Live Microsoft + Google sign-in proven in browser; governance and walkthrough checks passing
-- **Branch:** `cursor/unified-login-sign-in-page` → **draft PR #4**
+- **Priority item #:** release — merge PR #4 to `main`
+- **Module:** launch / governance
+- **Status:** Item 22 truth-match complete; all 22 end-to-end items evidenced
+- **Branch:** `cursor/unified-login-sign-in-page` → draft PR #4
 
 ### What was just completed
 
-- **Live Microsoft browser sign-in** — `lloydnwag@gmail.com` signed in via Microsoft on https://theswitchplatform.com/account (roles: admin, student)
-- Azure app **THE SWITCH PLATFORM** — client ID `1d7c54e8-4445-40bc-9c97-598af039bfe6` on Fly with redirect URI + personal accounts
-- Sign-in UX fixes deployed: `/login?reauth=1`, anchor-based provider buttons, Microsoft Graph / id_token profile fallback
-- **Item 22:** `npm run verify:live-truth-match` passed (sqlite `/data`, governance ready)
-- **Live walkthrough** passed on theswitchplatform.com
-- **OAuth:** `verify:microsoft-oauth-live` and `verify:google-oauth-live` passed
-- **Admin launch view:** CMS live, launch checks 6/6, sign-off 5/5, evidence 8/8 (operator screenshot 23 Jun 2026)
-- **Draft PR:** https://github.com/tech-fresh/the-switch-platform/pull/4
+- **Item 22 closed:** `npm run verify:live-truth-match` — README, admin launch view, Fly runtime, evidence align
+- Full verification bundle captured in `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
+- Items 16–18, 22 passed from operator machine; item 19 sign-off recorded on Fly `/data`
+- Live Microsoft browser sign-in + admin launch view 6/6 · 5/5 · 8/8 confirmed
 
 ### What is next
 
-1. Mark PR #4 ready and merge `cursor/unified-login-sign-in-page` → `main`
-2. `fly deploy` from `main` after merge (optional if live already matches branch)
-3. Keep `lloydnwag@gmail.com` in `SWITCH_AUTH_ADMIN_EMAILS` / `SWITCH_AUTH_EDITOR_EMAILS` on Fly
+1. Mark PR #4 ready and merge to `main`
+2. Tag or note release on `main` after merge
 
 ### Blockers
 
-- None for auth or item 22 truth-match on current Fly deploy
+- None for Final Path Mark 2 / item 22
 
 ### Verification last run
 
-- [x] `npm run build` + `fly deploy -a the-switch-platform`
-- [x] `npm run verify:microsoft-oauth-live`
-- [x] `npm run verify:google-oauth-live`
-- [x] `npm run verify:live-walkthrough`
+- [x] Items 1–22 evidenced (see `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`)
 - [x] `npm run verify:live-truth-match` (item 22)
-- [x] `npm run verify:live-readiness`
-- [x] Launch sign-off recorded on Fly (`fly ssh console` → `launch-signoff.mjs`)
-- [x] Manual browser Microsoft sign-in → `/account` shows live session
-- [x] Admin launch view shows 6/6 / 5/5 / 8/8 with signed-in operator
+- [x] `npm run verify:live-walkthrough`
+- [x] `npm run verify:launch-signoff` (Fly ssh)
+- [x] Manual browser Microsoft sign-in + admin launch view
 
 ---
 
@@ -429,6 +420,14 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — Item 22 / Final Path Mark 2 complete
+
+- Branch: cursor/unified-login-sign-in-page
+- Done: full live verification bundle, truth-match passed, evidence file stored, item 22 closed
+- Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
+- Next: merge draft PR #4
+- Blocker: none
 
 ### 2026-06-23 — Cursor — Live Microsoft sign-in + item 22 truth-match (Final Path Mark 2)
 

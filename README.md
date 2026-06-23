@@ -4993,3 +4993,39 @@ Release handoff:
 - **Draft PR:** https://github.com/tech-fresh/the-switch-platform/pull/4
 - **Branch:** `cursor/unified-login-sign-in-page`
 - **Next:** merge to `main`, then treat Fly production as the single live host at https://theswitchplatform.com
+
+### 57. Full End-to-End Completion List item 22 — system-wide truth match (Completed)
+
+**Item 22:** Confirm `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
+
+Plain-English explanation:
+
+- Item 22 is the final honesty check. It asks: “Does what we wrote down match what the live website actually does?”
+- If scripts pass but the admin screen still shows a different storage path or broken checks, item 22 stays open.
+- On 23 June 2026, the live Fly app, governance API, admin launch view, and documentation all agreed.
+
+What was verified:
+
+| Step | Command / action | Result |
+|------|------------------|--------|
+| Persistence health | `verify:persistence-health` | sqlite `/data`, healthy |
+| Live readiness | `verify:live-readiness` | oidc, live CMS |
+| Persistence recovery | `verify:persistence-recovery` | recovery ready |
+| Live walkthrough | `verify:live-walkthrough` | all routes passed |
+| Launch sign-off | Fly ssh `launch-signoff.mjs` | TF Solutions recorded |
+| Truth match (item 22) | `verify:live-truth-match` | governance ready, paths match |
+| Permanent evidence | item 21 | `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` |
+
+Item 22 truth-match flow:
+
+```mermaid
+flowchart TD
+    A["Live Fly runtime /data sqlite"] --> B["Admin launch view metrics"]
+    B --> C["Governance API overallStatus ready"]
+    C --> D["README + HANDOFF + AGENTS records"]
+    D --> E["release-evidence file"]
+    E --> F{"All match?"}
+    F -->|yes| G["Item 22 complete — Final Path Mark 2 evidence-complete"]
+```
+
+**Final Path Mark 2 status:** evidence-complete on Fly as of 23 June 2026. Merge PR #4 to land code on `main`.

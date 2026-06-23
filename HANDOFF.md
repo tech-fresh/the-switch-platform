@@ -66,38 +66,40 @@ Update this section every session.
 - **Current branch:** `cursor/unified-login-sign-in-page`
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-23
-- **Platform label:** `near-launch` — `/login`, Microsoft sign-in, and Fly deploy green (June 23 2026)
+- **Platform label:** `near-launch` — `/login` live; Microsoft terminal provisioning documented; Fly deploy green
 
 ### Active task
 
-- **Priority item #:** auth — Microsoft + login routes live
+- **Priority item #:** auth — Microsoft Azure real client ID on Fly
 - **Module:** auth / deploy
-- **Status:** Fly deploy fixed and live; Microsoft + Google OAuth checks passing
+- **Status:** Code + docs complete; operator must finish `az login` with M365 dev tenant admin, then `npm run provision:microsoft-oauth-live:apply`
 - **Branch:** `cursor/unified-login-sign-in-page`
 
 ### What was just completed
 
-- Fixed Fly build failure: TypeScript error on `src/app/login/page.tsx` (`searchParams` typing)
-- `fly deploy -a the-switch-platform` succeeded
-- `npm run verify:microsoft-oauth-live` passed on https://theswitchplatform.com
-- `npm run verify:google-oauth-live` passed
-- Live routes confirmed: `/login` (200), `/login/microsoft-guide` (200)
+- Terminal provision script: `scripts/provision-microsoft-oauth-live.sh` (+ `npm run provision:microsoft-oauth-live` / `:apply`)
+- Verify script now rejects placeholder `client_id=your-client-id` on live redirects
+- Docs updated: personal Hotmail/Outlook account type, M365 Developer tenant vs personal Hotmail login
+- Azure CLI install path documented (`brew install azure-cli`)
 
 ### What is next
 
-1. Manual browser test: https://theswitchplatform.com/login → **Continue with Microsoft**
-2. Merge `cursor/unified-login-sign-in-page` to `main` when ready
+1. `az login --use-device-code --allow-no-subscriptions` with **admin@tenant.onmicrosoft.com** (M365 Developer welcome email — not Hotmail alone)
+2. `npm run provision:microsoft-oauth-live:apply` — creates Azure app, sets Fly secrets, runs verify
+3. Manual browser test: https://theswitchplatform.com/login → **Continue with Microsoft**
+4. Merge `cursor/unified-login-sign-in-page` to `main` (PR #4)
 
 ### Blockers
 
-- None for deploy or OAuth redirect checks
+- **Fly still has placeholder `SWITCH_OIDC_MICROSOFT_CLIENT_ID=your-client-id`** until provision script completes
+- **Azure CLI login:** portal/Hotmail sign-in is not enough; need M365 Developer **tenant admin** account for `az ad app create`
 
 ### Verification last run
 
 - [x] `npm run build` (local + Fly image)
 - [x] `fly deploy -a the-switch-platform`
-- [x] `npm run verify:microsoft-oauth-live`
 - [x] `npm run verify:google-oauth-live`
+- [ ] `npm run verify:microsoft-oauth-live` (fails until real Azure client ID on Fly)
 - [x] Live `/login` and `/login/microsoft-guide` return 200
 
 ---
@@ -421,6 +423,27 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — Microsoft terminal provision + placeholder client_id docs
+
+- Branch: cursor/unified-login-sign-in-page
+- Done: `provision:microsoft-oauth-live` script, verify rejects `your-client-id`, AGENTS/HANDOFF/README mermaid + plain-English updates
+- Next: `az login` with M365 dev tenant admin → `npm run provision:microsoft-oauth-live:apply`
+- Blocker: Fly secrets still placeholder; Hotmail portal login ≠ Azure CLI tenant login
+
+Plain-English summary for the next operator:
+
+- The Microsoft button on `/login` can look ready while Fly still sends a fake client ID to Microsoft.
+- Join M365 Developer Program, sign into Azure CLI with **admin@tenant.onmicrosoft.com**, run the provision script, then browser-test sign-in.
+
+```mermaid
+flowchart TD
+    A["Join M365 Developer Program"] --> B["Get admin@tenant.onmicrosoft.com"]
+    B --> C["az login --use-device-code --allow-no-subscriptions"]
+    C --> D["npm run provision:microsoft-oauth-live:apply"]
+    D --> E["Azure app + Fly secrets + verify"]
+    E --> F["Browser test /login → Continue with Microsoft"]
+```
 
 ### 2026-06-23 — Cursor — Fly deploy fix + Microsoft live verify
 

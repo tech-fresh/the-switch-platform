@@ -48,10 +48,17 @@ echo ""
 
 if [[ -n "${CLIENT_ID}" ]]; then
   echo "Detected client ID in .env.local: ${CLIENT_ID}"
+  if [[ "${CLIENT_ID}" == "your-client-id" || "${CLIENT_ID}" == "your-azure-client-id" ]]; then
+    echo "WARNING: client ID is still a placeholder. Replace it with the UUID from Azure."
+  fi
   PORTAL_URL="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Authentication/appId/${CLIENT_ID}"
 else
   echo "No SWITCH_OIDC_MICROSOFT_CLIENT_ID found in .env.local yet."
 fi
+
+echo ""
+echo "Azure must allow personal Microsoft accounts if students use @hotmail.com or @outlook.com."
+echo "Authentication → Supported account types → Multitenant + personal Microsoft accounts."
 
 echo ""
 echo "Opening Azure Portal..."

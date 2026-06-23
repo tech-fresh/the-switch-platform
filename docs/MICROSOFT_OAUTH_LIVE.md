@@ -25,8 +25,19 @@ Create an **App registration** in [Microsoft Entra admin center](https://portal.
 |---------|--------|
 | Platform | Web |
 | Redirect URI | `https://theswitchplatform.com/api/auth/callback` |
-| Client ID | copy to `SWITCH_OIDC_MICROSOFT_CLIENT_ID` |
+| Supported account types | **Multitenant + personal Microsoft accounts** (required for `@hotmail.com`, `@outlook.com`, and school/work accounts) |
+| Client ID | copy to `SWITCH_OIDC_MICROSOFT_CLIENT_ID` (must be a real UUID — not `your-client-id`) |
 | Client secret | copy to `SWITCH_OIDC_MICROSOFT_CLIENT_SECRET` |
+
+### Personal Microsoft accounts (Hotmail / Outlook)
+
+If sign-in shows `unauthorized_client` or `client does not exist or is not enabled for consumers`:
+
+1. Open your app → **Authentication**
+2. Under **Supported account types**, choose **Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant) and personal Microsoft accounts**
+3. Save, then try `/login` again
+
+Do **not** leave placeholder values on Fly. If the Microsoft URL contains `client_id=your-client-id`, replace the secrets below with your real Azure values.
 
 Use these standard Microsoft OIDC URLs:
 
@@ -40,12 +51,67 @@ SWITCH_OIDC_MICROSOFT_SCOPES=openid profile email
 ## Where to put the values
 
 **Local rehearsal:** `.env.local`  
-**Fly production:** `fly secrets set ... -a the-switch-platform`
+**Fly production:**
+
+```bash
+fly secrets set \
+  SWITCH_OIDC_MICROSOFT_CLIENT_ID="<your-azure-application-client-id-uuid>" \
+  SWITCH_OIDC_MICROSOFT_CLIENT_SECRET="<your-azure-client-secret>" \
+  SWITCH_OIDC_MICROSOFT_AUTHORIZATION_URL="https://login.microsoftonline.com/common/oauth2/v2.0/authorize" \
+  SWITCH_OIDC_MICROSOFT_TOKEN_URL="https://login.microsoftonline.com/common/oauth2/v2.0/token" \
+  SWITCH_OIDC_MICROSOFT_USERINFO_URL="https://graph.microsoft.com/oidc/userinfo" \
+  SWITCH_OIDC_MICROSOFT_SCOPES="openid profile email" \
+  -a the-switch-platform
+```
+
+Fly restarts the app after secrets change. No redeploy is required unless you also changed code.
 
 Helper script (opens Azure and prints the redirect URI):
 
 ```bash
 npm run setup:microsoft-oauth-live
+```
+
+**Full terminal setup (Azure CLI + Fly secrets + verify)** — after joining M365 Developer Program and installing Azure CLI:
+
+```bash
+brew install azure-cli   # once
+az login --use-device-code --allow-no-subscriptions
+npm run provision:microsoft-oauth-live:apply
+```
+
+Or run the combined script (includes login prompt):
+
+```bash
+npm run provision:microsoft-oauth-live
+```
+
+Sign in with **admin@yourtenant.onmicrosoft.com** from the M365 Developer welcome email — not a directory-less Hotmail account.
+
+The provision script will prompt for **one browser sign-in** (`az login` device code), then automatically:
+
+1. Create or update the Azure App registration (multitenant + personal accounts)
+2. Create a client secret
+3. Set all `SWITCH_OIDC_MICROSOFT_*` secrets on Fly
+4. Update `.env.local`
+5. Run `npm run verify:microsoft-oauth-live`
+
+### M365 Developer tenant vs Hotmail (plain English)
+
+| What you did | What it enables |
+|--------------|-----------------|
+| Signed into Azure website with `@hotmail.com` | Browse portal only — may show “no directory” |
+| Joined M365 Developer Program | Creates `admin@tenant.onmicrosoft.com` sandbox |
+| `az login` with tenant admin | Terminal can create app registrations |
+| `npm run provision:microsoft-oauth-live:apply` | Puts real credentials on Fly automatically |
+
+```mermaid
+flowchart TD
+    A["M365 Developer Program welcome email"] --> B["admin@tenant.onmicrosoft.com"]
+    B --> C["az login --allow-no-subscriptions"]
+    C --> D["provision script"]
+    D --> E["Fly gets real SWITCH_OIDC_MICROSOFT_CLIENT_ID"]
+    E --> F["Students press Continue with Microsoft on /login"]
 ```
 
 ## How to prove it works

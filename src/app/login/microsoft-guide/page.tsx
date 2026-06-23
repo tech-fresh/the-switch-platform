@@ -6,9 +6,10 @@ export const dynamic = "force-dynamic";
 const azureSteps = [
   "Open Azure Portal → Microsoft Entra ID → App registrations.",
   "Create or open your Switch app registration.",
+  "Supported account types: multitenant + personal Microsoft accounts (Hotmail/Outlook).",
   "Authentication → Add platform → Web.",
   "Add redirect URI: https://theswitchplatform.com/api/auth/callback",
-  "Copy Application (client) ID and a new client secret into your environment.",
+  "Copy Application (client) ID (a UUID) and a new client secret into Fly secrets — not placeholder text.",
 ];
 
 const envExample = `SWITCH_OIDC_MICROSOFT_CLIENT_ID=your-azure-client-id

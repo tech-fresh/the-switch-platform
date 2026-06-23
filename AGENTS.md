@@ -647,7 +647,37 @@ Student data on production must live in **one shared durable place**. Vercel Blo
 - The real live auth goal is: deployed runtime in `oidc` mode, full provider block present, redirect callback succeeds, session is created, sign-out works, and protected routes behave correctly.
 - Microsoft support is now a first-class live path alongside Google when the full `SWITCH_OIDC_MICROSOFT_*` block is configured.
 - Use `npm run setup:microsoft-oauth-live` and `npm run verify:microsoft-oauth-live` for operator setup and proof.
+- Use `npm run provision:microsoft-oauth-live` for full terminal setup (Azure CLI + Fly secrets + verify). After `az login` with the M365 Developer tenant admin, run `npm run provision:microsoft-oauth-live:apply` to skip the login step.
 - Plain-English operator guide: `docs/MICROSOFT_OAUTH_LIVE.md` and in-product route `/login/microsoft-guide`.
+- **Placeholder trap:** if live Microsoft redirect URLs contain `client_id=your-client-id`, Fly secrets were never replaced with a real Azure Application (client) ID. The verify script now fails on this case.
+- **M365 Developer tenant trap:** signing into Azure Portal with a personal `@hotmail.com` account is not enough for `az ad app create`. Use the sandbox **tenant admin** account from the M365 Developer Program welcome email (`admin@…onmicrosoft.com`).
+
+Microsoft terminal provisioning (operator view):
+
+```mermaid
+flowchart TD
+    A["Install Azure CLI brew install azure-cli"] --> B["Join M365 Developer Program"]
+    B --> C["az login --use-device-code --allow-no-subscriptions"]
+    C --> D{"Signed in as tenant admin?"}
+    D -->|no Hotmail only| E["Stop — use admin@tenant.onmicrosoft.com"]
+    D -->|yes| F["npm run provision:microsoft-oauth-live:apply"]
+    F --> G["az ad app create or update"]
+    G --> H["fly secrets set SWITCH_OIDC_MICROSOFT_*"]
+    H --> I["npm run verify:microsoft-oauth-live"]
+    I --> J["Manual /login browser test"]
+```
+
+Live Microsoft sign-in proof layers:
+
+```mermaid
+flowchart LR
+    A["Button visible on /login"] --> B["Redirect to Microsoft"]
+    B --> C["Real client_id UUID"]
+    C --> D["Callback creates session cookie"]
+    D --> E["Dashboard opens signed in"]
+```
+
+Future sessions should treat A and B alone as insufficient proof. C through E are required.
 - In live `oidc` mode, admin access is currently derived from mapped roles on the signed-in email address, with `SWITCH_AUTH_ADMIN_EMAILS` and `SWITCH_AUTH_EDITOR_EMAILS` acting as the current role-allowlist boundary.
 - Prefer one main sign-in path with role-based admin access over two disconnected student/admin login systems unless the user explicitly reprioritises the auth architecture.
 - If a future task introduces a true email-and-password admin login, treat it as a separate auth hardening deliverable rather than a small UI tweak.

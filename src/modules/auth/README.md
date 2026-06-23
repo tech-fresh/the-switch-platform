@@ -37,6 +37,8 @@ Microsoft OIDC uses the same auth module path as Google:
 Operator helpers:
 
 - `npm run setup:microsoft-oauth-live`
+- `npm run setup:microsoft-oauth-live`
+- `npm run provision:microsoft-oauth-live` and `npm run provision:microsoft-oauth-live:apply`
 - `npm run verify:microsoft-oauth-live`
 - plain-English guide: `docs/MICROSOFT_OAUTH_LIVE.md`
 - in-product guide: `/login/microsoft-guide`

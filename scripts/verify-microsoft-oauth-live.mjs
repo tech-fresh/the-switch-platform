@@ -49,9 +49,27 @@ assert(
   `Microsoft redirect_uri does not match ${expectedRedirectUri}. Check Azure App Registration redirect settings.`,
 );
 
+const redirectUrl = new URL(location);
+const clientId = redirectUrl.searchParams.get("client_id") ?? "";
+const placeholderClientIds = new Set([
+  "your-client-id",
+  "your-azure-client-id",
+  "microsoft-client-id",
+  "client-id",
+  "changeme",
+]);
+const azureClientIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+assert(
+  clientId && !placeholderClientIds.has(clientId.toLowerCase()) && azureClientIdPattern.test(clientId),
+  `Live Microsoft client_id is "${clientId || "(missing)"}". Fly still has a placeholder SWITCH_OIDC_MICROSOFT_CLIENT_ID. Create an Azure App registration, copy the real Application (client) ID, then run: fly secrets set SWITCH_OIDC_MICROSOFT_CLIENT_ID=<uuid> SWITCH_OIDC_MICROSOFT_CLIENT_SECRET=<secret> -a the-switch-platform`,
+);
+
 console.log("- Live providers endpoint: ok");
 console.log("- Auth start redirects to Microsoft: ok");
 console.log("- redirect_uri matches auth base URL: ok");
+console.log(`- client_id looks like a real Azure app: ${clientId}`);
 console.log("\nMicrosoft OAuth live check passed.");
-console.log("If browser sign-in still fails, add this redirect URI in Azure Portal:");
+console.log("If browser sign-in still fails:");
 console.log(`  Redirect URI: ${expectedRedirectUri}`);
+console.log("  Azure → Authentication → Supported account types → include personal Microsoft accounts (Hotmail/Outlook).");

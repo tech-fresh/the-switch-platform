@@ -4869,3 +4869,78 @@ June 23, 2026 deploy fix:
 
 - Fly `npm run build` failed until `src/app/login/page.tsx` typed its optional `searchParams` fallback correctly.
 - After the fix, deploy succeeded and both Microsoft and Google live OAuth checks passed on `https://theswitchplatform.com`.
+
+### 55. Microsoft terminal provisioning + placeholder client_id guard (Completed)
+
+This session closed the gap between “Microsoft button looks configured” and “Microsoft sign-in actually works in the browser.”
+
+Plain-English explanation:
+
+- Fly had example text (`your-client-id`) where a real Azure app ID should be. Microsoft rejected sign-in with `unauthorized_client`.
+- Joining the M365 Developer Program gives you a **sandbox tenant** (like a mini school directory). App registrations must be created inside that tenant — not with a personal Hotmail login alone.
+- A new terminal script creates the Azure app, copies credentials to Fly, updates `.env.local`, and runs the live verify command.
+
+What was added:
+
+- `scripts/provision-microsoft-oauth-live.sh`
+- `npm run provision:microsoft-oauth-live` (includes `az login` device code)
+- `npm run provision:microsoft-oauth-live:apply` (skip login — run after `az login` succeeds)
+- `verify:microsoft-oauth-live` now fails if live redirect still sends placeholder `client_id`
+- Azure CLI install note: `brew install azure-cli`
+
+Operator commands:
+
+```bash
+brew install azure-cli
+az login --use-device-code --allow-no-subscriptions
+npm run provision:microsoft-oauth-live:apply
+npm run verify:microsoft-oauth-live
+```
+
+Why Hotmail portal login is not enough:
+
+```mermaid
+flowchart TD
+    A["Sign in at portal.azure.com with Hotmail"] --> B{"Has Azure directory?"}
+    B -->|no| C["Cannot register apps — join M365 Developer Program"]
+    B -->|yes| D["Can register apps in portal"]
+    C --> E["Use admin@tenant.onmicrosoft.com from welcome email"]
+    E --> F["az login --allow-no-subscriptions"]
+    F --> G["npm run provision:microsoft-oauth-live:apply"]
+    D --> G
+    G --> H["Real client_id on Fly"]
+    H --> I["Browser sign-in at /login works"]
+```
+
+Placeholder vs real Microsoft setup:
+
+```mermaid
+flowchart LR
+    subgraph broken ["Broken — button only"]
+        P1["client_id=your-client-id"] --> P2["Microsoft error unauthorized_client"]
+    end
+    subgraph working ["Working — full path"]
+        W1["Real Azure UUID on Fly"] --> W2["Microsoft login page accepts app"]
+        W2 --> W3["Callback creates switch_auth_session"]
+        W3 --> W4["Dashboard opens"]
+    end
+```
+
+Full terminal provision flow:
+
+```mermaid
+sequenceDiagram
+    participant Op as Operator terminal
+    participant Az as Azure CLI
+    participant Fly as Fly.io secrets
+    participant Live as theswitchplatform.com
+
+    Op->>Az: az login device code tenant admin
+    Op->>Az: provision script creates app registration
+    Az-->>Op: client_id UUID + client secret
+    Op->>Fly: fly secrets set SWITCH_OIDC_MICROSOFT_*
+    Fly->>Live: app restarts with real credentials
+    Op->>Live: npm run verify:microsoft-oauth-live
+    Live-->>Op: client_id UUID check passes
+    Op->>Live: manual /login Continue with Microsoft
+```

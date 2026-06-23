@@ -135,3 +135,11 @@ Re-check item 22 anytime:
 ```bash
 npm run verify:live-truth-match
 ```
+
+---
+
+## Item 3 progress note (23 June 2026 — appended)
+
+- **Shipped:** onboarding module, `/onboarding` route, `/api/onboarding/profile`, dashboard gate.
+- **Still to prove live:** real new-learner onboarding on https://theswitchplatform.com with recorded evidence.
+- **Preservation:** the 22-item list above is unchanged — append status notes only.

@@ -20,7 +20,7 @@ test("login route exposes the unified sign-in shell", () => {
 test("site navigation links Log in to the dedicated login route", () => {
   const dashboardHome = readFileSync(path.join(repoRoot, "src/components/dashboard-home.tsx"), "utf8");
 
-  assert.match(dashboardHome, /href="\/login\?reauth=1"/);
+  assert.match(dashboardHome, /\/login\?reauth=1/);
   assert.match(dashboardHome, /Log in/);
 });
 

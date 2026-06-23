@@ -62,6 +62,11 @@ const TRACKED_FILES: RecoveryTrackedFile[] = [
     collectionKey: "sessions",
     label: "Auth sessions",
   },
+  {
+    filename: "onboarding-profiles.json",
+    collectionKey: "profiles",
+    label: "Onboarding profiles",
+  },
 ];
 
 export async function getPersistenceRecoveryStatus(

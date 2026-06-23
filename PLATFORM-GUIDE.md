@@ -240,7 +240,7 @@ Do not describe the platform as fully complete unless **every** item below is co
 
 **Completion rule:** Only when all 22 items are done → platform may be called fully complete, fully live, 100% end to end.
 
-**Known gap (honest audit):** Item 3 onboarding UI is documented but not yet implemented in code. Re-verify item 3 after onboarding ships.
+**Known gap (honest audit):** Item 3 onboarding flow is now implemented in code (`/onboarding`, API, dashboard gate). Live-environment proof for a real new learner still required before calling item 3 fully closed in production evidence.
 
 ### Operator notes
 
@@ -334,6 +334,17 @@ Owns manual timed assessment attempts. Access arrangements applied before start.
 
 - Definitions, lifecycle types, manual duration with official caps
 - Framework-neutral contracts for definitions and resume seeds
+
+### Onboarding Module
+
+`src/modules/onboarding/`
+
+Owns guided sign-up and first-time learner setup (**Full End-to-End Completion List item 3**).
+
+- Progressive `/onboarding` route: welcome, school/year, qualification, subjects, accessibility, guardian invite, consent
+- UK school-source links (England, Scotland, Wales, Northern Ireland)
+- Persists learner profile; gates `/dashboard` until setup is complete
+- Dashboard personalisation uses selected subjects and qualification path
 
 ### CMS Module
 

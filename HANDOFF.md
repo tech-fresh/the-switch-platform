@@ -65,25 +65,26 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23 (append-only restore of 22-item list in README, AGENTS, HANDOFF)
-- **Platform label:** `fully complete` — all 22 end-to-end items done; item 22 closed on Fly
+- **Last updated:** 2026-06-23 (item 3 onboarding module shipped)
+- **Platform label:** `fully complete` for items 1–2, 4–22 on Fly · **item 3 in progress** (code shipped, live proof pending)
 
 ### Active task
 
-- **Priority item #:** none — launch checklist complete
-- **Module:** release / documentation
-- **Status:** Item 22 marked **Completed** in AGENTS, README, and HANDOFF; optional branch cleanup or `fly deploy` only
+- **Priority item #:** launch — Full End-to-End Completion List **item 3** (onboarding)
+- **Module:** `onboarding`
+- **Status:** Code shipped — live proof for new learner still required
 - **Branch:** `main`
 
 ### What was just completed
 
-- **Committed `a83722c`** — appended final 22-item list to `README.md`, `AGENTS.md`, `HANDOFF.md`, `PLATFORM-GUIDE.md` with do-not-replace rules (build history kept)
+- **Item 3 code path:** onboarding module, `/onboarding`, API, dashboard gate, tests (92/92 pass)
+- Docs appended in README, AGENTS, HANDOFF, PLATFORM-GUIDE (22-item list not replaced)
 
 ### What is next
 
-1. Optional: delete merged branches
-2. Optional: `fly deploy -a the-switch-platform` from `main`
-3. Operate live at https://theswitchplatform.com
+1. Prove item 3 on live Fly: new learner sign-in → complete onboarding → personalised dashboard
+2. Record evidence in `release-evidence/` and append item 3 live-proof note (do not replace 22-item list)
+3. Re-run `npm run verify:live-walkthrough` after live proof
 
 ### Blockers
 
@@ -295,6 +296,12 @@ Plain-English: this is the full launch checklist. Every line must be green befor
 22. Confirm system-wide truth matches — `npm run verify:live-truth-match`. **Completed — 23 June 2026 (Fly production).**
 
 Full item descriptions: see `README.md` → Final Path Mark 2 → Full End-to-End Completion List.
+
+#### Item 3 progress note (23 June 2026 — appended)
+
+- Code shipped: `/onboarding`, onboarding API, dashboard gate.
+- Live proof for a real new learner on Fly still required before item 3 is fully closed.
+- **Do not replace** the 22-item list — append evidence notes only.
 
 | Area | Status |
 |------|--------|

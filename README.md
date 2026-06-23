@@ -332,6 +332,14 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-23 Onboarding module — Full End-to-End List item 3 (in progress)
+
+- Added **`src/modules/onboarding/`** service, persistence, and **`/api/onboarding/profile`** API.
+- Added **`/onboarding`** guided setup route (welcome, school/year, qualification, subjects, accessibility, guardian invite, consent).
+- **`/dashboard`** now redirects incomplete learners to onboarding; dashboard personalises from onboarding choices.
+- **Item 3 status:** implemented in code — live-environment proof for a real new learner still required before item 3 is fully closed in evidence.
+- **Preservation rule unchanged:** the 22-item list above was not replaced or shortened — this entry is appended only.
+
 ### 2026-06-23 Restore full 22-item list in README, AGENTS, and HANDOFF (append only)
 
 - Restored the **Full End-to-End Completion List** in `README.md`, `AGENTS.md`, and `HANDOFF.md` after the PLATFORM-GUIDE merge had temporarily replaced it with pointers only.
@@ -2884,6 +2892,12 @@ Do not describe the platform as fully complete unless every item below is comple
    Plain-English: what we wrote down and what the live site shows match — the final honesty check passed.
 
 Also indexed in [`PLATFORM-GUIDE.md` → Full End-to-End Completion List](./PLATFORM-GUIDE.md#full-end-to-end-completion-list) for the merged operator guide.
+
+#### Item 3 progress note (23 June 2026 — appended, list unchanged)
+
+- **Shipped in code:** `/onboarding` route, onboarding module/API, dashboard gate, subject personalisation.
+- **Still to prove live:** full new-learner sign-up and onboarding journey in the deployed environment with recorded evidence.
+- **Do not replace** the 22-item list above when updating this note — append status only.
 
 #### Item 22 completion record (23 June 2026)
 

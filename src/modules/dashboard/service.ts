@@ -1,6 +1,11 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import { getDailyMotivation } from "@/modules/motivation/service";
 import {
+  buildDashboardSetupSummary,
+  getOnboardingOverview,
+} from "@/modules/onboarding/service";
+import { getMockSubjects } from "@/modules/subjects/service";
+import {
   buildAccessibilityPreferenceChips,
   buildAccessibilitySupportSummary,
 } from "@/modules/accessibility/presentation";
@@ -19,10 +24,12 @@ import type {
 } from "./types";
 
 export async function getDashboardHomeData(userId = "guest-preview"): Promise<DashboardHomeData> {
-  const [summary, savedProgress] = await Promise.all([
+  const [summary, savedProgress, onboardingOverview] = await Promise.all([
     getMockPowerGridSummary({ userId }),
     getSavedProgressOverview({ userId }),
+    userId === "guest-preview" ? Promise.resolve(null) : getOnboardingOverview(userId),
   ]);
+  const setup = buildDashboardSetupSummary(onboardingOverview?.profile ?? null);
   const papers = getMockExamPapers();
   const assessments = getMockTimedAssessments();
 
@@ -260,7 +267,7 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
   const sortedExamSessionCards = [...examSessionCards].sort(sortDashboardSessions);
   const sortedAssessmentSessionCards = [...assessmentSessionCards].sort(sortDashboardSessions);
 
-  const focusCards: DashboardFocusCard[] = summary.subjectProgress.map((subject) => ({
+  let focusCards: DashboardFocusCard[] = summary.subjectProgress.map((subject) => ({
     subject: subject.subject,
     level: subject.level,
     trend: subject.trend,
@@ -268,6 +275,15 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     recommendedFocus: subject.recommendedFocus,
     evidence: subject.evidence,
   }));
+
+  if (setup.subjectFilterIds.length > 0) {
+    const allowedSubjectNames = new Set(
+      getMockSubjects()
+        .filter((subject) => setup.subjectFilterIds.includes(subject.subjectId))
+        .map((subject) => subject.name),
+    );
+    focusCards = focusCards.filter((card) => allowedSubjectNames.has(card.subject));
+  }
 
   const strongestSubject = [...focusCards].sort(
     (left, right) => right.readinessScore - left.readinessScore,
@@ -293,7 +309,10 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     focusCards,
     strongestSubject,
     weakestSubject,
-    recommendedAction: savedProgress.continuity.primaryAction.title,
+    recommendedAction:
+      setup.subjectFilterIds.length > 0
+        ? `${setup.setupSummary} • ${savedProgress.continuity.primaryAction.title}`
+        : savedProgress.continuity.primaryAction.title,
     continuityStatus: savedProgress.continuity.status,
     continuityDescription: savedProgress.continuity.primaryAction.description,
     continuityHref: savedProgress.continuity.primaryAction.href,

@@ -277,3 +277,11 @@ export async function getWebsiteGuideApiData(): Promise<WebsiteGuideData> {
 
   return response.guide;
 }
+
+export async function getOnboardingOverviewApiData(): Promise<import("@/modules/onboarding/types").OnboardingOverview> {
+  const response = await fetchApiJson<{ onboarding: import("@/modules/onboarding/types").OnboardingOverview }>(
+    "/api/onboarding/profile",
+  );
+
+  return response.onboarding;
+}

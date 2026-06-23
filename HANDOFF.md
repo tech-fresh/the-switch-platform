@@ -63,33 +63,31 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** `cursor/unified-login-sign-in-page`
+- **Current branch:** `main` (PR #4 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23 (afternoon — live Microsoft browser sign-in confirmed)
-- **Platform label:** `fully complete` — Final Path Mark 2 item 22 closed (23 June 2026)
+- **Last updated:** 2026-06-23
+- **Platform label:** `fully complete` — Final Path Mark 2 item 22 closed; `main` matches live Fly deploy
 
 ### Active task
 
-- **Priority item #:** release — merge PR #4 to `main`
-- **Module:** launch / governance
-- **Status:** Item 22 truth-match complete; all 22 end-to-end items evidenced
-- **Branch:** `cursor/unified-login-sign-in-page` → draft PR #4
+- **Priority item #:** release — optional `fly deploy` from `main` if image should match merge commit exactly
+- **Module:** release
+- **Status:** PR #4 merged to `main`; default branch aligned with item 22 completion
+- **Branch:** `main`
 
 ### What was just completed
 
-- **Item 22 closed:** `npm run verify:live-truth-match` — README, admin launch view, Fly runtime, evidence align
-- Full verification bundle captured in `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
-- Items 16–18, 22 passed from operator machine; item 19 sign-off recorded on Fly `/data`
-- Live Microsoft browser sign-in + admin launch view 6/6 · 5/5 · 8/8 confirmed
+- **PR #4 merged:** https://github.com/tech-fresh/the-switch-platform/pull/4 → `main` at `18920cc`
+- Unified `/login`, Microsoft OAuth, sign-in UX fixes, item 22 evidence now on default branch
 
 ### What is next
 
-1. Mark PR #4 ready and merge to `main`
-2. Tag or note release on `main` after merge
+1. Optional: `fly deploy -a the-switch-platform` from `main` to align Fly image with merge commit
+2. Continue live operation at https://theswitchplatform.com
 
 ### Blockers
 
-- None for Final Path Mark 2 / item 22
+- None
 
 **Item 22 closed:** `npm run verify:live-truth-match` re-run passed (23 June 2026)
 
@@ -421,6 +419,12 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — PR #4 merged to main
+
+- Merged: https://github.com/tech-fresh/the-switch-platform/pull/4
+- `main` at `18920cc` — unified login, Microsoft OAuth, item 22 evidence
+- Live host unchanged: https://theswitchplatform.com (Fly)
 
 ### 2026-06-23 — Cursor — Item 22 / Final Path Mark 2 complete
 

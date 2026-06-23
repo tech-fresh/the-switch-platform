@@ -63,46 +63,42 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** main
+- **Current branch:** `cursor/unified-login-sign-in-page`
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-23
-- **Platform label:** `near-launch` — Final Path Mark 2 evidence recorded on Fly; unified `/login` route added
+- **Platform label:** `near-launch` — unified `/login` route live; Microsoft sign-in capability added in code and docs
 
 ### Active task
 
-- **Priority item #:** launch — Final Path Mark 2 closeout
-- **Module:** auth / website shell
-- **Status:** unified sign-in page shipped; live verification chain green on Fly
-- **Branch:** main
+- **Priority item #:** auth — Microsoft OIDC live enablement
+- **Module:** auth
+- **Status:** Microsoft login built in repo; operator must add Azure client ID/secret and redeploy Fly
+- **Branch:** `cursor/unified-login-sign-in-page`
 
 ### What was just completed
 
-- Added dedicated `/login` route (Seneca-style unified sign-in for students and admin)
-- Wired home navigation **Log in** button to `/login`
-- Redirected signed-out protected routes and auth errors to `/login`
-- Live verification from prior session: walkthrough, sign-off, truth-match passed on Fly
-- Fresh Lloyd Nwag cookies stored in `.env.local`; launch verification secret configured
+- Microsoft OIDC profile mapping (`mail`, `userPrincipalName`)
+- `setup:microsoft-oauth-live` and `verify:microsoft-oauth-live` scripts
+- Plain-English guide with diagram: `docs/MICROSOFT_OAUTH_LIVE.md`
+- In-product guide route: `/login/microsoft-guide`
+- `/login` already shows **Continue with Microsoft** when the provider block is configured
 
 ### What is next
 
-1. Deploy latest `/login` route to Fly (`fly deploy`)
-2. Optional: set `min_machines_running = 1` on Fly if cold starts slow local verification
-3. Run full Final Path Mark 2 chain after deploy if auth shell changes need live re-proof
+1. Create Azure App registration and copy client ID + secret
+2. `fly secrets set SWITCH_OIDC_MICROSOFT_* ... -a the-switch-platform`
+3. `fly deploy` then `npm run verify:microsoft-oauth-live`
+4. Manual Microsoft sign-in test at `/login`
 
 ### Blockers
 
-- **None for auth/persistence** — Fly is live host at https://theswitchplatform.com
-- Fly free-tier cold start can make the first local `verify:live-walkthrough` request look hung unless the site is woken first
+- **Microsoft live secrets not yet on Fly** — Google works today; Microsoft needs Azure values from the operator
 
 ### Verification last run
 
-- [x] Live Google sign-in on https://theswitchplatform.com/account
-- [x] `npm run verify:google-oauth-live`
-- [x] `npm run verify:live-readiness`
-- [x] `npm run verify:persistence-health`
-- [x] `npm run verify:live-walkthrough` (local + Fly SSH governance recording)
-- [x] `npm run verify:live-truth-match` (item 22)
-- [ ] Redeploy and smoke `/login` on production after this commit
+- [x] Google OAuth live check
+- [x] Live walkthrough + truth-match (prior session on Fly)
+- [ ] `npm run verify:microsoft-oauth-live` (after Azure secrets deployed)
 
 ---
 
@@ -425,6 +421,14 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — Microsoft sign-in capability
+
+- Branch: cursor/unified-login-sign-in-page
+- Module: auth
+- Done: Microsoft OIDC mapping, setup/verify scripts, docs/MICROSOFT_OAUTH_LIVE.md, /login/microsoft-guide, login card link
+- Next: Azure app registration + Fly secrets + verify:microsoft-oauth-live
+- Blocker: operator Azure client ID/secret not yet deployed
 
 ### 2026-06-23 — Cursor — Unified `/login` sign-in page + Final Path Mark 2 closeout
 

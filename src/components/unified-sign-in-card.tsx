@@ -200,6 +200,16 @@ export function UnifiedSignInCard({
         </p>
 
         <p className="text-xs leading-5 text-stone-500">
+          Setting up Microsoft for your school?{" "}
+          <Link
+            href="/login/microsoft-guide"
+            className="font-medium text-stone-700 underline underline-offset-2"
+          >
+            Open the Microsoft sign-in guide
+          </Link>
+        </p>
+
+        <p className="text-xs leading-5 text-stone-500">
           Already signed in elsewhere?{" "}
           <Link href="/account" className="font-medium text-stone-700 underline underline-offset-2">
             Open your account page

@@ -28,6 +28,8 @@ export interface OidcProviderConfig {
 export interface OidcProfile {
   sub?: string;
   email?: string;
+  mail?: string;
+  userPrincipalName?: string;
   given_name?: string;
   family_name?: string;
   name?: string;
@@ -206,8 +208,17 @@ export function getConfiguredOidcProvider(provider: AuthProvider): OidcProviderC
 }
 
 export function mapOidcProfileToAuthUser(profile: OidcProfile): AuthUser {
-  const email = profile.email?.trim() || `${profile.sub ?? "switch-user"}@switch.local`;
-  const displayName = profile.name?.trim() || profile.preferred_username?.trim() || email;
+  const email =
+    profile.email?.trim() ||
+    profile.mail?.trim() ||
+    profile.preferred_username?.trim() ||
+    profile.userPrincipalName?.trim() ||
+    `${profile.sub ?? "switch-user"}@switch.local`;
+  const displayName =
+    profile.name?.trim() ||
+    [profile.given_name, profile.family_name].filter(Boolean).join(" ").trim() ||
+    profile.preferred_username?.trim() ||
+    email;
   const [firstName = email, ...lastNameParts] = displayName.split(" ");
   const explicitRoles = normalizeClaimRoles(profile.roles ?? profile.role);
   const mappedRoles = mapRolesFromEmail(email);

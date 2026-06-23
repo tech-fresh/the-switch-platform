@@ -4821,3 +4821,44 @@ June 23, 2026 Final Path Mark 2 closeout note:
 - local Mac verification should keep `SWITCH_RECORD_GOVERNANCE=0` because `/data` only exists on the deployed machine
 - use `SWITCH_LAUNCH_VERIFICATION_SECRET` or fresh `switch_auth_session` cookies in `.env.local` for scripted live proof
 - wake the Fly machine before local live checks when auto-stop is enabled
+
+### 54. Microsoft sign-in capability for students and admin (Completed)
+
+The platform now supports live Microsoft OIDC sign-in through the same auth module and `/login` route used for Google.
+
+Added guidance includes:
+
+- Microsoft profile mapping for `mail` and `userPrincipalName`
+- operator scripts `setup:microsoft-oauth-live` and `verify:microsoft-oauth-live`
+- plain-English guide with diagram at `docs/MICROSOFT_OAUTH_LIVE.md`
+- in-product teaching route at `/login/microsoft-guide`
+- default Microsoft OIDC URLs in `.env.example` and `docs/free-tier-secrets.example`
+
+Plain-English explanation:
+
+- press **Continue with Microsoft** on `/login`
+- sign in with a school or work Microsoft account
+- return to The Switch with the same session cookie used for Google sign-in
+- admin opens automatically when the Microsoft email is allowlisted
+
+Visual guide for non-coders:
+
+![Microsoft sign-in flow for The Switch Platform](./docs/assets/microsoft-sign-in-flow.png)
+
+Microsoft live enablement checklist:
+
+```mermaid
+flowchart TD
+    A["Create Azure App registration"] --> B["Add redirect URI /api/auth/callback"]
+    B --> C["Copy client ID and secret to Fly secrets"]
+    C --> D["fly deploy"]
+    D --> E["npm run verify:microsoft-oauth-live"]
+    E --> F["Manual sign-in at /login"]
+```
+
+Operator commands:
+
+```bash
+npm run setup:microsoft-oauth-live
+npm run verify:microsoft-oauth-live
+```

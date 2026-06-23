@@ -5,6 +5,7 @@ const publicPages = [
   ["/dashboard", "Dashboard"],
   ["/subjects", "Subjects"],
   ["/login", "Welcome back!"],
+  ["/login/microsoft-guide", "Microsoft Sign-In Guide"],
   ["/account", "Student Account"],
   ["/support", "Support"],
   ["/how-it-works", "Website Guide"],

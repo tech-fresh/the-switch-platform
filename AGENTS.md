@@ -645,7 +645,9 @@ Student data on production must live in **one shared durable place**. Vercel Blo
 - The live auth path and the preview auth path can look similar in the account UI, so future sessions should verify the active runtime mode before claiming the real sign-in path is complete.
 - A signed-in preview session can still show a provider label such as `google`, but that does not by itself prove a real external Google identity round-trip happened.
 - The real live auth goal is: deployed runtime in `oidc` mode, full provider block present, redirect callback succeeds, session is created, sign-out works, and protected routes behave correctly.
-- Microsoft support has now been added in code alongside Google, Apple, and Email Magic Link provider slots.
+- Microsoft support is now a first-class live path alongside Google when the full `SWITCH_OIDC_MICROSOFT_*` block is configured.
+- Use `npm run setup:microsoft-oauth-live` and `npm run verify:microsoft-oauth-live` for operator setup and proof.
+- Plain-English operator guide: `docs/MICROSOFT_OAUTH_LIVE.md` and in-product route `/login/microsoft-guide`.
 - In live `oidc` mode, admin access is currently derived from mapped roles on the signed-in email address, with `SWITCH_AUTH_ADMIN_EMAILS` and `SWITCH_AUTH_EDITOR_EMAILS` acting as the current role-allowlist boundary.
 - Prefer one main sign-in path with role-based admin access over two disconnected student/admin login systems unless the user explicitly reprioritises the auth architecture.
 - If a future task introduces a true email-and-password admin login, treat it as a separate auth hardening deliverable rather than a small UI tweak.

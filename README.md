@@ -2855,8 +2855,9 @@ Authoritative rule:
    Execute `npm run verify:launch-complete`.
 21. Store the release evidence permanently.
    Keep the outputs from launch-status, readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
-22. Confirm system-wide truth matches.
+22. Confirm system-wide truth matches. **Completed — 23 June 2026 (Fly production)**
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
+   Plain-English: what we wrote down and what the live site shows match — the final honesty check passed.
 
 #### Item 22 completion record (23 June 2026)
 
@@ -2869,6 +2870,7 @@ Authoritative rule:
 Completion rule:
 
 - Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
+- **As of 23 June 2026:** all 22 items are complete on Fly production. Item 22 was the last checkbox — documentation, admin view, and live runtime all agree.
 
 #### Final Path Mark 2 command order
 
@@ -2889,9 +2891,7 @@ The platform should only be called fully complete when:
 - `Final Path Mark 2` is evidence-complete in the real environment
 - the final release record includes real owners, real proof, and real approval
 
-Until then, the honest description remains near-launch rather than fully complete.
-
-**June 23, 2026 update:** Item 22 truth-match passed on Fly; Final Path Mark 2 is evidence-complete. See §57 and `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`.
+**June 23, 2026 update:** Item 22 truth-match passed on Fly; Final Path Mark 2 is evidence-complete. All 22 end-to-end items are now marked complete in this list. See §57–§58 and `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`.
 
 The June 21, 2026 live-launch session established these additional operator truths for the current OIDC release path:
 
@@ -5036,4 +5036,27 @@ flowchart TD
     F -->|yes| G["Item 22 complete — Final Path Mark 2 evidence-complete"]
 ```
 
-**Final Path Mark 2 status:** evidence-complete on Fly as of 23 June 2026. Merge PR #4 to land code on `main`.
+**Final Path Mark 2 status:** evidence-complete on Fly as of 23 June 2026. PR #4 and PR #5 merged to `main`.
+
+### 58. Mark item 22 complete in the Full End-to-End Completion List (Completed)
+
+Plain-English:
+
+- Item 22 is the last line on the 22-point launch checklist: “Does everything we wrote match the live website?”
+- It is now marked **Completed** in `AGENTS.md`, `README.md`, and `HANDOFF.md`.
+- PR #4 (login + Microsoft OAuth) and PR #5 (handoff record) are both on `main`.
+
+What changed in the docs:
+
+| Document | Update |
+|----------|--------|
+| `AGENTS.md` | Item 22 line shows **Completed — 23 June 2026**; completion rule notes all 22 items done |
+| `README.md` | Same item 22 mark + completion rule update |
+| `HANDOFF.md` | Live state refreshed; old “item 22 open” note removed |
+
+```mermaid
+flowchart LR
+    A["Items 1–21 done"] --> B["Item 22 truth-match"]
+    B --> C["All 22 complete"]
+    C --> D["Platform: fully complete"]
+```

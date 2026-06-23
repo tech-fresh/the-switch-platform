@@ -63,33 +63,35 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** `main` (PR #4 merged 23 June 2026)
+- **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23
-- **Platform label:** `fully complete` — Final Path Mark 2 item 22 closed; `main` matches live Fly deploy
+- **Last updated:** 2026-06-23 (evening — item 22 marked complete in all end-to-end lists)
+- **Platform label:** `fully complete` — all 22 end-to-end items done; item 22 closed on Fly
 
 ### Active task
 
-- **Priority item #:** release — optional `fly deploy` from `main` if image should match merge commit exactly
-- **Module:** release
-- **Status:** PR #4 merged to `main`; default branch aligned with item 22 completion
+- **Priority item #:** none — launch checklist complete
+- **Module:** release / documentation
+- **Status:** Item 22 marked **Completed** in AGENTS, README, and HANDOFF; optional branch cleanup or `fly deploy` only
 - **Branch:** `main`
 
 ### What was just completed
 
-- **PR #4 merged:** https://github.com/tech-fresh/the-switch-platform/pull/4 → `main` at `18920cc`
-- Unified `/login`, Microsoft OAuth, sign-in UX fixes, item 22 evidence now on default branch
+- **Item 22** marked **Completed** in the Full End-to-End Completion List (`AGENTS.md`, `README.md`)
+- **HANDOFF** refreshed — removed stale “item 22 open” note from June 21 section
+- **PR #4 + PR #5** already on `main` — unified login, Microsoft OAuth, handoff records
 
 ### What is next
 
-1. Optional: `fly deploy -a the-switch-platform` from `main` to align Fly image with merge commit
-2. Continue live operation at https://theswitchplatform.com
+1. Optional: delete merged branches (`cursor/unified-login-sign-in-page`, `cursor/record-pr4-merge-handoff`)
+2. Optional: `fly deploy -a the-switch-platform` from `main`
+3. Operate live at https://theswitchplatform.com
 
 ### Blockers
 
 - None
 
-**Item 22 closed:** `npm run verify:live-truth-match` re-run passed (23 June 2026)
+**Item 22 closed:** marked **Completed** in AGENTS + README end-to-end lists (23 June 2026). `npm run verify:live-truth-match` passed on Fly.
 
 ### Verification last run
 
@@ -260,24 +262,37 @@ Special labels:
 
 ---
 
-## Final Path Mark 2 — live state (June 21, 2026)
+## Final Path Mark 2 — live state (23 June 2026)
 
 **Authoritative completion list:** `AGENTS.md` → Full End-to-End Completion List (22 items).
 
+Plain-English: this is the full launch checklist. Every line must be green before we call the platform “100% complete.” **All 22 items are now complete** on Fly production.
+
 | Area | Status |
 |------|--------|
-| Repo-side durable persistence + launch verification | Done — commit `1168e4f` on `main` |
-| Deployed persistence API surface | Reports durable Blob-backed sqlite |
-| Production Blob byte reads | **Blocked** — store suspended |
-| Protected live routes (`/dashboard`, etc.) | **Failing** — 500 under walkthrough |
-| Item 22 truth-match | **Open** |
-| Honest platform label | `near-launch` |
+| Live auth (Google + Microsoft) | **Done** — browser sign-in proven |
+| Live persistence (sqlite `/data` on Fly) | **Done** |
+| Governance + launch sign-off | **Done** — TF Solutions recorded |
+| Live walkthrough + readiness checks | **Done** |
+| Item 22 truth-match | **Completed** — docs, admin view, and live site agree |
+| Honest platform label | **`fully complete`** |
 
-**Remaining blocker (platform-side, not repo):** the Vercel Blob store backing `vercel-blob://switch-live-data` is suspended. Metadata may still resolve, but signed reads for `switch-live-data/switch-live.sqlite` fail with `BlobStoreSuspendedError`.
+**Evidence file:** `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
 
-**Repo-side closeout tooling now includes:** `npm run verify:blob-health` as the first command in the final live sequence. Run it against the live environment before walkthrough, sign-off, and truth-match.
+**Live host:** https://theswitchplatform.com (Fly.io — not Vercel/Netlify for production)
 
-**Do not describe the platform as fully complete, fully live, or 100% end-to-end** until item 22 passes and the full verification chain reruns cleanly after the Blob store is restored or replaced.
+Re-check item 22 anytime:
+
+```bash
+npm run verify:live-truth-match
+```
+
+```mermaid
+flowchart LR
+    A["22 checklist items"] --> B["Item 22: truth match"]
+    B --> C["All complete"]
+    C --> D["fully complete"]
+```
 
 ---
 
@@ -419,6 +434,14 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — Item 22 marked complete in end-to-end lists
+
+- Done: item 22 now shows **Completed — 23 June 2026** in `AGENTS.md` and `README.md` Full End-to-End Completion List
+- Done: replaced stale June 21 HANDOFF section that still said item 22 was open
+- Done: README §58 build record added
+- Plain-English: all 22 launch checklist items are done; the last one was “does the paperwork match the live site?” — yes
+- PR #4 + PR #5 already on `main`; no code change in this commit
 
 ### 2026-06-23 — Cursor — PR #4 merged to main
 

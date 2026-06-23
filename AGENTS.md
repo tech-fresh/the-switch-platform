@@ -404,8 +404,9 @@ Do not describe the platform as fully complete unless every item below is comple
    Execute `npm run verify:launch-complete`.
 21. Store the release evidence permanently.
    Keep the outputs from launch-status, readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
-22. Confirm system-wide truth matches.
+22. Confirm system-wide truth matches. **Completed — 23 June 2026 (Fly production)**
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
+   Plain-English: the notes, admin screen, and live website all tell the same story — no hidden mismatch.
 
 #### Item 22 completion record (23 June 2026 — Fly production)
 
@@ -437,6 +438,7 @@ flowchart LR
 Completion rule:
 
 - Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
+- **As of 23 June 2026:** all 22 items are complete on Fly production at https://theswitchplatform.com. Item 22 was the last one to close.
 
 Recommended final live command order:
 

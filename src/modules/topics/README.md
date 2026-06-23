@@ -1,9 +1,5 @@
 # Topics Module
 
-Owns topic contracts and topic-to-subject relationships.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../../PLATFORM-GUIDE.md) → Module reference → Topics Module
 
-Current foundations in this module:
-
-- Topic summaries and confidence signals
-- Practice counts and timed assessment availability
-- Subject-to-topic mapping for route composition
+Service entry: `src/modules/topics/service.ts`

@@ -12,18 +12,18 @@ alwaysApply: true
 # Session start
 
 1. Read `HANDOFF.md` first
-2. Read `AGENTS.md` and `README.md` priorities
-3. Read relevant `src/modules/<module>/README.md`
+2. Read `PLATFORM-GUIDE.md` (rules, modules, launch checklist)
+3. Read `README.md` sections only when needed
 4. Work on one module per session
 5. State which build-priority item the task serves
 
 # Before each action
 
-Consult `HANDOFF.md`, then `AGENTS.md`, then `README.md` priorities before code, docs, commands, git, or review work.
+Consult `HANDOFF.md`, then `PLATFORM-GUIDE.md`, then `README.md` sections when needed.
 
 # After each action
 
-Update `HANDOFF.md` **Live session state** after every completed action. Append `README.md` Ordered Build Record once per session/milestone. Read README **sections** only — not the whole file every time — see AGENTS.md Efficiency learning notes.
+Update `HANDOFF.md` **Live session state** after every completed action. Append `README.md` Ordered Build Record once per session/milestone. Read README **sections** only — not the whole file every time — see `PLATFORM-GUIDE.md` Completion standard.
 
 # Session end
 

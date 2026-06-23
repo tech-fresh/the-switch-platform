@@ -1,3 +1,3 @@
 # Components
 
-Shared UI components live here. UI must not contain business rules.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../PLATFORM-GUIDE.md) → Shared folders → Components

@@ -1,8 +1,5 @@
 # Quiz Module
 
-Owns quiz question contracts. It must not own exam timing or saved progress rules.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../../PLATFORM-GUIDE.md) → Module reference → Quiz Module
 
-Current foundations in this module:
-
-- Topic-level quick practice prompts
-- Multiple-choice option structures for subject entry flows
+Service entry: `src/modules/quiz/service.ts`

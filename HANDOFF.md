@@ -19,8 +19,8 @@ Read HANDOFF.md first.
 Before **every** action — code, docs, commands, git, planning, or review — consult in order:
 
 1. This file (`HANDOFF.md`) → Live session state, What is next, Blockers
-2. `AGENTS.md` → Architecture, session rules, completion standard
-3. `README.md` → Non-negotiable development rules + Active build priority order
+2. `PLATFORM-GUIDE.md` → Rules, architecture, modules, launch checklist
+3. `README.md` → Relevant sections only (build record, launch notes)
 
 Do not start until the action still matches live state and build priorities.
 
@@ -40,7 +40,7 @@ Commit and push when the action produced repo changes, unless a task explicitly 
 
 | Step | Action |
 |------|--------|
-| Before each task | Read `HANDOFF.md` → `AGENTS.md` → README **sections only** (not whole README unless needed) |
+| Before each task | Read `HANDOFF.md` → `PLATFORM-GUIDE.md` → README **sections only** (when needed) |
 | During task | One module, one priority, match architecture gate |
 | After each task | Update Live session state below (short bullets) |
 | End of session | Verification, commit, push, session log entry, README build record if behavior changed |
@@ -65,7 +65,7 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23 (evening — item 22 marked complete in all end-to-end lists)
+- **Last updated:** 2026-06-23 (documentation merge — PLATFORM-GUIDE.md)
 - **Platform label:** `fully complete` — all 22 end-to-end items done; item 22 closed on Fly
 
 ### Active task
@@ -77,13 +77,13 @@ Update this section every session.
 
 ### What was just completed
 
-- **Item 22** marked **Completed** in the Full End-to-End Completion List (`AGENTS.md`, `README.md`)
-- **HANDOFF** refreshed — removed stale “item 22 open” note from June 21 section
-- **PR #4 + PR #5** already on `main` — unified login, Microsoft OAuth, handoff records
+- Created **`PLATFORM-GUIDE.md`** — single merged doc for AGENTS rules, all module READMEs, and 22-item launch list
+- Slimmed **`AGENTS.md`** to entry point; module READMEs now stub links to `PLATFORM-GUIDE.md`
+- **`README.md`** duplicate launch list replaced with pointer to `PLATFORM-GUIDE.md`
 
 ### What is next
 
-1. Optional: delete merged branches (`cursor/unified-login-sign-in-page`, `cursor/record-pr4-merge-handoff`)
+1. Optional: delete merged branches
 2. Optional: `fly deploy -a the-switch-platform` from `main`
 3. Operate live at https://theswitchplatform.com
 
@@ -109,7 +109,7 @@ Update this section every session.
 | Active local folder | `/Users/lloydnwagbara/Documents/THE SWITCH 3` |
 | GitHub remote | `https://github.com/tech-fresh/the-switch-platform` |
 | Do not use | `/Users/lloydnwagbara/Documents/THE SWITCH` or `THE SWITCH 2` |
-| Agent rules | `AGENTS.md` |
+| Agent rules | `PLATFORM-GUIDE.md` (via `AGENTS.md` entry point) |
 | Product history | `README.md` (cumulative — append only) |
 | Recovery notes | `PROJECT_RECOVERY.md`, `RESTORED_CHATS.md` |
 | Session handoff | `HANDOFF.md` (this file) |
@@ -121,10 +121,11 @@ Update this section every session.
 
 | Document | Purpose |
 |----------|---------|
-| `AGENTS.md` | Architecture, priorities, session rules, completion standard, design system |
+| `PLATFORM-GUIDE.md` | **Single merged guide** — rules, modules, 22-item launch list |
+| `AGENTS.md` | Agent entry point → `PLATFORM-GUIDE.md` |
 | `HANDOFF.md` | Live session state and handover between Cursor and Codex |
-| `README.md` | Cumulative product spec, build record, launch notes |
-| `.cursor/rules/` | Cursor-specific enforcement mirroring `AGENTS.md` |
+| `README.md` | Cumulative product spec and build record |
+| `.cursor/rules/` | Cursor-specific enforcement mirroring `PLATFORM-GUIDE.md` |
 
 ---
 
@@ -132,7 +133,7 @@ Update this section every session.
 
 ```mermaid
 flowchart LR
-    A["AGENTS.md + README priorities"] --> B["Cursor Agent"]
+    A["PLATFORM-GUIDE.md + README sections"] --> B["Cursor Agent"]
     A --> C["Codex"]
     B --> D["Feature branch + commit"]
     C --> D

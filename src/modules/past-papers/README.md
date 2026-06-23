@@ -1,10 +1,5 @@
 # Past Papers Module
 
-Owns past paper metadata and content references.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../../PLATFORM-GUIDE.md) → Module reference → Past Papers Module
 
-Current foundations in this module:
-
-- paper source provider definitions
-- past paper metadata catalog
-- availability state for catalogued entries versus direct linked papers
-- framework-neutral contract for catalog delivery
+Service entry: `src/modules/past-papers/service.ts`

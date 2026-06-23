@@ -1,5 +1,10 @@
 # The Switch Platform
 
+> **Single consolidated guide (rules + modules + launch checklist):** [`PLATFORM-GUIDE.md`](./PLATFORM-GUIDE.md)  
+> **Live session state:** [`HANDOFF.md`](./HANDOFF.md)  
+> **Agent entry point:** [`AGENTS.md`](./AGENTS.md)  
+> **This file:** cumulative product history and Ordered Build Record below.
+
 ## Local Restore Notes For THE SWITCH 3
 
 If project information appears to have disappeared after switching to local
@@ -34,10 +39,11 @@ This project is built with **Cursor Agent** and **Codex** on the same repo.
 
 | Document | Purpose |
 |----------|---------|
-| `AGENTS.md` | Architecture, priorities, session rules, completion standard |
+| `PLATFORM-GUIDE.md` | **Single merged guide** — rules, modules, 22-item launch list |
+| `AGENTS.md` | Agent entry point → `PLATFORM-GUIDE.md` |
 | `HANDOFF.md` | Live session state between Cursor and Codex |
 | `README.md` | Cumulative product spec and build record (this file) |
-| `.cursor/rules/` | Cursor-specific enforcement mirroring `AGENTS.md` (active — 4 rule files) |
+| `.cursor/rules/` | Cursor-specific enforcement (active — 4 rule files) |
 
 #### Session start — tell the agent
 
@@ -58,8 +64,8 @@ At every session end, update the **Live session state** section in `HANDOFF.md` 
 Before **every** action — code, docs, commands, git, planning, or review — consult in order:
 
 1. `HANDOFF.md` → Live session state, What is next, Blockers
-2. `AGENTS.md` → Architecture, session rules, completion standard
-3. `README.md` → Non-negotiable development rules + Active build priority order
+2. `PLATFORM-GUIDE.md` → Rules, architecture, modules, launch checklist
+3. `README.md` → Relevant sections only (build record, launch notes)
 
 Do not start until the action still matches live state and build priorities.
 
@@ -325,6 +331,14 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-23 Consolidated PLATFORM-GUIDE.md (merge all READMEs + AGENTS)
+
+- Added **`PLATFORM-GUIDE.md`** at repo root — single file for session rules, architecture, build priority, design system, **Full End-to-End Completion List (22 items)**, all module docs, auth notes, Changes 1.0 direction, completion standard.
+- Slimmed **`AGENTS.md`** to an entry point that points to `PLATFORM-GUIDE.md`.
+- Replaced duplicate 22-item list in this README with a pointer to `PLATFORM-GUIDE.md`.
+- All **`src/modules/*/README.md`**, **`src/lib/README.md`**, **`src/components/README.md`**, and **`src/data/README.md`** now stub-link to the matching section in `PLATFORM-GUIDE.md`.
+- Updated **`HANDOFF.md`** and **`.cursor/rules/00-source-of-truth.mdc`** to use `PLATFORM-GUIDE.md` as the rules source.
 
 ### 2026-06-21 Fly.io free-tier deploy path (Vercel redeploy blocked)
 
@@ -2813,51 +2827,11 @@ Authoritative rule:
 
 #### Full End-to-End Completion List
 
-1. Configure the real live auth environment.
-   Set `SWITCH_AUTH_MODE=oidc`, `SWITCH_AUTH_SECRET`, `SWITCH_AUTH_BASE_URL`, and one complete live OIDC provider block.
-2. Prove the real deployed sign-in flow.
-   Verify sign-in, callback, session creation, sign-out, and protected-route access in the live environment.
-3. Prove the real deployed sign-up and onboarding flow.
-   Verify welcome, learner-role selection, school and year-group capture, qualification-path capture, subject selection across GCSE and iGCSE where supported, accessibility-question capture, SEND and access-arrangement path visibility, guardian invite path, age-or-consent confirmation, UK school-source lookup behaviour, and first dashboard provisioning based on the learner's selected setup in the live environment.
-4. Configure the real live persistence environment.
-   Set `SWITCH_PERSISTENCE_DRIVER=sqlite` and `SWITCH_DATA_DIRECTORY` to the intended shared live student-data setup.
-5. Prove live student-data continuity.
-   Verify saved progress, results, account-linked settings, and session continuity across real usage.
-6. Prove backup, restore, and recovery.
-   Run live backup, restore, and recovery checks for the student-data path.
-7. Configure the live CMS and editorial runtime.
-   Set `SWITCH_CMS_BACKEND_MODE=live` and confirm the intended writable editorial operating mode.
-8. Prove the live editorial workflow.
-   Verify review, approval, publish, rollback, and blocked-content handling through the real operating path.
-9. Configure live governance recording.
-   Set `SWITCH_RECORD_GOVERNANCE=1` and `SWITCH_GOVERNANCE_ENVIRONMENT` for the target release environment.
-10. Provide named launch ownership.
-   Set `SWITCH_LAUNCH_APPROVER` and `SWITCH_LAUNCH_STOP_AUTHORITY`.
-11. Provide governance review notes.
-   Set `SWITCH_GOVERNANCE_PRIVACY_REVIEW_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_REVIEW_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_REVIEW_NOTE`.
-12. Provide governance sign-off notes.
-   Set `SWITCH_GOVERNANCE_PRIVACY_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_SAFEGUARDING_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_ALERTS_SIGNOFF_NOTE`, `SWITCH_GOVERNANCE_INCIDENT_SIGNOFF_NOTE`, and `SWITCH_GOVERNANCE_RELEASE_SIGNOFF_NOTE`.
-13. Configure the live base URL.
-   Set `SWITCH_LIVE_BASE_URL` to the deployed platform URL.
-14. Provide live route test access.
-   For cookie or OIDC live auth, set `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE`. For `external-header` live auth, set the matching live student and live admin identity environment values required by the walkthrough runtime.
-15. Run live launch status verification.
-   Execute `npm run verify:launch-status` and confirm the report shows the intended release environment inputs, command order, and any remaining live-only gaps truthfully before the final run starts.
-16. Run live readiness verification.
-   Execute `npm run verify:live-readiness`.
-17. Run live persistence recovery verification.
-   Execute `npm run verify:persistence-recovery`.
-18. Run the final live walkthrough.
-   Execute `npm run verify:live-walkthrough` across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin.
-19. Run the final governance sign-off.
-   Execute `npm run verify:launch-signoff`.
-20. Run the final launch completion sequence.
-   Execute `npm run verify:launch-complete`.
-21. Store the release evidence permanently.
-   Keep the outputs from launch-status, readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
-22. Confirm system-wide truth matches. **Completed — 23 June 2026 (Fly production)**
-   Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
-   Plain-English: what we wrote down and what the live site shows match — the final honesty check passed.
+**Authoritative copy:** see [`PLATFORM-GUIDE.md` → Full End-to-End Completion List](./PLATFORM-GUIDE.md#full-end-to-end-completion-list).
+
+This README keeps build-record history only. Do not maintain a second copy of the 22-item list here.
+
+Summary: 22 items from live auth configuration through `verify:live-truth-match`. Item 22 marked **Completed — 23 June 2026** on Fly production. Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`.
 
 #### Item 22 completion record (23 June 2026)
 

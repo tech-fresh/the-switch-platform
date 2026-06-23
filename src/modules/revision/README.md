@@ -1,8 +1,5 @@
 # Revision Module
 
-Owns revision content contracts. It must not own quiz, assessment, or saved progress rules.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../../PLATFORM-GUIDE.md) → Module reference → Revision Module
 
-Current foundations in this module:
-
-- Revision section structure based on the Mark 3.2 content model
-- Topic-specific revision stacks for launch subjects
+Service entry: `src/modules/revision/service.ts`

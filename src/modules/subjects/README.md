@@ -1,9 +1,5 @@
 # Subjects Module
 
-Owns GCSE subject contracts and subject-level metadata.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../../PLATFORM-GUIDE.md) → Module reference → Subjects Module
 
-Current foundations in this module:
-
-- Launch subject definitions
-- Subject-level readiness and next-topic signals
-- Metadata that drives the subject entry route
+Service entry: `src/modules/subjects/service.ts`

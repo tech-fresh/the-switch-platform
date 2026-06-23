@@ -1,11 +1,5 @@
 # Read Aloud Module
 
-Owns browser SpeechSynthesis integration and read aloud controls.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../../PLATFORM-GUIDE.md) → Module reference → Read Aloud Module
 
-Access arrangements provide entitlement and preference inputs.
-
-Current foundations in this module:
-
-- Read aloud session view models
-- Voice and speed preview options
-- Support-aware enablement from the access profile
+Service entry: `src/modules/read-aloud/service.ts`

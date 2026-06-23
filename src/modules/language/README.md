@@ -1,9 +1,5 @@
 # Language Module
 
-Owns language-ready contracts and future localisation boundaries.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../../PLATFORM-GUIDE.md) → Module reference → Language Module
 
-Current foundations in this module:
-
-- locale preference contract
-- app route copy catalog
-- recommendation category copy boundaries
+Service entry: `src/modules/language/service.ts`

@@ -1,3 +1,3 @@
 # Lib
 
-Shared framework-agnostic utilities live here. Business rules should remain inside modules.
+**Consolidated documentation:** [`PLATFORM-GUIDE.md`](../../PLATFORM-GUIDE.md) → Shared folders → Lib

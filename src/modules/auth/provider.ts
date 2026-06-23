@@ -207,6 +207,73 @@ export function getConfiguredOidcProvider(provider: AuthProvider): OidcProviderC
   };
 }
 
+export function decodeOidcIdTokenPayload(idToken: string): OidcProfile | null {
+  try {
+    const parts = idToken.split(".");
+    if (parts.length < 2) {
+      return null;
+    }
+
+    return JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8")) as OidcProfile;
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchOidcUserProfile(
+  provider: OidcProviderConfig,
+  accessToken: string,
+  tokenType: string,
+  idToken?: string,
+): Promise<OidcProfile | null> {
+  const userInfoResponse = await fetch(provider.userInfoUrl, {
+    headers: {
+      Authorization: `${tokenType} ${accessToken}`,
+    },
+    cache: "no-store",
+  });
+
+  if (userInfoResponse.ok) {
+    return (await userInfoResponse.json()) as OidcProfile;
+  }
+
+  if (provider.provider === "microsoft") {
+    const graphResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
+      headers: {
+        Authorization: `${tokenType} ${accessToken}`,
+      },
+      cache: "no-store",
+    });
+
+    if (graphResponse.ok) {
+      const graph = (await graphResponse.json()) as {
+        id?: string;
+        mail?: string;
+        userPrincipalName?: string;
+        displayName?: string;
+        givenName?: string;
+        surname?: string;
+      };
+
+      return {
+        sub: graph.id,
+        email: graph.mail ?? graph.userPrincipalName,
+        mail: graph.mail,
+        userPrincipalName: graph.userPrincipalName,
+        name: graph.displayName,
+        given_name: graph.givenName,
+        family_name: graph.surname,
+      };
+    }
+  }
+
+  if (idToken) {
+    return decodeOidcIdTokenPayload(idToken);
+  }
+
+  return null;
+}
+
 export function mapOidcProfileToAuthUser(profile: OidcProfile): AuthUser {
   const email =
     profile.email?.trim() ||

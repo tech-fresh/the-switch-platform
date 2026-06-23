@@ -32,6 +32,7 @@
     "setup:microsoft-oauth-live": "bash scripts/setup-microsoft-oauth-live.sh",
     "provision:microsoft-oauth-live": "bash scripts/provision-microsoft-oauth-live.sh",
     "provision:microsoft-oauth-live:apply": "SKIP_AZ_LOGIN=1 bash scripts/provision-microsoft-oauth-live.sh",
+    "apply:microsoft-oauth-azure-free": "bash scripts/apply-microsoft-oauth-azure-free.sh",
     "patch:google-oauth-client": "bash scripts/patch-google-oauth-client.sh",
     "install:gcloud-macos": "bash scripts/install-gcloud-macos.sh",
     "persistence:migrate-to-sqlite": "node scripts/persistence-migrate-to-sqlite.mjs",

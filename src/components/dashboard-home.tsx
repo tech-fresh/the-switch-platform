@@ -4,6 +4,7 @@ import type { DashboardHomeData, DashboardMetric, DashboardRouteCard, DashboardS
 interface DashboardHomeProps {
   data: DashboardHomeData;
   mode: "home" | "dashboard";
+  isAuthenticated?: boolean;
 }
 
 function getToneClasses(tone: DashboardMetric["tone"] | DashboardRouteCard["tone"]): string {
@@ -70,7 +71,7 @@ function getMotivationClasses(colour: DashboardHomeData["dailyMotivation"]["colo
   }
 }
 
-export function DashboardHome({ data, mode }: DashboardHomeProps) {
+export function DashboardHome({ data, mode, isAuthenticated = false }: DashboardHomeProps) {
   const isHome = mode === "home";
   const heroEyebrow = isHome ? "The Switch Mark 3.2" : "Student Dashboard";
   const heroTitle = isHome
@@ -109,13 +110,18 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
               </Link>
               <Link
                 className="border border-teal-700 bg-teal-700 px-3 py-2 font-medium text-white transition hover:bg-teal-800"
-                href="/login"
+                href={isAuthenticated ? "/account" : "/login?reauth=1"}
               >
-                Log in
+                {isAuthenticated ? "Account" : "Log in"}
               </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/account">
-                Account
-              </Link>
+              {!isAuthenticated ? (
+                <Link
+                  className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50"
+                  href="/account"
+                >
+                  Account
+                </Link>
+              ) : null}
               <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/exams">
                 Exams
               </Link>

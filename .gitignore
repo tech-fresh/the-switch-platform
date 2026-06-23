@@ -13,3 +13,4 @@ pnpm-debug.log*
 storybook-static
 .vercel
 .env*
+.local-switch-data/

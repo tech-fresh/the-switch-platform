@@ -2858,6 +2858,14 @@ Authoritative rule:
 22. Confirm system-wide truth matches.
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
 
+#### Item 22 completion record (23 June 2026)
+
+**COMPLETE** on https://theswitchplatform.com (Fly.io, sqlite `/data`).
+
+- `npm run verify:live-truth-match` — passed
+- Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
+- Admin launch view, governance API, and README now match the deployed runtime
+
 Completion rule:
 
 - Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
@@ -2883,7 +2891,7 @@ The platform should only be called fully complete when:
 
 Until then, the honest description remains near-launch rather than fully complete.
 
-#### Final Path Mark 2 operator note from the June 21, 2026 live run
+**June 23, 2026 update:** Item 22 truth-match passed on Fly; Final Path Mark 2 is evidence-complete. See §57 and `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`.
 
 The June 21, 2026 live-launch session established these additional operator truths for the current OIDC release path:
 

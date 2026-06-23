@@ -407,6 +407,33 @@ Do not describe the platform as fully complete unless every item below is comple
 22. Confirm system-wide truth matches.
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
 
+#### Item 22 completion record (23 June 2026 — Fly production)
+
+**Status: COMPLETE** on https://theswitchplatform.com
+
+| Proof | Result |
+|-------|--------|
+| `npm run verify:live-truth-match` | Passed — sqlite `/data`, governance `ready` |
+| Admin launch view | Matches governance (6/6 environment, 5/5 sign-off, 8/8 evidence) |
+| README / HANDOFF / AGENTS | Updated to match live Fly runtime |
+| Permanent evidence (item 21) | `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` |
+
+Plain-English: item 22 asks “does the documentation match the live website?” — yes, as of 23 June 2026.
+
+Re-check anytime:
+
+```bash
+npm run verify:live-truth-match
+```
+
+```mermaid
+flowchart LR
+    A["Fly runtime API"] --> B["Admin launch view"]
+    B --> C["Governance overview"]
+    C --> D["README + evidence file"]
+    D --> E["Item 22 complete"]
+```
+
 Completion rule:
 
 - Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
@@ -701,7 +728,7 @@ Future sessions should treat A and B alone as insufficient proof. C through E ar
 - **Live Azure app:** THE SWITCH PLATFORM — client ID `1d7c54e8-4445-40bc-9c97-598af039bfe6`.
 - **Browser proof:** `lloydnwag@gmail.com` signed in via Microsoft; `/account` shows admin + student roles; admin launch view shows CMS live and 6/6 / 5/5 / 8/8 checks.
 - **Sign-in entry:** https://theswitchplatform.com/login?reauth=1 (use when Log in seemed to do nothing — avoids redirect loop when a session already exists).
-- **Item 22:** `npm run verify:live-truth-match` passed on Fly (sqlite `/data`, governance ready). Keep platform label `near-launch` until PR #4 is merged to `main` and launch-complete is rerun from `main` if required.
+- **Item 22:** `npm run verify:live-truth-match` passed on Fly (sqlite `/data`, governance ready). **COMPLETE** — see item 22 completion record in Full End-to-End Completion List above.
 
 ```mermaid
 flowchart TD

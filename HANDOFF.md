@@ -91,10 +91,11 @@ Update this section every session.
 
 - None for Final Path Mark 2 / item 22
 
+**Item 22 closed:** `npm run verify:live-truth-match` re-run passed (23 June 2026)
+
 ### Verification last run
 
-- [x] Items 1–22 evidenced (see `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`)
-- [x] `npm run verify:live-truth-match` (item 22)
+- [x] Item 22 `npm run verify:live-truth-match` — passed today
 - [x] `npm run verify:live-walkthrough`
 - [x] `npm run verify:launch-signoff` (Fly ssh)
 - [x] Manual browser Microsoft sign-in + admin launch view

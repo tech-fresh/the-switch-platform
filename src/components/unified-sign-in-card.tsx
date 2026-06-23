@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { useTransition } from "react";
 
 import { SignInStudyIllustration } from "@/components/sign-in-study-illustration";
 import type { AuthProvider, SignInOption } from "@/modules/auth/types";
@@ -10,6 +7,8 @@ interface UnifiedSignInCardProps {
   signInOptions: SignInOption[];
   returnTo: string;
   authErrorMessage?: string | null;
+  signedInAs?: string | null;
+  showReauthNotice?: boolean;
 }
 
 function GoogleIcon() {
@@ -105,29 +104,25 @@ function providerButtonClass(provider: AuthProvider): string {
   return "border-sky-300 bg-white text-sky-900 hover:bg-sky-50";
 }
 
+function buildSignInHref(provider: AuthProvider, returnTo: string): string {
+  return `/api/auth/start?provider=${encodeURIComponent(provider)}&returnTo=${encodeURIComponent(returnTo)}`;
+}
+
 const providerOrder: AuthProvider[] = ["google", "microsoft", "apple", "email-magic-link"];
 
 export function UnifiedSignInCard({
   signInOptions,
   returnTo,
   authErrorMessage,
+  signedInAs,
+  showReauthNotice,
 }: UnifiedSignInCardProps) {
-  const [isPending, startTransition] = useTransition();
-
   const orderedOptions = providerOrder
     .map((provider) => signInOptions.find((option) => option.provider === provider))
     .filter((option): option is SignInOption => Boolean(option));
 
   const socialOptions = orderedOptions.filter((option) => option.provider !== "email-magic-link");
   const emailOption = orderedOptions.find((option) => option.provider === "email-magic-link");
-
-  function signIn(provider: AuthProvider) {
-    startTransition(() => {
-      window.location.assign(
-        `/api/auth/start?provider=${encodeURIComponent(provider)}&returnTo=${encodeURIComponent(returnTo)}`,
-      );
-    });
-  }
 
   return (
     <div className="w-full max-w-md rounded-2xl border border-stone-200 bg-white px-6 py-8 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:px-8">
@@ -142,6 +137,17 @@ export function UnifiedSignInCard({
 
         <SignInStudyIllustration />
 
+        {showReauthNotice && signedInAs ? (
+          <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-left text-sm leading-6 text-sky-950">
+            You are already signed in as <strong>{signedInAs}</strong>. Choose a provider below to
+            sign in again, or{" "}
+            <Link href="/account" className="font-semibold underline underline-offset-2">
+              open your account page to sign out
+            </Link>
+            .
+          </div>
+        ) : null}
+
         {authErrorMessage ? (
           <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-left text-sm leading-6 text-rose-900">
             {authErrorMessage}
@@ -150,16 +156,14 @@ export function UnifiedSignInCard({
 
         <div className="space-y-3 text-left">
           {socialOptions.map((option) => (
-            <button
+            <a
               key={option.provider}
-              type="button"
-              onClick={() => signIn(option.provider)}
-              disabled={isPending}
-              className={`flex w-full items-center justify-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${providerButtonClass(option.provider)}`}
+              href={buildSignInHref(option.provider, returnTo)}
+              className={`flex w-full items-center justify-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold transition ${providerButtonClass(option.provider)}`}
             >
               <ProviderIcon provider={option.provider} />
-              <span>{isPending ? "Redirecting..." : `Continue with ${providerLabel(option.provider)}`}</span>
-            </button>
+              <span>{`Continue with ${providerLabel(option.provider)}`}</span>
+            </a>
           ))}
 
           {emailOption && socialOptions.length > 0 ? (
@@ -173,15 +177,13 @@ export function UnifiedSignInCard({
           ) : null}
 
           {emailOption ? (
-            <button
-              type="button"
-              onClick={() => signIn(emailOption.provider)}
-              disabled={isPending}
-              className={`flex w-full items-center justify-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${providerButtonClass(emailOption.provider)}`}
+            <a
+              href={buildSignInHref(emailOption.provider, returnTo)}
+              className={`flex w-full items-center justify-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold transition ${providerButtonClass(emailOption.provider)}`}
             >
               <ProviderIcon provider={emailOption.provider} />
-              <span>{isPending ? "Redirecting..." : "Continue with email"}</span>
-            </button>
+              <span>Continue with email</span>
+            </a>
           ) : null}
 
           {orderedOptions.length === 0 ? (
@@ -196,6 +198,16 @@ export function UnifiedSignInCard({
           New to The Switch?{" "}
           <Link href="/how-it-works" className="font-semibold text-teal-700 underline underline-offset-2">
             Learn how the platform works
+          </Link>
+        </p>
+
+        <p className="text-xs leading-5 text-stone-500">
+          Setting up Microsoft for your school?{" "}
+          <Link
+            href="/login/microsoft-guide"
+            className="font-medium text-stone-700 underline underline-offset-2"
+          >
+            Open the Microsoft sign-in guide
           </Link>
         </p>
 

@@ -25,6 +25,24 @@ The website now exposes `/login` as the main sign-in entry for both students and
 
 The account page remains the signed-in identity home. It still exposes account metrics, role visibility, and the live cookie guide for launch verification.
 
+## Microsoft sign-in
+
+Microsoft OIDC uses the same auth module path as Google:
+
+- configure the full `SWITCH_OIDC_MICROSOFT_*` block in the runtime environment
+- add Azure redirect URI `{SWITCH_AUTH_BASE_URL}/api/auth/callback`
+- expose the provider on `/login` automatically when the block is complete
+- map Microsoft profile fields such as `mail` and `userPrincipalName` into the shared auth user model
+
+Operator helpers:
+
+- `npm run setup:microsoft-oauth-live`
+- `npm run setup:microsoft-oauth-live`
+- `npm run provision:microsoft-oauth-live` and `npm run provision:microsoft-oauth-live:apply`
+- `npm run verify:microsoft-oauth-live`
+- plain-English guide: `docs/MICROSOFT_OAUTH_LIVE.md`
+- in-product guide: `/login/microsoft-guide`
+
 The authoritative project completion list requires the live auth environment to be configured before the platform can move toward true 100% completion.
 
 Item 1 is only complete when all of the following are true in the real deployed environment:

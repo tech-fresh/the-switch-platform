@@ -41,11 +41,20 @@ function sanitizeReturnTo(value: string | undefined): string {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ authError?: string | string[] | undefined; returnTo?: string | string[] | undefined }>;
+  searchParams?: Promise<{
+    authError?: string | string[] | undefined;
+    returnTo?: string | string[] | undefined;
+    reauth?: string | string[] | undefined;
+  }>;
 }) {
   const [account, resolvedSearchParams] = await Promise.all([
     getAccountOverviewApiData(),
-    searchParams ?? Promise.resolve({}),
+    searchParams ??
+      Promise.resolve({} as {
+        authError?: string | string[] | undefined;
+        returnTo?: string | string[] | undefined;
+        reauth?: string | string[] | undefined;
+      }),
   ]);
 
   const rawReturnTo = resolvedSearchParams.returnTo;
@@ -54,10 +63,15 @@ export default async function LoginPage({
   );
   const rawAuthError = resolvedSearchParams.authError;
   const authError = Array.isArray(rawAuthError) ? rawAuthError[0] : rawAuthError;
+  const rawReauth = resolvedSearchParams.reauth;
+  const reauth = (Array.isArray(rawReauth) ? rawReauth[0] : rawReauth) === "1";
 
-  if (account.isAuthenticated) {
+  if (account.isAuthenticated && !reauth) {
     redirect(returnTo);
   }
+
+  const authenticatedSession =
+    account.session.status === "authenticated" ? account.session : null;
 
   return (
     <main className="min-h-screen bg-white text-stone-950">
@@ -71,6 +85,8 @@ export default async function LoginPage({
             signInOptions={account.signInOptions}
             returnTo={returnTo}
             authErrorMessage={getAuthErrorMessage(authError)}
+            signedInAs={authenticatedSession?.user.displayName ?? null}
+            showReauthNotice={Boolean(authenticatedSession && reauth)}
           />
         </div>
       </div>

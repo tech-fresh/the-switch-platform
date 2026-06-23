@@ -2858,6 +2858,14 @@ Authoritative rule:
 22. Confirm system-wide truth matches.
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
 
+#### Item 22 completion record (23 June 2026)
+
+**COMPLETE** on https://theswitchplatform.com (Fly.io, sqlite `/data`).
+
+- `npm run verify:live-truth-match` — passed
+- Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
+- Admin launch view, governance API, and README now match the deployed runtime
+
 Completion rule:
 
 - Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
@@ -2883,7 +2891,7 @@ The platform should only be called fully complete when:
 
 Until then, the honest description remains near-launch rather than fully complete.
 
-#### Final Path Mark 2 operator note from the June 21, 2026 live run
+**June 23, 2026 update:** Item 22 truth-match passed on Fly; Final Path Mark 2 is evidence-complete. See §57 and `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`.
 
 The June 21, 2026 live-launch session established these additional operator truths for the current OIDC release path:
 
@@ -4821,3 +4829,211 @@ June 23, 2026 Final Path Mark 2 closeout note:
 - local Mac verification should keep `SWITCH_RECORD_GOVERNANCE=0` because `/data` only exists on the deployed machine
 - use `SWITCH_LAUNCH_VERIFICATION_SECRET` or fresh `switch_auth_session` cookies in `.env.local` for scripted live proof
 - wake the Fly machine before local live checks when auto-stop is enabled
+
+### 54. Microsoft sign-in capability for students and admin (Completed)
+
+The platform now supports live Microsoft OIDC sign-in through the same auth module and `/login` route used for Google.
+
+Added guidance includes:
+
+- Microsoft profile mapping for `mail` and `userPrincipalName`
+- operator scripts `setup:microsoft-oauth-live` and `verify:microsoft-oauth-live`
+- plain-English guide with diagram at `docs/MICROSOFT_OAUTH_LIVE.md`
+- in-product teaching route at `/login/microsoft-guide`
+- default Microsoft OIDC URLs in `.env.example` and `docs/free-tier-secrets.example`
+
+Plain-English explanation:
+
+- press **Continue with Microsoft** on `/login`
+- sign in with a school or work Microsoft account
+- return to The Switch with the same session cookie used for Google sign-in
+- admin opens automatically when the Microsoft email is allowlisted
+
+Visual guide for non-coders:
+
+![Microsoft sign-in flow for The Switch Platform](./docs/assets/microsoft-sign-in-flow.png)
+
+Microsoft live enablement checklist:
+
+```mermaid
+flowchart TD
+    A["Create Azure App registration"] --> B["Add redirect URI /api/auth/callback"]
+    B --> C["Copy client ID and secret to Fly secrets"]
+    C --> D["fly deploy"]
+    D --> E["npm run verify:microsoft-oauth-live"]
+    E --> F["Manual sign-in at /login"]
+```
+
+Operator commands:
+
+```bash
+npm run setup:microsoft-oauth-live
+npm run verify:microsoft-oauth-live
+npm run verify:google-oauth-live
+fly deploy -a the-switch-platform
+```
+
+June 23, 2026 deploy fix:
+
+- Fly `npm run build` failed until `src/app/login/page.tsx` typed its optional `searchParams` fallback correctly.
+- After the fix, deploy succeeded and both Microsoft and Google live OAuth checks passed on `https://theswitchplatform.com`.
+
+### 55. Microsoft terminal provisioning + placeholder client_id guard (Completed)
+
+This session closed the gap between “Microsoft button looks configured” and “Microsoft sign-in actually works in the browser.”
+
+Plain-English explanation:
+
+- Fly had example text (`your-client-id`) where a real Azure app ID should be. Microsoft rejected sign-in with `unauthorized_client`.
+- Joining the M365 Developer Program gives you a **sandbox tenant** (like a mini school directory). App registrations must be created inside that tenant — not with a personal Hotmail login alone.
+- A new terminal script creates the Azure app, copies credentials to Fly, updates `.env.local`, and runs the live verify command.
+
+What was added:
+
+- `scripts/provision-microsoft-oauth-live.sh`
+- `npm run provision:microsoft-oauth-live` (includes `az login` device code)
+- `npm run provision:microsoft-oauth-live:apply` (skip login — run after `az login` succeeds)
+- `verify:microsoft-oauth-live` now fails if live redirect still sends placeholder `client_id`
+- Azure CLI install note: `brew install azure-cli`
+
+Operator commands:
+
+```bash
+brew install azure-cli
+az login --use-device-code --allow-no-subscriptions
+npm run provision:microsoft-oauth-live:apply
+npm run verify:microsoft-oauth-live
+```
+
+Why Hotmail portal login is not enough:
+
+```mermaid
+flowchart TD
+    A["Sign in at portal.azure.com with Hotmail"] --> B{"Has Azure directory?"}
+    B -->|no| C["Cannot register apps — join M365 Developer Program"]
+    B -->|yes| D["Can register apps in portal"]
+    C --> E["Use admin@tenant.onmicrosoft.com from welcome email"]
+    E --> F["az login --allow-no-subscriptions"]
+    F --> G["npm run provision:microsoft-oauth-live:apply"]
+    D --> G
+    G --> H["Real client_id on Fly"]
+    H --> I["Browser sign-in at /login works"]
+```
+
+Placeholder vs real Microsoft setup:
+
+```mermaid
+flowchart LR
+    subgraph broken ["Broken — button only"]
+        P1["client_id=your-client-id"] --> P2["Microsoft error unauthorized_client"]
+    end
+    subgraph working ["Working — full path"]
+        W1["Real Azure UUID on Fly"] --> W2["Microsoft login page accepts app"]
+        W2 --> W3["Callback creates switch_auth_session"]
+        W3 --> W4["Dashboard opens"]
+    end
+```
+
+Full terminal provision flow:
+
+```mermaid
+sequenceDiagram
+    participant Op as Operator terminal
+    participant Az as Azure CLI
+    participant Fly as Fly.io secrets
+    participant Live as theswitchplatform.com
+
+    Op->>Az: az login device code tenant admin
+    Op->>Az: provision script creates app registration
+    Az-->>Op: client_id UUID + client secret
+    Op->>Fly: fly secrets set SWITCH_OIDC_MICROSOFT_*
+    Fly->>Live: app restarts with real credentials
+    Op->>Live: npm run verify:microsoft-oauth-live
+    Live-->>Op: client_id UUID check passes
+    Op->>Live: manual /login Continue with Microsoft
+```
+
+### 56. Live Microsoft browser sign-in + sign-in UX + item 22 re-check (Completed)
+
+Final Path Mark 2 auth is now proven in a real browser, not only through redirect scripts.
+
+Plain-English explanation:
+
+- You can open the **dashboard without signing in** — it shows demo student data for everyone. That is normal. Signing in ties progress to your email.
+- If **Log in** seemed to do nothing, you likely already had a session cookie. The site now uses `/login?reauth=1` so the sign-in screen always appears.
+- **Continue with Google / Microsoft** are normal links now (better on phones than JavaScript-only buttons).
+- After Microsoft sign-in, **Account** shows your email, provider, roles, and expiry. Admin opens when your email is on the allowlist.
+
+Live proof recorded 23 June 2026:
+
+| Check | Result |
+|-------|--------|
+| Microsoft OAuth verify script | Passed (`1d7c54e8-4445-40bc-9c97-598af039bfe6`) |
+| Google OAuth verify script | Passed |
+| Live route walkthrough | Passed |
+| Item 22 truth-match | Passed (sqlite `/data`, governance ready) |
+| Browser `/account` | `lloydnwag@gmail.com` via Microsoft, roles admin + student |
+| Admin launch view | CMS live; 6/6 environment, 5/5 sign-off, 8/8 evidence |
+
+Azure setup path used (Option B — no M365 Developer Program required):
+
+1. Azure free account at azure.microsoft.com/free
+2. App registration **THE SWITCH PLATFORM** in tenant `theswitchplatformhotmail.onmicrosoft.com`
+3. Fly secrets for `SWITCH_OIDC_MICROSOFT_*`
+4. Helper: `npm run apply:microsoft-oauth-azure-free`
+
+Sign-in journey (non-coder view):
+
+```mermaid
+flowchart TD
+    A["Open theswitchplatform.com"] --> B["Press Log in or go to /login?reauth=1"]
+    B --> C["Continue with Microsoft"]
+    C --> D["Sign in at Microsoft"]
+    D --> E["Return to The Switch automatically"]
+    E --> F["Open Account — see your email and roles"]
+    F --> G{"Admin email allowlisted?"}
+    G -->|yes| H["Open admin dashboard"]
+    G -->|no| I["Student routes only"]
+```
+
+Release handoff:
+
+- **Draft PR:** https://github.com/tech-fresh/the-switch-platform/pull/4
+- **Branch:** `cursor/unified-login-sign-in-page`
+- **Next:** merge to `main`, then treat Fly production as the single live host at https://theswitchplatform.com
+
+### 57. Full End-to-End Completion List item 22 — system-wide truth match (Completed)
+
+**Item 22:** Confirm `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
+
+Plain-English explanation:
+
+- Item 22 is the final honesty check. It asks: “Does what we wrote down match what the live website actually does?”
+- If scripts pass but the admin screen still shows a different storage path or broken checks, item 22 stays open.
+- On 23 June 2026, the live Fly app, governance API, admin launch view, and documentation all agreed.
+
+What was verified:
+
+| Step | Command / action | Result |
+|------|------------------|--------|
+| Persistence health | `verify:persistence-health` | sqlite `/data`, healthy |
+| Live readiness | `verify:live-readiness` | oidc, live CMS |
+| Persistence recovery | `verify:persistence-recovery` | recovery ready |
+| Live walkthrough | `verify:live-walkthrough` | all routes passed |
+| Launch sign-off | Fly ssh `launch-signoff.mjs` | TF Solutions recorded |
+| Truth match (item 22) | `verify:live-truth-match` | governance ready, paths match |
+| Permanent evidence | item 21 | `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` |
+
+Item 22 truth-match flow:
+
+```mermaid
+flowchart TD
+    A["Live Fly runtime /data sqlite"] --> B["Admin launch view metrics"]
+    B --> C["Governance API overallStatus ready"]
+    C --> D["README + HANDOFF + AGENTS records"]
+    D --> E["release-evidence file"]
+    E --> F{"All match?"}
+    F -->|yes| G["Item 22 complete — Final Path Mark 2 evidence-complete"]
+```
+
+**Final Path Mark 2 status:** evidence-complete on Fly as of 23 June 2026. Merge PR #4 to land code on `main`.

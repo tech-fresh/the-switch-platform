@@ -407,6 +407,33 @@ Do not describe the platform as fully complete unless every item below is comple
 22. Confirm system-wide truth matches.
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
 
+#### Item 22 completion record (23 June 2026 — Fly production)
+
+**Status: COMPLETE** on https://theswitchplatform.com
+
+| Proof | Result |
+|-------|--------|
+| `npm run verify:live-truth-match` | Passed — sqlite `/data`, governance `ready` |
+| Admin launch view | Matches governance (6/6 environment, 5/5 sign-off, 8/8 evidence) |
+| README / HANDOFF / AGENTS | Updated to match live Fly runtime |
+| Permanent evidence (item 21) | `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` |
+
+Plain-English: item 22 asks “does the documentation match the live website?” — yes, as of 23 June 2026.
+
+Re-check anytime:
+
+```bash
+npm run verify:live-truth-match
+```
+
+```mermaid
+flowchart LR
+    A["Fly runtime API"] --> B["Admin launch view"]
+    B --> C["Governance overview"]
+    C --> D["README + evidence file"]
+    D --> E["Item 22 complete"]
+```
+
 Completion rule:
 
 - Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
@@ -462,7 +489,23 @@ Completion language rule:
 - A direct production Blob SDK probe later confirmed the remaining blocker is platform-side: signed reads for `switch-live-data/switch-live.sqlite` fail with `BlobStoreSuspendedError`, even though the control plane still returns blob metadata.
 - Even after the durable persistence repair, keep the platform label at `near-launch` until that suspended live Blob store is unsuspended or replaced with another real shared durable store, the deployed `dashboard`, `account`, `results`, `/api/dashboard/home`, and `/api/results/overview` routes stop failing under live verification, and the final walkthrough, sign-off, launch-complete, permanent evidence, and item 22 truth-match can all be rerun cleanly.
 
-## Changes 1.0
+### Final Path Mark 2 — June 23, 2026 item 22 complete (Fly production)
+
+- **Live host:** https://theswitchplatform.com (Fly.io, sqlite on `/data`)
+- **Item 22:** `npm run verify:live-truth-match` passed — README, admin launch view, runtime API, and governance records align
+- **Evidence file:** `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
+- **Sign-off recording:** run on Fly via `fly ssh console` (Mac local signoff fails without `/data` — documented, not a live blocker)
+- **Browser proof:** `lloydnwag@gmail.com` via Microsoft; admin launch view 6/6 · 5/5 · 8/8
+- **Platform label:** may be described as **fully complete** / **100% end to end** per the Full End-to-End Completion List when this evidence bundle is current
+
+```mermaid
+flowchart LR
+    A["Items 16-18 verify scripts"] --> B["Item 19 signoff on Fly"]
+    B --> C["Item 21 evidence file"]
+    C --> D["Item 22 truth-match"]
+    D --> E["README + admin + runtime align"]
+```
+
 
 Use this section as the current website mockup direction until a newer named change set replaces it.
 
@@ -645,7 +688,68 @@ Student data on production must live in **one shared durable place**. Vercel Blo
 - The live auth path and the preview auth path can look similar in the account UI, so future sessions should verify the active runtime mode before claiming the real sign-in path is complete.
 - A signed-in preview session can still show a provider label such as `google`, but that does not by itself prove a real external Google identity round-trip happened.
 - The real live auth goal is: deployed runtime in `oidc` mode, full provider block present, redirect callback succeeds, session is created, sign-out works, and protected routes behave correctly.
-- Microsoft support has now been added in code alongside Google, Apple, and Email Magic Link provider slots.
+- Microsoft support is now a first-class live path alongside Google when the full `SWITCH_OIDC_MICROSOFT_*` block is configured.
+- Use `npm run setup:microsoft-oauth-live` and `npm run verify:microsoft-oauth-live` for operator setup and proof.
+- Use `npm run provision:microsoft-oauth-live` for full terminal setup (Azure CLI + Fly secrets + verify). After `az login` with the M365 Developer tenant admin, run `npm run provision:microsoft-oauth-live:apply` to skip the login step.
+- Plain-English operator guide: `docs/MICROSOFT_OAUTH_LIVE.md` and in-product route `/login/microsoft-guide`.
+- **Placeholder trap:** if live Microsoft redirect URLs contain `client_id=your-client-id`, Fly secrets were never replaced with a real Azure Application (client) ID. The verify script now fails on this case.
+- **M365 Developer tenant trap:** signing into Azure Portal with a personal `@hotmail.com` account is not enough for `az ad app create`. Use the sandbox **tenant admin** account from the M365 Developer Program welcome email (`admin@…onmicrosoft.com`).
+
+Microsoft terminal provisioning (operator view):
+
+```mermaid
+flowchart TD
+    A["Install Azure CLI brew install azure-cli"] --> B["Join M365 Developer Program"]
+    B --> C["az login --use-device-code --allow-no-subscriptions"]
+    C --> D{"Signed in as tenant admin?"}
+    D -->|no Hotmail only| E["Stop — use admin@tenant.onmicrosoft.com"]
+    D -->|yes| F["npm run provision:microsoft-oauth-live:apply"]
+    F --> G["az ad app create or update"]
+    G --> H["fly secrets set SWITCH_OIDC_MICROSOFT_*"]
+    H --> I["npm run verify:microsoft-oauth-live"]
+    I --> J["Manual /login browser test"]
+```
+
+Live Microsoft sign-in proof layers:
+
+```mermaid
+flowchart LR
+    A["Button visible on /login"] --> B["Redirect to Microsoft"]
+    B --> C["Real client_id UUID"]
+    C --> D["Callback creates session cookie"]
+    D --> E["Dashboard opens signed in"]
+```
+
+Future sessions should treat A and B alone as insufficient proof. C through E are required.
+
+### June 23, 2026 — Final Path Mark 2 live auth proof (recorded)
+
+- **Azure path used:** Option B — Azure free account (`theswitchplatformhotmail.onmicrosoft.com`), not M365 Developer Program.
+- **Live Azure app:** THE SWITCH PLATFORM — client ID `1d7c54e8-4445-40bc-9c97-598af039bfe6`.
+- **Browser proof:** `lloydnwag@gmail.com` signed in via Microsoft; `/account` shows admin + student roles; admin launch view shows CMS live and 6/6 / 5/5 / 8/8 checks.
+- **Sign-in entry:** https://theswitchplatform.com/login?reauth=1 (use when Log in seemed to do nothing — avoids redirect loop when a session already exists).
+- **Item 22:** `npm run verify:live-truth-match` passed on Fly (sqlite `/data`, governance ready). **COMPLETE** — see item 22 completion record in Full End-to-End Completion List above.
+
+```mermaid
+flowchart TD
+    A["Student opens /dashboard"] --> B{"Signed in?"}
+    B -->|no| C["Nav Log in → /login?reauth=1"]
+    B -->|yes| D["Nav Account"]
+    C --> E["Continue with Microsoft or Google"]
+    E --> F["Callback sets switch_auth_session"]
+    F --> G["/account + /admin available when allowlisted"]
+```
+
+Operator commands (current live host):
+
+```bash
+npm run verify:microsoft-oauth-live
+npm run verify:google-oauth-live
+npm run verify:live-walkthrough
+npm run verify:live-truth-match
+npm run apply:microsoft-oauth-azure-free
+```
+
 - In live `oidc` mode, admin access is currently derived from mapped roles on the signed-in email address, with `SWITCH_AUTH_ADMIN_EMAILS` and `SWITCH_AUTH_EDITOR_EMAILS` acting as the current role-allowlist boundary.
 - Prefer one main sign-in path with role-based admin access over two disconnected student/admin login systems unless the user explicitly reprioritises the auth architecture.
 - If a future task introduces a true email-and-password admin login, treat it as a separate auth hardening deliverable rather than a small UI tweak.

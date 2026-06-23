@@ -63,46 +63,42 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** main
+- **Current branch:** `cursor/unified-login-sign-in-page`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23
-- **Platform label:** `near-launch` — Final Path Mark 2 evidence recorded on Fly; unified `/login` route added
+- **Last updated:** 2026-06-23 (afternoon — live Microsoft browser sign-in confirmed)
+- **Platform label:** `fully complete` — Final Path Mark 2 item 22 closed (23 June 2026)
 
 ### Active task
 
-- **Priority item #:** launch — Final Path Mark 2 closeout
-- **Module:** auth / website shell
-- **Status:** unified sign-in page shipped; live verification chain green on Fly
-- **Branch:** main
+- **Priority item #:** release — merge PR #4 to `main`
+- **Module:** launch / governance
+- **Status:** Item 22 truth-match complete; all 22 end-to-end items evidenced
+- **Branch:** `cursor/unified-login-sign-in-page` → draft PR #4
 
 ### What was just completed
 
-- Added dedicated `/login` route (Seneca-style unified sign-in for students and admin)
-- Wired home navigation **Log in** button to `/login`
-- Redirected signed-out protected routes and auth errors to `/login`
-- Live verification from prior session: walkthrough, sign-off, truth-match passed on Fly
-- Fresh Lloyd Nwag cookies stored in `.env.local`; launch verification secret configured
+- **Item 22 closed:** `npm run verify:live-truth-match` — README, admin launch view, Fly runtime, evidence align
+- Full verification bundle captured in `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
+- Items 16–18, 22 passed from operator machine; item 19 sign-off recorded on Fly `/data`
+- Live Microsoft browser sign-in + admin launch view 6/6 · 5/5 · 8/8 confirmed
 
 ### What is next
 
-1. Deploy latest `/login` route to Fly (`fly deploy`)
-2. Optional: set `min_machines_running = 1` on Fly if cold starts slow local verification
-3. Run full Final Path Mark 2 chain after deploy if auth shell changes need live re-proof
+1. Mark PR #4 ready and merge to `main`
+2. Tag or note release on `main` after merge
 
 ### Blockers
 
-- **None for auth/persistence** — Fly is live host at https://theswitchplatform.com
-- Fly free-tier cold start can make the first local `verify:live-walkthrough` request look hung unless the site is woken first
+- None for Final Path Mark 2 / item 22
+
+**Item 22 closed:** `npm run verify:live-truth-match` re-run passed (23 June 2026)
 
 ### Verification last run
 
-- [x] Live Google sign-in on https://theswitchplatform.com/account
-- [x] `npm run verify:google-oauth-live`
-- [x] `npm run verify:live-readiness`
-- [x] `npm run verify:persistence-health`
-- [x] `npm run verify:live-walkthrough` (local + Fly SSH governance recording)
-- [x] `npm run verify:live-truth-match` (item 22)
-- [ ] Redeploy and smoke `/login` on production after this commit
+- [x] Item 22 `npm run verify:live-truth-match` — passed today
+- [x] `npm run verify:live-walkthrough`
+- [x] `npm run verify:launch-signoff` (Fly ssh)
+- [x] Manual browser Microsoft sign-in + admin launch view
 
 ---
 
@@ -425,6 +421,78 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — Item 22 / Final Path Mark 2 complete
+
+- Branch: cursor/unified-login-sign-in-page
+- Done: full live verification bundle, truth-match passed, evidence file stored, item 22 closed
+- Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`
+- Next: merge draft PR #4
+- Blocker: none
+
+### 2026-06-23 — Cursor — Live Microsoft sign-in + item 22 truth-match (Final Path Mark 2)
+
+- Branch: cursor/unified-login-sign-in-page (draft PR #4)
+- Done: browser Microsoft sign-in for lloydnwag@gmail.com (admin+student), Azure app on Fly, sign-in UX fixes, truth-match + walkthrough + OAuth verify green
+- Next: merge PR #4 to main
+- Blocker: none
+
+Plain-English summary:
+
+- The dashboard is public — you can browse it without signing in. Sign-in happens at `/login` or `/login?reauth=1`.
+- Microsoft sign-in is now proven in a real browser session, not just redirect checks.
+- Admin launch view matches governance records (6/6 environment, 5/5 sign-off, 8/8 evidence).
+
+```mermaid
+flowchart LR
+    A["/login?reauth=1"] --> B["Continue with Microsoft"]
+    B --> C["Microsoft login"]
+    C --> D["/api/auth/callback"]
+    D --> E["switch_auth_session cookie"]
+    E --> F["/account shows email + roles"]
+    F --> G["/admin launch view 6/6 5/5 8/8"]
+```
+
+### 2026-06-23 — Cursor — Sign-in UX fix (reauth + mobile links)
+
+- Done: anchor-based Google/Microsoft buttons, `/login?reauth=1` when already signed in, dashboard nav shows Account when authenticated
+- Deployed to Fly theswitchplatform.com
+
+### 2026-06-23 — Cursor — Microsoft terminal provision + placeholder client_id docs
+
+- Branch: cursor/unified-login-sign-in-page
+- Done: `provision:microsoft-oauth-live` script, verify rejects `your-client-id`, AGENTS/HANDOFF/README mermaid + plain-English updates
+- Next: `az login` with M365 dev tenant admin → `npm run provision:microsoft-oauth-live:apply`
+- Blocker: Fly secrets still placeholder; Hotmail portal login ≠ Azure CLI tenant login
+
+Plain-English summary for the next operator:
+
+- The Microsoft button on `/login` can look ready while Fly still sends a fake client ID to Microsoft.
+- Join M365 Developer Program, sign into Azure CLI with **admin@tenant.onmicrosoft.com**, run the provision script, then browser-test sign-in.
+
+```mermaid
+flowchart TD
+    A["Join M365 Developer Program"] --> B["Get admin@tenant.onmicrosoft.com"]
+    B --> C["az login --use-device-code --allow-no-subscriptions"]
+    C --> D["npm run provision:microsoft-oauth-live:apply"]
+    D --> E["Azure app + Fly secrets + verify"]
+    E --> F["Browser test /login → Continue with Microsoft"]
+```
+
+### 2026-06-23 — Cursor — Fly deploy fix + Microsoft live verify
+
+- Branch: cursor/unified-login-sign-in-page
+- Done: fixed `/login` TypeScript build error, fly deploy green, Microsoft + Google OAuth live checks passed
+- Next: manual Microsoft browser sign-in at /login; merge branch
+- Blocker: none
+
+### 2026-06-23 — Cursor — Microsoft sign-in capability
+
+- Branch: cursor/unified-login-sign-in-page
+- Module: auth
+- Done: Microsoft OIDC mapping, setup/verify scripts, docs/MICROSOFT_OAUTH_LIVE.md, /login/microsoft-guide, login card link
+- Next: Azure app registration + Fly secrets + verify:microsoft-oauth-live
+- Blocker: operator Azure client ID/secret not yet deployed
 
 ### 2026-06-23 — Cursor — Unified `/login` sign-in page + Final Path Mark 2 closeout
 

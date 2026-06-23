@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-import { getConfiguredOidcProvider, mapOidcProfileToAuthUser } from "@/modules/auth/provider";
+import { getConfiguredOidcProvider, fetchOidcUserProfile, mapOidcProfileToAuthUser } from "@/modules/auth/provider";
 import { getAuthCallbackUrl, getAuthRedirectUrl } from "@/modules/auth/public-origin";
 import { getAuthRuntimeConfig } from "@/modules/auth/runtime";
 import {
@@ -73,24 +73,24 @@ export async function GET(request: Request) {
     const tokenPayload = (await tokenResponse.json()) as Partial<{
       access_token: string;
       token_type: string;
+      id_token: string;
     }>;
 
     if (!tokenPayload.access_token) {
       return clearFlowAndRedirect(requestUrl, "/login?authError=missing-access-token");
     }
 
-    const userInfoResponse = await fetch(oidcProvider.userInfoUrl, {
-      headers: {
-        Authorization: `${tokenPayload.token_type ?? "Bearer"} ${tokenPayload.access_token}`,
-      },
-      cache: "no-store",
-    });
+    const profile = await fetchOidcUserProfile(
+      oidcProvider,
+      tokenPayload.access_token,
+      tokenPayload.token_type ?? "Bearer",
+      tokenPayload.id_token,
+    );
 
-    if (!userInfoResponse.ok) {
+    if (!profile) {
       return clearFlowAndRedirect(requestUrl, "/login?authError=user-info-failed");
     }
 
-    const profile = await userInfoResponse.json();
     const user = mapOidcProfileToAuthUser(profile);
     const { sessionToken } = await createProviderSession(flowState.provider, user);
     const response = NextResponse.redirect(getAuthRedirectUrl(requestUrl, flowState.returnTo));

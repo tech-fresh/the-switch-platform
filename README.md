@@ -332,6 +332,15 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-23 Seneca-style onboarding UI + marketing header (item 3 — in progress)
+
+- Redesigned **`/onboarding`** to follow Seneca Learning step order and visual style: account type cards, qualification grid, personalised profile/year step, school capture, subject grid with icons, support/accessibility, guardian invite, consent.
+- Added **`OnboardingShell`** (progress bar with indicator, sticky Back/Continue footer) and **`MarketingSiteHeader`** (white nav bar: For Students, Log in, Sign up).
+- Homepage uses marketing header and light-blue gradient background; signed-in dashboard keeps existing nav.
+- Onboarding service step keys reordered: `account-type → qualification → profile → school → subjects → support → guardian → consent`.
+- **Item 3 status:** UI and flow implemented locally — live Fly proof for a real new learner still required before item 3 is fully closed in evidence.
+- **Preservation rule unchanged:** the 22-item list above was not replaced or shortened — this entry is appended only.
+
 ### 2026-06-23 Onboarding module — Full End-to-End List item 3 (in progress)
 
 - Added **`src/modules/onboarding/`** service, persistence, and **`/api/onboarding/profile`** API.

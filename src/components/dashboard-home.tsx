@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MarketingSiteHeader } from "@/components/marketing-site-header";
 import type { DashboardHomeData, DashboardMetric, DashboardRouteCard, DashboardSessionCard } from "@/modules/dashboard/types";
 
 interface DashboardHomeProps {
@@ -82,10 +83,12 @@ export function DashboardHome({ data, mode, isAuthenticated = false }: Dashboard
     : "The dashboard now acts like a real student home surface. It shows live readiness, route launch points, session summaries, and subject focus without hiding the logic inside the page.";
 
   return (
-    <main className="min-h-screen overflow-hidden bg-stone-100 text-stone-950">
+    <main className="min-h-screen overflow-hidden bg-[#eef6ff] text-stone-950">
+      {isHome ? <MarketingSiteHeader isAuthenticated={isAuthenticated} /> : null}
       <div className="relative isolate">
-        <div className="absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(circle_at_top_left,_rgba(13,148,136,0.18),_transparent_42%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.16),_transparent_38%),linear-gradient(to_bottom,_#fafaf9,_#f5f5f4)]" />
+        <div className="absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.15),_transparent_42%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.12),_transparent_38%),linear-gradient(to_bottom,_#ffffff,_#eef6ff)]" />
         <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
+          {!isHome ? (
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200/80 pb-5">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.26em] text-stone-500">
@@ -145,6 +148,7 @@ export function DashboardHome({ data, mode, isAuthenticated = false }: Dashboard
               </Link>
             </nav>
           </header>
+          ) : null}
 
           <section className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_22rem]">
             <article className="relative overflow-hidden border border-stone-200 bg-white/90 p-6 shadow-sm backdrop-blur sm:p-7">

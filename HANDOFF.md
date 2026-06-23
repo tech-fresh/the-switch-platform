@@ -65,20 +65,23 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23 (item 3 onboarding module shipped)
-- **Platform label:** `fully complete` for items 1–2, 4–22 on Fly · **item 3 in progress** (code shipped, live proof pending)
+- **Last updated:** 2026-06-23 (Seneca-style onboarding UI + marketing header)
+- **Platform label:** `fully complete` for items 1–2, 4–22 on Fly · **item 3 in progress** (Seneca UI shipped locally, live proof pending)
 
 ### Active task
 
 - **Priority item #:** launch — Full End-to-End Completion List **item 3** (onboarding)
 - **Module:** `onboarding`
-- **Status:** Code shipped — live proof for new learner still required
+- **Status:** Seneca-style UI + step order shipped locally — live proof for new learner still required
 - **Branch:** `main`
 
 ### What was just completed
 
-- **Item 3 code path:** onboarding module, `/onboarding`, API, dashboard gate, tests (92/92 pass)
-- Docs appended in README, AGENTS, HANDOFF, PLATFORM-GUIDE (22-item list not replaced)
+- **Seneca-style onboarding:** 8-step flow (account type → qualification → profile → school → subjects → support → guardian → consent) with progress bar, sticky Back/Continue footer, light-blue palette, card grids
+- **Marketing header:** `MarketingSiteHeader` on homepage (For Students, Log in, Sign up)
+- **Homepage:** light blue gradient background aligned to Seneca reference
+- Fixed `dashboard-home.tsx` conditional header markup
+- Verification: lint, type-check, tests **92/92 pass**
 
 ### What is next
 

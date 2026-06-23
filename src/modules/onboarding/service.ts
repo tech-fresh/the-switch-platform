@@ -45,14 +45,14 @@ const SCHOOL_SOURCES = [
 ];
 
 const ONBOARDING_STEPS = [
-  "welcome",
-  "school",
+  "account-type",
   "qualification",
+  "profile",
+  "school",
   "subjects",
-  "accessibility",
+  "support",
   "guardian",
   "consent",
-  "complete",
 ];
 
 function isLaunchWalkthroughUser(userId: string): boolean {
@@ -179,20 +179,24 @@ function resolveNextStepIndex(profile: LearnerOnboardingProfile | null): number 
     return 0;
   }
 
-  if (!profile.schoolName.trim() || !profile.yearGroup.trim()) {
+  if (!profile.qualificationPath) {
     return 1;
   }
 
-  if (!profile.qualificationPath) {
+  if (!profile.yearGroup.trim()) {
     return 2;
   }
 
-  if (profile.selectedSubjectIds.length === 0) {
+  if (!profile.schoolName.trim()) {
     return 3;
   }
 
+  if (profile.selectedSubjectIds.length === 0) {
+    return 4;
+  }
+
   if (!profile.ageOrConsentConfirmed) {
-    return 6;
+    return 7;
   }
 
   return 7;

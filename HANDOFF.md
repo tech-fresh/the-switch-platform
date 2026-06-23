@@ -66,39 +66,39 @@ Update this section every session.
 - **Current branch:** `cursor/unified-login-sign-in-page`
 - **Last updated by:** Cursor
 - **Last updated:** 2026-06-23
-- **Platform label:** `near-launch` — unified `/login` route live; Microsoft sign-in capability added in code and docs
+- **Platform label:** `near-launch` — `/login`, Microsoft sign-in, and Fly deploy green (June 23 2026)
 
 ### Active task
 
-- **Priority item #:** auth — Microsoft OIDC live enablement
-- **Module:** auth
-- **Status:** Microsoft login built in repo; operator must add Azure client ID/secret and redeploy Fly
+- **Priority item #:** auth — Microsoft + login routes live
+- **Module:** auth / deploy
+- **Status:** Fly deploy fixed and live; Microsoft + Google OAuth checks passing
 - **Branch:** `cursor/unified-login-sign-in-page`
 
 ### What was just completed
 
-- Microsoft OIDC profile mapping (`mail`, `userPrincipalName`)
-- `setup:microsoft-oauth-live` and `verify:microsoft-oauth-live` scripts
-- Plain-English guide with diagram: `docs/MICROSOFT_OAUTH_LIVE.md`
-- In-product guide route: `/login/microsoft-guide`
-- `/login` already shows **Continue with Microsoft** when the provider block is configured
+- Fixed Fly build failure: TypeScript error on `src/app/login/page.tsx` (`searchParams` typing)
+- `fly deploy -a the-switch-platform` succeeded
+- `npm run verify:microsoft-oauth-live` passed on https://theswitchplatform.com
+- `npm run verify:google-oauth-live` passed
+- Live routes confirmed: `/login` (200), `/login/microsoft-guide` (200)
 
 ### What is next
 
-1. Create Azure App registration and copy client ID + secret
-2. `fly secrets set SWITCH_OIDC_MICROSOFT_* ... -a the-switch-platform`
-3. `fly deploy` then `npm run verify:microsoft-oauth-live`
-4. Manual Microsoft sign-in test at `/login`
+1. Manual browser test: https://theswitchplatform.com/login → **Continue with Microsoft**
+2. Merge `cursor/unified-login-sign-in-page` to `main` when ready
 
 ### Blockers
 
-- **Microsoft live secrets not yet on Fly** — Google works today; Microsoft needs Azure values from the operator
+- None for deploy or OAuth redirect checks
 
 ### Verification last run
 
-- [x] Google OAuth live check
-- [x] Live walkthrough + truth-match (prior session on Fly)
-- [ ] `npm run verify:microsoft-oauth-live` (after Azure secrets deployed)
+- [x] `npm run build` (local + Fly image)
+- [x] `fly deploy -a the-switch-platform`
+- [x] `npm run verify:microsoft-oauth-live`
+- [x] `npm run verify:google-oauth-live`
+- [x] Live `/login` and `/login/microsoft-guide` return 200
 
 ---
 
@@ -421,6 +421,13 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — Fly deploy fix + Microsoft live verify
+
+- Branch: cursor/unified-login-sign-in-page
+- Done: fixed `/login` TypeScript build error, fly deploy green, Microsoft + Google OAuth live checks passed
+- Next: manual Microsoft browser sign-in at /login; merge branch
+- Blocker: none
 
 ### 2026-06-23 — Cursor — Microsoft sign-in capability
 

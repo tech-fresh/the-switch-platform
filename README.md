@@ -4861,4 +4861,11 @@ Operator commands:
 ```bash
 npm run setup:microsoft-oauth-live
 npm run verify:microsoft-oauth-live
+npm run verify:google-oauth-live
+fly deploy -a the-switch-platform
 ```
+
+June 23, 2026 deploy fix:
+
+- Fly `npm run build` failed until `src/app/login/page.tsx` typed its optional `searchParams` fallback correctly.
+- After the fix, deploy succeeded and both Microsoft and Google live OAuth checks passed on `https://theswitchplatform.com`.

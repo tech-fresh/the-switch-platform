@@ -45,7 +45,11 @@ export default async function LoginPage({
 }) {
   const [account, resolvedSearchParams] = await Promise.all([
     getAccountOverviewApiData(),
-    searchParams ?? Promise.resolve({}),
+    searchParams ??
+      Promise.resolve({} as {
+        authError?: string | string[] | undefined;
+        returnTo?: string | string[] | undefined;
+      }),
   ]);
 
   const rawReturnTo = resolvedSearchParams.returnTo;

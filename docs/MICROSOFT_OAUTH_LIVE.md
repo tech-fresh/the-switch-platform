@@ -52,9 +52,25 @@ npm run setup:microsoft-oauth-live
 
 ```bash
 npm run verify:microsoft-oauth-live
+npm run verify:google-oauth-live
 ```
 
 Then sign in manually at `/login` with a real Microsoft account.
+
+## Fly deploy note (June 2026)
+
+If `fly deploy` fails at `npm run build` with a TypeScript error on `/login`, make sure you have the latest branch that types `searchParams` correctly in `src/app/login/page.tsx`. After the fix:
+
+```bash
+npm run build
+fly deploy -a the-switch-platform
+npm run verify:microsoft-oauth-live
+```
+
+Live routes after deploy:
+
+- https://theswitchplatform.com/login
+- https://theswitchplatform.com/login/microsoft-guide
 
 ## Admin access after Microsoft sign-in
 

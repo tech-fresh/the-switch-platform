@@ -20,6 +20,7 @@
     "verify:live-readiness": "node scripts/live-readiness.mjs",
     "verify:launch-status": "node scripts/launch-status.mjs",
     "verify:live-walkthrough": "node scripts/live-route-walkthrough.mjs",
+    "verify:live-onboarding": "node scripts/verify-live-onboarding.mjs",
     "verify:live-truth-match": "node scripts/live-truth-match.mjs",
     "verify:launch-signoff": "node scripts/launch-signoff.mjs",
     "verify:launch-complete": "node scripts/launch-complete.mjs",

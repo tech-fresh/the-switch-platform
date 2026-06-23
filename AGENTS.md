@@ -138,6 +138,13 @@ npm run verify:live-truth-match
 
 ---
 
+## Item 3 completion record (23 June 2026)
+
+- **Status: COMPLETE** on https://theswitchplatform.com
+- **Proof:** `npm run verify:live-onboarding` passed
+- **Evidence:** `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
+- **UI mockup:** `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md`
+
 ## Item 3 progress note (23 June 2026 — appended)
 
 - **Shipped:** onboarding module, `/onboarding` route, `/api/onboarding/profile`, dashboard gate.

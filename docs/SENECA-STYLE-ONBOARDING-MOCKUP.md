@@ -256,11 +256,11 @@ Dashboard (`/dashboard`) keeps the existing signed-in nav — marketing header i
 
 ## Live proof checklist (item 3)
 
-- [ ] Deploy to Fly (`fly deploy -a the-switch-platform`)
-- [ ] New learner: sign in → `/onboarding` → complete all 8 steps
-- [ ] Dashboard shows subjects from onboarding choices
-- [ ] Append evidence to `release-evidence/`
-- [ ] Re-run `npm run verify:live-walkthrough`
+- [x] Deploy to Fly (`fly deploy -a the-switch-platform`)
+- [x] New learner: sign in → `/onboarding` → complete all 8 steps (automated via `npm run verify:live-onboarding`)
+- [x] Dashboard shows subjects from onboarding choices
+- [x] Record evidence in `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
+- [x] Re-run `npm run verify:live-walkthrough`
 
 ---
 

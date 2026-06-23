@@ -11,6 +11,7 @@ import {
   recordLiveRouteWalkthrough,
 } from "./launch-governance.mjs";
 import { getLiveWalkthroughConfig } from "./live-walkthrough-utils.mjs";
+import { ensureWalkthroughStudentOnboardingComplete } from "./live-onboarding-utils.mjs";
 
 const routeChecks = [
   {
@@ -84,6 +85,9 @@ assert(
   `Live walkthrough failed: ${baseUrl}/api/auth/providers returned ${warmup.response.status}.`,
 );
 console.log("Live site responded. Checking authenticated routes...");
+
+await ensureWalkthroughStudentOnboardingComplete(baseUrl, studentHeaders);
+console.log("Walkthrough student onboarding is complete. Checking routes...");
 
 const passedSmokeChecks = new Map();
 

@@ -65,29 +65,28 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23 (Seneca-style onboarding UI + marketing header)
-- **Platform label:** `fully complete` for items 1–2, 4–22 on Fly · **item 3 in progress** (Seneca UI shipped locally, live proof pending)
+- **Last updated:** 2026-06-23 (item 3 onboarding live proof complete)
+- **Platform label:** **`fully complete` / 100% end to end** — all 22 Full End-to-End Completion List items closed on Fly
 
 ### Active task
 
-- **Priority item #:** launch — Full End-to-End Completion List **item 3** (onboarding)
-- **Module:** `onboarding`
-- **Status:** Seneca-style UI + step order shipped locally — live proof for new learner still required
+- **Priority item #:** none — launch list complete
+- **Module:** —
+- **Status:** Item 3 closed with live proof (`release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`)
 - **Branch:** `main`
 
 ### What was just completed
 
-- **Seneca-style onboarding:** 8-step flow (account type → qualification → profile → school → subjects → support → guardian → consent) with progress bar, sticky Back/Continue footer, light-blue palette, card grids
-- **Marketing header:** `MarketingSiteHeader` on homepage (For Students, Log in, Sign up)
-- **Homepage:** light blue gradient background aligned to Seneca reference
-- Fixed `dashboard-home.tsx` conditional header markup
-- Verification: lint, type-check, tests **92/92 pass**
+- **`npm run verify:live-onboarding`** — passed (fresh learner simulation on Fly)
+- **`npm run verify:live-walkthrough`** — passed (walkthrough ensures student onboarding complete before routes)
+- **`npm run verify:live-truth-match`** — passed
+- Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
+- Added `verify:live-onboarding` script + `live-onboarding-utils.mjs`
 
 ### What is next
 
-1. Prove item 3 on live Fly: new learner sign-in → complete onboarding → personalised dashboard
-2. Record evidence in `release-evidence/` and append item 3 live-proof note (do not replace 22-item list)
-3. Re-run `npm run verify:live-walkthrough` after live proof
+- None for Final Path Mark 2 — all 22 items complete
+- Optional: browser walkthrough for human sign-off on Seneca UI polish
 
 ### Blockers
 
@@ -97,8 +96,9 @@ Update this section every session.
 
 ### Verification last run
 
-- [x] Item 22 `npm run verify:live-truth-match` — passed today
-- [x] `npm run verify:live-walkthrough`
+- [x] Item 3 `npm run verify:live-onboarding` — passed 23 June 2026
+- [x] Item 22 `npm run verify:live-truth-match` — passed 23 June 2026
+- [x] `npm run verify:live-walkthrough` — passed 23 June 2026
 - [x] `npm run verify:launch-signoff` (Fly ssh)
 - [x] Manual browser Microsoft sign-in + admin launch view
 
@@ -299,6 +299,16 @@ Plain-English: this is the full launch checklist. Every line must be green befor
 22. Confirm system-wide truth matches — `npm run verify:live-truth-match`. **Completed — 23 June 2026 (Fly production).**
 
 Full item descriptions: see `README.md` → Final Path Mark 2 → Full End-to-End Completion List.
+
+#### Item 3 completion record (23 June 2026)
+
+**Status: COMPLETE** on https://theswitchplatform.com
+
+| Proof | Result |
+|-------|--------|
+| `npm run verify:live-onboarding` | Passed — fresh learner → dashboard |
+| Evidence file | `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md` |
+| UI mockup | `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` |
 
 #### Item 3 progress note (23 June 2026 — appended)
 

@@ -99,44 +99,64 @@ function buildCookieHeaders(audience, env) {
   };
 }
 
-function buildLaunchVerificationHeaders(audience, env) {
+function buildLaunchVerificationHeaders(audience, env, overrides = {}) {
   const prefix = audience === "admin" ? "SWITCH_LIVE_ADMIN" : "SWITCH_LIVE_STUDENT";
   const userId =
-    env[`${prefix}_USER_ID`]?.trim() ?? (audience === "admin" ? "launch-admin" : "launch-student");
+    overrides.userId?.trim() ??
+    env[`${prefix}_USER_ID`]?.trim() ??
+    (audience === "admin" ? "launch-admin" : "launch-student");
   const displayName =
+    overrides.displayName?.trim() ??
     env[`${prefix}_DISPLAY_NAME`]?.trim() ??
     (audience === "admin" ? "Launch Admin" : "Launch Student");
   const email =
+    overrides.email?.trim() ??
     env[`${prefix}_EMAIL`]?.trim() ??
     (audience === "admin"
       ? "admin@launch-verification.switch.local"
       : "student@launch-verification.switch.local");
   const roles =
-    audience === "admin"
+    overrides.roles?.trim() ??
+    (audience === "admin"
       ? splitList(env[`${prefix}_ROLES`], ["admin", "editor", "student"]).join(",")
-      : splitList(env[`${prefix}_ROLES`], ["student"]).join(",");
+      : splitList(env[`${prefix}_ROLES`], ["student"]).join(","));
+
+  assert(
+    env.SWITCH_LAUNCH_VERIFICATION_SECRET?.trim(),
+    "SWITCH_LAUNCH_VERIFICATION_SECRET is required for launch verification header mode.",
+  );
 
   return {
     "x-switch-launch-verification": env.SWITCH_LAUNCH_VERIFICATION_SECRET.trim(),
     "x-switch-launch-session-id":
-      env[`${prefix}_SESSION_ID`]?.trim() ?? `${audience}-launch-verification`,
+      overrides.sessionId?.trim() ??
+      env[`${prefix}_SESSION_ID`]?.trim() ??
+      `${audience}-launch-verification-${userId}`,
     "x-switch-launch-user-id": userId,
     "x-switch-launch-display-name": displayName,
     "x-switch-launch-email": email,
-    "x-switch-launch-provider": env[`${prefix}_PROVIDER`]?.trim() ?? "google",
+    "x-switch-launch-provider":
+      overrides.provider?.trim() ?? env[`${prefix}_PROVIDER`]?.trim() ?? "google",
     "x-switch-launch-roles": roles,
     "x-switch-launch-year-group":
+      overrides.yearGroup?.trim() ??
       env[`${prefix}_YEAR_GROUP`]?.trim() ??
       (audience === "admin" ? "Operations" : "Year 11"),
     "x-switch-launch-target-qualifications":
+      overrides.targetQualifications?.trim() ??
       splitList(env[`${prefix}_TARGET_QUALIFICATIONS`], ["GCSE"]).join(","),
     "x-switch-launch-signed-in-at":
-      env[`${prefix}_SIGNED_IN_AT`]?.trim() ?? new Date().toISOString(),
+      overrides.signedInAt?.trim() ??
+      env[`${prefix}_SIGNED_IN_AT`]?.trim() ??
+      new Date().toISOString(),
     "x-switch-launch-expires-at":
+      overrides.expiresAt?.trim() ??
       env[`${prefix}_EXPIRES_AT`]?.trim() ??
       new Date(Date.now() + 60 * 60 * 1000).toISOString(),
   };
 }
+
+export { buildLaunchVerificationHeaders };
 
 export function getLiveWalkthroughConfig(env = process.env) {
   const authMode = (env.SWITCH_AUTH_MODE ?? "oidc").trim();

@@ -332,6 +332,14 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-23 Item 3 live proof complete — Full End-to-End List closed
+
+- Added **`npm run verify:live-onboarding`** and **`scripts/live-onboarding-utils.mjs`** for automated live onboarding proof.
+- Live walkthrough now ensures walkthrough student onboarding is complete before route checks (dashboard gate compatibility).
+- **Item 3 status:** **COMPLETE** — evidence in `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`.
+- **All 22 items** now have live proof on Fly production at https://theswitchplatform.com.
+- **Preservation rule unchanged:** the 22-item list above was not replaced or shortened — this entry is appended only.
+
 ### 2026-06-23 Seneca-style onboarding UI + marketing header (item 3 — in progress)
 
 - Redesigned **`/onboarding`** to follow Seneca Learning step order and visual style: account type cards, qualification grid, personalised profile/year step, school capture, subject grid with icons, support/accessibility, guardian invite, consent.
@@ -2901,6 +2909,14 @@ Do not describe the platform as fully complete unless every item below is comple
    Plain-English: what we wrote down and what the live site shows match — the final honesty check passed.
 
 Also indexed in [`PLATFORM-GUIDE.md` → Full End-to-End Completion List](./PLATFORM-GUIDE.md#full-end-to-end-completion-list) for the merged operator guide.
+
+#### Item 3 completion record (23 June 2026)
+
+**COMPLETE** on https://theswitchplatform.com (Fly.io, sqlite `/data`).
+
+- `npm run verify:live-onboarding` — passed (fresh learner → guided setup → personalised dashboard)
+- Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
+- Seneca-style UI at `/onboarding`; mockup: `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md`
 
 #### Item 3 progress note (23 June 2026 — appended, list unchanged)
 

@@ -240,7 +240,7 @@ Do not describe the platform as fully complete unless **every** item below is co
 
 **Completion rule:** Only when all 22 items are done → platform may be called fully complete, fully live, 100% end to end.
 
-**Known gap (honest audit):** Item 3 onboarding flow is now implemented in code (`/onboarding`, API, dashboard gate). Live-environment proof for a real new learner still required before calling item 3 fully closed in production evidence.
+**Item 3 status (23 June 2026):** **COMPLETE** — live proof in `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`. Re-check: `npm run verify:live-onboarding`.
 
 ### Operator notes
 

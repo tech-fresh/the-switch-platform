@@ -678,6 +678,35 @@ flowchart LR
 ```
 
 Future sessions should treat A and B alone as insufficient proof. C through E are required.
+
+### June 23, 2026 — Final Path Mark 2 live auth proof (recorded)
+
+- **Azure path used:** Option B — Azure free account (`theswitchplatformhotmail.onmicrosoft.com`), not M365 Developer Program.
+- **Live Azure app:** THE SWITCH PLATFORM — client ID `1d7c54e8-4445-40bc-9c97-598af039bfe6`.
+- **Browser proof:** `lloydnwag@gmail.com` signed in via Microsoft; `/account` shows admin + student roles; admin launch view shows CMS live and 6/6 / 5/5 / 8/8 checks.
+- **Sign-in entry:** https://theswitchplatform.com/login?reauth=1 (use when Log in seemed to do nothing — avoids redirect loop when a session already exists).
+- **Item 22:** `npm run verify:live-truth-match` passed on Fly (sqlite `/data`, governance ready). Keep platform label `near-launch` until PR #4 is merged to `main` and launch-complete is rerun from `main` if required.
+
+```mermaid
+flowchart TD
+    A["Student opens /dashboard"] --> B{"Signed in?"}
+    B -->|no| C["Nav Log in → /login?reauth=1"]
+    B -->|yes| D["Nav Account"]
+    C --> E["Continue with Microsoft or Google"]
+    E --> F["Callback sets switch_auth_session"]
+    F --> G["/account + /admin available when allowlisted"]
+```
+
+Operator commands (current live host):
+
+```bash
+npm run verify:microsoft-oauth-live
+npm run verify:google-oauth-live
+npm run verify:live-walkthrough
+npm run verify:live-truth-match
+npm run apply:microsoft-oauth-azure-free
+```
+
 - In live `oidc` mode, admin access is currently derived from mapped roles on the signed-in email address, with `SWITCH_AUTH_ADMIN_EMAILS` and `SWITCH_AUTH_EDITOR_EMAILS` acting as the current role-allowlist boundary.
 - Prefer one main sign-in path with role-based admin access over two disconnected student/admin login systems unless the user explicitly reprioritises the auth architecture.
 - If a future task introduces a true email-and-password admin login, treat it as a separate auth hardening deliverable rather than a small UI tweak.

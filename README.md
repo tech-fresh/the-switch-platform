@@ -4944,3 +4944,52 @@ sequenceDiagram
     Live-->>Op: client_id UUID check passes
     Op->>Live: manual /login Continue with Microsoft
 ```
+
+### 56. Live Microsoft browser sign-in + sign-in UX + item 22 re-check (Completed)
+
+Final Path Mark 2 auth is now proven in a real browser, not only through redirect scripts.
+
+Plain-English explanation:
+
+- You can open the **dashboard without signing in** — it shows demo student data for everyone. That is normal. Signing in ties progress to your email.
+- If **Log in** seemed to do nothing, you likely already had a session cookie. The site now uses `/login?reauth=1` so the sign-in screen always appears.
+- **Continue with Google / Microsoft** are normal links now (better on phones than JavaScript-only buttons).
+- After Microsoft sign-in, **Account** shows your email, provider, roles, and expiry. Admin opens when your email is on the allowlist.
+
+Live proof recorded 23 June 2026:
+
+| Check | Result |
+|-------|--------|
+| Microsoft OAuth verify script | Passed (`1d7c54e8-4445-40bc-9c97-598af039bfe6`) |
+| Google OAuth verify script | Passed |
+| Live route walkthrough | Passed |
+| Item 22 truth-match | Passed (sqlite `/data`, governance ready) |
+| Browser `/account` | `lloydnwag@gmail.com` via Microsoft, roles admin + student |
+| Admin launch view | CMS live; 6/6 environment, 5/5 sign-off, 8/8 evidence |
+
+Azure setup path used (Option B — no M365 Developer Program required):
+
+1. Azure free account at azure.microsoft.com/free
+2. App registration **THE SWITCH PLATFORM** in tenant `theswitchplatformhotmail.onmicrosoft.com`
+3. Fly secrets for `SWITCH_OIDC_MICROSOFT_*`
+4. Helper: `npm run apply:microsoft-oauth-azure-free`
+
+Sign-in journey (non-coder view):
+
+```mermaid
+flowchart TD
+    A["Open theswitchplatform.com"] --> B["Press Log in or go to /login?reauth=1"]
+    B --> C["Continue with Microsoft"]
+    C --> D["Sign in at Microsoft"]
+    D --> E["Return to The Switch automatically"]
+    E --> F["Open Account — see your email and roles"]
+    F --> G{"Admin email allowlisted?"}
+    G -->|yes| H["Open admin dashboard"]
+    G -->|no| I["Student routes only"]
+```
+
+Release handoff:
+
+- **Draft PR:** https://github.com/tech-fresh/the-switch-platform/pull/4
+- **Branch:** `cursor/unified-login-sign-in-page`
+- **Next:** merge to `main`, then treat Fly production as the single live host at https://theswitchplatform.com

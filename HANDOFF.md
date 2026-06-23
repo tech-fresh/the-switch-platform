@@ -65,42 +65,48 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `cursor/unified-login-sign-in-page`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23
-- **Platform label:** `near-launch` — `/login` live; Microsoft terminal provisioning documented; Fly deploy green
+- **Last updated:** 2026-06-23 (afternoon — live Microsoft browser sign-in confirmed)
+- **Platform label:** `near-launch` — Final Path Mark 2 auth + item 22 truth-match green on Fly; merge PR #4 to `main`
 
 ### Active task
 
-- **Priority item #:** auth — Microsoft Azure real client ID on Fly
-- **Module:** auth / deploy
-- **Status:** Code + docs complete; operator must finish `az login` with M365 dev tenant admin, then `npm run provision:microsoft-oauth-live:apply`
-- **Branch:** `cursor/unified-login-sign-in-page`
+- **Priority item #:** release — merge unified login + Microsoft branch
+- **Module:** auth / launch
+- **Status:** Live Microsoft + Google sign-in proven in browser; governance and walkthrough checks passing
+- **Branch:** `cursor/unified-login-sign-in-page` → **draft PR #4**
 
 ### What was just completed
 
-- Terminal provision script: `scripts/provision-microsoft-oauth-live.sh` (+ `npm run provision:microsoft-oauth-live` / `:apply`)
-- Verify script now rejects placeholder `client_id=your-client-id` on live redirects
-- Docs updated: personal Hotmail/Outlook account type, M365 Developer tenant vs personal Hotmail login
-- Azure CLI install path documented (`brew install azure-cli`)
+- **Live Microsoft browser sign-in** — `lloydnwag@gmail.com` signed in via Microsoft on https://theswitchplatform.com/account (roles: admin, student)
+- Azure app **THE SWITCH PLATFORM** — client ID `1d7c54e8-4445-40bc-9c97-598af039bfe6` on Fly with redirect URI + personal accounts
+- Sign-in UX fixes deployed: `/login?reauth=1`, anchor-based provider buttons, Microsoft Graph / id_token profile fallback
+- **Item 22:** `npm run verify:live-truth-match` passed (sqlite `/data`, governance ready)
+- **Live walkthrough** passed on theswitchplatform.com
+- **OAuth:** `verify:microsoft-oauth-live` and `verify:google-oauth-live` passed
+- **Admin launch view:** CMS live, launch checks 6/6, sign-off 5/5, evidence 8/8 (operator screenshot 23 Jun 2026)
+- **Draft PR:** https://github.com/tech-fresh/the-switch-platform/pull/4
 
 ### What is next
 
-1. `az login --use-device-code --allow-no-subscriptions` with **admin@tenant.onmicrosoft.com** (M365 Developer welcome email — not Hotmail alone)
-2. `npm run provision:microsoft-oauth-live:apply` — creates Azure app, sets Fly secrets, runs verify
-3. Manual browser test: https://theswitchplatform.com/login → **Continue with Microsoft**
-4. Merge `cursor/unified-login-sign-in-page` to `main` (PR #4)
+1. Mark PR #4 ready and merge `cursor/unified-login-sign-in-page` → `main`
+2. `fly deploy` from `main` after merge (optional if live already matches branch)
+3. Keep `lloydnwag@gmail.com` in `SWITCH_AUTH_ADMIN_EMAILS` / `SWITCH_AUTH_EDITOR_EMAILS` on Fly
 
 ### Blockers
 
-- **Fly still has placeholder `SWITCH_OIDC_MICROSOFT_CLIENT_ID=your-client-id`** until provision script completes
-- **Azure CLI login:** portal/Hotmail sign-in is not enough; need M365 Developer **tenant admin** account for `az ad app create`
+- None for auth or item 22 truth-match on current Fly deploy
 
 ### Verification last run
 
-- [x] `npm run build` (local + Fly image)
-- [x] `fly deploy -a the-switch-platform`
+- [x] `npm run build` + `fly deploy -a the-switch-platform`
+- [x] `npm run verify:microsoft-oauth-live`
 - [x] `npm run verify:google-oauth-live`
-- [ ] `npm run verify:microsoft-oauth-live` (fails until real Azure client ID on Fly)
-- [x] Live `/login` and `/login/microsoft-guide` return 200
+- [x] `npm run verify:live-walkthrough`
+- [x] `npm run verify:live-truth-match` (item 22)
+- [x] `npm run verify:live-readiness`
+- [x] Launch sign-off recorded on Fly (`fly ssh console` → `launch-signoff.mjs`)
+- [x] Manual browser Microsoft sign-in → `/account` shows live session
+- [x] Admin launch view shows 6/6 / 5/5 / 8/8 with signed-in operator
 
 ---
 
@@ -423,6 +429,34 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — Live Microsoft sign-in + item 22 truth-match (Final Path Mark 2)
+
+- Branch: cursor/unified-login-sign-in-page (draft PR #4)
+- Done: browser Microsoft sign-in for lloydnwag@gmail.com (admin+student), Azure app on Fly, sign-in UX fixes, truth-match + walkthrough + OAuth verify green
+- Next: merge PR #4 to main
+- Blocker: none
+
+Plain-English summary:
+
+- The dashboard is public — you can browse it without signing in. Sign-in happens at `/login` or `/login?reauth=1`.
+- Microsoft sign-in is now proven in a real browser session, not just redirect checks.
+- Admin launch view matches governance records (6/6 environment, 5/5 sign-off, 8/8 evidence).
+
+```mermaid
+flowchart LR
+    A["/login?reauth=1"] --> B["Continue with Microsoft"]
+    B --> C["Microsoft login"]
+    C --> D["/api/auth/callback"]
+    D --> E["switch_auth_session cookie"]
+    E --> F["/account shows email + roles"]
+    F --> G["/admin launch view 6/6 5/5 8/8"]
+```
+
+### 2026-06-23 — Cursor — Sign-in UX fix (reauth + mobile links)
+
+- Done: anchor-based Google/Microsoft buttons, `/login?reauth=1` when already signed in, dashboard nav shows Account when authenticated
+- Deployed to Fly theswitchplatform.com
 
 ### 2026-06-23 — Cursor — Microsoft terminal provision + placeholder client_id docs
 

@@ -1,11 +1,16 @@
 import Link from "next/link";
 import { MarketingSiteHeader } from "@/components/marketing-site-header";
+import { MarketingSiteFooter } from "@/components/mock-idea/marketing-site-footer";
+import { PlannerPromptCard } from "@/components/mock-idea/planner-prompt-card";
+import { SendSupportRail } from "@/components/mock-idea/send-support-rail";
+import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import type { DashboardHomeData, DashboardMetric, DashboardRouteCard, DashboardSessionCard } from "@/modules/dashboard/types";
 
 interface DashboardHomeProps {
   data: DashboardHomeData;
   mode: "home" | "dashboard";
   isAuthenticated?: boolean;
+  displayName?: string;
 }
 
 function getToneClasses(tone: DashboardMetric["tone"] | DashboardRouteCard["tone"]): string {
@@ -72,9 +77,9 @@ function getMotivationClasses(colour: DashboardHomeData["dailyMotivation"]["colo
   }
 }
 
-export function DashboardHome({ data, mode, isAuthenticated = false }: DashboardHomeProps) {
+export function DashboardHome({ data, mode, isAuthenticated = false, displayName }: DashboardHomeProps) {
   const isHome = mode === "home";
-  const heroEyebrow = isHome ? "The Switch Mark 3.2" : "Student Dashboard";
+  const heroEyebrow = isHome ? "Mock Idea · The Switch Mark 3.2" : "Student Dashboard";
   const heroTitle = isHome
     ? "Revision, timed practice, and exam readiness now have a proper front door."
     : "Your working home screen for what is saved, what needs attention, and what to do next.";
@@ -82,72 +87,13 @@ export function DashboardHome({ data, mode, isAuthenticated = false }: Dashboard
     ? "This home screen is now wired into the real MVP slice. It pulls live mock data from the dashboard, exam engine, timed assessment, saved progress, and Power Grid modules so the platform finally feels connected."
     : "The dashboard now acts like a real student home surface. It shows live readiness, route launch points, session summaries, and subject focus without hiding the logic inside the page.";
 
-  return (
-    <main className="min-h-screen overflow-hidden bg-[#eef6ff] text-stone-950">
-      {isHome ? <MarketingSiteHeader isAuthenticated={isAuthenticated} /> : null}
-      <div className="relative isolate">
-        <div className="absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.15),_transparent_42%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.12),_transparent_38%),linear-gradient(to_bottom,_#ffffff,_#eef6ff)]" />
-        <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
+  const innerContent = (
+    <>
           {!isHome ? (
-          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200/80 pb-5">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-stone-500">
-                The Switch Platform
-              </p>
-              <p className="mt-2 text-sm text-stone-600">
-                Modular MVP for GCSE revision, exam practice, and saved progress.
-              </p>
+            <div className="mb-6 space-y-4">
+              <PlannerPromptCard />
+              <SendSupportRail summary={data.supportSnapshotSummary} chips={data.supportPreferenceChips} />
             </div>
-            <nav className="flex flex-wrap gap-2 text-sm">
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/">
-                Home
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/dashboard">
-                Dashboard
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/app-preview">
-                App Preview
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/how-it-works">
-                How It Works
-              </Link>
-              <Link
-                className="border border-teal-700 bg-teal-700 px-3 py-2 font-medium text-white transition hover:bg-teal-800"
-                href={isAuthenticated ? "/account" : "/login?reauth=1"}
-              >
-                {isAuthenticated ? "Account" : "Log in"}
-              </Link>
-              {!isAuthenticated ? (
-                <Link
-                  className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50"
-                  href="/account"
-                >
-                  Account
-                </Link>
-              ) : null}
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/exams">
-                Exams
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/assessments">
-                Assessments
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/progress">
-                Progress
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/saved-progress">
-                Saved Progress
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/support">
-                Support Hub
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/recommendations">
-                Recommendations
-              </Link>
-              <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/results">
-                Results
-              </Link>
-            </nav>
-          </header>
           ) : null}
 
           <section className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_22rem]">
@@ -736,8 +682,27 @@ export function DashboardHome({ data, mode, isAuthenticated = false }: Dashboard
               </section>
             </aside>
           </section>
+    </>
+  );
+
+  if (!isHome) {
+    return (
+      <StudentAppShell displayName={displayName} supportChips={data.supportPreferenceChips}>
+        <div className="flex flex-col gap-8 pb-20 lg:pb-8">{innerContent}</div>
+      </StudentAppShell>
+    );
+  }
+
+  return (
+    <main className="min-h-screen overflow-hidden bg-[#eef6ff] text-stone-950">
+      <MarketingSiteHeader isAuthenticated={isAuthenticated} />
+      <div className="relative isolate">
+        <div className="absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.15),_transparent_42%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.12),_transparent_38%),linear-gradient(to_bottom,_#ffffff,_#eef6ff)]" />
+        <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
+          {innerContent}
         </div>
       </div>
+      <MarketingSiteFooter />
     </main>
   );
 }

@@ -65,27 +65,29 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-24 (onboarding wired to MVP access/SEND modules)
+- **Last updated:** 2026-06-24 (Mock Idea dashboard shell + docs)
 - **Platform label:** **`fully complete` / 100% end to end** — all 22 Full End-to-End Completion List items closed on Fly
 
 ### Active task
 
-- **Priority item #:** post-launch polish — onboarding/catalog alignment
-- **Module:** `onboarding`
-- **Status:** Subject step filters by qualification path; matches MVP catalog
+- **Priority item #:** post-launch polish — Mock Idea UI direction
+- **Module:** `dashboard` + marketing shell
+- **Status:** Mock Idea sidebar, footer, planner card, SEND rail shipped
 - **Branch:** `main`
 
 ### What was just completed
 
-- Onboarding step 5 wired to MVP **Accessibility**, **Access Arrangements foundation**, and **Support Hub**
-- Completing onboarding seeds `StudentAccessProfile` and dashboard support chips
-- Subject step filtered by qualification path (GCSE vs iGCSE catalog)
+- **Mock Idea** student shell: sidebar, welcome header, planner prompt, SEND support rail
+- Marketing header/footer rebranded (indigo/violet twist + MVP SEND colour chips)
+- Dashboard wraps in `StudentAppShell`; homepage gets `MarketingSiteFooter`
+- `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` updated with Mock Idea direction
+- Auth login nav test updated for marketing header
 - Tests 95/95 pass
 
 ### What is next
 
 - None for Final Path Mark 2 — all 22 items complete
-- Optional: browser walkthrough for human sign-off on Seneca UI polish
+- Optional: browser walkthrough of Mock Idea dashboard shell
 
 ### Blockers
 

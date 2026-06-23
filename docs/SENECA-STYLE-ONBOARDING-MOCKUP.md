@@ -1,11 +1,41 @@
-# Seneca-Style Onboarding & Website Mockup
+# Mock Idea — Onboarding & Website Mockup
 
-> **Build priority:** Full End-to-End Completion List **item 3** (onboarding)  
-> **Live route:** https://theswitchplatform.com/onboarding  
-> **Reference:** Seneca Learning onboarding flow (account type → qualification → profile → subjects → dashboard)  
-> **Shipped:** 2026-06-23 — commit `129f39e`
+> **Design direction name:** **Mock Idea** (Seneca-inspired layout study — not a copy)  
+> **Platform:** The Switch Platform · https://theswitchplatform.com  
+> **Onboarding route:** `/onboarding`  
+> **Reference:** Supplied Seneca screenshots — adapted with indigo/violet twist + MVP SEND colours  
+> **Shipped:** 2026-06-23 onboarding · 2026-06-24 Mock Idea shell
 
-Plain English: this document is the visual and flow mockup for the new guided setup. It matches the Seneca screenshots supplied for step order, spacing, and tone — while keeping Switch-specific steps (school lookup, accessibility, guardian, consent).
+Plain English: **Mock Idea** is our name for the student-facing layout direction. It keeps the calm, card-based flow from the reference screenshots but uses **indigo/violet** accents instead of Seneca blue, adds **MVP SEND colour chips** (cream, blue, yellow, high contrast), and runs on The Switch Platform modules — not a third-party clone.
+
+---
+
+## Mock Idea twist (what is different)
+
+| Reference pattern | Mock Idea twist |
+|-------------------|-----------------|
+| Seneca blue branding | **Indigo/violet** primary + amber SEND chips |
+| Seneca logo | **✦ MOCK IDEA** wordmark |
+| Subject sidebar purple icons | Violet accent nav + **Access** + **SEND help** items |
+| Gamified XP header | Kept — “Good morning, {name}” + support chips from onboarding |
+| Planner popup | **PlannerPromptCard** — dismissible, links `/progress` + `/accessibility` |
+| Marketing footer | **MarketingSiteFooter** with SEND overlay chips |
+
+---
+
+## MVP SEND colour requirements
+
+From `globals.css` accessibility runtime — used as **signposting chips** (not auto-applied without user choice):
+
+| Overlay | Hex | MVP use |
+|---------|-----|---------|
+| Cream | `#f6f0dc` | Dyslexia-friendly reading backgrounds |
+| Blue | `#eaf4ff` | Calm focus backgrounds |
+| Yellow | `#fff8c4` | High-visibility reading |
+| High contrast | black/white | Maximum legibility |
+
+Components: `SEND_COLOUR_CHIPS` in `src/components/mock-idea/brand-tokens.ts`  
+Surfaces: footer, sidebar mini chips, `SendSupportRail`, planner CTA button.
 
 ---
 
@@ -13,31 +43,65 @@ Plain English: this document is the visual and flow mockup for the new guided se
 
 | Token | Value | Use |
 |-------|-------|-----|
-| Page background | `#eef6ff` | Onboarding + homepage gradient base |
-| Primary action | `sky-500` / `sky-700` | Progress bar, Continue, Sign up |
-| Card surface | `white` + `rounded-2xl` + light shadow | All selection cards |
-| Body text | `slate-700` / `slate-500` | Headings and subtitles |
-| Progress track | `slate-200` | Full-width bar at top |
-| Progress fill | `sky-500` | Filled portion with emoji indicator |
-
-Typography: existing platform sans-serif (Tailwind defaults). Mobile-first — cards stack to one column on small screens.
+| Page background | `#eef6ff` | Onboarding + student shell |
+| Primary action | `indigo-600` / `indigo-700` | Sign up, Create my plan |
+| Secondary | `sky-100` / `violet-100` | Active nav items |
+| SEND chips | cream / blue / yellow / black | Accessibility signposting |
+| Card surface | `white` + `rounded-2xl` + shadow | Cards and modals |
 
 ---
 
 ## Marketing header (homepage)
 
-Mirrors Seneca public site nav: logo left, audience links centre, auth CTAs right.
-
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  ✦ THE SWITCH    For Students  How it works  Support  Schools   │
-│                                      Log in    [ Sign up ]      │
+│  ✦ MOCK IDEA   For Students  Resources  For Parents  Schools    │
+│                          Join class  Log in    [ Sign up ]        │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 - **Component:** `src/components/marketing-site-header.tsx`
-- **Used on:** `/` (homepage only via `dashboard-home.tsx` `mode="home"`)
-- **Signed-in:** Log in → Account; Sign up → Dashboard
+- **Used on:** `/` homepage
+
+---
+
+## Marketing footer (homepage)
+
+Four columns: Mock Idea brand · For learners · Access & SEND · Schools  
+Bottom row: **MVP SEND colour overlay chips** linking to `/accessibility`.
+
+- **Component:** `src/components/mock-idea/marketing-site-footer.tsx`
+
+---
+
+## Signed-in dashboard shell
+
+```
+┌──────┬──────────────────────────────────────────────────────────┐
+│ ✦    │  Good morning, Lloyd · 100 XP to Level 1               │
+│ 🏠   │  [Accessibility setup] [Access settings]               │
+│ 📝   ├──────────────────────────────────────────────────────────┤
+│ 📅   │  [ Planner prompt card — Create my plan ]                │
+│ 📚   │  [ SEND support rail — cream/blue/yellow/high contrast ] │
+│ ♿   │  … existing dashboard content …                          │
+│ 🧭   │                                                          │
+│ 🙂   │                                                          │
+└──────┴──────────────────────────────────────────────────────────┘
+```
+
+- **Component:** `src/components/mock-idea/student-app-shell.tsx`
+- **Used on:** `/dashboard` when `mode="dashboard"`
+- **Also:** `PlannerPromptCard`, `SendSupportRail`
+
+Mobile: bottom tab bar (Home, Practice, Planner, Subjects).
+
+---
+
+## Onboarding banner
+
+Top strip on `/onboarding`: **Mock Idea guided setup · The Switch Platform**
+
+- **Component:** `src/components/onboarding/onboarding-shell.tsx`
 
 ---
 
@@ -287,8 +351,13 @@ Dashboard (`/dashboard`) keeps the existing signed-in nav — marketing header i
 
 | File | Role |
 |------|------|
-| `src/components/onboarding/onboarding-shell.tsx` | Progress bar + footer shell |
-| `src/components/marketing-site-header.tsx` | Public marketing nav |
+| `src/components/mock-idea/brand-tokens.ts` | Mock Idea brand + SEND palette |
+| `src/components/mock-idea/student-app-shell.tsx` | Sidebar + welcome header |
+| `src/components/mock-idea/marketing-site-footer.tsx` | Public footer + SEND chips |
+| `src/components/mock-idea/planner-prompt-card.tsx` | Planner modal card |
+| `src/components/mock-idea/send-support-rail.tsx` | Access/SEND dashboard rail |
+| `src/components/marketing-site-header.tsx` | Public header (Mock Idea) |
+| `src/components/onboarding/onboarding-shell.tsx` | Onboarding progress shell |
 | `src/app/onboarding/onboarding-experience.tsx` | Step content + save logic |
 | `src/modules/onboarding/service.ts` | Step order + completion rules |
-| `src/components/dashboard-home.tsx` | Homepage header + gradient |
+| `src/components/dashboard-home.tsx` | Home + dashboard layout |

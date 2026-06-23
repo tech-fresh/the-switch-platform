@@ -24,6 +24,11 @@ export default async function DashboardPage() {
       data={data}
       mode="dashboard"
       isAuthenticated={account.isAuthenticated || session.status === "authenticated"}
+      displayName={
+        account.session.status === "authenticated"
+          ? account.session.user.displayName
+          : session.user.displayName
+      }
     />
   );
 }

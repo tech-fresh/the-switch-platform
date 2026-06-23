@@ -25,6 +25,9 @@ export function OnboardingShell({
 
   return (
     <main className="flex min-h-screen flex-col bg-[#eef6ff] text-slate-800">
+      <div className="border-b border-slate-200/80 bg-white/80 px-4 py-2 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700 sm:px-8">
+        Mock Idea guided setup · The Switch Platform
+      </div>
       <div className="px-4 pt-6 sm:px-8">
         <div className="relative mx-auto h-2 max-w-4xl overflow-hidden rounded-full bg-slate-200">
           <div

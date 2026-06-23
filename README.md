@@ -332,6 +332,14 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-24 Mock Idea dashboard shell and marketing footer
+
+- Added **Mock Idea** design direction (Seneca-inspired layout study, not a copy): indigo/violet branding, student sidebar shell, welcome header, planner prompt card, SEND support rail.
+- New components under `src/components/mock-idea/` — `student-app-shell`, `marketing-site-footer`, `planner-prompt-card`, `send-support-rail`, `brand-tokens`.
+- Dashboard signed-in view wraps in `StudentAppShell`; homepage adds `MarketingSiteFooter` with MVP SEND colour overlay chips (cream, blue, yellow, high contrast).
+- Marketing header rebranded to **MOCK IDEA** wordmark.
+- `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` updated with Mock Idea twist, SEND colours, shell diagrams.
+
 ### 2026-06-23 Onboarding aligned to MVP catalog subjects
 
 - Onboarding subject step now filters by qualification path: **GCSE routes** show Maths, English Language, and Combined Science; **iGCSE** shows iGCSE Mathematics only.

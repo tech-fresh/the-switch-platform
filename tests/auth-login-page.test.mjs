@@ -18,10 +18,13 @@ test("login route exposes the unified sign-in shell", () => {
 });
 
 test("site navigation links Log in to the dedicated login route", () => {
-  const dashboardHome = readFileSync(path.join(repoRoot, "src/components/dashboard-home.tsx"), "utf8");
+  const marketingHeader = readFileSync(
+    path.join(repoRoot, "src/components/marketing-site-header.tsx"),
+    "utf8",
+  );
 
-  assert.match(dashboardHome, /\/login\?reauth=1/);
-  assert.match(dashboardHome, /Log in/);
+  assert.match(marketingHeader, /\/login\?reauth=1/);
+  assert.match(marketingHeader, /Log in/);
 });
 
 test("protected routes redirect signed-out users to the login page", () => {

@@ -65,7 +65,7 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23 (documentation merge — PLATFORM-GUIDE.md)
+- **Last updated:** 2026-06-23 (append-only restore of 22-item list in README, AGENTS, HANDOFF)
 - **Platform label:** `fully complete` — all 22 end-to-end items done; item 22 closed on Fly
 
 ### Active task
@@ -77,7 +77,7 @@ Update this section every session.
 
 ### What was just completed
 
-- Restored **Full End-to-End Completion List** in `README.md`, `AGENTS.md`, and `HANDOFF.md` with **do not replace** preservation rule (append-only fix after PLATFORM-GUIDE merge)
+- **Committed `a83722c`** — appended final 22-item list to `README.md`, `AGENTS.md`, `HANDOFF.md`, `PLATFORM-GUIDE.md` with do-not-replace rules (build history kept)
 
 ### What is next
 

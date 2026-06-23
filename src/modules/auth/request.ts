@@ -170,7 +170,7 @@ export async function getRequestUserId(): Promise<string> {
   return getAuthUserIdFromSession(session);
 }
 
-export async function requireAuthenticatedRequestSession(redirectTo = "/account"): Promise<AuthenticatedAuthSession> {
+export async function requireAuthenticatedRequestSession(redirectTo = "/login"): Promise<AuthenticatedAuthSession> {
   const session = await getRequestAuthSession();
 
   if (session.status !== "authenticated") {
@@ -182,7 +182,7 @@ export async function requireAuthenticatedRequestSession(redirectTo = "/account"
 
 export async function requireRequestSessionRoles(
   roles: AuthRole[],
-  redirectTo = "/account",
+  redirectTo = "/login",
 ): Promise<AuthenticatedAuthSession> {
   const session = await requireAuthenticatedRequestSession(redirectTo);
 

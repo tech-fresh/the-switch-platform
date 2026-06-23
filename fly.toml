@@ -1,5 +1,7 @@
-# Fly.io free-tier persistence host (filesystem sqlite on a volume).
-# Full steps: docs/FREE_TIER_DEPLOY.md
+# fly.toml app configuration file generated for the-switch-platform on 2026-06-22T01:42:59+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = 'the-switch-platform'
 primary_region = 'lhr'
@@ -8,13 +10,17 @@ primary_region = 'lhr'
   dockerfile = 'Dockerfile'
 
 [env]
+  HOSTNAME = '0.0.0.0'
   NODE_ENV = 'production'
   PORT = '3000'
-  HOSTNAME = '0.0.0.0'
-  SWITCH_PERSISTENCE_DRIVER = 'sqlite'
-  SWITCH_DATA_DIRECTORY = '/data'
-  SWITCH_CMS_BACKEND_MODE = 'live'
   SWITCH_AUTO_BOOTSTRAP_SQLITE = '1'
+  SWITCH_CMS_BACKEND_MODE = 'live'
+  SWITCH_DATA_DIRECTORY = '/data'
+  SWITCH_PERSISTENCE_DRIVER = 'sqlite'
+
+[[mounts]]
+  source = 'switch_data'
+  destination = '/data'
 
 [http_service]
   internal_port = 3000
@@ -24,11 +30,8 @@ primary_region = 'lhr'
   min_machines_running = 0
   processes = ['app']
 
-[[mounts]]
-  source = 'switch_data'
-  destination = '/data'
-
 [[vm]]
   memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 512

@@ -21,17 +21,17 @@ export async function GET(request: Request) {
   const flowState = readAuthFlowToken(flowToken, runtime.sessionSecret);
 
   if (runtime.mode !== "oidc") {
-    return clearFlowAndRedirect(requestUrl, "/account?authError=callback-not-enabled");
+    return clearFlowAndRedirect(requestUrl, "/login?authError=callback-not-enabled");
   }
 
   if (!flowState) {
-    return clearFlowAndRedirect(requestUrl, "/account?authError=missing-flow-state");
+    return clearFlowAndRedirect(requestUrl, "/login?authError=missing-flow-state");
   }
 
   if (requestUrl.searchParams.get("error")) {
     return clearFlowAndRedirect(
       requestUrl,
-      `/account?authError=${encodeURIComponent(requestUrl.searchParams.get("error") ?? "provider-error")}`,
+      `/login?authError=${encodeURIComponent(requestUrl.searchParams.get("error") ?? "provider-error")}`,
     );
   }
 
@@ -39,13 +39,13 @@ export async function GET(request: Request) {
   const state = requestUrl.searchParams.get("state");
 
   if (!authorizationCode || !state || state !== flowState.state) {
-    return clearFlowAndRedirect(requestUrl, "/account?authError=invalid-callback-state");
+    return clearFlowAndRedirect(requestUrl, "/login?authError=invalid-callback-state");
   }
 
   const oidcProvider = getConfiguredOidcProvider(flowState.provider);
 
   if (!oidcProvider) {
-    return clearFlowAndRedirect(requestUrl, "/account?authError=provider-not-configured");
+    return clearFlowAndRedirect(requestUrl, "/login?authError=provider-not-configured");
   }
 
   try {
@@ -67,7 +67,7 @@ export async function GET(request: Request) {
     });
 
     if (!tokenResponse.ok) {
-      return clearFlowAndRedirect(requestUrl, "/account?authError=token-exchange-failed");
+      return clearFlowAndRedirect(requestUrl, "/login?authError=token-exchange-failed");
     }
 
     const tokenPayload = (await tokenResponse.json()) as Partial<{
@@ -76,7 +76,7 @@ export async function GET(request: Request) {
     }>;
 
     if (!tokenPayload.access_token) {
-      return clearFlowAndRedirect(requestUrl, "/account?authError=missing-access-token");
+      return clearFlowAndRedirect(requestUrl, "/login?authError=missing-access-token");
     }
 
     const userInfoResponse = await fetch(oidcProvider.userInfoUrl, {
@@ -87,7 +87,7 @@ export async function GET(request: Request) {
     });
 
     if (!userInfoResponse.ok) {
-      return clearFlowAndRedirect(requestUrl, "/account?authError=user-info-failed");
+      return clearFlowAndRedirect(requestUrl, "/login?authError=user-info-failed");
     }
 
     const profile = await userInfoResponse.json();
@@ -103,7 +103,7 @@ export async function GET(request: Request) {
 
     return response;
   } catch {
-    return clearFlowAndRedirect(requestUrl, "/account?authError=callback-processing-failed");
+    return clearFlowAndRedirect(requestUrl, "/login?authError=callback-processing-failed");
   }
 }
 

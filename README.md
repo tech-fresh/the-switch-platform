@@ -4774,3 +4774,50 @@ Documentation rule for future sessions:
 - append to `README.md` and `AGENTS.md`
 - do not silently overwrite earlier project record unless the earlier material is truly obsolete or incorrect
 - add diagrams when they make the system easier to understand for the next operator
+
+### 53. Unified `/login` sign-in front door for students and admin (Completed)
+
+The website now includes a dedicated Seneca-style sign-in route at `/login` so students and admin use one calm front door instead of starting from the account management page.
+
+Added guidance includes:
+
+- a new route at `/login` with provider buttons for Google, Microsoft, Apple, and email magic link when configured
+- a home navigation **Log in** button that opens `/login`
+- signed-out protected routes and auth callback errors that return to `/login`
+- default post-sign-in return to `/dashboard`, with safe `returnTo` support when supplied
+
+Why this matters in architecture terms:
+
+- sign-in UX now lives in a focused website shell route instead of being mixed into account management copy
+- the auth module still owns provider selection and session creation through `/api/auth/start` and `/api/auth/callback`
+- one OIDC sign-in path still serves both student routes and admin routes through email allowlists
+
+Learner-friendly explanation:
+
+- press **Log in** on the home screen
+- choose Google, Microsoft, or email on one card
+- land back in the product on the dashboard with the same session that can also open admin when the email is allowlisted
+
+Unified sign-in flow:
+
+```mermaid
+flowchart TD
+    A["Home navigation Log in"] --> B["/login"]
+    B --> C["Choose Google Microsoft or email"]
+    C --> D["/api/auth/start"]
+    D --> E["External identity provider"]
+    E --> F["/api/auth/callback"]
+    F --> G["Signed session cookie"]
+    G --> H["Return to dashboard or safe returnTo path"]
+    H --> I{"Email allowlisted?"}
+    I -->|yes| J["Admin and editor routes available"]
+    I -->|no| K["Student routes available"]
+```
+
+June 23, 2026 Final Path Mark 2 closeout note:
+
+- Fly remains the live host at `https://theswitchplatform.com`
+- live walkthrough, launch sign-off, and item 22 truth-match passed after governance recording on Fly `/data`
+- local Mac verification should keep `SWITCH_RECORD_GOVERNANCE=0` because `/data` only exists on the deployed machine
+- use `SWITCH_LAUNCH_VERIFICATION_SECRET` or fresh `switch_auth_session` cookies in `.env.local` for scripted live proof
+- wake the Fly machine before local live checks when auto-stop is enabled

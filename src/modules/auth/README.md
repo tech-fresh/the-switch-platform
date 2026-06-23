@@ -11,8 +11,19 @@ Current foundations in this module:
 - provider abstraction so preview auth can later be replaced by a production identity provider without rewriting page contracts
 - authenticated request helpers for route and API protection on account-linked product surfaces
 - role-aware authorization helpers for editor and admin-protected routes
+- a dedicated `/login` route that gives students and admin one Seneca-style sign-in front door before account-linked routes open
 
-## Full completion item 1
+## Unified sign-in route
+
+The website now exposes `/login` as the main sign-in entry for both students and admin:
+
+- the home navigation **Log in** button opens `/login`
+- configured Google, Microsoft, Apple, and email-magic-link providers render as provider buttons on one card
+- successful sign-in returns learners to `/dashboard` by default, or to a safe `returnTo` path when supplied
+- signed-out protected routes such as `/admin` redirect to `/login`
+- auth callback and start errors return to `/login?authError=...` instead of mixing sign-in errors into the account page
+
+The account page remains the signed-in identity home. It still exposes account metrics, role visibility, and the live cookie guide for launch verification.
 
 The authoritative project completion list requires the live auth environment to be configured before the platform can move toward true 100% completion.
 

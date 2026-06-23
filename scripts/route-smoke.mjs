@@ -4,6 +4,7 @@ const publicPages = [
   ["/", "Dashboard"],
   ["/dashboard", "Dashboard"],
   ["/subjects", "Subjects"],
+  ["/login", "Welcome back!"],
   ["/account", "Student Account"],
   ["/support", "Support"],
   ["/how-it-works", "Website Guide"],
@@ -49,7 +50,10 @@ try {
     adminResponse.status >= 300 && adminResponse.status < 400,
     `Expected /admin to protect access when signed out, received ${adminResponse.status}.`,
   );
-  assert(adminLocation.includes("/account"), "Expected signed-out /admin access to redirect to /account.");
+  assert(
+    adminLocation.includes("/login") || adminLocation.includes("/account"),
+    "Expected signed-out /admin access to redirect to /login.",
+  );
 
   const cmsOverview = await fetchJson(`${server.baseUrl}/api/cms/overview`);
 

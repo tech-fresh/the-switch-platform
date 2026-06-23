@@ -429,6 +429,7 @@ Completion language rule:
 ### 2026-06-21 truth-match guardrail
 
 - Treat `npm run verify:live-truth-match` as part of the real launch proof path for item 22.
+- The website now uses `/login` as the unified sign-in front door for students and admin; treat home **Log in**, auth callback errors, and signed-out protected-route redirects as part of item 2 live sign-in proof.
 - Do not let manual governance records overrule a bad deployed runtime.
 - If the deployed admin persistence API reports provisional storage, local-json, memory, or an ephemeral serverless path such as `/tmp/.codex-data`, keep item 22 open and describe the platform as near-launch.
 - The admin runtime surface and governance API should reflect the active deployed persistence truth, not just the last manually recorded approval note.

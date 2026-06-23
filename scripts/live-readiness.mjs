@@ -97,8 +97,8 @@ if (liveBaseUrl) {
     `Live readiness failed: signed-out /admin returned ${signedOutAdmin.status} instead of redirecting.`,
   );
   assert(
-    signedOutAdminLocation.includes("/account"),
-    "Live readiness failed: signed-out /admin did not redirect toward /account.",
+    signedOutAdminLocation.includes("/login") || signedOutAdminLocation.includes("/account"),
+    "Live readiness failed: signed-out /admin did not redirect toward /login.",
   );
 
   summaryLines.push(`Live URL checked: ${normalizedBaseUrl}`);

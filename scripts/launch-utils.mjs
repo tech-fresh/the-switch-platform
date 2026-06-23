@@ -194,8 +194,12 @@ export function getSessionCookie(setCookieHeaders) {
   return cookie.split(";", 1)[0];
 }
 
-const DEFAULT_FETCH_TIMEOUT_MS = 45000;
-const DEFAULT_FETCH_ATTEMPTS = 3;
+const DEFAULT_FETCH_TIMEOUT_MS = Number(process.env.SWITCH_LIVE_FETCH_TIMEOUT_MS ?? 45000);
+const DEFAULT_FETCH_ATTEMPTS = Number(process.env.SWITCH_LIVE_FETCH_ATTEMPTS ?? 3);
+
+export async function fetchResponse(url, options) {
+  return fetchWithRetry(url, options);
+}
 
 export async function fetchText(url, options) {
   const response = await fetchWithRetry(url, options);
@@ -235,6 +239,12 @@ async function fetchWithRetry(url, options = {}) {
       lastError = error;
 
       if (!isRetryableFetchError(error) || attempt === DEFAULT_FETCH_ATTEMPTS) {
+        if (error?.name === "AbortError") {
+          throw new Error(
+            `Timed out after ${DEFAULT_FETCH_TIMEOUT_MS}ms waiting for ${url}. If Fly auto-stopped the machine, open ${url} in a browser first or run: fly machines start -a the-switch-platform`,
+          );
+        }
+
         throw error;
       }
 

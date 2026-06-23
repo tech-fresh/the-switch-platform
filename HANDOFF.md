@@ -45,7 +45,7 @@ Commit and push when the action produced repo changes, unless a task explicitly 
 | After each task | Update Live session state below (short bullets) |
 | End of session | Verification, commit, push, session log entry, README build record if behavior changed |
 
-**Launch fix right now:** Vercel **cannot redeploy** (tokens exhausted) and Blob is **suspended**. Use **Fly.io** — [`docs/FREE_TIER_DEPLOY.md`](docs/FREE_TIER_DEPLOY.md). Then `npm run verify:persistence-health`.
+**Launch fix right now:** Custom domain **https://theswitchplatform.com** → point DNS to Fly (see below). OAuth redirect likely already set for this domain from Vercel.
 
 ## Golden rule
 
@@ -65,46 +65,44 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** main
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-21
-- **Last commit:** 0ef6118 — Add Fly.io free-tier deploy path when Vercel is blocked
-- **Platform label:** `near-launch` — **not** true `100% complete`
+- **Last updated:** 2026-06-23
+- **Platform label:** `near-launch` — Final Path Mark 2 evidence recorded on Fly; unified `/login` route added
 
 ### Active task
 
-- **Priority item #:** launch — Final Path Mark 2
-- **Module:** operations / governance
-- **Status:** blocked — deploy to Fly.io (Vercel redeploy not available)
+- **Priority item #:** launch — Final Path Mark 2 closeout
+- **Module:** auth / website shell
+- **Status:** unified sign-in page shipped; live verification chain green on Fly
 - **Branch:** main
 
 ### What was just completed
 
-- Added `Dockerfile`, `fly.toml`, `docs/FREE_TIER_DEPLOY.md`, `docs/free-tier-secrets.example`
-- Added `verify:persistence-health` (filesystem or Blob), auto SQLite bootstrap on first Fly boot
-- Updated launch sequence to use `verify:persistence-health` instead of Blob-only check
+- Added dedicated `/login` route (Seneca-style unified sign-in for students and admin)
+- Wired home navigation **Log in** button to `/login`
+- Redirected signed-out protected routes and auth errors to `/login`
+- Live verification from prior session: walkthrough, sign-off, truth-match passed on Fly
+- Fresh Lloyd Nwag cookies stored in `.env.local`; launch verification secret configured
 
 ### What is next
 
-1. Operator: follow `docs/FREE_TIER_DEPLOY.md` — `fly launch`, create volume, import secrets from Vercel, `fly deploy`
-2. Update OIDC redirect URI to Fly URL
-3. Set local `SWITCH_LIVE_BASE_URL` to Fly URL → run full verify chain
-4. Close item 22 when `verify:live-truth-match` passes on Fly
+1. Deploy latest `/login` route to Fly (`fly deploy`)
+2. Optional: set `min_machines_running = 1` on Fly if cold starts slow local verification
+3. Run full Final Path Mark 2 chain after deploy if auth shell changes need live re-proof
 
 ### Blockers
 
-- **Vercel:** no redeploy tokens + suspended Blob — do not wait on Vercel
-- **Fly:** operator must run deploy (needs Fly account + flyctl)
+- **None for auth/persistence** — Fly is live host at https://theswitchplatform.com
+- Fly free-tier cold start can make the first local `verify:live-walkthrough` request look hung unless the site is woken first
 
 ### Verification last run
 
-- [x] `npm run lint`
-- [x] `npm run type-check`
-- [x] `npm run test` (84 passing)
-- [x] `npm run build`
-- [x] `npm run verify:launch-status`
-- [x] `npm run verify:blob-health` (local env — not applicable; production still blocked)
-- [ ] `npm run verify:live-walkthrough` (blocked — Blob store suspended)
-- [ ] `npm run verify:live-truth-match` (item 22 — blocked)
-- [x] Pushed to GitHub
+- [x] Live Google sign-in on https://theswitchplatform.com/account
+- [x] `npm run verify:google-oauth-live`
+- [x] `npm run verify:live-readiness`
+- [x] `npm run verify:persistence-health`
+- [x] `npm run verify:live-walkthrough` (local + Fly SSH governance recording)
+- [x] `npm run verify:live-truth-match` (item 22)
+- [ ] Redeploy and smoke `/login` on production after this commit
 
 ---
 
@@ -427,6 +425,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-23 — Cursor — Unified `/login` sign-in page + Final Path Mark 2 closeout
+
+- Branch: main
+- Module: auth / website shell
+- Priority #: launch — Final Path Mark 2 item 2 and item 22
+- Done: Seneca-style `/login` route, home **Log in** nav, auth error redirects, HANDOFF/README/AGENTS updates, live truth-match and walkthrough evidence recorded on Fly
+- Next: `fly deploy` to publish `/login` on production; smoke `/login` after deploy
+- Blocker: none for auth; Fly cold start can slow first local live verify unless site is woken first
 
 ### 2026-06-21 — Cursor — Fly.io free-tier deploy (Vercel blocked)
 

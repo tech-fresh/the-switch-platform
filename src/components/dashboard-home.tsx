@@ -107,6 +107,12 @@ export function DashboardHome({ data, mode }: DashboardHomeProps) {
               <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/how-it-works">
                 How It Works
               </Link>
+              <Link
+                className="border border-teal-700 bg-teal-700 px-3 py-2 font-medium text-white transition hover:bg-teal-800"
+                href="/login"
+              >
+                Log in
+              </Link>
               <Link className="border border-stone-300 bg-white px-3 py-2 text-stone-800 transition hover:bg-stone-50" href="/account">
                 Account
               </Link>

@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   const returnTo = sanitizeReturnTo(requestUrl.searchParams.get("returnTo"));
 
   if (!provider || !supportedProviders.has(provider as AuthProvider)) {
-    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/account?authError=unknown-provider`));
+    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/login?authError=unknown-provider`));
   }
 
   if (runtime.mode === "preview-cookie") {
@@ -38,13 +38,13 @@ export async function GET(request: Request) {
   }
 
   if (runtime.mode !== "oidc") {
-    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/account?authError=external-managed`));
+    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/login?authError=external-managed`));
   }
 
   const oidcProvider = getConfiguredOidcProvider(provider as AuthProvider);
 
   if (!oidcProvider) {
-    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/account?authError=provider-not-configured`));
+    return NextResponse.redirect(getAuthRedirectUrl(requestUrl, `/login?authError=provider-not-configured`));
   }
 
   const state = randomBytes(18).toString("base64url");
@@ -90,7 +90,7 @@ export async function GET(request: Request) {
 
 function sanitizeReturnTo(value: string | null): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/account";
+    return "/dashboard";
   }
 
   return value;

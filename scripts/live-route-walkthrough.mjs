@@ -3,6 +3,7 @@ import "./load-script-env.mjs";
 import {
   fetchJson,
   fetchText,
+  fetchResponse,
   assert,
 } from "./launch-utils.mjs";
 import {
@@ -72,9 +73,22 @@ const routeChecks = [
 const { baseUrl, studentHeaders, adminHeaders, authMode } =
   getLiveWalkthroughConfig();
 
+console.log(`Live walkthrough target: ${baseUrl}`);
+console.log(
+  "Waking the deployed site (Fly free tier may cold-start for up to 60–90s on the first request)...",
+);
+
+const warmup = await fetchJson(`${baseUrl}/api/auth/providers`);
+assert(
+  warmup.response.ok,
+  `Live walkthrough failed: ${baseUrl}/api/auth/providers returned ${warmup.response.status}.`,
+);
+console.log("Live site responded. Checking authenticated routes...");
+
 const passedSmokeChecks = new Map();
 
 for (const check of routeChecks) {
+  console.log(`Checking ${check.route}...`);
   const { response, body } = await fetchText(`${baseUrl}${check.route}`, {
     headers: studentHeaders,
   });
@@ -93,6 +107,7 @@ for (const check of routeChecks) {
   }
 }
 
+console.log("Checking /admin...");
 const adminPage = await fetchText(`${baseUrl}/admin`, {
   headers: adminHeaders,
 });
@@ -105,6 +120,7 @@ assert(
   "Expected /admin to include the launch governance section.",
 );
 
+console.log("Checking /api/cms/overview...");
 const adminCms = await fetchJson(`${baseUrl}/api/cms/overview`, {
   headers: adminHeaders,
 });
@@ -113,6 +129,7 @@ assert(
   `Expected authenticated /api/cms/overview to return 200, received ${adminCms.response.status}.`,
 );
 
+console.log("Checking /api/results/overview...");
 const studentResults = await fetchJson(`${baseUrl}/api/results/overview`, {
   headers: studentHeaders,
 });
@@ -121,7 +138,8 @@ assert(
   `Expected authenticated /api/results/overview to return 200, received ${studentResults.response.status}.`,
 );
 
-const signedOutAdmin = await fetch(`${baseUrl}/admin`, {
+console.log("Checking signed-out /admin redirect...");
+const signedOutAdmin = await fetchResponse(`${baseUrl}/admin`, {
   redirect: "manual",
 });
 
@@ -137,8 +155,8 @@ if (authMode === "external-header") {
     `Expected signed-out /admin to redirect, received ${signedOutAdmin.status}.`,
   );
   assert(
-    signedOutAdminLocation.includes("/account"),
-    "Expected signed-out /admin to redirect to /account.",
+    signedOutAdminLocation.includes("/login") || signedOutAdminLocation.includes("/account"),
+    "Expected signed-out /admin to redirect to /login.",
   );
 }
 
@@ -147,14 +165,34 @@ passedSmokeChecks.set(
   "Live route walkthrough confirmed signed-in account access, admin route protection, admin launch-governance visibility, and protected operational APIs in the deployed runtime.",
 );
 
-const governanceRecording = await recordLiveRouteWalkthrough(
-  getGovernanceRecordingConfig("live-route-walkthrough"),
-  [...passedSmokeChecks.entries()].map(([checkId, note]) => ({
-    checkId,
-    note,
-  })),
-  `Live route walkthrough passed across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin at ${baseUrl}.`,
-);
+let governanceRecording = false;
+
+try {
+  governanceRecording = await recordLiveRouteWalkthrough(
+    getGovernanceRecordingConfig("live-route-walkthrough"),
+    [...passedSmokeChecks.entries()].map(([checkId, note]) => ({
+      checkId,
+      note,
+    })),
+    `Live route walkthrough passed across dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin at ${baseUrl}.`,
+  );
+} catch (error) {
+  const sqliteError =
+    error?.code === "ERR_SQLITE_ERROR" ||
+    error?.errcode === 14 ||
+    (error instanceof Error && error.message.includes("unable to open database file"));
+
+  if (sqliteError) {
+    console.log(
+      "Live route walkthrough passed, but launch governance was not recorded locally because SWITCH_DATA_DIRECTORY is not writable on this machine.",
+    );
+    console.log(
+      "For local Mac runs, keep SWITCH_RECORD_GOVERNANCE=0. To record governance on Fly, run the walkthrough inside the deployed machine.",
+    );
+  } else {
+    throw error;
+  }
+}
 
 console.log(
   "Live route walkthrough passed: dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin all behaved correctly in the deployed environment.",

@@ -153,6 +153,12 @@ export default async function AccountPage({
                 <p className="text-sm text-stone-600">
                   Use the same sign-in for student and admin access. Admin tools open after sign-in when this email is allowlisted for editor or admin roles.
                 </p>
+                <Link
+                  href="/login"
+                  className="mt-3 inline-flex border border-teal-700 bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-800"
+                >
+                  Log in
+                </Link>
               </>
             )}
             <div className="pt-2">

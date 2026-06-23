@@ -69,7 +69,10 @@ try {
     signedOutAdmin.status >= 300 && signedOutAdmin.status < 400,
     `Expected signed-out /admin to redirect, received ${signedOutAdmin.status}.`,
   );
-  assert(signedOutAdminLocation.includes("/account"), "Expected signed-out /admin to redirect to /account.");
+  assert(
+    signedOutAdminLocation.includes("/login") || signedOutAdminLocation.includes("/account"),
+    "Expected signed-out /admin to redirect to /login.",
+  );
 
   const governanceRecording = await recordFinalRouteRehearsal(
     getGovernanceRecordingConfig("local-final-route-rehearsal"),

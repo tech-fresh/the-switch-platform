@@ -196,7 +196,7 @@ Active order unless explicitly overridden:
 
 ## Full End-to-End Completion List
 
-**Authoritative rule:** This is the **only** list for judging true 100% completion. Do not use a shorter substitute.
+**Final list — do not replace or shorten.** This is the **only** list for judging true 100% completion. **Do not overwrite** earlier build history in `README.md` or session logs in `HANDOFF.md`. Allowed updates only: item status with date/evidence; appended operator notes. Intentionally mirrored in `README.md`, `AGENTS.md`, `HANDOFF.md`, and this file — keep all copies aligned.
 
 `Final Path Mark 1` = repo, scripts, governance surfaces in place.  
 `Final Path Mark 2` = real deployed environment proven end to end with recorded approval.

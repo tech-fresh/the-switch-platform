@@ -77,9 +77,7 @@ Update this section every session.
 
 ### What was just completed
 
-- Created **`PLATFORM-GUIDE.md`** — single merged doc for AGENTS rules, all module READMEs, and 22-item launch list
-- Slimmed **`AGENTS.md`** to entry point; module READMEs now stub links to `PLATFORM-GUIDE.md`
-- **`README.md`** duplicate launch list replaced with pointer to `PLATFORM-GUIDE.md`
+- Restored **Full End-to-End Completion List** in `README.md`, `AGENTS.md`, and `HANDOFF.md` with **do not replace** preservation rule (append-only fix after PLATFORM-GUIDE merge)
 
 ### What is next
 
@@ -265,9 +263,38 @@ Special labels:
 
 ## Final Path Mark 2 — live state (23 June 2026)
 
-**Authoritative completion list:** `AGENTS.md` → Full End-to-End Completion List (22 items).
+**Authoritative completion list:** this section **and** `AGENTS.md` **and** `README.md` → Full End-to-End Completion List (22 items). Also mirrored in `PLATFORM-GUIDE.md`.
+
+**Preservation rule:** This is the **final** launch checklist. **Do not replace, shorten, or delete** these 22 items. Do not overwrite session log history below — only append status updates and evidence.
 
 Plain-English: this is the full launch checklist. Every line must be green before we call the platform “100% complete.” **All 22 items are now complete** on Fly production.
+
+### Full End-to-End Completion List (22 items — final, do not replace)
+
+1. Configure the real live auth environment (`SWITCH_AUTH_MODE=oidc`, secrets, base URL, one complete OIDC provider block).
+2. Prove the real deployed sign-in flow (sign-in, callback, session, sign-out, protected routes).
+3. Prove the real deployed sign-up and onboarding flow (welcome through first dashboard provisioning).
+4. Configure the real live persistence environment (`SWITCH_PERSISTENCE_DRIVER=sqlite`, `SWITCH_DATA_DIRECTORY`).
+5. Prove live student-data continuity (saved progress, results, account settings, sessions).
+6. Prove backup, restore, and recovery for the student-data path.
+7. Configure the live CMS and editorial runtime (`SWITCH_CMS_BACKEND_MODE=live`).
+8. Prove the live editorial workflow (review, approve, publish, rollback, blocked content).
+9. Configure live governance recording (`SWITCH_RECORD_GOVERNANCE=1`, environment).
+10. Provide named launch ownership (`SWITCH_LAUNCH_APPROVER`, `SWITCH_LAUNCH_STOP_AUTHORITY`).
+11. Provide governance review notes (privacy, safeguarding, release).
+12. Provide governance sign-off notes (privacy, safeguarding, alerts, incident, release).
+13. Configure the live base URL (`SWITCH_LIVE_BASE_URL`).
+14. Provide live route test access (student/admin cookies or external-header equivalents).
+15. Run `npm run verify:launch-status`.
+16. Run `npm run verify:live-readiness`.
+17. Run `npm run verify:persistence-recovery`.
+18. Run `npm run verify:live-walkthrough`.
+19. Run `npm run verify:launch-signoff`.
+20. Run `npm run verify:launch-complete`.
+21. Store release evidence permanently in `release-evidence/`.
+22. Confirm system-wide truth matches — `npm run verify:live-truth-match`. **Completed — 23 June 2026 (Fly production).**
+
+Full item descriptions: see `README.md` → Final Path Mark 2 → Full End-to-End Completion List.
 
 | Area | Status |
 |------|--------|

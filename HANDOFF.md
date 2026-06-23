@@ -83,6 +83,7 @@ Update this section every session.
 - `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` updated with Mock Idea direction
 - Auth login nav test updated for marketing header
 - Tests 95/95 pass
+- **Commit `d832874`** pushed; **Fly deploy** succeeded (2026-06-24)
 
 ### What is next
 

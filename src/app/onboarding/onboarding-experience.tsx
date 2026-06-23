@@ -42,8 +42,13 @@ const SUBJECT_ICONS: Record<string, string> = {
 const YEAR_PERSONAS = [
   { yearGroup: "Year 11", title: "Exam ready", emoji: "🤖" },
   { yearGroup: "Year 10", title: "Building momentum", emoji: "😅" },
-  { yearGroup: "Year 9", title: "Getting started", emoji: "🙂" },
 ];
+
+function catalogTypeForQualificationPath(
+  qualificationPath: LearnerOnboardingProfile["qualificationPath"] | undefined,
+): "GCSE" | "IGCSE" {
+  return qualificationPath === "igcse" ? "IGCSE" : "GCSE";
+}
 
 async function saveProfile(update: DraftProfile & { complete?: boolean }) {
   const response = await fetch("/api/onboarding/profile", {
@@ -82,6 +87,19 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
     const match = options.qualificationPaths.find((path) => path.id === profile.qualificationPath);
     return match?.label.replace("(England)", "").replace("(Wales)", "").trim() ?? "GCSE";
   }, [options.qualificationPaths, profile.qualificationPath]);
+
+  const subjectsForQualification = useMemo(() => {
+    const catalogType = catalogTypeForQualificationPath(profile.qualificationPath);
+    return options.subjects.filter((subject) => subject.qualificationLabel === catalogType);
+  }, [options.subjects, profile.qualificationPath]);
+
+  const validSelectedSubjectIds = useMemo(
+    () =>
+      selectedSubjectIds.filter((subjectId) =>
+        subjectsForQualification.some((subject) => subject.subjectId === subjectId),
+      ),
+    [selectedSubjectIds, subjectsForQualification],
+  );
 
   async function persistStep(update: DraftProfile, nextStep: number, complete = false) {
     setIsSaving(true);
@@ -124,7 +142,7 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
       case 3:
         return Boolean(profile.schoolName?.trim());
       case 4:
-        return selectedSubjectIds.length > 0;
+        return validSelectedSubjectIds.length > 0;
       case 7:
         return Boolean(profile.ageOrConsentConfirmed);
       default:
@@ -179,7 +197,19 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
                   type="radio"
                   name="qualificationPath"
                   checked={selected}
-                  onChange={() => setProfile({ ...profile, qualificationPath: path.id })}
+                  onChange={() => {
+                    const nextPath = path.id as LearnerOnboardingProfile["qualificationPath"];
+                    const catalogType = catalogTypeForQualificationPath(nextPath);
+                    const nextSelected = selectedSubjectIds.filter((subjectId) =>
+                      options.subjects.find((subject) => subject.subjectId === subjectId)
+                        ?.qualificationLabel === catalogType,
+                    );
+                    setProfile({
+                      ...profile,
+                      qualificationPath: nextPath,
+                      selectedSubjectIds: nextSelected,
+                    });
+                  }}
                 />
                 <span className="flex-1 text-sm font-medium text-slate-700">{path.label}</span>
                 <span className="text-xl">{QUALIFICATION_ICONS[path.id] ?? "📘"}</span>
@@ -192,7 +222,7 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
 
     if (stepIndex === 2) {
       return (
-        <div className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-2xl gap-4 sm:grid-cols-2">
           {YEAR_PERSONAS.map((persona) => {
             const selected = profile.yearGroup === persona.yearGroup;
             return (
@@ -264,22 +294,29 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
     if (stepIndex === 4) {
       return (
         <div className="mx-auto grid max-w-2xl gap-3 sm:grid-cols-2">
-          {options.subjects.map((subject) => {
-            const selected = selectedSubjectIds.includes(subject.subjectId);
+          {subjectsForQualification.map((subject) => {
+            const selected = validSelectedSubjectIds.includes(subject.subjectId);
             return (
               <label
                 key={subject.subjectId}
-                className={`flex cursor-pointer items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-sm transition ${
+                className={`flex cursor-pointer items-start gap-3 rounded-xl border bg-white px-4 py-3 shadow-sm transition ${
                   selected ? "border-sky-400 ring-2 ring-sky-100" : "border-slate-200"
                 }`}
               >
                 <input
                   type="checkbox"
-                  className="size-4 rounded border-slate-300 text-sky-600"
+                  className="mt-0.5 size-4 shrink-0 rounded border-slate-300 text-sky-600"
                   checked={selected}
                   onChange={() => toggleSubject(subject.subjectId)}
                 />
-                <span className="flex-1 text-sm font-medium text-slate-700">{subject.name}</span>
+                <span className="flex-1">
+                  <span className="block text-sm font-medium text-slate-700">{subject.name}</span>
+                  {subject.description ? (
+                    <span className="mt-0.5 block text-xs leading-5 text-slate-500">
+                      {subject.description}
+                    </span>
+                  ) : null}
+                </span>
                 <span className="text-xl">{SUBJECT_ICONS[subject.subjectId] ?? "📘"}</span>
               </label>
             );
@@ -290,38 +327,36 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
 
     if (stepIndex === 5) {
       return (
-        <div className="mx-auto max-w-xl space-y-3 rounded-2xl bg-white p-6 shadow-sm">
-          {[
-            {
-              key: "wantsAccessibilitySupport",
-              label: "I want accessibility support as part of my setup.",
-            },
-            {
-              key: "wantsAccessArrangementHelp",
-              label: "I may need exam access arrangement help (extra time, reader, rest breaks).",
-            },
-            {
-              key: "sendSupportPathVisible",
-              label: "Show SEND and support-path signposting in my first weeks.",
-            },
-          ].map((item) => (
+        <div className="mx-auto max-w-xl space-y-3">
+          {options.supportChoices.map((choice) => (
             <label
-              key={item.key}
-              className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 text-sm"
+              key={choice.key}
+              className={`flex cursor-pointer items-start gap-3 rounded-xl border bg-white p-4 shadow-sm transition ${
+                Boolean(profile[choice.key])
+                  ? "border-sky-400 ring-2 ring-sky-100"
+                  : "border-slate-200"
+              }`}
             >
               <input
                 type="checkbox"
-                className="mt-0.5 size-4 rounded border-slate-300 text-sky-600"
-                checked={Boolean(profile[item.key as keyof DraftProfile])}
+                className="mt-0.5 size-4 shrink-0 rounded border-slate-300 text-sky-600"
+                checked={Boolean(profile[choice.key as keyof DraftProfile])}
                 onChange={(event) =>
-                  setProfile({ ...profile, [item.key]: event.target.checked })
+                  setProfile({ ...profile, [choice.key]: event.target.checked })
                 }
               />
-              <span>{item.label}</span>
+              <span className="flex-1">
+                <span className="block text-sm font-semibold text-slate-800">{choice.label}</span>
+                <span className="mt-1 block text-xs leading-5 text-slate-500">{choice.description}</span>
+                <span className="mt-2 inline-block rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-sky-700">
+                  {choice.moduleLabel}
+                </span>
+              </span>
             </label>
           ))}
           <p className="text-xs text-slate-500">
-            Support stays signposting-first — not counselling or AI wellbeing support.
+            Optional — all three map to MVP modules: Accessibility, Access Arrangements foundation, and
+            Support Hub. No complex SEND UI during MVP.
           </p>
         </div>
       );
@@ -386,11 +421,12 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
           Which <span className="text-sky-600">🎒 {qualificationLabel}</span> subjects are you studying?
         </>
       ),
-      subtitle: "We'll narrow down the specifics later...",
+      subtitle: "Pick the MVP subjects you are studying — Combined Science covers biology, chemistry, and physics.",
     },
     5: {
-      title: "Accessibility and support",
-      subtitle: "Optional — tell us if you want accessibility or access-arrangement help visible early.",
+      title: "Accessibility, access arrangements, and SEND support",
+      subtitle:
+        "Optional MVP setup — links to Accessibility, Access Arrangements foundation, and Support Hub.",
     },
     6: {
       title: "Invite a parent or guardian",

@@ -39,9 +39,23 @@ export interface OnboardingOptions {
   learnerRoles: Array<{ id: LearnerRole; label: string; description: string }>;
   yearGroups: string[];
   qualificationPaths: Array<{ id: QualificationPath; label: string; description: string }>;
-  subjects: Array<{ subjectId: string; name: string; qualificationLabel: string }>;
+  subjects: Array<{
+    subjectId: string;
+    name: string;
+    qualificationLabel: string;
+    description?: string;
+  }>;
   schoolSources: SchoolSourceLink[];
   steps: string[];
+  supportChoices: OnboardingSupportChoice[];
+}
+
+export interface OnboardingSupportChoice {
+  key: "wantsAccessibilitySupport" | "wantsAccessArrangementHelp" | "sendSupportPathVisible";
+  label: string;
+  description: string;
+  href: string;
+  moduleLabel: string;
 }
 
 export interface OnboardingOverview {

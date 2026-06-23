@@ -2,6 +2,7 @@ import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/ser
 import { getDailyMotivation } from "@/modules/motivation/service";
 import {
   buildDashboardSetupSummary,
+  buildOnboardingSupportSummary,
   getOnboardingOverview,
 } from "@/modules/onboarding/service";
 import { getMockSubjects } from "@/modules/subjects/service";
@@ -30,6 +31,7 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     userId === "guest-preview" ? Promise.resolve(null) : getOnboardingOverview(userId),
   ]);
   const setup = buildDashboardSetupSummary(onboardingOverview?.profile ?? null);
+  const onboardingSupport = buildOnboardingSupportSummary(onboardingOverview?.profile ?? null);
   const papers = getMockExamPapers();
   const assessments = getMockTimedAssessments();
 
@@ -318,10 +320,11 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     continuityHref: savedProgress.continuity.primaryAction.href,
     continuityActionLabel: savedProgress.continuity.primaryAction.actionLabel,
     supportSnapshotSummary:
-      readAloudReadyCount > 0
+      onboardingSupport.summary ??
+      (readAloudReadyCount > 0
         ? `${readAloudReadyCount} active exam sessions already have read aloud enabled.`
-        : "Saved progress already stores access snapshots, so future support settings can travel with the student session.",
-    supportPreferenceChips: latestSupportSnapshot,
+        : "Saved progress already stores access snapshots, so future support settings can travel with the student session."),
+    supportPreferenceChips: [...onboardingSupport.chips, ...latestSupportSnapshot],
   };
 }
 

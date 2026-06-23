@@ -332,6 +332,14 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-23 Onboarding aligned to MVP catalog subjects
+
+- Onboarding subject step now filters by qualification path: **GCSE routes** show Maths, English Language, and Combined Science; **iGCSE** shows iGCSE Mathematics only.
+- Subject options are sourced from `listStudentVisibleContentSubjects()` — same catalog as `/subjects` and the dashboard.
+- Validation rejects subject selections that do not match the chosen qualification route.
+- Combined Science card shows catalog description (biology, chemistry, and physics coverage).
+- README launch subjects section appended with onboarding/catalog alignment note.
+
 ### 2026-06-23 Item 3 live proof complete — Full End-to-End List closed
 
 - Added **`npm run verify:live-onboarding`** and **`scripts/live-onboarding-utils.mjs`** for automated live onboarding proof.
@@ -1014,6 +1022,10 @@ flowchart LR
 - Biology
 - Chemistry
 - Physics
+
+**Onboarding alignment (23 June 2026 — appended):** Guided setup uses the **student-visible content catalog** as the source of truth. Learners currently select from **GCSE Mathematics**, **GCSE English Language**, **GCSE Combined Science** (biology, chemistry, and physics in one route), and **iGCSE Mathematics**. Separate Biology, Chemistry, and Physics subjects remain a later catalog expansion — Combined Science covers those sciences in the current MVP.
+
+**Accessibility, Access Arrangements, and SEND (23 June 2026 — appended):** Step 5 of onboarding maps to MVP modules **Accessibility** (#7), **Access Arrangements foundation** (#9), and **Support Hub** signposting. Completing onboarding with these flags seeds the student access profile (focus/reduced distraction, read-aloud path) and shows dashboard support chips — no complex SEND UI during MVP.
 
 ### Power Grid levels
 

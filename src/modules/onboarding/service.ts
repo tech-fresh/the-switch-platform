@@ -1,4 +1,8 @@
 import { listStudentVisibleContentSubjects } from "@/modules/content/service";
+import {
+  getStudentAccessProfile,
+  updateStudentAccessProfile,
+} from "@/modules/access-arrangements/service";
 
 import { getOnboardingProfileByUserId, saveOnboardingProfile } from "./repository";
 import type {
@@ -6,6 +10,7 @@ import type {
   LearnerRole,
   OnboardingOptions,
   OnboardingOverview,
+  OnboardingSupportChoice,
   QualificationPath,
   SchoolNation,
 } from "./types";
@@ -55,6 +60,128 @@ const ONBOARDING_STEPS = [
   "consent",
 ];
 
+/** MVP launch subjects come from the student-visible content catalog only. */
+export function qualificationPathToCatalogType(
+  qualificationPath: QualificationPath,
+): "GCSE" | "IGCSE" {
+  return qualificationPath === "igcse" ? "IGCSE" : "GCSE";
+}
+
+export function listOnboardingSubjectsForQualificationPath(qualificationPath: QualificationPath) {
+  const catalogType = qualificationPathToCatalogType(qualificationPath);
+
+  return listStudentVisibleContentSubjects()
+    .filter((subject) => subject.qualificationType === catalogType)
+    .map((subject) => ({
+      subjectId: subject.subjectId,
+      name: subject.name,
+      qualificationLabel: subject.qualificationType,
+      description: subject.description,
+    }));
+}
+
+export function filterOnboardingSubjectIds(
+  subjectIds: string[],
+  qualificationPath: QualificationPath,
+): string[] {
+  const allowedIds = new Set(
+    listOnboardingSubjectsForQualificationPath(qualificationPath).map((subject) => subject.subjectId),
+  );
+
+  return subjectIds.filter((subjectId) => allowedIds.has(subjectId));
+}
+
+function mapCatalogSubjectsToOnboardingOptions() {
+  return listStudentVisibleContentSubjects().map((subject) => ({
+    subjectId: subject.subjectId,
+    name: subject.name,
+    qualificationLabel: subject.qualificationType,
+    description: subject.description,
+  }));
+}
+
+const MVP_SUPPORT_CHOICES: OnboardingSupportChoice[] = [
+  {
+    key: "wantsAccessibilitySupport",
+    label: "Accessibility support",
+    description:
+      "Contrast, dyslexia-friendly font, focus mode, and reduced distraction — opens your accessibility settings.",
+    href: "/accessibility",
+    moduleLabel: "Accessibility module",
+  },
+  {
+    key: "wantsAccessArrangementHelp",
+    label: "Exam access arrangements",
+    description:
+      "Extra time, reader, scribe, and rest breaks — MVP foundation for exams and timed assessments (not a formal JCQ approval).",
+    href: "/accessibility",
+    moduleLabel: "Access Arrangements foundation",
+  },
+  {
+    key: "sendSupportPathVisible",
+    label: "SEND and support signposting",
+    description:
+      "Trusted UK support links and exam-stress guides in your first weeks — signposting only, not counselling.",
+    href: "/support",
+    moduleLabel: "Support Hub",
+  },
+];
+
+export async function provisionMvpAccessSetupFromOnboarding(
+  profile: LearnerOnboardingProfile,
+): Promise<void> {
+  if (!profile.wantsAccessibilitySupport && !profile.wantsAccessArrangementHelp) {
+    return;
+  }
+
+  const current = await getStudentAccessProfile(profile.userId);
+  const accessibilityPreferences = { ...current.accessibilityPreferences };
+
+  if (profile.wantsAccessibilitySupport) {
+    accessibilityPreferences.reducedDistractionModeEnabled = true;
+    accessibilityPreferences.focusModeEnabled = true;
+  }
+
+  await updateStudentAccessProfile({
+    ...current,
+    accessibilityPreferences,
+    textToSpeechEnabled:
+      profile.wantsAccessArrangementHelp || profile.wantsAccessibilitySupport
+        ? true
+        : current.textToSpeechEnabled,
+  });
+}
+
+export function buildOnboardingSupportSummary(profile: LearnerOnboardingProfile | null): {
+  chips: string[];
+  summary: string | null;
+} {
+  if (!profile?.completedAt) {
+    return { chips: [], summary: null };
+  }
+
+  const chips: string[] = [];
+
+  if (profile.wantsAccessibilitySupport) {
+    chips.push("Accessibility setup");
+  }
+  if (profile.wantsAccessArrangementHelp) {
+    chips.push("Access arrangement interest");
+  }
+  if (profile.sendSupportPathVisible) {
+    chips.push("SEND support signposting");
+  }
+
+  if (chips.length === 0) {
+    return { chips: [], summary: null };
+  }
+
+  return {
+    chips,
+    summary: `Onboarding flagged ${chips.join(", ").toLowerCase()} — review /accessibility and /support when you are ready.`,
+  };
+}
+
 function isLaunchWalkthroughUser(userId: string): boolean {
   const launchUserId = process.env.SWITCH_LIVE_STUDENT_USER_ID?.trim();
   return Boolean(launchUserId && launchUserId === userId);
@@ -79,7 +206,8 @@ function createDefaultProfile(userId: string): LearnerOnboardingProfile {
 }
 
 function createLaunchWalkthroughProfile(userId: string): LearnerOnboardingProfile {
-  const subjects = listStudentVisibleContentSubjects();
+  const qualificationPath = "gcse-england" as const;
+  const subjects = listOnboardingSubjectsForQualificationPath(qualificationPath);
   const now = new Date().toISOString();
   return {
     userId,
@@ -87,8 +215,8 @@ function createLaunchWalkthroughProfile(userId: string): LearnerOnboardingProfil
     schoolName: "Launch verification school",
     schoolNation: "england",
     yearGroup: "Year 11",
-    qualificationPath: "gcse-england",
-    selectedSubjectIds: subjects.slice(0, 3).map((subject) => subject.subjectId),
+    qualificationPath,
+    selectedSubjectIds: subjects.map((subject) => subject.subjectId),
     wantsAccessibilitySupport: false,
     wantsAccessArrangementHelp: false,
     sendSupportPathVisible: false,
@@ -99,8 +227,6 @@ function createLaunchWalkthroughProfile(userId: string): LearnerOnboardingProfil
 }
 
 export function getOnboardingOptions(): OnboardingOptions {
-  const subjects = listStudentVisibleContentSubjects();
-
   return {
     learnerRoles: [
       {
@@ -124,31 +250,31 @@ export function getOnboardingOptions(): OnboardingOptions {
       {
         id: "gcse-england",
         label: "GCSE (England)",
-        description: "England GCSE route with the main platform subject catalog.",
+        description:
+          "GCSE Mathematics, English Language, and Combined Science (biology, chemistry, and physics).",
       },
       {
         id: "gcse-wales",
         label: "GCSE (Wales)",
-        description: "Wales GCSE route with qualification-aware dashboard setup.",
+        description:
+          "Wales GCSE route with the same MVP subjects: Maths, English Language, and Combined Science.",
       },
       {
         id: "gcse-northern-ireland",
         label: "GCSE (Northern Ireland)",
-        description: "Northern Ireland GCSE route with qualification-aware setup.",
+        description:
+          "Northern Ireland GCSE route with Maths, English Language, and Combined Science.",
       },
       {
         id: "igcse",
         label: "iGCSE",
-        description: "International GCSE route including iGCSE topic coverage.",
+        description: "International GCSE Mathematics — the current iGCSE launch subject.",
       },
     ],
-    subjects: subjects.map((subject) => ({
-      subjectId: subject.subjectId,
-      name: subject.name,
-      qualificationLabel: subject.qualificationType,
-    })),
+    subjects: mapCatalogSubjectsToOnboardingOptions(),
     schoolSources: SCHOOL_SOURCES,
     steps: ONBOARDING_STEPS,
+    supportChoices: MVP_SUPPORT_CHOICES,
   };
 }
 
@@ -234,7 +360,10 @@ function normalizeProfileUpdate(
     learnerRole: (update.learnerRole ?? base.learnerRole) as LearnerRole,
     schoolNation: (update.schoolNation ?? base.schoolNation) as SchoolNation,
     qualificationPath: (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
-    selectedSubjectIds: update.selectedSubjectIds ?? base.selectedSubjectIds,
+    selectedSubjectIds: filterOnboardingSubjectIds(
+      update.selectedSubjectIds ?? base.selectedSubjectIds,
+      (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
+    ),
     updatedAt: now,
   };
 
@@ -266,6 +395,13 @@ export function validateOnboardingProfile(profile: LearnerOnboardingProfile): st
     return "Select at least one subject.";
   }
 
+  const allowedSubjects = listOnboardingSubjectsForQualificationPath(profile.qualificationPath);
+  const allowedIds = new Set(allowedSubjects.map((subject) => subject.subjectId));
+
+  if (profile.selectedSubjectIds.some((subjectId) => !allowedIds.has(subjectId))) {
+    return "Select subjects that match your qualification route.";
+  }
+
   if (!profile.ageOrConsentConfirmed) {
     return "Confirm age or consent before finishing setup.";
   }
@@ -289,6 +425,10 @@ export async function updateOnboardingProfile(
   }
 
   const saved = await saveOnboardingProfile(profile);
+
+  if (update.complete && isOnboardingProfileComplete(saved)) {
+    await provisionMvpAccessSetupFromOnboarding(saved);
+  }
 
   return {
     profile: saved,

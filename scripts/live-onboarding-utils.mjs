@@ -39,7 +39,10 @@ export async function ensureWalkthroughStudentOnboardingComplete(baseUrl, studen
   }
 
   const subjectIds =
-    onboarding?.options?.subjects?.slice(0, 2).map((subject) => subject.subjectId) ?? [];
+    onboarding?.options?.subjects
+      ?.filter((subject) => subject.qualificationLabel === "GCSE")
+      .slice(0, 2)
+      .map((subject) => subject.subjectId) ?? [];
 
   assert(subjectIds.length > 0, "Walkthrough student needs selectable subjects to finish onboarding.");
 

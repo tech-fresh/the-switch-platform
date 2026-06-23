@@ -65,23 +65,22 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-23 (item 3 onboarding live proof complete)
+- **Last updated:** 2026-06-24 (onboarding wired to MVP access/SEND modules)
 - **Platform label:** **`fully complete` / 100% end to end** — all 22 Full End-to-End Completion List items closed on Fly
 
 ### Active task
 
-- **Priority item #:** none — launch list complete
-- **Module:** —
-- **Status:** Item 3 closed with live proof (`release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`)
+- **Priority item #:** post-launch polish — onboarding/catalog alignment
+- **Module:** `onboarding`
+- **Status:** Subject step filters by qualification path; matches MVP catalog
 - **Branch:** `main`
 
 ### What was just completed
 
-- **`npm run verify:live-onboarding`** — passed (fresh learner simulation on Fly)
-- **`npm run verify:live-walkthrough`** — passed (walkthrough ensures student onboarding complete before routes)
-- **`npm run verify:live-truth-match`** — passed
-- Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
-- Added `verify:live-onboarding` script + `live-onboarding-utils.mjs`
+- Onboarding step 5 wired to MVP **Accessibility**, **Access Arrangements foundation**, and **Support Hub**
+- Completing onboarding seeds `StudentAccessProfile` and dashboard support chips
+- Subject step filtered by qualification path (GCSE vs iGCSE catalog)
+- Tests 95/95 pass
 
 ### What is next
 

@@ -157,37 +157,56 @@ flowchart LR
         [============================●──]  (~62%)
 
       Which 🎒 GCSE subjects are you studying?
-              We'll narrow down the specifics later...
+   Pick MVP subjects — Combined Science covers biology, chemistry, and physics.
 
     ┌─────────────────────┐  ┌─────────────────────┐
     │ ☑ GCSE Maths      📐│  │ ☐ GCSE English   ✍️│
+    │ Core number,      │  │ Reading, inference, │
+    │ algebra, geometry │  │ language analysis   │
     └─────────────────────┘  └─────────────────────┘
     ┌─────────────────────┐  ┌─────────────────────┐
-    │ ☑ Combined Science 🧬│  │ ☐ iGCSE Maths    📊│
+    │ ☑ Combined Science 🧬│  │ (iGCSE route only) │
+    │ Biology, chemistry, │  │ iGCSE Maths      📊│
+    │ and physics         │  │                     │
     └─────────────────────┘  └─────────────────────┘
 
     [ Back ]                              [ Let's go! ]
 ```
 
-- Continue disabled until ≥1 subject selected
-- Subject list from `listStudentVisibleContentSubjects()` via API
+- **GCSE routes** (England, Wales, NI): Maths, English Language, Combined Science
+- **iGCSE route:** iGCSE Mathematics only
+- Subject list from `listStudentVisibleContentSubjects()` — same as `/subjects`
+- Changing qualification path clears incompatible subject selections
 
-### Step 5 — Support (Switch-specific)
+### Step 5 — Support (Accessibility · Access Arrangements · SEND)
 
 ```
         [================================●]  (~75%)
 
-            Accessibility and support
-         Optional — accessibility or access help
+     Accessibility, access arrangements, and SEND support
 
     ┌─────────────────────────────────────────┐
-    │ ☐ I want accessibility support visible  │
-    │ ☐ I want exam access arrangement help   │
-    │ ☐ Show SEND support-path signposting    │
+    │ ☑ Accessibility support               │
+    │   Contrast, dyslexia font, focus mode   │
+    │   → Accessibility module              │
+    └─────────────────────────────────────────┘
+    ┌─────────────────────────────────────────┐
+    │ ☑ Exam access arrangements              │
+    │   Extra time, reader, rest breaks       │
+    │   → Access Arrangements foundation      │
+    └─────────────────────────────────────────┘
+    ┌─────────────────────────────────────────┐
+    │ ☑ SEND and support signposting          │
+    │   Trusted UK links — not counselling    │
+    │   → Support Hub                         │
     └─────────────────────────────────────────┘
 
     [ Back ]                              [ Continue ]
 ```
+
+- Maps to README Core MVP #7 Accessibility, #9 Access Arrangements, Support Hub
+- On complete: seeds `StudentAccessProfile` when accessibility/access flags set
+- Dashboard shows support chips from onboarding choices
 
 ### Step 6 — Guardian (optional)
 

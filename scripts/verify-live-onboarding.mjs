@@ -93,6 +93,15 @@ for (const nation of REQUIRED_SCHOOL_NATIONS) {
 assert(options.learnerRoles.length >= 3, "Expected student, parent, and teacher role options.");
 assert(options.subjects.length > 0, "Expected at least one selectable subject.");
 
+const gcseSubjects = options.subjects.filter((subject) => subject.qualificationLabel === "GCSE");
+const igcseSubjects = options.subjects.filter((subject) => subject.qualificationLabel === "IGCSE");
+assert.equal(gcseSubjects.length, 3, "Expected three GCSE MVP launch subjects.");
+assert.equal(igcseSubjects.length, 1, "Expected one iGCSE MVP launch subject.");
+assert.ok(
+  gcseSubjects.some((subject) => subject.subjectId === "gcse-combined-science"),
+  "Expected GCSE Combined Science in onboarding options.",
+);
+
 console.log("Checking Seneca-style onboarding page...");
 const onboardingPage = await fetchText(`${baseUrl}/onboarding`, {
   headers: proofHeaders,
@@ -106,7 +115,7 @@ assert(
   "Expected onboarding page to include account-type step copy.",
 );
 
-const subjectIds = options.subjects.slice(0, 2).map((subject) => subject.subjectId);
+const subjectIds = gcseSubjects.slice(0, 2).map((subject) => subject.subjectId);
 assert(subjectIds.length >= 1, "Need at least one subject id for onboarding completion proof.");
 
 console.log("Completing onboarding via API (mirrors guided setup steps)...");

@@ -70,8 +70,34 @@ Result:
 ## Current honest status
 
 - `A-2` complete in code and enforced by runtime checks
+- `A-5` complete on Fly production: persistence recovery proved against `/data`
 - `A-7` complete in core repo truth surfaces
 - `A-1` still open pending a fresh real production OIDC session cookie and recorded evidence
+
+## Fly production persistence recovery proof
+
+Command:
+
+```bash
+fly ssh console -a the-switch-platform -C "sh -lc 'cd /app && node scripts/persistence-recovery-check.mjs'"
+```
+
+Result:
+
+```text
+Persistence recovery check:
+- Driver: sqlite
+- Data directory: /data
+- Backup directory: /data/backups
+- Recovery ready: yes
+- Recovery issues: 0
+- Shared SQLite store: active=yes, backup=yes, match=yes, issue=none
+```
+
+Meaning:
+
+- the recovery proof is now tied directly to the real Fly production `/data` mount
+- A-5 is complete
 
 ## Next operator step
 

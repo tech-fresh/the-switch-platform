@@ -370,6 +370,7 @@ This section is the running record of what has been requested, added, and commit
 - Added [release-evidence/2026-06-25-priority-a-truth-audit.md](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/release-evidence/2026-06-25-priority-a-truth-audit.md) as the current strict-audit record.
 - Confirmed the new strict commands reject `SWITCH_LAUNCH_VERIFICATION_SECRET` in final-proof mode.
 - Confirmed the current local production student cookie is not authenticating a live session, so `A-1` remains open for refreshed live credentials rather than missing code.
+- Proved persistence recovery on real Fly production storage: sqlite `/data` with matching `/data/backups`.
 - Closed **A-7** in repo truth surfaces: governance/admin/platform guide/final-sequence commands now point to the same Priority A audit story.
 
 ### 2026-06-24 Priority C authoritative closure — docs sync

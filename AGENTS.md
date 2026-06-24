@@ -126,7 +126,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026). |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | **Priority A — truthful completion (fix the proof gap)** — A-1 to A-8 in **`docs/ideas/FINAL-PHASE-PLAN.md`**. |
+| What is next? | **Priority A — truthful completion (fix the proof gap)** — A-1, A-3, A-4, A-6, and A-8 remain open in **`docs/ideas/FINAL-PHASE-PLAN.md`**. |
 
 ```mermaid
 flowchart LR
@@ -260,6 +260,8 @@ route (thin page) → module service → API route → persistence
 **Verification:** `npm run lint && npm run type-check && npm run test` — 102/102 passed.
 
 **What is next:** Priority **A** — truthful completion audit (A-1 to A-8). Start with `npm run verify:live-oidc-proof` on production.
+
+**Current A status (25 June 2026):** `A-2`, `A-5`, and `A-7` are complete. Remaining blocker is live auth evidence: the local production student/admin cookies currently resolve to signed-out sessions, so `A-1`, `A-3`, and `A-4` still require a fresh real OIDC sign-in.
 
 **Key files for agents**
 

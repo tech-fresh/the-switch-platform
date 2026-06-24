@@ -470,7 +470,7 @@ Mark these only when evidence exists.
 - [x] A-2 Final live verification forbids launch-verification bypass
 - [ ] A-3 Real sign-out + route rejection proof recorded
 - [ ] A-4 Real fresh-learner onboarding proof recorded
-- [ ] A-5 Persistence recovery proven on true production storage path
+- [x] A-5 Persistence recovery proven on true production storage path
 - [ ] A-6 Canonical final release-evidence bundle created
 - [x] A-7 Launch-status / governance / docs all tell the same truth
 - [ ] A-8 Final truth-match rerun and green

@@ -102,16 +102,17 @@ Update this section every session.
 - Guardrail worked: strict mode refused to run while `SWITCH_LAUNCH_VERIFICATION_SECRET` was present
 - After blanking that variable for the process, the live OIDC proof reached provider redirect and OIDC-mode guards but failed because the current local production student cookie did not authenticate a session
 - A-7 truth surfaces were aligned across governance/admin/platform guide/final-sequence commands
+- A-5 passed on Fly production: sqlite `/data` and `/data/backups` match and recovery is ready
 
 ### What is next
 
 - **A-1** — refresh the real production student cookie, rerun `npm run verify:live-oidc-proof`, and record evidence
 - **A-3 / A-4** — extend the same strict real-auth evidence path to fresh-learner onboarding and final sign-out records
-- **A-5 to A-8** — tie persistence recovery, evidence bundle, and truth surfaces back to one canonical story in `docs/ideas/FINAL-PHASE-PLAN.md`
+- **A-6 / A-8** — after real-auth proof lands, create the canonical evidence bundle and rerun truth-match
 
 ### Blockers
 
-- No coding blocker found for A-2 or A-7
+- No coding blocker found for A-2, A-5, or A-7
 - Main remaining blocker for A-1 is live credentials: the current local production student cookie does not authenticate a session
 - Current audit position: strict tooling is in place, truth surfaces are aligned, but item 22 is not treated as airtight again until refreshed real-auth proof is recorded
 
@@ -799,6 +800,7 @@ Add a new entry here at the end of every session. Do not delete older entries.
 - Done: ran strict real-auth proof commands against production
 - Done: verified strict mode rejects `SWITCH_LAUNCH_VERIFICATION_SECRET`
 - Done: verified current local production student cookie is stale or otherwise non-authenticating for `/api/auth/session`
+- Done: proved persistence recovery on Fly production `/data` via `fly ssh console`
 - Done: aligned `PLATFORM-GUIDE`, governance summary, admin launch copy, `launch-complete`, and `live-truth-match` to the same Priority A audit story
 - Done: recorded current state in `release-evidence/2026-06-25-priority-a-truth-audit.md`
 - Verification: `npm test`, `npm run lint`

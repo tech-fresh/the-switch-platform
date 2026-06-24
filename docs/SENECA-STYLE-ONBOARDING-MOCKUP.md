@@ -1,5 +1,7 @@
 # Mock Idea — Visual Mockup Guide (Study Atelier)
 
+> **Build from:** [`MOCK-IDEA-BUILD-REFERENCE.md`](./MOCK-IDEA-BUILD-REFERENCE.md)  
+> **AI ideas + plans:** [`MOCK-IDEA-AI-IDEAS.md`](./MOCK-IDEA-AI-IDEAS.md)  
 > **Design direction:** **Mock Idea · Study Atelier** — creative layout on The Switch Platform  
 > **Not Seneca:** no narrow icon sidebar, no pale-blue clone, no centred popup modal  
 > **Live gallery:** https://theswitchplatform.com/mock-idea-preview  
@@ -218,7 +220,9 @@ Single page stacking all mockups for review:
 
 | File | Role |
 |------|------|
-| `src/components/mock-idea/brand-tokens.ts` | Brand, SEND palette, nav |
+| `docs/MOCK-IDEA-AI-IDEAS.md` | **Plans + copy blocks for agents** |
+| `docs/MOCK-IDEA-BUILD-REFERENCE.md` | Build reference — tokens and checklists |
+| `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` | Visual mockups + diagrams (this guide) |
 | `src/components/mock-idea/student-app-shell.tsx` | Top study rail shell |
 | `src/components/mock-idea/marketing-site-header.tsx` | Public header |
 | `src/components/mock-idea/marketing-site-footer.tsx` | Dark footer + swatches |
@@ -228,7 +232,7 @@ Single page stacking all mockups for review:
 | `src/app/mock-idea-preview/page.tsx` | Visual mockup route |
 | `src/components/onboarding/onboarding-shell.tsx` | Step rail onboarding |
 | `src/components/dashboard-home.tsx` | Home + dashboard layout |
-| `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` | This guide |
+| `src/components/mock-idea/brand-tokens.ts` | Brand, SEND palette, nav |
 
 ---
 

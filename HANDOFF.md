@@ -45,7 +45,7 @@ Commit and push when the action produced repo changes, unless a task explicitly 
 | After each task | Update Live session state below (short bullets) |
 | End of session | Verification, commit, push, session log entry, README build record if behavior changed |
 
-**Launch fix right now:** Custom domain **https://theswitchplatform.com** → point DNS to Fly (see below). OAuth redirect likely already set for this domain from Vercel.
+**Live site:** https://theswitchplatform.com (Fly.io production). Re-check docs vs live: `npm run verify:live-truth-match`.
 
 ## Golden rule
 
@@ -65,29 +65,28 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-24 (Mock Idea Study Atelier creative refresh)
+- **Last updated:** 2026-06-24 (HANDOFF + AGENTS + README sync — plain-English story)
+
 - **Platform label:** **`fully complete` / 100% end to end** — all 22 Full End-to-End Completion List items closed on Fly
 
 ### Active task
 
-- **Priority item #:** post-launch polish — Mock Idea Study Atelier UI
-- **Module:** `dashboard` + marketing shell
-- **Status:** Creative refresh shipped — top rail, bento panels, dark footer, `/mock-idea-preview` gallery
+- **Priority item #:** post-launch polish (docs sync + onboarding/website lanes)
+- **Module:** `project-workflow` + cross-doc alignment
+- **Status:** HANDOFF, AGENTS, README aligned — same plain-English story, diagrams, doc map
 - **Branch:** `main`
 
 ### What was just completed
 
-- **Study Atelier** creative direction — deliberately not Seneca (top rail, bento planner, stone/teal palette)
-- Dark marketing footer with SEND swatch circles + wave cut
-- Onboarding numbered step rail + teal progress bar
-- Visual mockup gallery at `/mock-idea-preview`
-- `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` rewritten as full visual guide
-- Tests 95/95 pass
+- **Plain-English project story** added to HANDOFF (diagrams: two lanes, doc read order, onboarding MVP table)
+- **AGENTS.md** and **README.md** synced — point to HANDOFF; removed stale Item 3 “still to prove live” wording
+- Stale Vercel DNS note replaced with live Fly site reference
+- Item 3 HANDOFF notes reconciled (complete + MVP scope)
 
 ### What is next
 
-- None for Final Path Mark 2 — all 22 items complete
-- Optional: browser walkthrough of Mock Idea dashboard shell
+- Phase 2: `StudentAppShell` on `/subjects`, `/assessments`, `/progress` — `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
+- Wales/NI GCSE routes when operator prioritises (update HANDOFF + onboarding README first)
 
 ### Blockers
 
@@ -102,6 +101,85 @@ Update this section every session.
 - [x] `npm run verify:live-walkthrough` — passed 23 June 2026
 - [x] `npm run verify:launch-signoff` (Fly ssh)
 - [x] Manual browser Microsoft sign-in + admin launch view
+
+---
+
+## Plain-English — what the project is doing (operator + agents)
+
+**Read this section with `AGENTS.md` and `README.md` → Operator and agent sync.** All three stay aligned; live task detail is always in **Live session state** above.
+
+### In one sentence
+
+The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). Launch is **complete** (all 22 checklist items). Current work is **polish**: a calmer website, a clear student dashboard, and **onboarding that builds each learner’s dashboard** — not shortening onboarding.
+
+### Where we are
+
+| Stage | Plain English | Status |
+|-------|---------------|--------|
+| **Final Path Mark 2** | Real site proven end-to-end; evidence on file | **Done** (23 June 2026) |
+| **Post-launch polish** | Study Atelier UI, decluttered home/dashboard, onboarding scope locked | **In progress** |
+| **Next product slice** | Same study shell on more routes; Wales/NI GCSE when you prioritise | **Planned** |
+
+### Two lanes — do not mix them
+
+| Lane | What it means | Do |
+|------|----------------|-----|
+| **A — Onboarding** | 8-step guided setup **creates the student dashboard** (subjects, support, access) | **Keep all 8 steps.** Secondary school + England GCSE/iGCSE only for MVP. Wales/NI signposted “coming later”. |
+| **B — Website shell** | Public homepage + signed-in dashboard layout | **Declutter only** — one hero, one route grid, no duplicate mockups on live paths. Rich previews stay on `/mock-idea-preview`. |
+
+```mermaid
+flowchart TD
+  subgraph done["Done — launch"]
+    D1["22-item checklist"]
+    D2["theswitchplatform.com on Fly"]
+  end
+  subgraph laneA["Lane A — Onboarding stays"]
+    A1["Sign in"]
+    A2["8 steps incl. secondary school"]
+    A3["Personal dashboard"]
+    A1 --> A2 --> A3
+  end
+  subgraph laneB["Lane B — Website polish"]
+    B1["Calmer homepage"]
+    B2["Focused dashboard"]
+  end
+  subgraph later["Later — when prioritised"]
+    L1["GCSE Wales + Northern Ireland"]
+    L2["Study shell on subjects / assessments / progress"]
+  end
+  done --> laneA
+  done --> laneB
+  laneA --> later
+  laneB --> later
+```
+
+### Onboarding MVP (locked 24 June 2026)
+
+| Step | Learner sees | MVP rule |
+|------|--------------|----------|
+| 1 Qualification | GCSE (England) or iGCSE | Wales + Northern Ireland = **coming later** (visible, not selectable) |
+| 3 School | Secondary school name | **England only** nation picker + official England school link |
+| 8 Consent | Open my dashboard | Incomplete users cannot reach `/dashboard` until finished |
+
+Full detail: `src/modules/onboarding/README.md` · Plan: `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
+
+### Doc read order (every session)
+
+```mermaid
+flowchart LR
+  H["1. HANDOFF.md\nlive state"] --> P["2. PLATFORM-GUIDE.md\nrules + modules"]
+  P --> R["3. README sections\nwhen handoff points"]
+  H --> M["Module README\nif touching one module"]
+```
+
+| Doc | You read it for |
+|-----|-----------------|
+| `HANDOFF.md` | **What is happening now**, next steps, blockers |
+| `AGENTS.md` | Agent entry + launch list (same story as here) |
+| `README.md` | Product rules + **Ordered Build Record** (history) |
+| `PLATFORM-GUIDE.md` | Architecture, modules, 22-item list detail |
+| `docs/ideas/` | Plans (streamline, onboarding stays) |
+| `docs/MOCK-IDEA-*.md` | UI build direction |
 
 ---
 
@@ -124,11 +202,14 @@ Update this section every session.
 
 | Document | Purpose |
 |----------|---------|
-| `PLATFORM-GUIDE.md` | **Single merged guide** — rules, modules, 22-item launch list |
-| `AGENTS.md` | Agent entry point → `PLATFORM-GUIDE.md` |
-| `HANDOFF.md` | Live session state and handover between Cursor and Codex |
-| `README.md` | Cumulative product spec and build record |
-| `.cursor/rules/` | Cursor-specific enforcement mirroring `PLATFORM-GUIDE.md` |
+| `HANDOFF.md` | **Live session state** + plain-English project story (this file) |
+| `AGENTS.md` | Agent entry — synced with this file |
+| `README.md` | Product rules + Ordered Build Record — synced operator section at top |
+| `PLATFORM-GUIDE.md` | Rules, modules, full 22-item launch list |
+| `docs/ideas/` | Plans (`STREAMLINE-WEBSITE-PLAN.md`, onboarding stays) |
+| `src/modules/onboarding/README.md` | Onboarding MVP scope (England GCSE, secondary school) |
+| `docs/MOCK-IDEA-BUILD-REFERENCE.md` | UI build-from reference |
+| `.cursor/rules/` | Cursor enforcement |
 
 ---
 
@@ -309,13 +390,22 @@ Full item descriptions: see `README.md` → Final Path Mark 2 → Full End-to-En
 |-------|--------|
 | `npm run verify:live-onboarding` | Passed — fresh learner → dashboard |
 | Evidence file | `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md` |
-| UI mockup | `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` |
+| UI mockup (visual) | `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` |
+| UI build reference | `docs/MOCK-IDEA-BUILD-REFERENCE.md` |
+| AI ideas bank | `docs/MOCK-IDEA-AI-IDEAS.md` |
 
 #### Item 3 progress note (23 June 2026 — appended)
 
 - Code shipped: `/onboarding`, onboarding API, dashboard gate.
-- Live proof for a real new learner on Fly still required before item 3 is fully closed.
+- **Superseded by completion record above** — live proof passed 23 June 2026.
 - **Do not replace** the 22-item list — append evidence notes only.
+
+#### Item 3 MVP scope (24 June 2026 — current)
+
+- Onboarding **stays** (8 steps) — it **creates the student dashboard**.
+- Step 3: **secondary school**, England nation only (MVP).
+- Step 1: **GCSE (England)** + **iGCSE**; Wales/NI **coming later**.
+- Module doc: `src/modules/onboarding/README.md` · Plan: `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
 
 | Area | Status |
 |------|--------|
@@ -483,6 +573,34 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-24 — Cursor — HANDOFF + AGENTS + README sync
+
+- Done: plain-English project story in HANDOFF; synced operator blocks in AGENTS + README; fixed stale Item 3 notes
+- Next: Phase 2 shell rollout per ideas plan
+- Blocker: none
+
+### 2026-06-24 — Cursor — Onboarding secondary school + England GCSE MVP scope
+
+- Done: secondary school step, England-only nation, GCSE (England) + iGCSE only; Wales/NI deferred in UI
+- Done: `src/modules/onboarding/README.md`, README, PLATFORM-GUIDE, MOCK-IDEA docs
+- Next: shell rollout; Wales/NI when operator prioritises
+- Blocker: none
+
+### 2026-06-24 — Cursor — Onboarding stays + ideas folder plan
+
+- Done: operator decision recorded — onboarding stays (8 steps); it builds the student dashboard
+- Done: `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` + `docs/ideas/README.md`
+- Done: linked from `MOCK-IDEA-AI-IDEAS.md`, `MOCK-IDEA-BUILD-REFERENCE.md`, HANDOFF
+- Next: Phase 2 shell rollout per ideas plan
+- Blocker: none
+
+### 2026-06-24 — Cursor — Homepage + dashboard declutter (priority #5)
+
+- Done: split `dashboard-home.tsx` into home vs dashboard layouts; removed duplicate preview/mockup sections
+- Done: dashboard hides SEND side rail when `SendSupportRail` is shown; trimmed shell and planner copy
+- Next: optional shell rollout to `/subjects`, `/assessments`, `/progress`; Fly browser check
+- Blocker: none
 
 ### 2026-06-23 — Cursor — Item 22 marked complete in end-to-end lists
 

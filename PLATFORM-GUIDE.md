@@ -342,9 +342,13 @@ Owns manual timed assessment attempts. Access arrangements applied before start.
 Owns guided sign-up and first-time learner setup (**Full End-to-End Completion List item 3**).
 
 - Progressive `/onboarding` route: welcome, school/year, qualification, subjects, accessibility, guardian invite, consent
-- UK school-source links (England, Scotland, Wales, Northern Ireland)
+- **Secondary school** capture on step 3; **England-only** nation picker during MVP
+- **MVP qualification routes:** GCSE (England) and iGCSE — Wales and Northern Ireland GCSE routes deferred (signposted in UI)
+- UK school-source links (England active; Scotland, Wales, Northern Ireland reserved for later releases)
 - Persists learner profile; gates `/dashboard` until setup is complete
 - Dashboard personalisation uses selected subjects and qualification path
+
+Full module scope: `src/modules/onboarding/README.md`
 
 ### CMS Module
 

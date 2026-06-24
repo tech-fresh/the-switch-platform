@@ -1,11 +1,31 @@
 # The Switch Platform
 
 > **Single consolidated guide (rules + modules + launch checklist):** [`PLATFORM-GUIDE.md`](./PLATFORM-GUIDE.md)  
-> **Live session state:** [`HANDOFF.md`](./HANDOFF.md)  
+> **Live session state + plain-English story:** [`HANDOFF.md`](./HANDOFF.md)  
 > **Agent entry point:** [`AGENTS.md`](./AGENTS.md)  
 > **This file:** cumulative product history and Ordered Build Record below.
 
-## Local Restore Notes For THE SWITCH 3
+## Operator and agent sync
+
+**Synced with `HANDOFF.md` and `AGENTS.md` — update all three when the story changes.**
+
+| Question | Answer |
+|----------|--------|
+| Is the platform live? | Yes — https://theswitchplatform.com. All **22** launch items **complete** (Final Path Mark 2). |
+| What are we doing now? | **Post-launch polish** — Study Atelier UI, calmer homepage/dashboard, onboarding scope locked. |
+| Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
+| Website (Lane B) | **Declutter only** — no duplicate mockups on live home/dashboard. Previews: `/mock-idea-preview`. |
+| What is next? | Study shell on more routes. See [`docs/ideas/STREAMLINE-WEBSITE-PLAN.md`](./docs/ideas/STREAMLINE-WEBSITE-PLAN.md). |
+
+**Every session:** tell the agent `Read HANDOFF.md first.` Full checklists and diagrams → [`HANDOFF.md` → Plain-English — what the project is doing](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents).
+
+```mermaid
+flowchart LR
+  H["HANDOFF.md\nlive state"] --> P["PLATFORM-GUIDE.md"]
+  P --> R["README sections\nwhen handoff points"]
+```
+
+---
 
 If project information appears to have disappeared after switching to local
 mode, open these files first:
@@ -35,49 +55,21 @@ New product work, requested additions, previews, mockups, routes, modules, and a
 
 ### Multi-agent development workflow
 
-This project is built with **Cursor Agent** and **Codex** on the same repo.
+This project is built with **Cursor Agent** and **Codex** on the same repo. **Full session rules** → [`HANDOFF.md`](./HANDOFF.md) (start/end checklists, consult order, plain-English story).
 
 | Document | Purpose |
 |----------|---------|
-| `PLATFORM-GUIDE.md` | **Single merged guide** — rules, modules, 22-item launch list |
-| `AGENTS.md` | Agent entry point → `PLATFORM-GUIDE.md` |
-| `HANDOFF.md` | Live session state between Cursor and Codex |
-| `README.md` | Cumulative product spec and build record (this file) |
-| `.cursor/rules/` | Cursor-specific enforcement (active — 4 rule files) |
+| `HANDOFF.md` | Live state + **plain-English project story** (read first) |
+| `AGENTS.md` | Agent entry — synced with HANDOFF |
+| `PLATFORM-GUIDE.md` | Rules, modules, 22-item launch list |
+| `README.md` | Product rules + Ordered Build Record (this file) |
+| `docs/ideas/` | Plans — streamline website, onboarding stays |
+| `.cursor/rules/` | Cursor enforcement |
 
-#### Session start — tell the agent
+**Session start:** `Read HANDOFF.md first.`  
+**Session end:** update HANDOFF **Live session state**; append **Ordered Build Record** below when behavior changed.
 
-At every session start, tell Cursor or Codex:
-
-```text
-Read HANDOFF.md first.
-```
-
-Then let the agent read `AGENTS.md` and this file's priority order.
-
-#### Session end — update HANDOFF.md
-
-At every session end, update the **Live session state** section in `HANDOFF.md` before stopping or switching tools.
-
-#### Before each action — consult first
-
-Before **every** action — code, docs, commands, git, planning, or review — consult in order:
-
-1. `HANDOFF.md` → Live session state, What is next, Blockers
-2. `PLATFORM-GUIDE.md` → Rules, architecture, modules, launch checklist
-3. `README.md` → Relevant sections only (build record, launch notes)
-
-Do not start until the action still matches live state and build priorities.
-
-#### After each action — update HANDOFF.md
-
-After **every** completed action — not only at session end:
-
-1. Refresh **Live session state** in `HANDOFF.md`
-2. Add or refresh a **Session log** entry when blockers or next steps changed
-3. Append to **Ordered Build Record** below when routes, modules, or behavior changed
-
-Commit and push when the action produced repo changes, unless a task explicitly requires a local-only commit.
+## Local Restore Notes For THE SWITCH 3
 
 #### Every session must
 
@@ -278,6 +270,7 @@ This repository follows the current The Switch Platform Mark 3.2 product spec.
 - Guardian invite and age-or-consent checks must remain part of the onboarding architecture for school-age learners.
 - Guided sign-up should explicitly ask whether the learner wants accessibility support or access help as part of first-time setup.
 - Qualification and subject setup must cover both GCSE and iGCSE routes where supported by the platform.
+- **Onboarding MVP (2026-06-24):** selectable qualification routes are **GCSE (England)** and **iGCSE** only; **GCSE (Wales)** and **GCSE (Northern Ireland)** are deferred and signposted as coming later. School step captures **secondary school** name with **England-only** nation picker until those routes ship.
 - SEND-related support should flow through accessibility, access arrangements, and support content without forcing a complex SEND UI during MVP.
 - School selection should be driven by maintained UK school-source links rather than an unmanaged static list.
 - Onboarding choices must feed dashboard, planner, saved progress, and recommendation setup through shared API and module boundaries.
@@ -331,6 +324,30 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-24 HANDOFF + AGENTS + README sync (plain-English story)
+
+- Added **Plain-English — what the project is doing** to `HANDOFF.md` (two lanes, onboarding MVP table, doc-read diagram).
+- Synced **Operator and agent sync** blocks in `AGENTS.md` and `README.md` — same story, pointers to HANDOFF for live detail.
+- Reconciled stale Item 3 “still to prove live” notes; expanded doc maps (`docs/ideas/`, onboarding README).
+- No 22-item launch list removed — preservation rule unchanged.
+
+### 2026-06-24 Onboarding MVP scope — secondary school + England GCSE only
+
+- **Secondary school** step: `schoolPhase: "secondary"`, secondary school name field, England-only nation picker, England school lookup link.
+- **Qualification step:** selectable **GCSE (England)** and **iGCSE** only; **GCSE (Wales)** and **GCSE (Northern Ireland)** signposted as **Coming later** (not removed from types).
+- Expanded **`src/modules/onboarding/README.md`** — MVP scope, dashboard connection, agent rules.
+- Updated **`PLATFORM-GUIDE.md`**, **`MOCK-IDEA-AI-IDEAS.md`**, **`MOCK-IDEA-BUILD-REFERENCE.md`**, README non-negotiable rules.
+
+### 2026-06-24 Mock Idea AI ideas bank
+
+- Added **`docs/MOCK-IDEA-AI-IDEAS.md`** — master plans for layout (Phases 1–5) and onboarding (8 steps), agent session prompts, copy-paste wrappers, SEND/nav loops, and future ideas bank.
+- Linked from `AGENTS.md`, `HANDOFF.md`, `MOCK-IDEA-BUILD-REFERENCE.md`, and visual mockup doc.
+
+### 2026-06-24 Mock Idea build reference doc
+
+- Added **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** — saved build-from guide: tokens, components, route wiring, onboarding/dashboard checklists, SEND rules, Tailwind patterns.
+- Linked from `AGENTS.md`, `HANDOFF.md`, and `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md`.
 
 ### 2026-06-24 Mock Idea Study Atelier creative refresh
 
@@ -1039,6 +1056,8 @@ flowchart LR
 - Physics
 
 **Onboarding alignment (23 June 2026 — appended):** Guided setup uses the **student-visible content catalog** as the source of truth. Learners currently select from **GCSE Mathematics**, **GCSE English Language**, **GCSE Combined Science** (biology, chemistry, and physics in one route), and **iGCSE Mathematics**. Separate Biology, Chemistry, and Physics subjects remain a later catalog expansion — Combined Science covers those sciences in the current MVP.
+
+**Onboarding MVP scope (24 June 2026 — appended):** Step 1 offers **GCSE (England)** and **iGCSE** only. **GCSE (Wales)** and **GCSE (Northern Ireland)** appear as **Coming later** — not selectable until a later release. Step 3 captures **secondary school name** with **England-only** nation picker and link to Get Information about Schools. Wales and Northern Ireland qualification and school flows are documented in `src/modules/onboarding/README.md`. Onboarding still feeds dashboard creation — do not shorten the 8-step flow.
 
 **Accessibility, Access Arrangements, and SEND (23 June 2026 — appended):** Step 5 of onboarding maps to MVP modules **Accessibility** (#7), **Access Arrangements foundation** (#9), and **Support Hub** signposting. Completing onboarding with these flags seeds the student access profile (focus/reduced distraction, read-aloud path) and shows dashboard support chips — no complex SEND UI during MVP.
 

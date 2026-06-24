@@ -64,10 +64,34 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 
 ## Quick links
 
-- Launch checklist → sections below **and** **`PLATFORM-GUIDE.md` → Full End-to-End Completion List**
+- **Plain-English project story (synced)** → **`HANDOFF.md` → Plain-English — what the project is doing**
+- Launch checklist → **`PLATFORM-GUIDE.md` → Full End-to-End Completion List** (full 22 items also below)
 - Module docs → **`PLATFORM-GUIDE.md` → Module reference**
-- Live state → **`HANDOFF.md`**
+- Live state → **`HANDOFF.md` → Live session state**
 - Build history → **`README.md` → Ordered Build Record**
+- UI / onboarding plans → **`docs/ideas/`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
+
+---
+
+## Operator and agent sync (plain English)
+
+**Authoritative live detail:** `HANDOFF.md` → **Live session state** + **Plain-English — what the project is doing**.
+
+This block stays aligned with `README.md` → **Operator and agent sync**. Do not drift.
+
+| Question | Answer |
+|----------|--------|
+| Is the platform live? | Yes — https://theswitchplatform.com (Fly). All **22** launch checklist items **complete**. |
+| What are we doing now? | **Post-launch polish** — calmer website, focused dashboard, **onboarding unchanged in length**. |
+| Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
+| Lane B — website | **Declutter only** — no duplicate mockups on `/` or `/dashboard`. Gallery routes keep rich previews. |
+| What is next? | Study shell on more routes; Wales/NI when operator prioritises. See `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`. |
+
+```mermaid
+flowchart LR
+  H["HANDOFF.md\nread first"] --> P["PLATFORM-GUIDE.md\nrules"]
+  P --> R["README sections\nwhen needed"]
+```
 
 ---
 
@@ -143,10 +167,14 @@ npm run verify:live-truth-match
 - **Status: COMPLETE** on https://theswitchplatform.com
 - **Proof:** `npm run verify:live-onboarding` passed
 - **Evidence:** `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
-- **UI mockup:** `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md`
+- **UI mockup (visual):** `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md`
+- **UI build reference (code from here):** `docs/MOCK-IDEA-BUILD-REFERENCE.md`
+- **AI ideas bank (plans + copy):** `docs/MOCK-IDEA-AI-IDEAS.md`
+- **Streamline + onboarding plan:** `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
 
-## Item 3 progress note (23 June 2026 — appended)
+## Item 3 notes (appended — do not delete)
 
-- **Shipped:** onboarding module, `/onboarding` route, `/api/onboarding/profile`, dashboard gate.
-- **Still to prove live:** real new-learner onboarding on https://theswitchplatform.com with recorded evidence.
-- **Preservation:** the 22-item list above is unchanged — append status notes only.
+| Date | Note |
+|------|------|
+| 23 June 2026 | Shipped: `/onboarding`, API, dashboard gate. Live proof passed — see completion record above. |
+| 24 June 2026 | **MVP scope locked:** onboarding **stays** (8 steps); secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. Module doc: `src/modules/onboarding/README.md`. |

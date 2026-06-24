@@ -19,7 +19,7 @@ test("login route exposes the unified sign-in shell", () => {
 
 test("site navigation links Log in to the dedicated login route", () => {
   const marketingHeader = readFileSync(
-    path.join(repoRoot, "src/components/marketing-site-header.tsx"),
+    path.join(repoRoot, "src/components/mock-idea/marketing-site-header.tsx"),
     "utf8",
   );
 

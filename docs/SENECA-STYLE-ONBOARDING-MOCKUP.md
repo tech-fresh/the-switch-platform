@@ -1,41 +1,57 @@
-# Mock Idea — Onboarding & Website Mockup
+# Mock Idea — Visual Mockup Guide (Study Atelier)
 
-> **Design direction name:** **Mock Idea** (Seneca-inspired layout study — not a copy)  
-> **Platform:** The Switch Platform · https://theswitchplatform.com  
-> **Onboarding route:** `/onboarding`  
-> **Reference:** Supplied Seneca screenshots — adapted with indigo/violet twist + MVP SEND colours  
-> **Shipped:** 2026-06-23 onboarding · 2026-06-24 Mock Idea shell
+> **Design direction:** **Mock Idea · Study Atelier** — creative layout on The Switch Platform  
+> **Not Seneca:** no narrow icon sidebar, no pale-blue clone, no centred popup modal  
+> **Live gallery:** https://theswitchplatform.com/mock-idea-preview  
+> **Onboarding:** `/onboarding` · **Dashboard:** `/dashboard`  
+> **Docs shipped:** 2026-06-24 creative refresh
 
-Plain English: **Mock Idea** is our name for the student-facing layout direction. It keeps the calm, card-based flow from the reference screenshots but uses **indigo/violet** accents instead of Seneca blue, adds **MVP SEND colour chips** (cream, blue, yellow, high contrast), and runs on The Switch Platform modules — not a third-party clone.
+Plain English: **Mock Idea** is a creative study-home direction for The Switch. It uses **bento panels**, a **top study rail**, **stone/teal/amber** Switch colours, **MVP SEND swatches**, and **access arrangement signposting** — inspired by modern ed-tech patterns but deliberately different from the reference screenshots.
 
 ---
 
-## Mock Idea twist (what is different)
+## Creative twist vs reference screenshots
 
-| Reference pattern | Mock Idea twist |
-|-------------------|-----------------|
-| Seneca blue branding | **Indigo/violet** primary + amber SEND chips |
-| Seneca logo | **✦ MOCK IDEA** wordmark |
-| Subject sidebar purple icons | Violet accent nav + **Access** + **SEND help** items |
-| Gamified XP header | Kept — “Good morning, {name}” + support chips from onboarding |
-| Planner popup | **PlannerPromptCard** — dismissible, links `/progress` + `/accessibility` |
-| Marketing footer | **MarketingSiteFooter** with SEND overlay chips |
+| Reference habit | Mock Idea Study Atelier |
+|-----------------|-------------------------|
+| Narrow left icon sidebar | **Top horizontal study rail** + optional right SEND swatch column |
+| Pale blue `#eef6ff` everywhere | **Stone `#f5f5f4`** mesh with teal/amber blobs |
+| Purple/blue Seneca branding | **Teal/emerald/amber** Switch palette + ◆ glyph |
+| Emoji icon stacks under labels | **Letter badges** (H, P, L, S, A, +) in coloured squares |
+| Centred planner popup modal | **Split bento planner panel** — dark left panel + bullet list right |
+| Light footer with pill chips | **Dark stone footer** with diagonal wave + colour **swatch circles** |
+| Single progress emoji bar | **Numbered step rail** on onboarding (desktop) |
+
+---
+
+## Everything added (checklist)
+
+| Feature | Where | Component / route |
+|---------|-------|-------------------|
+| Mock Idea branding | Header, shell, onboarding | `brand-tokens.ts` |
+| Marketing header | Homepage `/` | `marketing-site-header.tsx` |
+| Marketing footer + SEND swatches | Homepage `/` | `marketing-site-footer.tsx` |
+| Signed-in study shell | `/dashboard` | `student-app-shell.tsx` |
+| Planner bento panel | `/dashboard` | `planner-prompt-card.tsx` |
+| Access & SEND rail | `/dashboard` | `send-support-rail.tsx` |
+| Onboarding 8-step flow | `/onboarding` | `onboarding-experience.tsx` |
+| Onboarding step rail | `/onboarding` | `onboarding-shell.tsx` |
+| MVP SEND colour overlays | Footer, rail, sidebar, planner | `SEND_COLOUR_CHIPS` |
+| Access arrangements links | Rail, footer, onboarding step 5 | `/how-it-works`, modules |
+| Visual mockup gallery | `/mock-idea-preview` | `mock-idea-showcase.tsx` |
 
 ---
 
 ## MVP SEND colour requirements
 
-From `globals.css` accessibility runtime — used as **signposting chips** (not auto-applied without user choice):
+From `globals.css` — signposting until learner chooses in `/accessibility`:
 
 | Overlay | Hex | MVP use |
 |---------|-----|---------|
 | Cream | `#f6f0dc` | Dyslexia-friendly reading backgrounds |
 | Blue | `#eaf4ff` | Calm focus backgrounds |
 | Yellow | `#fff8c4` | High-visibility reading |
-| High contrast | black/white | Maximum legibility |
-
-Components: `SEND_COLOUR_CHIPS` in `src/components/mock-idea/brand-tokens.ts`  
-Surfaces: footer, sidebar mini chips, `SendSupportRail`, planner CTA button.
+| High contrast | `#000000` / white text | Maximum legibility |
 
 ---
 
@@ -43,307 +59,158 @@ Surfaces: footer, sidebar mini chips, `SendSupportRail`, planner CTA button.
 
 | Token | Value | Use |
 |-------|-------|-----|
-| Page background | `#eef6ff` | Onboarding + student shell |
-| Primary action | `indigo-600` / `indigo-700` | Sign up, Create my plan |
-| Secondary | `sky-100` / `violet-100` | Active nav items |
-| SEND chips | cream / blue / yellow / black | Accessibility signposting |
-| Card surface | `white` + `rounded-2xl` + shadow | Cards and modals |
+| Page background | `stone-100` / `#f5f5f4` | Shell, onboarding, homepage |
+| Primary action | `teal-800` | Sign up, Continue, Create my plan |
+| Accent mesh | teal + amber + sky blurs | Ambient background blobs |
+| Card surface | `white` + border + shadow | Bento panels |
+| Footer | `stone-950` | Marketing footer band |
+| SEND swatches | cream / blue / yellow / black | Linked to `/accessibility` |
 
 ---
 
-## Marketing header (homepage)
+## Mockup 1 — Marketing header
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  ✦ MOCK IDEA   For Students  Resources  For Parents  Schools    │
-│                          Join class  Log in    [ Sign up ]        │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ▬▬▬ teal → amber → emerald gradient strip ▬▬▬                          │
+│  ◆ Mock Idea          For Students  Resources  Parents  Schools          │
+│  Study Atelier mock                        Join class  Log in  [Sign up] │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Component:** `src/components/marketing-site-header.tsx`
-- **Used on:** `/` homepage
+- Square ◆ logo on **stone-950** block (not sunburst)
+- Segmented nav with teal highlight on “For Students”
+- Teal CTA button (not Seneca deep-blue pill)
+
+**Component:** `src/components/mock-idea/marketing-site-header.tsx`
 
 ---
 
-## Marketing footer (homepage)
-
-Four columns: Mock Idea brand · For learners · Access & SEND · Schools  
-Bottom row: **MVP SEND colour overlay chips** linking to `/accessibility`.
-
-- **Component:** `src/components/mock-idea/marketing-site-footer.tsx`
-
----
-
-## Signed-in dashboard shell
+## Mockup 2 — Marketing footer
 
 ```
-┌──────┬──────────────────────────────────────────────────────────┐
-│ ✦    │  Good morning, Lloyd · 100 XP to Level 1               │
-│ 🏠   │  [Accessibility setup] [Access settings]               │
-│ 📝   ├──────────────────────────────────────────────────────────┤
-│ 📅   │  [ Planner prompt card — Create my plan ]                │
-│ 📚   │  [ SEND support rail — cream/blue/yellow/high contrast ] │
-│ ♿   │  … existing dashboard content …                          │
-│ 🧭   │                                                          │
-│ 🙂   │                                                          │
-└──────┴──────────────────────────────────────────────────────────┘
+        ╱ diagonal wave cut from stone-100 into stone-950 ╲
+┌──────────────────────────────────────────────────────────────────────────┐
+│  ◆ Mock Idea          For learners    Access & SEND      Schools         │
+│  Study Atelier        · dashboard     · accessibility    · admin         │
+│                       · subjects      · support          · resources     │
+│                       · onboarding    · access guide     · log in        │
+│                       · mock gallery                                       │
+│  ─────────────────────────────────────────────────────────────────────   │
+│  MVP SEND colour overlays                                                │
+│  (cream) (blue) (yellow) (black)  ← swatch squares, not flat pills       │
+│  © Mock Idea on The Switch Platform                                      │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Component:** `src/components/mock-idea/student-app-shell.tsx`
-- **Used on:** `/dashboard` when `mode="dashboard"`
-- **Also:** `PlannerPromptCard`, `SendSupportRail`
-
-Mobile: bottom tab bar (Home, Practice, Planner, Subjects).
+**Component:** `src/components/mock-idea/marketing-site-footer.tsx`
 
 ---
 
-## Onboarding banner
+## Mockup 3 — Signed-in dashboard shell
 
-Top strip on `/onboarding`: **Mock Idea guided setup · The Switch Platform**
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ◆ Mock Idea    [H Home][P Practice][L Planner][S Subjects][A Access]…  ◉ │
+├──────────────────────────────────────────────────────────────────────────┤
+│ STUDY ATELIER · powered by The Switch                                    │
+│ Good afternoon, Lloyd                    [support chips] [Access settings] │
+│ Study Pulse active · planner and access tools ready below                  │
+├───────────────────────────────────────────────┬──────────────────────────┤
+│ ┌─ PLANNER BENTO ─────────┬─ bullets + CTAs ─┐ │ SEND overlays (desktop)  │
+│ │ dark teal panel         │ Create my plan   │ │ [cream][blue]            │
+│ │ 3 mini subject tiles    │ SEND colours     │ │ [yellow][contrast]     │
+│ └─────────────────────────┴──────────────────┘ │                          │
+│ ┌─ ACCESS & SEND RAIL ────┬─ colour cards ───┐ │                          │
+│ │ onboarding chips        │ 4 swatch tiles   │ │                          │
+│ │ module links            │                  │ │                          │
+│ └─────────────────────────┴──────────────────┘ │                          │
+│ … live dashboard cards (readiness, routes, sessions) …                     │
+└───────────────────────────────────────────────┴──────────────────────────┘
+```
 
-- **Component:** `src/components/onboarding/onboarding-shell.tsx`
+**Components:** `student-app-shell.tsx`, `planner-prompt-card.tsx`, `send-support-rail.tsx`  
+**Route:** `/dashboard` (signed in)
+
+Mobile: horizontal scroll study pills + bottom letter dock (H P L S A).
 
 ---
 
-## Onboarding flow (8 steps)
+## Mockup 4 — Planner bento (not a centred modal)
+
+```
+┌─────────────────────────────┬──────────────────────────────────────┐
+│ PLANNER (teal panel)        │ • Built around onboarding subjects   │
+│ Your study plan, built      │ • Links exams, practice, progress    │
+│ around you                  │ • Respects access arrangements       │
+│ [Subjects][Practice][Exams] │ [Create my plan] [SEND colours]      │
+└─────────────────────────────┴──────────────────────────────────────┘
+```
+
+Dismissible via **Close** — not a floating ✕ circle modal.
+
+---
+
+## Mockup 5 — Onboarding (8 steps)
 
 ```mermaid
 flowchart LR
-  A["0 Account type"] --> B["1 Qualification"]
-  B --> C["2 Profile / year"]
-  C --> D["3 School"]
-  D --> E["4 Subjects"]
-  E --> F["5 Support"]
-  F --> G["6 Guardian"]
-  G --> H["7 Consent"]
+  A["1 Account"] --> B["2 Qualification"]
+  B --> C["3 Profile"]
+  C --> D["4 School"]
+  D --> E["5 Subjects"]
+  E --> F["6 Support"]
+  F --> G["7 Guardian"]
+  G --> H["8 Consent"]
   H --> I["Dashboard"]
 ```
 
-**Shell:** `OnboardingShell` — progress bar, centred title/subtitle, sticky footer (Back | Continue).
+**Desktop:** numbered step rail on the left (current step = teal, done = emerald).  
+**All sizes:** flat progress bar with teal→emerald gradient.  
+**Banner:** dark stone strip — “Mock Idea guided setup · The Switch Platform”.
 
-| Step | Key | Title | Continue label |
-|------|-----|-------|----------------|
-| 0 | `account-type` | Select your Switch account type: | Continue |
-| 1 | `qualification` | What are you studying for this year? | Continue |
-| 2 | `profile` | Great to meet you, {name}! | Continue |
-| 3 | `school` | Where do you go to school? | Continue |
-| 4 | `subjects` | Which 🎒 {qualification} subjects are you studying? | **Let's go!** |
-| 5 | `support` | Accessibility and support | Continue |
-| 6 | `guardian` | Invite a parent or guardian | Continue |
-| 7 | `consent` | Almost there! | **Open my dashboard** |
+| Step | Key | Focus |
+|------|-----|-------|
+| 0 | account-type | Student / parent / teacher |
+| 1 | qualification | GCSE routes + iGCSE |
+| 2 | profile | Name + year persona |
+| 3 | school | UK school sources |
+| 4 | subjects | MVP catalog filter |
+| 5 | support | Accessibility · Access Arrangements · SEND signposting |
+| 6 | guardian | Optional invite |
+| 7 | consent | Age/consent → dashboard |
 
----
-
-## Step mockups
-
-### Step 0 — Account type
-
-```
-        [==========●────────────────]  progress (~12%)
-
-              Select your Switch account type:
-
-    ┌──────────┐  ┌──────────┐  ┌──────────┐
-    │    🎓    │  │  👨‍👩‍👧   │  │    💼    │
-    │ I'm a    │  │ I'm a    │  │ I'm a    │
-    │ student  │  │ parent   │  │ teacher  │
-    └──────────┘  └──────────┘  └──────────┘
-         ▲ selected = sky border
-
-    [ Back ]                              [ Continue ]
-```
-
-- Three horizontal cards, pastel icon circles (orange / violet / rose)
-- Selected card: `border-sky-500`
-
-### Step 1 — Qualification
-
-```
-        [================●──────────────]  (~25%)
-
-         What are you studying for this year?
-         More than one? Pick your main route...
-
-    ┌─────────────────────┐  ┌─────────────────────┐
-    │ ○ GCSE (England)  🎒│  │ ○ GCSE (Wales)    🏴│
-    └─────────────────────┘  └─────────────────────┘
-    ┌─────────────────────┐  ┌─────────────────────┐
-    │ ○ GCSE (NI)       📜│  │ ○ iGCSE           🌍│
-    └─────────────────────┘  └─────────────────────┘
-
-    [ Back ]                              [ Continue ]
-```
-
-- Two-column grid, radio + label + emoji icon
-
-### Step 2 — Profile / year group
-
-```
-        [====================●──────────]  (~37%)
-
-              Great to meet you, Lloyd!
-         Which profile matches your vibe?
-
-    ┌────────────┐  ┌────────────┐  ┌────────────┐
-    │     🤖     │  │     😅     │  │     🙂     │
-    │ Lloyd the  │  │ Lloyd the  │  │ Lloyd the  │
-    │ Exam ready │  │ Building   │  │ Getting    │
-    │  (Year 11) │  │ momentum   │  │ started    │
-    └────────────┘  └────────────┘  └────────────┘
-
-    [ Back ]                              [ Continue ]
-```
-
-- Personalised first name from signed-in session
-- Year 9 / 10 / 11 persona cards (Seneca “vibe” pattern)
-
-### Step 3 — School
-
-```
-        [========================●──────]  (~50%)
-
-              Where do you go to school?
-         We use official UK school sources...
-
-    ┌─────────────────────────────────────────┐
-    │ School name                             │
-    │ [________________________________]      │
-    │ Nation: [ England ▼ ]                   │
-    │ Links: GIAS · Parentzone · Wales · EANI │
-    └─────────────────────────────────────────┘
-
-    [ Back ]                              [ Continue ]
-```
-
-### Step 4 — Subjects
-
-```
-        [============================●──]  (~62%)
-
-      Which 🎒 GCSE subjects are you studying?
-   Pick MVP subjects — Combined Science covers biology, chemistry, and physics.
-
-    ┌─────────────────────┐  ┌─────────────────────┐
-    │ ☑ GCSE Maths      📐│  │ ☐ GCSE English   ✍️│
-    │ Core number,      │  │ Reading, inference, │
-    │ algebra, geometry │  │ language analysis   │
-    └─────────────────────┘  └─────────────────────┘
-    ┌─────────────────────┐  ┌─────────────────────┐
-    │ ☑ Combined Science 🧬│  │ (iGCSE route only) │
-    │ Biology, chemistry, │  │ iGCSE Maths      📊│
-    │ and physics         │  │                     │
-    └─────────────────────┘  └─────────────────────┘
-
-    [ Back ]                              [ Let's go! ]
-```
-
-- **GCSE routes** (England, Wales, NI): Maths, English Language, Combined Science
-- **iGCSE route:** iGCSE Mathematics only
-- Subject list from `listStudentVisibleContentSubjects()` — same as `/subjects`
-- Changing qualification path clears incompatible subject selections
-
-### Step 5 — Support (Accessibility · Access Arrangements · SEND)
-
-```
-        [================================●]  (~75%)
-
-     Accessibility, access arrangements, and SEND support
-
-    ┌─────────────────────────────────────────┐
-    │ ☑ Accessibility support               │
-    │   Contrast, dyslexia font, focus mode   │
-    │   → Accessibility module              │
-    └─────────────────────────────────────────┘
-    ┌─────────────────────────────────────────┐
-    │ ☑ Exam access arrangements              │
-    │   Extra time, reader, rest breaks       │
-    │   → Access Arrangements foundation      │
-    └─────────────────────────────────────────┘
-    ┌─────────────────────────────────────────┐
-    │ ☑ SEND and support signposting          │
-    │   Trusted UK links — not counselling    │
-    │   → Support Hub                         │
-    └─────────────────────────────────────────┘
-
-    [ Back ]                              [ Continue ]
-```
-
-- Maps to README Core MVP #7 Accessibility, #9 Access Arrangements, Support Hub
-- On complete: seeds `StudentAccessProfile` when accessibility/access flags set
-- Dashboard shows support chips from onboarding choices
-
-### Step 6 — Guardian (optional)
-
-```
-    ┌─────────────────────────────────────────┐
-    │ Guardian email (optional)               │
-    │ [ parent@example.com              ]     │
-    └─────────────────────────────────────────┘
-
-    [ Back ]                              [ Continue ]
-```
-
-### Step 7 — Consent
-
-```
-        [==================================●]  (~100%)
-
-                  Almost there!
-         Confirm age or consent, then dashboard.
-
-    ┌─────────────────────────────────────────┐
-    │ ☑ I confirm age/consent or guardian     │
-    │   agreement for this setup.             │
-    └─────────────────────────────────────────┘
-
-    [ Back ]                         [ Open my dashboard ]
-```
-
-- On complete → `PUT /api/onboarding/profile` with `complete: true` → redirect `/dashboard`
+Step 5 maps to MVP modules; completion seeds `StudentAccessProfile` and dashboard support chips.
 
 ---
 
-## Homepage mockup (post-onboarding entry)
+## Mockup 6 — Homepage `/`
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  ✦ THE SWITCH    For Students  ...           Log in  [Sign up]  │
-├─────────────────────────────────────────────────────────────────┤
-│  light blue gradient background (#eef6ff)                         │
-│                                                                 │
-│  ┌─────────────────────────────┐  ┌──────────────────┐         │
-│  │ Hero — student home preview │  │ Session / routes │         │
-│  │ Next best step, planner     │  │ sidebar cards    │         │
-│  └─────────────────────────────┘  └──────────────────┘         │
-└─────────────────────────────────────────────────────────────────┘
-```
+Marketing header + stone mesh hero + existing dashboard preview cards + marketing footer.
 
-Dashboard (`/dashboard`) keeps the existing signed-in nav — marketing header is homepage-only.
+---
+
+## Mockup 7 — Visual gallery `/mock-idea-preview`
+
+Single page stacking all mockups for review:
+
+1. Marketing header + footer frame  
+2. Full dashboard shell with planner + SEND rail  
+3. Onboarding banner strip  
+4. SEND colour swatch grid  
+
+**Open locally:** `npm run dev` → http://localhost:3000/mock-idea-preview  
+**Live:** https://theswitchplatform.com/mock-idea-preview
 
 ---
 
 ## Architecture (unchanged)
 
 ```
-/onboarding (page) → onboarding-experience.tsx → /api/onboarding/profile
-                                                      ↓
-                                            onboarding/service.ts
-                                                      ↓
-                                            onboarding-profile-store
+/onboarding → onboarding-experience.tsx → /api/onboarding/profile → onboarding/service.ts
+/dashboard  → dashboard-home.tsx (mode=dashboard) → StudentAppShell + module data
+/           → dashboard-home.tsx (mode=home) → MarketingSiteHeader + Footer
 ```
-
-- Incomplete learners hitting `/dashboard` redirect to `/onboarding`
-- Dashboard personalises from `selectedSubjectIds` and qualification path
-
----
-
-## Live proof checklist (item 3)
-
-- [x] Deploy to Fly (`fly deploy -a the-switch-platform`)
-- [x] New learner: sign in → `/onboarding` → complete all 8 steps (automated via `npm run verify:live-onboarding`)
-- [x] Dashboard shows subjects from onboarding choices
-- [x] Record evidence in `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
-- [x] Re-run `npm run verify:live-walkthrough`
 
 ---
 
@@ -351,13 +218,24 @@ Dashboard (`/dashboard`) keeps the existing signed-in nav — marketing header i
 
 | File | Role |
 |------|------|
-| `src/components/mock-idea/brand-tokens.ts` | Mock Idea brand + SEND palette |
-| `src/components/mock-idea/student-app-shell.tsx` | Sidebar + welcome header |
-| `src/components/mock-idea/marketing-site-footer.tsx` | Public footer + SEND chips |
-| `src/components/mock-idea/planner-prompt-card.tsx` | Planner modal card |
-| `src/components/mock-idea/send-support-rail.tsx` | Access/SEND dashboard rail |
-| `src/components/marketing-site-header.tsx` | Public header (Mock Idea) |
-| `src/components/onboarding/onboarding-shell.tsx` | Onboarding progress shell |
-| `src/app/onboarding/onboarding-experience.tsx` | Step content + save logic |
-| `src/modules/onboarding/service.ts` | Step order + completion rules |
+| `src/components/mock-idea/brand-tokens.ts` | Brand, SEND palette, nav |
+| `src/components/mock-idea/student-app-shell.tsx` | Top study rail shell |
+| `src/components/mock-idea/marketing-site-header.tsx` | Public header |
+| `src/components/mock-idea/marketing-site-footer.tsx` | Dark footer + swatches |
+| `src/components/mock-idea/planner-prompt-card.tsx` | Bento planner panel |
+| `src/components/mock-idea/send-support-rail.tsx` | Access/SEND bento rail |
+| `src/components/mock-idea/mock-idea-showcase.tsx` | Gallery sections |
+| `src/app/mock-idea-preview/page.tsx` | Visual mockup route |
+| `src/components/onboarding/onboarding-shell.tsx` | Step rail onboarding |
 | `src/components/dashboard-home.tsx` | Home + dashboard layout |
+| `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` | This guide |
+
+---
+
+## Live proof (item 3 onboarding)
+
+- [x] 8-step onboarding on Fly  
+- [x] MVP catalog subject filter  
+- [x] Access/SEND step 5 wiring  
+- [x] `npm run verify:live-onboarding`  
+- [x] Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`

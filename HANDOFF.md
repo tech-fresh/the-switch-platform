@@ -65,25 +65,24 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-24 (Mock Idea dashboard shell + docs)
+- **Last updated:** 2026-06-24 (Mock Idea Study Atelier creative refresh)
 - **Platform label:** **`fully complete` / 100% end to end** — all 22 Full End-to-End Completion List items closed on Fly
 
 ### Active task
 
-- **Priority item #:** post-launch polish — Mock Idea UI direction
+- **Priority item #:** post-launch polish — Mock Idea Study Atelier UI
 - **Module:** `dashboard` + marketing shell
-- **Status:** Mock Idea sidebar, footer, planner card, SEND rail shipped
+- **Status:** Creative refresh shipped — top rail, bento panels, dark footer, `/mock-idea-preview` gallery
 - **Branch:** `main`
 
 ### What was just completed
 
-- **Mock Idea** student shell: sidebar, welcome header, planner prompt, SEND support rail
-- Marketing header/footer rebranded (indigo/violet twist + MVP SEND colour chips)
-- Dashboard wraps in `StudentAppShell`; homepage gets `MarketingSiteFooter`
-- `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` updated with Mock Idea direction
-- Auth login nav test updated for marketing header
+- **Study Atelier** creative direction — deliberately not Seneca (top rail, bento planner, stone/teal palette)
+- Dark marketing footer with SEND swatch circles + wave cut
+- Onboarding numbered step rail + teal progress bar
+- Visual mockup gallery at `/mock-idea-preview`
+- `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` rewritten as full visual guide
 - Tests 95/95 pass
-- **Commit `d832874`** pushed; **Fly deploy** succeeded (2026-06-24)
 
 ### What is next
 

@@ -332,6 +332,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-24 Mock Idea Study Atelier creative refresh
+
+- Redesigned Mock Idea away from Seneca-like narrow sidebar: **top study rail**, **bento planner panel**, **stone/teal palette**, **dark footer with SEND swatch circles**.
+- Onboarding shell: numbered step rail (desktop) + teal/emerald progress bar.
+- New visual gallery route **`/mock-idea-preview`** and `mock-idea-showcase.tsx`.
+- Rewrote `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` as full Study Atelier visual guide.
+
 ### 2026-06-24 Mock Idea dashboard shell and marketing footer
 
 - Added **Mock Idea** design direction (Seneca-inspired layout study, not a copy): indigo/violet branding, student sidebar shell, welcome header, planner prompt card, SEND support rail.

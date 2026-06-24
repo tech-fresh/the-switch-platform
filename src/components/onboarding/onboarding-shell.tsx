@@ -2,6 +2,8 @@
 
 import type { ReactNode } from "react";
 
+import { MOCK_IDEA_BRAND } from "@/components/mock-idea/brand-tokens";
+
 interface OnboardingShellProps {
   stepIndex: number;
   totalSteps: number;
@@ -24,43 +26,74 @@ export function OnboardingShell({
   const progress = Math.min(100, Math.round(((stepIndex + 1) / totalSteps) * 100));
 
   return (
-    <main className="flex min-h-screen flex-col bg-[#eef6ff] text-slate-800">
-      <div className="border-b border-slate-200/80 bg-white/80 px-4 py-2 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700 sm:px-8">
-        Mock Idea guided setup · The Switch Platform
+    <main className="min-h-screen bg-stone-100 text-stone-900">
+      <div className="border-b border-stone-200 bg-stone-950 px-4 py-3 text-center sm:px-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-300">
+          {MOCK_IDEA_BRAND.name} guided setup · The Switch Platform
+        </p>
       </div>
-      <div className="px-4 pt-6 sm:px-8">
-        <div className="relative mx-auto h-2 max-w-4xl overflow-hidden rounded-full bg-slate-200">
-          <div
-            className="absolute inset-y-0 left-0 rounded-full bg-sky-500 transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-          <div
-            className="absolute top-1/2 size-7 -translate-y-1/2 rounded-full border-2 border-white bg-amber-300 text-center text-sm leading-7 shadow-sm"
-            style={{ left: `calc(${progress}% - 14px)` }}
-            aria-hidden
-          >
-            🙂
+
+      <div className="mx-auto grid w-full max-w-5xl gap-8 px-4 py-8 sm:px-8 lg:grid-cols-[10rem_minmax(0,1fr)]">
+        <aside className="hidden lg:block">
+          <ol className="sticky top-8 space-y-2">
+            {Array.from({ length: totalSteps }, (_, index) => {
+              const done = index < stepIndex;
+              const current = index === stepIndex;
+              return (
+                <li
+                  key={index}
+                  className={`flex items-center gap-2 border px-3 py-2 text-xs font-semibold ${
+                    current
+                      ? "border-teal-400 bg-teal-50 text-teal-900"
+                      : done
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+                        : "border-stone-200 bg-white text-stone-500"
+                  }`}
+                >
+                  <span
+                    className={`inline-flex size-6 items-center justify-center text-[10px] ${
+                      current ? "bg-teal-800 text-white" : done ? "bg-emerald-700 text-white" : "bg-stone-200"
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  Step {index + 1}
+                </li>
+              );
+            })}
+          </ol>
+        </aside>
+
+        <div className="flex flex-col">
+          <div className="mb-6">
+            <div className="mb-2 flex items-center justify-between text-xs font-semibold text-stone-600">
+              <span>
+                Step {stepIndex + 1} of {totalSteps}
+              </span>
+              <span>{progress}%</span>
+            </div>
+            <div className="h-2 overflow-hidden bg-stone-200">
+              <div className="h-full bg-gradient-to-r from-teal-600 to-emerald-500 transition-all" style={{ width: `${progress}%` }} />
+            </div>
           </div>
+
+          <header className="mb-8 space-y-2">
+            <h1 className="text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">{title}</h1>
+            {subtitle ? <p className="text-sm leading-7 text-stone-600 sm:text-base">{subtitle}</p> : null}
+          </header>
+
+          {error ? (
+            <div className="mb-6 border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-900">{error}</div>
+          ) : null}
+
+          <div className="flex-1">{children}</div>
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-10 sm:px-8">
-        <header className="mb-8 space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-800 sm:text-3xl">{title}</h1>
-          {subtitle ? <p className="text-sm text-slate-500 sm:text-base">{subtitle}</p> : null}
-        </header>
-
-        {error ? (
-          <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900">
-            {error}
-          </div>
-        ) : null}
-
-        <div className="flex-1">{children}</div>
-      </div>
-
-      <footer className="sticky bottom-0 border-t border-slate-200 bg-white px-4 py-4 sm:px-8">
-        <div className="mx-auto flex max-w-4xl items-center justify-between gap-3">{footer}</div>
+      <footer className="sticky bottom-0 border-t border-stone-200 bg-white/95 px-4 py-4 backdrop-blur sm:px-8">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 lg:pl-[calc(10rem+2rem)]">
+          {footer}
+        </div>
       </footer>
     </main>
   );
@@ -78,7 +111,7 @@ export function OnboardingBackButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="rounded-xl border-2 border-sky-500 bg-white px-6 py-2.5 text-sm font-semibold text-sky-600 transition hover:bg-sky-50 disabled:opacity-50"
+      className="border-2 border-teal-700 bg-white px-6 py-2.5 text-sm font-semibold text-teal-800 transition hover:bg-teal-50 disabled:opacity-50"
     >
       Back
     </button>
@@ -99,7 +132,7 @@ export function OnboardingContinueButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="rounded-xl bg-sky-500 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-600 disabled:cursor-not-allowed disabled:bg-sky-300"
+      className="bg-teal-800 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-teal-900/20 transition hover:bg-teal-900 disabled:cursor-not-allowed disabled:bg-teal-400"
     >
       {label}
     </button>

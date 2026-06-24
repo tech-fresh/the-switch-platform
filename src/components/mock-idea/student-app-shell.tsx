@@ -4,7 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { MOCK_IDEA_BRAND, SEND_COLOUR_CHIPS, STUDENT_NAV_ITEMS } from "@/components/mock-idea/brand-tokens";
+import {
+  MOCK_IDEA_BRAND,
+  SEND_COLOUR_CHIPS,
+  STUDENT_NAV_ITEMS,
+  badgeAccentClasses,
+  navAccentClasses,
+} from "@/components/mock-idea/brand-tokens";
 
 interface StudentAppShellProps {
   children: ReactNode;
@@ -12,134 +18,180 @@ interface StudentAppShellProps {
   supportChips?: string[];
 }
 
-function navItemClasses(active: boolean, accent: "sky" | "violet" | "amber" | "rose"): string {
-  if (!active) {
-    return "rounded-2xl px-2 py-3 text-slate-600 transition hover:bg-white/80";
-  }
-
-  if (accent === "violet") {
-    return "rounded-2xl bg-violet-100 px-2 py-3 text-violet-800";
-  }
-  if (accent === "amber") {
-    return "rounded-2xl bg-amber-100 px-2 py-3 text-amber-900";
-  }
-  if (accent === "rose") {
-    return "rounded-2xl bg-rose-100 px-2 py-3 text-rose-900";
-  }
-
-  return "rounded-2xl bg-sky-100 px-2 py-3 text-sky-800";
-}
-
 export function StudentAppShell({ children, displayName, supportChips = [] }: StudentAppShellProps) {
   const pathname = usePathname();
   const firstName = displayName?.trim().split(/\s+/)[0] ?? "Student";
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="min-h-screen bg-[#eef6ff] text-slate-900">
-      <div className="mx-auto flex min-h-screen w-full max-w-[1400px]">
-        <aside className="hidden w-24 shrink-0 flex-col border-r border-slate-200/80 bg-[#f4f8ff] px-2 py-4 lg:flex">
-          <Link
-            href="/dashboard"
-            className="mb-4 flex flex-col items-center gap-1 text-indigo-700"
-            aria-label={MOCK_IDEA_BRAND.name}
-          >
-            <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-indigo-100 text-lg">
+    <div className="min-h-screen bg-stone-100 text-stone-950">
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute -left-24 top-0 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
+        <div className="absolute right-0 top-32 h-80 w-80 rounded-full bg-amber-200/30 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-sky-200/25 blur-3xl" />
+      </div>
+
+      <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <Link href="/dashboard" className="flex items-center gap-2.5">
+            <span className="inline-flex size-9 items-center justify-center bg-teal-800 text-sm font-bold text-white shadow-md shadow-teal-900/20">
               {MOCK_IDEA_BRAND.logoGlyph}
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.12em]">Mock</span>
+            <div className="leading-tight">
+              <p className="text-sm font-semibold tracking-tight text-stone-950">{MOCK_IDEA_BRAND.name}</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-teal-700">Study Atelier</p>
+            </div>
           </Link>
 
-          <nav className="flex flex-1 flex-col gap-1">
+          <nav className="hidden flex-wrap items-center gap-1.5 lg:flex" aria-label="Student study rail">
             {STUDENT_NAV_ITEMS.map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex flex-col items-center gap-1 text-center text-[11px] font-medium ${navItemClasses(active, item.accent)}`}
+                  className={`inline-flex items-center gap-2 border px-3 py-2 text-xs font-semibold transition ${navAccentClasses(item.accent, active)}`}
                 >
-                  <span className="text-lg leading-none">{item.icon}</span>
-                  <span>{item.label}</span>
+                  <span
+                    className={`inline-flex size-5 items-center justify-center text-[10px] font-bold ${badgeAccentClasses(item.accent)}`}
+                  >
+                    {item.short}
+                  </span>
+                  {item.label}
                 </Link>
               );
             })}
           </nav>
 
-          <div className="mt-4 space-y-2 border-t border-slate-200/80 pt-3">
-            {SEND_COLOUR_CHIPS.slice(0, 2).map((chip) => (
-              <Link
-                key={chip.id}
-                href={chip.href}
-                className={`block rounded-lg border px-1 py-1 text-center text-[9px] font-semibold leading-tight ${chip.className}`}
-              >
-                {chip.label.split(" ")[0]}
-              </Link>
-            ))}
+          <div className="flex items-center gap-2">
+            <Link
+              href="/accessibility"
+              className="hidden rounded-full border border-amber-300 bg-[#fff8c4] px-3 py-1.5 text-[11px] font-semibold text-amber-950 sm:inline-flex"
+            >
+              SEND colours
+            </Link>
             <Link
               href="/account"
-              className="mx-auto flex size-10 items-center justify-center rounded-full border border-slate-200 bg-white text-lg shadow-sm"
+              className="inline-flex size-9 items-center justify-center border-2 border-teal-700 bg-teal-700 text-xs font-bold text-white"
               aria-label={`${firstName} account`}
             >
-              🙂
+              {firstName.slice(0, 1).toUpperCase()}
             </Link>
           </div>
-        </aside>
+        </div>
+      </header>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="border-b border-slate-200/80 bg-white/90 px-4 py-4 backdrop-blur sm:px-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <span className="inline-flex size-11 items-center justify-center rounded-full bg-amber-100 text-xl lg:hidden">
-                  🙂
-                </span>
-                <div>
-                  <p className="text-xs font-medium text-slate-500">Welcome to {MOCK_IDEA_BRAND.name}</p>
-                  <h1 className="text-lg font-semibold text-slate-900 sm:text-xl">
-                    Good morning, {firstName}
-                  </h1>
-                  <p className="text-xs text-slate-500">100 XP to Level 1 · Study Pulse active</p>
-                </div>
-              </div>
+      <section className="border-b border-stone-200/70 bg-gradient-to-r from-white via-stone-50 to-teal-50/40">
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-end justify-between gap-4 px-4 py-5 sm:px-6">
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
+              {MOCK_IDEA_BRAND.tagline}
+            </p>
+            <h1 className="text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
+              {greeting}, {firstName}
+            </h1>
+            <p className="text-sm text-stone-600">Study Pulse active · planner and access tools ready below</p>
+          </div>
 
-              <div className="flex flex-wrap items-center gap-2">
-                {supportChips.slice(0, 3).map((chip) => (
-                  <span
-                    key={chip}
-                    className="rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-[11px] font-medium text-violet-800"
+          <div className="flex flex-wrap items-center gap-2">
+            {supportChips.slice(0, 4).map((chip) => (
+              <span
+                key={chip}
+                className="border border-teal-200 bg-white px-3 py-1 text-[11px] font-medium text-teal-900"
+              >
+                {chip}
+              </span>
+            ))}
+            <Link
+              href="/accessibility"
+              className="border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:border-teal-400"
+            >
+              Access settings
+            </Link>
+          </div>
+        </div>
+
+        <div className="mx-auto flex max-w-[1400px] gap-2 overflow-x-auto px-4 pb-3 sm:px-6 lg:hidden">
+          {STUDENT_NAV_ITEMS.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`shrink-0 border px-3 py-1.5 text-[11px] font-semibold ${navAccentClasses(item.accent, active)}`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <div className="mx-auto grid w-full max-w-[1400px] gap-6 px-4 py-6 sm:px-6 xl:grid-cols-[minmax(0,1fr)_11rem]">
+        <main className="min-w-0 pb-20 lg:pb-8">{children}</main>
+
+        <aside className="hidden xl:block">
+          <div className="sticky top-28 space-y-4">
+            <div className="border border-stone-200 bg-white p-4 shadow-sm">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-stone-500">
+                SEND overlays
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {SEND_COLOUR_CHIPS.map((chip) => (
+                  <Link
+                    key={chip.id}
+                    href={chip.href}
+                    className="group flex flex-col items-center gap-1 border border-stone-200 p-2 text-center hover:border-teal-400"
                   >
-                    {chip}
-                  </span>
+                    <span
+                      className="size-8 border border-stone-300 shadow-inner"
+                      style={{ backgroundColor: chip.swatch }}
+                      aria-hidden
+                    />
+                    <span className="text-[9px] font-semibold leading-tight text-stone-700 group-hover:text-teal-800">
+                      {chip.label.split(" ")[0]}
+                    </span>
+                  </Link>
                 ))}
-                <Link
-                  href="/accessibility"
-                  className="rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-semibold text-indigo-800"
-                >
-                  Access settings
-                </Link>
               </div>
             </div>
-          </header>
 
-          <div className="flex-1 px-4 py-5 sm:px-6">{children}</div>
-        </div>
+            <div className="border border-dashed border-teal-300 bg-teal-50/60 p-4 text-xs leading-6 text-teal-900">
+              Access arrangements and SEND signposting stay independent modules — this rail only links
+              to them.
+            </div>
+          </div>
+        </aside>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-20 flex border-t border-slate-200 bg-white/95 px-2 py-2 backdrop-blur lg:hidden">
-        {STUDENT_NAV_ITEMS.slice(0, 4).map((item) => {
-          const active = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-1 text-[10px] font-medium ${
-                active ? "bg-sky-100 text-sky-800" : "text-slate-600"
-              }`}
-            >
-              <span className="text-base">{item.icon}</span>
-              {item.label}
-            </Link>
-          );
-        })}
+      <nav
+        className="fixed inset-x-0 bottom-0 z-20 border-t border-stone-300 bg-white/95 px-2 py-2 backdrop-blur lg:hidden"
+        aria-label="Mobile study dock"
+      >
+        <div className="mx-auto flex max-w-lg justify-between gap-1">
+          {STUDENT_NAV_ITEMS.slice(0, 5).map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-1 flex-col items-center gap-0.5 px-1 py-1 text-[9px] font-semibold ${
+                  active ? "text-teal-800" : "text-stone-500"
+                }`}
+              >
+                <span
+                  className={`inline-flex size-7 items-center justify-center text-[10px] font-bold ${
+                    active ? badgeAccentClasses(item.accent) : "border border-stone-200 bg-stone-50 text-stone-600"
+                  }`}
+                >
+                  {item.short}
+                </span>
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
       </nav>
     </div>
   );

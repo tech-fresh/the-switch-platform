@@ -694,10 +694,10 @@ export function DashboardHome({ data, mode, isAuthenticated = false, displayName
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#eef6ff] text-stone-950">
+    <main className="min-h-screen overflow-hidden bg-stone-100 text-stone-950">
       <MarketingSiteHeader isAuthenticated={isAuthenticated} />
       <div className="relative isolate">
-        <div className="absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.15),_transparent_42%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.12),_transparent_38%),linear-gradient(to_bottom,_#ffffff,_#eef6ff)]" />
+        <div className="absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(circle_at_top_left,_rgba(20,184,166,0.14),_transparent_42%),radial-gradient(circle_at_top_right,_rgba(251,191,36,0.12),_transparent_38%),linear-gradient(to_bottom,_#ffffff,_#f5f5f4)]" />
         <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
           {innerContent}
         </div>

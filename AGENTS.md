@@ -122,7 +122,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | What are we doing now? | **Post-launch polish** — calmer website, focused dashboard, **onboarding unchanged in length**. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Declutter only** — no duplicate mockups on `/` or `/dashboard`. Gallery routes keep rich previews. |
-| What is next? | Study shell on more routes; Wales/NI when operator prioritises. See `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`. |
+| What is next? | Phase 3 planner persistence; `/results` shell optional. See `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`. |
 
 ```mermaid
 flowchart LR

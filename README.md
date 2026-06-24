@@ -15,7 +15,7 @@
 | What are we doing now? | **Post-launch polish** — Study Atelier UI, calmer homepage/dashboard, onboarding scope locked. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Declutter only** — no duplicate mockups on live home/dashboard. Previews: `/mock-idea-preview`. |
-| What is next? | Study shell on more routes. See [`docs/ideas/STREAMLINE-WEBSITE-PLAN.md`](./docs/ideas/STREAMLINE-WEBSITE-PLAN.md). |
+| What is next? | Phase 3 planner persistence; `/results` shell optional. See [`docs/ideas/STREAMLINE-WEBSITE-PLAN.md`](./docs/ideas/STREAMLINE-WEBSITE-PLAN.md). |
 
 **Every session:** tell the agent `Read HANDOFF.md first.` Full checklists and diagrams → [`HANDOFF.md` → Plain-English — what the project is doing](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents).
 
@@ -343,6 +343,14 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-24 Phase 2 — StudentAppShell on subjects, assessments, progress
+
+- Added **`requireStudentAppRouteContext()`** in `src/lib/server/student-route.ts` — auth, onboarding gate, shell props.
+- Wrapped **`/subjects`**, **`/assessments`**, **`/progress`** in `StudentAppShell` (study rail, mobile dock, SEND column).
+- Subjects: **Your subject** badges from onboarding `selectedSubjectIds`; default subject from profile.
+- Progress: trimmed copy; recovery states inside shell.
+- Dashboard page refactored to use shared student-route helper.
 
 ### 2026-06-24 Full MD alignment — dual-agent + MVP at a glance
 

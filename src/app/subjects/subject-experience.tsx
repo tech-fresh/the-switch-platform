@@ -13,6 +13,7 @@ interface SubjectExperienceProps {
   quizByTopic: Record<string, QuizQuestion>;
   initialSubjectId?: string;
   initialTopicId?: string;
+  onboardingSubjectIds?: string[];
 }
 
 export function SubjectExperience({
@@ -22,12 +23,12 @@ export function SubjectExperience({
   quizByTopic,
   initialSubjectId,
   initialTopicId,
+  onboardingSubjectIds = [],
 }: SubjectExperienceProps) {
   if (subjects.length === 0) {
     return (
-      <main className="min-h-screen bg-stone-100 text-stone-950">
-        <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-center gap-6 px-4 py-10 sm:px-6 lg:px-8">
-          <section className="border border-stone-200 bg-white p-6 sm:p-8">
+      <div className="flex flex-col gap-6">
+        <section className="border border-stone-200 bg-white p-6 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-violet-700">
               Subjects
             </p>
@@ -40,8 +41,7 @@ export function SubjectExperience({
               the content workflow.
             </p>
           </section>
-        </div>
-      </main>
+      </div>
     );
   }
 
@@ -64,8 +64,7 @@ export function SubjectExperience({
   const quiz = quizByTopic[selectedTopic.topicId];
 
   return (
-    <main className="min-h-screen bg-stone-100 text-stone-950">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="flex flex-col gap-8">
         <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-4">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-violet-700">
@@ -139,6 +138,7 @@ export function SubjectExperience({
               <div className="divide-y divide-stone-200">
                 {subjects.map((subject) => {
                   const isSelected = subject.subjectId === selectedSubject.subjectId;
+                  const isOnboardingSubject = onboardingSubjectIds.includes(subject.subjectId);
 
                   return (
                     <button
@@ -154,7 +154,18 @@ export function SubjectExperience({
                           : "bg-white text-stone-900 hover:bg-stone-50"
                       }`}
                     >
-                      <span className="text-sm font-semibold">{subject.name}</span>
+                      <span className="flex flex-wrap items-center gap-2">
+                        <span className="text-sm font-semibold">{subject.name}</span>
+                        {isOnboardingSubject ? (
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
+                              isSelected ? "bg-violet-600 text-violet-50" : "bg-teal-50 text-teal-800"
+                            }`}
+                          >
+                            Your subject
+                          </span>
+                        ) : null}
+                      </span>
                       <p className={`text-sm ${isSelected ? "text-violet-50" : "text-stone-600"}`}>
                         {subject.description}
                       </p>
@@ -352,7 +363,6 @@ export function SubjectExperience({
             </section>
           </aside>
         </section>
-      </div>
-    </main>
+    </div>
   );
 }

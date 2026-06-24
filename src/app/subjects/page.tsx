@@ -1,5 +1,8 @@
-import { SubjectExperience } from "./subject-experience";
+import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import { getSubjectsExperienceApiData } from "@/lib/api/server";
+import { requireStudentAppRouteContext } from "@/lib/server/student-route";
+
+import { SubjectExperience } from "./subject-experience";
 
 export const dynamic = "force-dynamic";
 
@@ -11,13 +14,22 @@ interface SubjectsPageProps {
 }
 
 export default async function SubjectsPage({ searchParams }: SubjectsPageProps) {
-  const experience = await getSubjectsExperienceApiData();
+  const [shell, experience] = await Promise.all([
+    requireStudentAppRouteContext(),
+    getSubjectsExperienceApiData(),
+  ]);
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
+
+  const onboardingSubjectId = shell.onboardingSubjectIds.find((subjectId) =>
+    experience.subjects.some((subject) => subject.subjectId === subjectId),
+  );
+
   const initialSubjectId =
     resolvedSearchParams?.subjectId &&
     experience.subjects.some((subject) => subject.subjectId === resolvedSearchParams.subjectId)
       ? resolvedSearchParams.subjectId
-      : experience.subjects[0]?.subjectId;
+      : onboardingSubjectId ?? experience.subjects[0]?.subjectId;
+
   const initialTopicId =
     resolvedSearchParams?.topicId &&
     experience.topicsBySubject[initialSubjectId ?? ""]?.some(
@@ -27,13 +39,16 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
       : undefined;
 
   return (
-    <SubjectExperience
-      subjects={experience.subjects}
-      topicsBySubject={experience.topicsBySubject}
-      revisionByTopic={experience.revisionByTopic}
-      quizByTopic={experience.quizByTopic}
-      initialSubjectId={initialSubjectId}
-      initialTopicId={initialTopicId}
-    />
+    <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
+      <SubjectExperience
+        subjects={experience.subjects}
+        topicsBySubject={experience.topicsBySubject}
+        revisionByTopic={experience.revisionByTopic}
+        quizByTopic={experience.quizByTopic}
+        initialSubjectId={initialSubjectId}
+        initialTopicId={initialTopicId}
+        onboardingSubjectIds={shell.onboardingSubjectIds}
+      />
+    </StudentAppShell>
   );
 }

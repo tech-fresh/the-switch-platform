@@ -110,7 +110,7 @@ export function StudentAppShell({
 
         <div className="mx-auto flex max-w-[1400px] gap-2 overflow-x-auto px-4 pb-3 sm:px-6 lg:hidden">
           {STUDENT_NAV_ITEMS.map((item) => {
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}
@@ -166,7 +166,7 @@ export function StudentAppShell({
       >
         <div className="mx-auto flex max-w-lg justify-between gap-1">
           {STUDENT_NAV_ITEMS.slice(0, 5).map((item) => {
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}

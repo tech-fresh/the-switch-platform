@@ -65,27 +65,27 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-24 (docs pushed — `31be1ae` on `origin/main`)
-
-- **Platform label:** **`fully complete` / 100% end to end** — all 22 Full End-to-End Completion List items closed on Fly
+- **Last updated:** 2026-06-24 (Phase 2 — StudentAppShell on subjects, assessments, progress)
 
 ### Active task
 
-- **Priority item #:** post-launch polish
-- **Module:** `dashboard` / `project-workflow`
-- **Status:** All doc alignment on GitHub — working tree clean; ready for Phase 2 shell rollout
-- **Branch:** `main` (synced with `origin/main`)
+- **Priority item #:** 5 — Dashboard (post-launch polish)
+- **Module:** `dashboard` + student shell
+- **Status:** Phase 2 complete — `/subjects`, `/assessments`, `/progress` use `StudentAppShell`
+- **Branch:** `main`
 
 ### What was just completed
 
-- Git push confirmed — `31be1ae` on https://github.com/tech-fresh/the-switch-platform
-- Four core MD files aligned: HANDOFF, AGENTS, PLATFORM-GUIDE, README (dual-agent + MVP at a glance)
-- No uncommitted changes in repo
+- **`requireStudentAppRouteContext()`** — shared auth, onboarding gate, display name, support chips
+- **`StudentAppShell`** on `/subjects`, `/assessments`, `/progress` (study rail + mobile dock)
+- Subjects: **Your subject** badges from onboarding; default subject from onboarding profile
+- Progress: planner copy trimmed; recovery states inside shell
+- Tests 95/95 pass
 
 ### What is next
 
-- Phase 2: `StudentAppShell` on `/subjects`, `/assessments`, `/progress` — `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
-- Wales/NI GCSE when operator prioritises
+- Phase 3: planner dismiss persistence — `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
+- Optional: wrap `/results` in shell; Wales/NI GCSE when prioritised
 
 ### Blockers
 
@@ -116,8 +116,8 @@ The Switch is a **live GCSE revision platform** (https://theswitchplatform.com).
 | Stage | Plain English | Status |
 |-------|---------------|--------|
 | **Final Path Mark 2** | Real site proven end-to-end; evidence on file | **Done** (23 June 2026) |
-| **Post-launch polish** | Study Atelier UI, decluttered home/dashboard, onboarding scope locked | **In progress** |
-| **Next product slice** | Same study shell on more routes; Wales/NI GCSE when you prioritise | **Planned** |
+| **Post-launch polish** | Study Atelier UI, decluttered home/dashboard, **study shell on main routes** | **In progress** |
+| **Next product slice** | Planner dismiss persistence; Wales/NI GCSE when you prioritise | **Planned** |
 
 ### Two lanes — do not mix them
 
@@ -740,6 +740,13 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-24 — Cursor — Phase 2 StudentAppShell rollout
+
+- Done: `/subjects`, `/assessments`, `/progress` wrapped in `StudentAppShell`; `requireStudentAppRouteContext()`
+- Done: onboarding subject badges on subjects list; shared auth/onboarding gate
+- Next: Phase 3 planner dismiss persistence
+- Blocker: none
 
 ### 2026-06-24 — Cursor — Git push confirmed (docs on origin/main)
 

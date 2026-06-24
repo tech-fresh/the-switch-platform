@@ -545,8 +545,7 @@ export function AssessmentExperience({
   }
 
   return (
-    <main className="min-h-screen bg-stone-100 text-stone-950">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="flex flex-col gap-8">
         <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-4">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-700">
@@ -1137,7 +1136,6 @@ export function AssessmentExperience({
             </section>
           </aside>
         </section>
-      </div>
-    </main>
+    </div>
   );
 }

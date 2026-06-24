@@ -86,16 +86,17 @@ Onboarding was **never** the clutter source — it is a separate gated flow with
 
 ---
 
-## Phase 2 — Consistent student shell (planned)
+## Phase 2 — Consistent student shell ✅ Shipped 2026-06-24
 
 Apply `StudentAppShell` to high-traffic signed-in routes so nav is not rebuilt per page.
 
 | Route | Priority | Wrap in shell | Onboarding data |
 |-------|----------|---------------|-----------------|
-| `/subjects` | High | Yes | Filter/highlight from `selectedSubjectIds` |
-| `/assessments` | High | Yes | Support chips from onboarding profile |
-| `/progress` | High | Yes | Planner destination from dashboard bento |
-| `/results` | Medium | Yes | Slim summary layout |
+| `/subjects` | High | ✅ Yes | Highlights `selectedSubjectIds`; prefers onboarding subject on load |
+| `/assessments` | High | ✅ Yes | Support chips from onboarding profile |
+| `/progress` | High | ✅ Yes | Planner destination; auth + onboarding gate |
+| `/dashboard` | — | ✅ (prior) | Uses shared `requireStudentAppRouteContext()` |
+| `/results` | Medium | Planned | Slim summary layout |
 | `/accessibility` | Medium | Optional | Settings — may keep dedicated layout |
 | `/support` | Medium | Optional | Signposting-only |
 | `/onboarding` | — | **No** | Uses `OnboardingShell` only |

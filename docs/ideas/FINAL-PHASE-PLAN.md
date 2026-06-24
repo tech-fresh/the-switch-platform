@@ -466,10 +466,10 @@ Mark these only when evidence exists.
 
 ### Truthful completion
 
-- [ ] A-1 Real OIDC sign-in proof recorded without synthetic auth
+- [x] A-1 Real OIDC sign-in proof recorded without synthetic auth
 - [x] A-2 Final live verification forbids launch-verification bypass
-- [ ] A-3 Real sign-out + route rejection proof recorded
-- [ ] A-4 Real fresh-learner onboarding proof recorded
+- [x] A-3 Real sign-out + route rejection proof recorded
+- [x] A-4 Real fresh-learner onboarding proof recorded
 - [x] A-5 Persistence recovery proven on true production storage path
 - [ ] A-6 Canonical final release-evidence bundle created
 - [x] A-7 Launch-status / governance / docs all tell the same truth

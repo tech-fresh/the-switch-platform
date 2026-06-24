@@ -11,7 +11,8 @@ This file is **not** the final canonical completion bundle. It is an interim tru
 
 - strict real-auth tooling is now in place
 - launch-verification bypass is rejected in strict mode
-- the current local live student cookie does **not** authenticate a real session
+- real browser-authenticated production OIDC proof now exists for sign-in, onboarding, and sign-out
+- the current local strict-proof env still lacks the fresh student/admin cookies needed for the final reruns
 
 ## Strict real-auth guardrail
 
@@ -67,12 +68,71 @@ Result:
 
 - passed
 
+## Real browser-authenticated production proof
+
+Run date: 25 June 2026 (BST)  
+Host: https://theswitchplatform.com
+
+### A-1 real OIDC sign-in proof
+
+- Started from `https://theswitchplatform.com/login`
+- Triggered real auth start through `Continue with Google`
+- Reached the real Google provider account chooser on `accounts.google.com` with `redirect_uri=https://theswitchplatform.com/api/auth/callback`
+- Selected the remembered production learner account `theswitchengine@gmail.com`
+- Returned to the live site with a signed session
+- Confirmed signed session on `/account`:
+  - learner: `Theswitchengine`
+  - email: `theswitchengine@gmail.com`
+  - provider: `google`
+  - account copy showed `Signed in via google at 24 Jun, 23:56`
+  - protected route `/dashboard` was accessible
+
+Meaning:
+
+- real production OIDC sign-in was exercised without launch-verification headers
+- provider redirect and callback-backed session creation were proved through the live browser path
+
+### A-4 real fresh-learner onboarding proof
+
+- Signed-in learner landed on `/onboarding`
+- Completed all 8 production onboarding steps through the live browser:
+  - account type
+  - qualification path
+  - learner profile
+  - school capture
+  - subject selection
+  - accessibility / access arrangements / SEND signposting
+  - guardian step
+  - age or consent confirmation
+- Dashboard unlocked after step 8
+- Revisit check:
+  - after completion, direct navigation attempts to `/onboarding` kept the learner on `/dashboard`
+
+Meaning:
+
+- item 3 is now backed by a real auth path instead of synthetic launch headers
+
+### A-3 real sign-out and lockout proof
+
+- Started from signed-in `/account`
+- Clicked the real `Sign out` action
+- Verified protected route lockout:
+  - direct visit to `/dashboard` redirected to `/login`
+  - `/account` rendered a signed-out state with `Log in` and provider sign-in actions instead of the live session summary
+
+Meaning:
+
+- real production sign-out invalidated protected-route access for the learner session
+
 ## Current honest status
 
+- `A-1` complete in browser-authenticated production evidence
 - `A-2` complete in code and enforced by runtime checks
+- `A-3` complete in browser-authenticated production evidence
+- `A-4` complete in browser-authenticated production evidence
 - `A-5` complete on Fly production: persistence recovery proved against `/data`
 - `A-7` complete in core repo truth surfaces
-- `A-1` still open pending a fresh real production OIDC session cookie and recorded evidence
+- `A-6` and `A-8` remain open pending fresh cookie-backed strict reruns
 
 ## Fly production persistence recovery proof
 
@@ -101,12 +161,13 @@ Meaning:
 
 ## Next operator step
 
-1. Refresh `SWITCH_LIVE_STUDENT_COOKIE` from a real Microsoft/OIDC sign-in on production.
-2. Re-run:
+1. Refresh `SWITCH_LIVE_STUDENT_COOKIE` from the now-proved real production learner sign-in on production.
+2. Refresh `SWITCH_LIVE_ADMIN_COOKIE` from a real production admin sign-in.
+3. Re-run:
 
 ```bash
 SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-oidc-proof
 SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-walkthrough:real-auth
 ```
 
-3. If both pass, store that output in the canonical final release-evidence bundle and continue A-3 to A-8 closeout.
+4. If both pass, store that output in the canonical final release-evidence bundle, rerun `npm run verify:live-truth-match`, and close A-6/A-8.

@@ -365,6 +365,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-25 Priority A audit — real browser-authenticated OIDC proof recorded
+
+- Extended [release-evidence/2026-06-25-priority-a-truth-audit.md](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/release-evidence/2026-06-25-priority-a-truth-audit.md) with the real production browser proof path.
+- Proved Google OIDC auth start, provider redirect, callback-backed signed session, protected dashboard access, real 8-step learner onboarding, dashboard unlock, onboarding revisit redirect, and real sign-out lockout on https://theswitchplatform.com.
+- Closed **A-1**, **A-3**, and **A-4** in browser evidence.
+- Remaining closeout blocker is script input, not product behavior: the strict reruns still need a freshly copied `SWITCH_LIVE_STUDENT_COOKIE` and a real `SWITCH_LIVE_ADMIN_COOKIE` in `.env.local` before **A-6** and **A-8** can be finished honestly.
+
 ### 2026-06-25 Priority A audit — strict live proof run recorded
 
 - Added [release-evidence/2026-06-25-priority-a-truth-audit.md](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/release-evidence/2026-06-25-priority-a-truth-audit.md) as the current strict-audit record.

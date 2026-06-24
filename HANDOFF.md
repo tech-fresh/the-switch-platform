@@ -66,7 +66,7 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Codex
-- **Last updated:** 2026-06-25 (Priority A audit run — live cookie invalid)
+- **Last updated:** 2026-06-25 (real browser OIDC proof recorded; strict cookie rerun still blocked)
 
 ### Active task
 
@@ -98,23 +98,24 @@ Update this section every session.
 
 ### What was just completed
 
-- Strict real-auth commands were run against production
-- Guardrail worked: strict mode refused to run while `SWITCH_LAUNCH_VERIFICATION_SECRET` was present
-- After blanking that variable for the process, the live OIDC proof reached provider redirect and OIDC-mode guards but failed because the current local production student cookie did not authenticate a session
-- A-7 truth surfaces were aligned across governance/admin/platform guide/final-sequence commands
-- A-5 passed on Fly production: sqlite `/data` and `/data/backups` match and recovery is ready
+- Real browser-authenticated Google OIDC sign-in was proved on production: `/login` -> `/api/auth/start?provider=google` -> Google account chooser -> authenticated student session
+- Real learner completed all 8 onboarding steps on production and unlocked the dashboard; revisiting `/onboarding` kept the learner on `/dashboard`
+- Real sign-out was proved on production: `/dashboard` redirected to `/login` after sign-out and `/account` rendered the signed-out state
+- A-1, A-3, and A-4 now have production browser evidence alongside earlier A-2, A-5, and A-7 completion
+- Remaining blocker is strict script closeout: local `.env.local` still lacks a fresh `SWITCH_LIVE_STUDENT_COOKIE` and a real `SWITCH_LIVE_ADMIN_COOKIE`
 
 ### What is next
 
-- **A-1** — refresh the real production student cookie, rerun `npm run verify:live-oidc-proof`, and record evidence
-- **A-3 / A-4** — extend the same strict real-auth evidence path to fresh-learner onboarding and final sign-out records
-- **A-6 / A-8** — after real-auth proof lands, create the canonical evidence bundle and rerun truth-match
+- **A-6** — create the canonical final release-evidence bundle that rolls in the new browser proof plus the strict command outputs
+- **A-8** — rerun `npm run verify:live-truth-match` after fresh student/admin cookies are copied into `.env.local`
+- Refresh `SWITCH_LIVE_STUDENT_COOKIE` and obtain a real `SWITCH_LIVE_ADMIN_COOKIE` from production using `/account/live-cookie-guide`
 
 ### Blockers
 
 - No coding blocker found for A-2, A-5, or A-7
-- Main remaining blocker for A-1 is live credentials: the current local production student cookie does not authenticate a session
-- Current audit position: strict tooling is in place, truth surfaces are aligned, but item 22 is not treated as airtight again until refreshed real-auth proof is recorded
+- No product blocker found for A-1, A-3, or A-4: browser-authenticated production proof now exists for all three
+- Main remaining blocker is local strict-proof input: `.env.local` still does not contain a fresh student cookie or a real admin cookie for the final script reruns
+- Current audit position: browser proof gap is closed, but item 22 is not treated as airtight again until the strict cookie-backed reruns are recorded
 
 ### Verification last run
 
@@ -805,6 +806,16 @@ Add a new entry here at the end of every session. Do not delete older entries.
 - Done: recorded current state in `release-evidence/2026-06-25-priority-a-truth-audit.md`
 - Verification: `npm test`, `npm run lint`
 - Next: refresh live student cookie, rerun strict proof, then continue A-3 to A-8
+
+### 2026-06-25 — Codex — real browser OIDC proof for A-1/A-3/A-4
+
+- Done: captured real production Google OIDC auth start and provider redirect from `/login`
+- Done: re-entered a real student session on production and confirmed signed-in account state at `/account` (`Signed in via google at 24 Jun, 23:56`)
+- Done: completed the full 8-step learner onboarding flow on production, unlocked the dashboard, and confirmed `/onboarding` no longer returned step 1 for the completed learner
+- Done: signed out on production and confirmed `/dashboard` redirected to `/login` while `/account` rendered the signed-out state
+- Done: updated plan/docs/evidence so A-1, A-3, and A-4 are recorded as complete in browser evidence
+- Blocker: strict command closeout still needs a fresh `SWITCH_LIVE_STUDENT_COOKIE` and a real `SWITCH_LIVE_ADMIN_COOKIE` copied into `.env.local`
+- Next: finish A-6 and A-8 after the two production cookies are refreshed via `/account/live-cookie-guide`
 
 ### 2026-06-24 — Cursor — Priority C authoritative closure (docs sync)
 

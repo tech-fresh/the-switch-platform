@@ -11,15 +11,16 @@ alwaysApply: true
 
 # Session start
 
-1. Read `HANDOFF.md` first
-2. Read `PLATFORM-GUIDE.md` (rules, modules, launch checklist)
-3. Read `README.md` sections only when needed
-4. Work on one module per session
-5. State which build-priority item the task serves
+1. Read `HANDOFF.md` first — check **Priority C — COMPLETE** (lane closed; active work is Priority A)
+2. Read `docs/ideas/FINAL-PHASE-PLAN.md` — active Priority A item
+3. Read `PLATFORM-GUIDE.md` (rules, modules, launch checklist)
+4. Read `README.md` sections only when needed
+5. Work on one module per session
+6. State which build-priority item the task serves (A, B, D, or E — not C unless operator reopens)
 
 # Before each action
 
-Consult `HANDOFF.md`, then `PLATFORM-GUIDE.md`, then `README.md` sections when needed.
+Consult `HANDOFF.md`, then `docs/ideas/FINAL-PHASE-PLAN.md`, then `PLATFORM-GUIDE.md`, then `README.md` sections when needed.
 
 # After each action
 

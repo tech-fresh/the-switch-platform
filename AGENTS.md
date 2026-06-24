@@ -4,8 +4,8 @@
 
 Before doing ANY work in this repository:
 
-1. Read **`HANDOFF.md`** for live session state, next steps, and blockers
-2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** — sole active roadmap for remaining work
+1. Read **`HANDOFF.md`** for live session state, next steps, blockers — and **Priority C — COMPLETE** (lane closed)
+2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** — active Priority **A** work (Priority **C** is complete — do not reopen unless operator requests)
 3. Read **`PLATFORM-GUIDE.md`** — the single consolidated guide (rules, architecture, modules, launch checklist)
 3. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 4. Read **`PROJECT_RECOVERY.md`** and **`RESTORED_CHATS.md`** if folder or history context is unclear
@@ -27,6 +27,8 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 **After each action:** update **`HANDOFF.md`** Live session state. Append **`README.md`** Ordered Build Record when behavior changed.
 
+**Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Read `HANDOFF.md` → **Priority C — COMPLETE** before any session. Do not reopen C-1–C-10 unless the operator explicitly requests an exception. Active lane is **Priority A**.
+
 **At session end:** run verification, confirm push, refresh **`HANDOFF.md`**.
 
 ## Document map
@@ -37,7 +39,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`AGENTS.md`** | This entry point — synced with HANDOFF |
 | **`PLATFORM-GUIDE.md`** | Rules, architecture, modules, 22-item launch list, MVP modules |
 | **`README.md`** | Cumulative product spec, **MVP at a glance**, Ordered Build Record (append only) |
-| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole active roadmap** — full completion audit: truthful completion first, then remaining Study Atelier work |
+| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole active roadmap** — Priority **A** truth audit active; Priority **C** complete (24 June 2026) |
 | **`docs/ideas/`** | Plan index — prior plans historical |
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
@@ -121,9 +123,9 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Live on Fly; the full-completion claim is under Priority A truth audit. |
-| What are we doing now? | **Final Phase** — full completion audit (`docs/ideas/FINAL-PHASE-PLAN.md`): truthful completion first, then remaining Study Atelier finish work. |
+| What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026). |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
-| Lane B — website | Prior declutter **done**; **Priority C complete** (shell, planner, marketing, recovery). |
+| Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
 | What is next? | **Priority A — truthful completion (fix the proof gap)** — A-1 to A-8 in **`docs/ideas/FINAL-PHASE-PLAN.md`**. |
 
 ```mermaid
@@ -221,9 +223,26 @@ npm run verify:live-truth-match
 
 ---
 
-## Priority C completion record (24 June 2026)
+## Priority C completion record (24 June 2026) — AUTHORITATIVE
 
-**Status: COMPLETE** — Study Atelier product finish lane (`docs/ideas/FINAL-PHASE-PLAN.md` → C-1 through C-10).
+**Status: COMPLETE — CLOSED.** Study Atelier product finish lane (`docs/ideas/FINAL-PHASE-PLAN.md` → C-1 through C-10).
+
+**Moving forward:** every agent session starts with `HANDOFF.md` → **Priority C — COMPLETE**. Do **not** plan or implement C items unless the operator explicitly reopens one. Active work is **Priority A** only.
+
+**Architecture gate (must hold for all C work already shipped):**
+
+```
+route (thin page) → module service → API route → persistence
+```
+
+| Module / surface | Path |
+|------------------|------|
+| Weekly planner | `src/modules/weekly-planner/service.ts` → `/api/planner/week` |
+| Planner dismiss | `src/modules/dashboard/ui-preferences-service.ts` → `/api/dashboard/ui-preferences` |
+| Exam focus mode | `src/lib/exams/focus-mode.ts` — lobby in shell; active paper without shell |
+| Subject tones | `src/lib/subjects/tone.ts` — catalog-backed, no duplicate subject collection |
+| Recovery UI | `src/components/student-route-recovery.tsx` |
+| Student shell | `src/components/mock-idea/student-app-shell.tsx` + `requireStudentAppRouteContext()` |
 
 | Item | What shipped |
 |------|----------------|

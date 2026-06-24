@@ -14,7 +14,8 @@ const finalLaunchScripts = [
   "verify:persistence-health",
   "verify:live-readiness",
   "verify:persistence-recovery",
-  "verify:live-walkthrough",
+  "verify:live-oidc-proof",
+  "verify:live-walkthrough:real-auth",
   "verify:launch-signoff",
   "verify:live-truth-match",
 ];

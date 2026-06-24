@@ -13,7 +13,9 @@ const expectedPersistenceDriver = (process.env.SWITCH_PERSISTENCE_DRIVER ?? "loc
 const expectedDataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim() ?? "";
 const expectedCmsBackendMode = (process.env.SWITCH_CMS_BACKEND_MODE ?? "live").trim();
 
-const { baseUrl, adminHeaders } = getLiveWalkthroughConfig();
+const { baseUrl, adminHeaders } = getLiveWalkthroughConfig(process.env, {
+  walkthroughMode: "real-auth",
+});
 
 assert(
   expectedPersistenceDriver === "sqlite",

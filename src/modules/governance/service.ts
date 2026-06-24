@@ -1145,16 +1145,16 @@ function buildFinalPathSummary(): GovernanceFinalPathSummary {
   const codeCompleteCount = closeoutItems.filter((item) => item.status === "done").length;
 
   return {
-    label: "Final Path Mark 1",
+    label: "Priority A truth audit",
     codeCompleteCount,
     totalCount: closeoutItems.length,
     estimatedCompletionRange: "88% to 90%",
     note:
-      "The platform is strong and near-launch, but it is not yet a true no-prototype full-production release. The remaining gap is mostly live setup, live proof, and final launch approval.",
+      "The platform is live on Fly, but the full-completion claim stays under audit until strict real-auth proof, production persistence evidence, and one canonical release bundle are refreshed.",
     biggestBlockers: [
-      "The repo now has live-proof automation, but the deployed sign-in path still needs a real run with live credentials and callbacks.",
-      "The shared live student-data path is implemented in code, but it still needs final proof in the real deployed environment.",
-      "The final live environment proof, walkthrough record, and release sign-off are still open in the target environment.",
+      "Strict proof tooling now exists, but the deployed sign-in path still needs a fresh real-auth cookie run and recorded evidence.",
+      "The shared live student-data path is implemented in code, but it still needs refreshed production recovery proof tied to /data.",
+      "The final live evidence bundle and truth-match rerun are still open before the completion claim can be treated as airtight again.",
     ],
     closeoutItems,
   };

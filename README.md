@@ -12,12 +12,31 @@
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. Live on Fly; full-completion proof is under Priority A truth audit in `docs/ideas/FINAL-PHASE-PLAN.md`. |
-| What are we doing now? | **Final Phase** — full completion audit first, then remaining Study Atelier finish work. |
+| What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026). |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
-| Website (Lane B) | Prior declutter **done**; remaining work in **Final Phase**. |
+| Website (Lane B) | **Complete** — Priority C shipped shell, planner, marketing chrome, recovery (24 June 2026). |
 | What is next? | **Priority A — truthful completion (fix the proof gap)** — A-1 to A-8 in [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL-PHASE-PLAN.md). |
 
-**Every session:** tell the agent `Read HANDOFF.md first.` Full checklists and diagrams → [`HANDOFF.md` → Plain-English — what the project is doing](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents).
+**Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception. Full checklists → [`HANDOFF.md` → Plain-English](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents).
+
+### Priority C — COMPLETE (24 June 2026)
+
+**Authoritative:** synced with `HANDOFF.md` and `AGENTS.md`. Product completion lane **closed**. Active work is **Priority A** only.
+
+| Item | Status |
+|------|--------|
+| C-1 Shell rollout | **Complete** |
+| C-2 Exams focus mode | **Complete** |
+| C-3 Support route | **Complete** |
+| C-4 Marketing chrome | **Complete** |
+| C-5 Planner dismiss persistence | **Complete** |
+| C-6 Weekly planner (API-backed) | **Complete** |
+| C-7 Subject tone chips | **Complete** |
+| C-8 Account/auth UX | **Complete** |
+| C-9 Accessibility route | **Complete** |
+| C-10 Recovery / empty states | **Complete** |
+
+Checklist and evidence → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL-PHASE-PLAN.md) · Build record below.
 
 ```mermaid
 flowchart LR
@@ -38,7 +57,7 @@ flowchart LR
 | **What it is** | GCSE / iGCSE revision platform — practice, timed tests, full exams, progress |
 | **Live** | https://theswitchplatform.com |
 | **Launch** | Live on Fly; Final Path Mark 2 completion claim is being re-checked by the Priority A truth audit |
-| **Now** | **Final Phase** — full completion audit + remaining Study Atelier work — `docs/ideas/FINAL-PHASE-PLAN.md` |
+| **Now** | **Priority A** truth audit active · **Priority C complete** (24 June 2026) |
 
 ### Core MVP modules (priority order)
 
@@ -66,7 +85,7 @@ Wales / Northern Ireland GCSE: **coming later** (visible in onboarding, not sele
 | Lane | Do |
 |------|-----|
 | **A — Onboarding** | Keep 8 steps; builds dashboard; England GCSE + iGCSE |
-| **B — Website** | **Final Phase** — shell on remaining routes, planner, marketing trim |
+| **B — Website** | **Complete** — Priority C (shell, planner, marketing, recovery) shipped 24 June 2026 |
 
 Active plan → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL-PHASE-PLAN.md)
 
@@ -345,6 +364,19 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-25 Priority A audit — strict live proof run recorded
+
+- Added [release-evidence/2026-06-25-priority-a-truth-audit.md](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/release-evidence/2026-06-25-priority-a-truth-audit.md) as the current strict-audit record.
+- Confirmed the new strict commands reject `SWITCH_LAUNCH_VERIFICATION_SECRET` in final-proof mode.
+- Confirmed the current local production student cookie is not authenticating a live session, so `A-1` remains open for refreshed live credentials rather than missing code.
+- Closed **A-7** in repo truth surfaces: governance/admin/platform guide/final-sequence commands now point to the same Priority A audit story.
+
+### 2026-06-24 Priority C authoritative closure — docs sync
+
+- Priority **C** marked **COMPLETE** (C-1–C-10) across HANDOFF, AGENTS, README, PLATFORM-GUIDE, FINAL-PHASE-PLAN.
+- **Agent rule:** do not reopen Priority C unless operator requests exception; active lane is Priority A.
+- Architecture gate holds: weekly planner (`src/modules/weekly-planner/`), UI preferences, exam focus mode all use route → service → API → persistence.
 
 ### 2026-06-24 Priority C complete — Study Atelier product finish lane
 

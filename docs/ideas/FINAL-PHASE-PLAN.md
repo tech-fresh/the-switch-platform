@@ -277,9 +277,13 @@ These items stop the repo from contradicting itself.
 
 ---
 
-## Priority C — Product completion work
+## Priority C — Product completion work — **COMPLETE (24 June 2026)**
 
-These are real product gaps still visible in the app.
+**Status: CLOSED.** All C-1–C-10 items below are done. Agents must not reopen this lane unless the operator explicitly requests an exception. Active work is **Priority A**.
+
+**Architecture gate:** all shipped C work follows `route → module service → API → persistence`. See `AGENTS.md` → Priority C completion record for module paths.
+
+These were real product gaps; all are now resolved in code and verified (102/102 tests, 24 June 2026).
 
 ### C-1. Shell rollout on remaining signed-in student routes — **complete (2026-06-24)**
 
@@ -299,121 +303,41 @@ These are real product gaps still visible in the app.
 
 **Done when** — signed-in student workflow routes above use shared chrome; exceptions documented in C-2/C-3.
 
-### C-2. Decide the `/exams` shell model
+### C-2. Decide the `/exams` shell model — **complete (2026-06-24)**
 
-**Current state**
+**Shipped:** lobby in `StudentAppShell`; active papers use focus mode (`focus=1` or `questionId` with `examId`) without study rail. Helpers: `src/lib/exams/focus-mode.ts`. Documented in `src/modules/exam-engine/README.md`.
 
-- [`src/app/exams/page.tsx`](../../src/app/exams/page.tsx) uses its own experience/recovery layout.
+### C-3. Decide whether `/support` is a public marketing surface or a signed-in student route — **complete (2026-06-24)**
 
-**Decision required**
+**Shipped:** public marketing hub via `PublicMarketingPage` on `/support`.
 
-- Either:
-  - shell the exam lobby only and preserve focus mode during active papers
-- Or:
-  - document exam focus mode as a deliberate shell exception
+### C-4. Apply marketing header/footer consistently on public routes — **complete (2026-06-24)**
 
-**Done when**
+**Shipped:** `PublicMarketingPage` on `/support`, `/how-it-works`, `/login`; homepage already had marketing chrome.
 
-- The route is consistent by rule, not by accident.
+### C-5. Complete planner persistence — **complete (2026-06-24)**
 
-### C-3. Decide whether `/support` is a public marketing surface or a signed-in student route
+**Shipped:** `PlannerPromptCard` dismiss persisted per user via `/api/dashboard/ui-preferences` and `dashboard-ui-preferences-store`.
 
-**Current state**
+### C-6. Build a real weekly planner backed by app data — **complete (2026-06-24)**
 
-- [`src/app/support/page.tsx`](../../src/app/support/page.tsx) is public and standalone.
-- Earlier planning blurred “support” between public and student-shell contexts.
+**Shipped:** `src/modules/weekly-planner/` + `/api/planner/week`; same `WeeklyPlannerGrid` on dashboard and `/progress`.
 
-**Required work**
+### C-7. Use onboarding/catalog subject signals in planner and route summaries — **complete (2026-06-24)**
 
-- Pick one model:
-  - public support hub with marketing chrome
-  - signed-in student support route with shell
-  - split routes if both are needed
+**Shipped:** `src/lib/subjects/tone.ts` — catalog-backed tone chips on dashboard, planner, and progress.
 
-**Done when**
+### C-8. Finish account/auth UX alignment — **complete (2026-06-24)**
 
-- Support is no longer a mixed concept in plans and UI.
+**Shipped:** `/account` in shell when signed in; `/login` on marketing chrome.
 
-### C-4. Apply marketing header/footer consistently on public routes
+### C-9. Accessibility route consistency pass — **complete (2026-06-24)**
 
-**Routes to audit**
+**Shipped:** `/accessibility` in `StudentAppShell` (C-1).
 
-- `/`
-- `/how-it-works`
-- `/login`
-- `/support` if kept public
+### C-10. Recovery and empty-state consistency pass — **complete (2026-06-24)**
 
-**Required work**
-
-- Shared header
-- Shared footer
-- consistent CTA hierarchy
-- SEND swatches where intended
-
-### C-5. Complete planner persistence
-
-**Current state**
-
-- `PlannerPromptCard` still uses client-only local dismissal behavior.
-
-**Required work**
-
-- Persist dismissal per user.
-- Survive refresh and new sessions.
-- Store through module/API path, not page-only state.
-
-### C-6. Build a real weekly planner backed by app data
-
-**Required work**
-
-- Week grid driven by saved progress, assessments, and exams.
-- Dashboard and `/progress` must agree on planner state.
-- Avoid fake decorative planner UI.
-
-### C-7. Use onboarding/catalog subject signals in planner and route summaries
-
-**Required work**
-
-- Subject tone mapping
-- no duplicate subject collection
-- consistent chip/color logic across dashboard, planner, and recommendations
-
-### C-8. Finish account/auth UX alignment
-
-**Current state**
-
-- `/account` is functionally rich but visually standalone.
-- `/login` is cleaner than before, but still separate from the broader public shell system.
-
-**Required work**
-
-- Decide whether `/account` belongs in student shell or in a deliberate account layout.
-- Make `/login` visually consistent with the active public-site system.
-
-### C-9. Accessibility route consistency pass
-
-**Current state**
-
-- `/accessibility` uses a dedicated experience.
-
-**Required work**
-
-- Keep the dedicated route if needed, but align it visually and navigationally with the student app system.
-
-### C-10. Recovery and empty-state consistency pass
-
-**Routes to audit**
-
-- `/exams`
-- `/progress`
-- `/saved-progress`
-- content-empty routes
-
-**Required work**
-
-- consistent off-brand fallback cleanup
-- same product language for recovery actions
-- route-safe next steps
+**Shipped:** shared `StudentRouteRecovery` on exams, progress, and saved-progress empty state.
 
 ---
 
@@ -548,11 +472,12 @@ Mark these only when evidence exists.
 - [ ] A-4 Real fresh-learner onboarding proof recorded
 - [ ] A-5 Persistence recovery proven on true production storage path
 - [ ] A-6 Canonical final release-evidence bundle created
-- [ ] A-7 Launch-status / governance / docs all tell the same truth
+- [x] A-7 Launch-status / governance / docs all tell the same truth
 - [ ] A-8 Final truth-match rerun and green
 
 ### Product completion
 
+- [x] **Priority C lane complete (24 June 2026)** — C-1 through C-10 closed; do not reopen unless operator requests
 - [x] C-1 Remaining student route shell rollout complete (exams/support → C-2/C-3)
 - [x] C-2 `/exams` shell/focus rule decided and implemented (lobby in shell; `focus=1` active papers)
 - [x] C-3 `/support` route model clarified and implemented (public marketing hub)
@@ -603,4 +528,5 @@ Do **not** collapse that into “100% complete”.
 | Date | Change |
 |------|--------|
 | 2026-06-24 | Rewritten as full completion audit (Priorities A–E) |
+| 2026-06-24 | **Priority C complete** — C-1 through C-10 closed; lane marked authoritative in HANDOFF / AGENTS / README |
 | 2026-06-24 | **C-1 complete** — shell on saved-progress, recommendations, account, accessibility |

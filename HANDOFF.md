@@ -65,33 +65,55 @@ Update this section every session.
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
-- **Last updated by:** Cursor
-- **Last updated:** 2026-06-24 (Priority C complete — product completion lane)
+- **Last updated by:** Codex
+- **Last updated:** 2026-06-25 (Priority A audit run — live cookie invalid)
 
 ### Active task
 
 - **Priority item #:** A — Truthful completion (fix the proof gap)
 - **Module:** launch verification + truth surfaces
-- **Status:** **Active** — A-1 to A-8 opened from `docs/ideas/FINAL-PHASE-PLAN.md`
+- **Status:** **Active** — A-1 to A-8 in `docs/ideas/FINAL-PHASE-PLAN.md`
 - **Branch:** `main`
+
+### Priority C — COMPLETE (24 June 2026)
+
+**Authoritative status:** Priority **C** (product completion lane) is **closed**. Do not reopen C-1–C-10 unless the operator explicitly requests an exception. Active work is **Priority A** only.
+
+| Item | Status | Evidence |
+|------|--------|----------|
+| **C-1** Shell rollout | **Complete** | `StudentAppShell` on results, saved-progress, recommendations, accessibility, account (signed in) |
+| **C-2** Exams focus mode | **Complete** | Lobby in shell; active paper `focus=1` — `src/lib/exams/focus-mode.ts` |
+| **C-3** Support route model | **Complete** | Public marketing hub — `PublicMarketingPage` on `/support` |
+| **C-4** Marketing chrome | **Complete** | `/`, `/how-it-works`, `/login`, `/support` |
+| **C-5** Planner dismiss | **Complete** | `/api/dashboard/ui-preferences` |
+| **C-6** Weekly planner | **Complete** | `src/modules/weekly-planner/` + `/api/planner/week` |
+| **C-7** Subject tones | **Complete** | `src/lib/subjects/tone.ts` |
+| **C-8** Account/auth UX | **Complete** | Account in shell when signed in; login on marketing chrome |
+| **C-9** Accessibility route | **Complete** | Shell aligned (C-1) |
+| **C-10** Recovery pass | **Complete** | `StudentRouteRecovery` shared component |
+
+**Architecture gate (must hold):** route → thin page → module service → API → persistence. Weekly planner, UI preferences, and exam focus mode all follow this — no page-only business logic.
+
+**Synced in:** `AGENTS.md` → Priority C completion record · `README.md` → Ordered Build Record · `docs/ideas/FINAL-PHASE-PLAN.md` → execution checklist.
 
 ### What was just completed
 
-- **Priority C complete (C-2 through C-10):** exams focus mode, public support hub, marketing chrome, planner dismiss persistence, API-backed weekly planner, subject tone chips, account/login alignment, accessibility shell, shared recovery UI
-- New module: `src/modules/weekly-planner/` + `/api/planner/week`; shared `StudentRouteRecovery`, `WeeklyPlannerGrid`, `src/lib/subjects/tone.ts`
-- Verification: `npm run lint && npm run type-check && npm run test` — **102/102 passed**
+- Strict real-auth commands were run against production
+- Guardrail worked: strict mode refused to run while `SWITCH_LAUNCH_VERIFICATION_SECRET` was present
+- After blanking that variable for the process, the live OIDC proof reached provider redirect and OIDC-mode guards but failed because the current local production student cookie did not authenticate a session
+- A-7 truth surfaces were aligned across governance/admin/platform guide/final-sequence commands
 
 ### What is next
 
-- **A-1** — run `npm run verify:live-oidc-proof` against production with real live cookies and record evidence
+- **A-1** — refresh the real production student cookie, rerun `npm run verify:live-oidc-proof`, and record evidence
 - **A-3 / A-4** — extend the same strict real-auth evidence path to fresh-learner onboarding and final sign-out records
 - **A-5 to A-8** — tie persistence recovery, evidence bundle, and truth surfaces back to one canonical story in `docs/ideas/FINAL-PHASE-PLAN.md`
 
 ### Blockers
 
-- No coding blocker found for A-2
-- Main remaining blocker for A-1 is evidence, not implementation: production proof still requires a real live OIDC session cookie run
-- Current audit position: strict tooling is in place, but item 22 is not treated as airtight again until the real production proof is recorded
+- No coding blocker found for A-2 or A-7
+- Main remaining blocker for A-1 is live credentials: the current local production student cookie does not authenticate a session
+- Current audit position: strict tooling is in place, truth surfaces are aligned, but item 22 is not treated as airtight again until refreshed real-auth proof is recorded
 
 ### Verification last run
 
@@ -109,15 +131,16 @@ Update this section every session.
 
 ### In one sentence
 
-The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). Current work is **Final Phase** as a **full completion audit** — truthful completion first, then remaining Study Atelier finish work per **`docs/ideas/FINAL-PHASE-PLAN.md`**.
+The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). **Priority C** (product finish) is **complete** (24 June 2026). Active work is **Priority A** — truthful completion audit per **`docs/ideas/FINAL-PHASE-PLAN.md`**.
 
 ### Where we are
 
 | Stage | Plain English | Status |
 |-------|---------------|--------|
 | **Final Path Mark 2** | Live evidence exists, but the completion claim is under Priority A truth audit | **Re-checking proof gap** |
-| **Prior polish (Phases 1–2)** | Marketing shell, dashboard declutter, shell on main study routes | **Done** (24 June 2026) |
-| **Final Phase** | Truthful completion audit, then shell/planner/marketing finish work | **Active** — see `docs/ideas/FINAL-PHASE-PLAN.md` |
+| **Priority C — product finish** | Shell, exams focus mode, planner, marketing chrome, recovery UI | **Complete — 24 June 2026** |
+| **Prior polish (Phases 1–2)** | Marketing shell, dashboard declutter, shell on main study routes | **Done** |
+| **Final Phase — active** | Priority **A** truthful completion (A-1 to A-8) | **Active** — `docs/ideas/FINAL-PHASE-PLAN.md` |
 | **Optional (FP-6)** | Wales/NI GCSE, parent/teacher onboarding, admin restyle | **Operator gate only** |
 
 ### Two lanes — do not mix them
@@ -125,7 +148,7 @@ The Switch is a **live GCSE revision platform** (https://theswitchplatform.com).
 | Lane | What it means | Do |
 |------|----------------|-----|
 | **A — Onboarding** | 8-step guided setup **creates the student dashboard** (subjects, support, access) | **Keep all 8 steps.** Secondary school + England GCSE/iGCSE only for MVP. Wales/NI signposted “coming later”. |
-| **B — Website shell** | Public homepage + signed-in dashboard layout | **Declutter only** — one hero, one route grid, no duplicate mockups on live paths. Rich previews stay on `/mock-idea-preview`. |
+| **B — Website shell** | Public homepage + signed-in dashboard layout | **Complete** — Priority C shipped 24 June 2026 |
 
 ```mermaid
 flowchart TD
@@ -144,19 +167,25 @@ flowchart TD
     B2["Focused dashboard"]
     B3["Shell: dashboard, subjects, assessments, progress"]
   end
-  subgraph final["Active — Final Phase"]
-    F1["FP-1 shell on remaining routes"]
-    F2["FP-2 planner"]
-    F3["FP-3 marketing + verify"]
+  subgraph doneC["Done — Priority C (24 June 2026)"]
+    C1["Shell on all student routes"]
+    C2["Exams focus mode"]
+    C3["Weekly planner + dismiss"]
+    C4["Marketing chrome + recovery"]
+  end
+  subgraph activeA["Active — Priority A"]
+    A1["Real OIDC proof"]
+    A2["Truth surfaces sync"]
   end
   subgraph later["Later — FP-6 operator gate"]
     L1["GCSE Wales + Northern Ireland"]
   end
   done --> laneA
   done --> donePolish
-  donePolish --> final
-  laneA --> later
-  final --> later
+  donePolish --> doneC
+  laneA --> activeA
+  doneC --> activeA
+  activeA --> later
 ```
 
 ### Onboarding MVP (locked 24 June 2026)
@@ -287,7 +316,7 @@ On completion:
 | **Product** | GCSE / iGCSE revision, timed practice, exam readiness, progress tracking |
 | **Live site** | https://theswitchplatform.com (Fly.io) |
 | **Launch status** | Live on Fly; Final Path Mark 2 completion claim is being re-checked by Priority A |
-| **Current phase** | Final Phase **full completion audit** first, then remaining Study Atelier finish work |
+| **Current phase** | Priority **A** truth audit active · Priority **C** product finish **complete** (24 June 2026) |
 
 ### Core MVP modules (build priority order)
 
@@ -348,6 +377,18 @@ Wales / Northern Ireland GCSE routes: **coming later** (signposted in onboarding
 | 7 | Consent → **personal dashboard** |
 
 Detail: `src/modules/onboarding/README.md`
+
+### Final Phase status (authoritative)
+
+| Priority | Lane | Status |
+|----------|------|--------|
+| **A** | Truthful completion (proof gap) | **Active** |
+| **B** | Docs / governance sync | Open |
+| **C** | Product completion (shell, planner, marketing, recovery) | **Complete — 24 June 2026** |
+| **D** | Quality / test coverage | Open |
+| **E** | Deferred (operator gate) | Not started |
+
+Detail and checklist → `docs/ideas/FINAL-PHASE-PLAN.md`
 
 ### UI direction (post-launch)
 
@@ -752,6 +793,29 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-25 — Codex — Priority A audit run + A-7 truth sync
+
+- Done: ran strict real-auth proof commands against production
+- Done: verified strict mode rejects `SWITCH_LAUNCH_VERIFICATION_SECRET`
+- Done: verified current local production student cookie is stale or otherwise non-authenticating for `/api/auth/session`
+- Done: aligned `PLATFORM-GUIDE`, governance summary, admin launch copy, `launch-complete`, and `live-truth-match` to the same Priority A audit story
+- Done: recorded current state in `release-evidence/2026-06-25-priority-a-truth-audit.md`
+- Verification: `npm test`, `npm run lint`
+- Next: refresh live student cookie, rerun strict proof, then continue A-3 to A-8
+
+### 2026-06-24 — Cursor — Priority C authoritative closure (docs sync)
+
+- Done: Priority **C** marked **COMPLETE** (C-1–C-10) in HANDOFF, AGENTS, README, PLATFORM-GUIDE, FINAL-PHASE-PLAN
+- Done: architecture gate documented — weekly planner, UI preferences, exam focus mode follow route → service → API → persistence
+- Rule for agents: **do not reopen Priority C** unless operator requests exception; active lane is **Priority A**
+- Next: A-1 production OIDC proof, then A-3–A-8 evidence sync
+
+### 2026-06-24 — Cursor — Priority C product finish shipped
+
+- Done: C-2–C-10 — exams focus mode, support hub, marketing chrome, planner dismiss, weekly planner module, subject tones, recovery UI
+- Done: commit `92cc190` pushed to `main`; verification 102/102
+- Next: authoritative doc closure across HANDOFF / AGENTS / README
 
 ### 2026-06-24 — Codex — A-1/A-2 strict real-auth hardening
 

@@ -25,10 +25,11 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 
 | Question | Answer |
 |----------|--------|
-| Is the platform live? | Yes — https://theswitchplatform.com. All **22** launch items **complete**. |
-| What are we doing now? | **Final Phase** — Study Atelier 100% redesign — `docs/ideas/FINAL-PHASE-PLAN.md`. |
+| Is the platform live? | Yes — https://theswitchplatform.com. Live on Fly; the full-completion claim is under Priority A truth audit. |
+| What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026) — `docs/ideas/FINAL-PHASE-PLAN.md`. |
 | Onboarding | **8 steps stay** — they **create the dashboard**. Secondary school; GCSE (England) + iGCSE; Wales/NI **later**. |
-| Website polish | Prior phases **done**; active work in **Final Phase**. |
+| Website polish | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
+| Priority C | **Complete — closed.** Do not reopen unless operator requests exception. |
 
 ### MVP at a glance
 
@@ -38,6 +39,8 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | **Build priority #1–12** | Exam Engine → Power Grid → Saved Progress → Read Aloud → Dashboard → Timed Assessments → Full GCSE Exams → Editorial → Results → Recommendations → Accessibility → Access Arrangements |
 | **Launch subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
 | **Onboarding** | 8 steps; `/onboarding` → `/dashboard`; see `src/modules/onboarding/README.md` |
+| **Priority C** | **Complete — 24 June 2026** (shell, focus mode, planner, marketing, recovery) |
+| **Active work** | **Priority A** — truthful completion audit |
 | **Key routes** | `/`, `/login`, `/onboarding`, `/dashboard`, `/subjects`, `/exams`, `/assessments`, `/progress` |
 
 Full MVP spec and history → **`README.md` → Mark 3.2 Product Spec** (append only).
@@ -81,11 +84,11 @@ Read HANDOFF.md first.
 Then:
 
 1. Read **`HANDOFF.md`** → Live session state, What is next, Blockers
-2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → next FP-* item (sole active roadmap)
+2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → active Priority **A** item (Priority **C** is **complete** — do not reopen unless operator requests)
 3. Read **`PLATFORM-GUIDE.md`** (this file) → rules, priorities, modules
 4. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 5. Run `git status` and `git pull origin main`
-6. Confirm the task maps to **one module** and one Final Phase item (FP-*)
+6. Confirm the task maps to **one module** and one Final Phase priority item (A, B, D, or E — not C unless reopened)
 
 ### Before each action
 
@@ -257,23 +260,23 @@ Do not describe the platform as fully complete unless **every** item below is co
 | **15** | `npm run verify:launch-status` |
 | **16** | `npm run verify:live-readiness` |
 | **17** | `npm run verify:persistence-recovery` |
-| **18** | `npm run verify:live-walkthrough` — dashboard, subjects, assessments, exams, saved progress, results, account, support, admin |
+| **18** | `npm run verify:live-oidc-proof` then `npm run verify:live-walkthrough:real-auth` |
 | **19** | `npm run verify:launch-signoff` |
 | **20** | `npm run verify:launch-complete` |
 | **21** | Store release evidence permanently in `release-evidence/` |
 | **22** | Confirm system-wide truth: `README.md`, admin launch view, runtime state, and evidence all match — `npm run verify:live-truth-match` |
 
-### Item 22 completion record (23 June 2026 — Fly production)
+### Item 22 record (23 June 2026 — Fly production, reopened for audit)
 
-**Status: COMPLETE** on https://theswitchplatform.com
+**Status: under Priority A truth audit** on https://theswitchplatform.com
 
 | Proof | Result |
 |-------|--------|
-| `npm run verify:live-truth-match` | Passed — sqlite `/data`, governance `ready` |
+| `npm run verify:live-truth-match` | Passed 23 June 2026 — rerun required after Priority A closes |
 | Admin launch view | 6/6 environment · 5/5 sign-off · 8/8 evidence |
 | Evidence file | `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` |
 
-**Completion rule:** Only when all 22 items are done → platform may be called fully complete, fully live, 100% end to end.
+**Completion rule:** Only when all 22 items are done in the real target environment and the refreshed Priority A proof is recorded → platform may be called fully complete, fully live, 100% end to end.
 
 **Item 3 status (23 June 2026):** **COMPLETE** — live proof in `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`. Re-check: `npm run verify:live-onboarding`.
 
@@ -296,7 +299,8 @@ npm run verify:launch-status
 npm run verify:persistence-health
 npm run verify:live-readiness
 npm run verify:persistence-recovery
-npm run verify:live-walkthrough
+npm run verify:live-oidc-proof
+npm run verify:live-walkthrough:real-auth
 npm run verify:launch-signoff
 npm run verify:launch-complete
 npm run verify:live-truth-match

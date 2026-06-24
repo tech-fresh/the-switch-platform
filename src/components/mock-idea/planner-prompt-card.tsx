@@ -25,7 +25,7 @@ export function PlannerPromptCard() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-teal-200">Planner</p>
           <h2 className="mt-2 text-2xl font-semibold leading-tight">Your study plan, built around you</h2>
           <p className="mt-3 text-sm leading-6 text-teal-100">
-            Not a popup clone — a bento panel that links planner, progress, and access tools.
+            Links planner, progress, exams, and access settings in one panel.
           </p>
           <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[10px] font-semibold">
             <div className="border border-white/20 bg-white/10 p-2">Subjects</div>
@@ -35,17 +35,10 @@ export function PlannerPromptCard() {
         </div>
 
         <div className="space-y-4 p-6 sm:p-7">
-          <ul className="space-y-3 text-sm text-stone-700">
-            <li className="flex gap-3 border-l-4 border-teal-500 pl-3">
-              Built around your onboarding subjects and qualification path
-            </li>
-            <li className="flex gap-3 border-l-4 border-emerald-500 pl-3">
-              Links exams, timed practice, and saved progress through the API layer
-            </li>
-            <li className="flex gap-3 border-l-4 border-amber-500 pl-3">
-              Respects accessibility choices and access arrangement signposting
-            </li>
-          </ul>
+          <p className="text-sm leading-7 text-stone-600">
+            Your plan pulls from onboarding subjects, saved sessions, and accessibility choices — all through
+            the API layer, not hard-coded UI rules.
+          </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link
               href="/progress"

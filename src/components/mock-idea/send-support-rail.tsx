@@ -14,10 +14,10 @@ export function SendSupportRail({ summary, chips = [] }: SendSupportRailProps) {
         <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-rose-700">
           Access &amp; SEND signposting
         </p>
-        <h2 className="mt-2 text-xl font-semibold text-stone-950">Your MVP support setup</h2>
+        <h2 className="mt-2 text-xl font-semibold text-stone-950">Support and access</h2>
         <p className="mt-2 text-sm leading-7 text-stone-600">
           {summary ??
-            "Optional onboarding choices appear here with links to Accessibility, Access Arrangements foundation, and Support Hub."}
+            "Optional onboarding choices appear here. Change them any time in Accessibility or Support."}
         </p>
         {chips.length ? (
           <div className="mt-4 flex flex-wrap gap-2">

@@ -15,6 +15,11 @@ test("onboarding options include school sources and MVP catalog subjects", () =>
 
   assert.ok(options.learnerRoles.length >= 3);
   assert.ok(options.qualificationPaths.some((path) => path.id === "igcse"));
+  assert.ok(options.qualificationPaths.some((path) => path.id === "gcse-england"));
+  assert.equal(options.qualificationPaths.length, 2);
+  assert.ok(options.deferredQualificationPaths.some((path) => path.id === "gcse-wales"));
+  assert.ok(options.deferredQualificationPaths.some((path) => path.id === "gcse-northern-ireland"));
+  assert.deepEqual(options.mvpSchoolNations, ["england"]);
   assert.equal(options.schoolSources.length, 4);
   assert.equal(options.subjects.length, 4);
 
@@ -45,6 +50,7 @@ test("onboarding completion requires consent and valid MVP subject selection", (
   const incomplete = validateOnboardingProfile({
     userId: "student-demo",
     learnerRole: "student",
+    schoolPhase: "secondary",
     schoolName: "Example School",
     schoolNation: "england",
     yearGroup: "Year 11",
@@ -62,6 +68,7 @@ test("onboarding completion requires consent and valid MVP subject selection", (
   const wrongRoute = validateOnboardingProfile({
     userId: "student-demo",
     learnerRole: "student",
+    schoolPhase: "secondary",
     schoolName: "Example School",
     schoolNation: "england",
     yearGroup: "Year 11",
@@ -79,7 +86,8 @@ test("onboarding completion requires consent and valid MVP subject selection", (
   const completeProfile = {
     userId: "student-demo",
     learnerRole: "student",
-    schoolName: "Example School",
+    schoolPhase: "secondary",
+    schoolName: "Example Secondary School",
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "gcse-england",
@@ -100,7 +108,8 @@ test("onboarding support summary surfaces MVP accessibility and SEND signposting
   const summary = buildOnboardingSupportSummary({
     userId: "student-demo",
     learnerRole: "student",
-    schoolName: "Example School",
+    schoolPhase: "secondary",
+    schoolName: "Example Secondary School",
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "gcse-england",
@@ -123,7 +132,8 @@ test("onboarding completion provisions accessibility foundation into access prof
   const profile = {
     userId,
     learnerRole: "student",
-    schoolName: "Example School",
+    schoolPhase: "secondary",
+    schoolName: "Example Secondary School",
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "gcse-england",

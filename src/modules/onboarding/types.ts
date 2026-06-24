@@ -1,5 +1,7 @@
 export type LearnerRole = "student" | "parent-guardian" | "teacher-staff";
 
+export type SchoolPhase = "secondary";
+
 export type SchoolNation =
   | "england"
   | "scotland"
@@ -21,6 +23,8 @@ export interface SchoolSourceLink {
 export interface LearnerOnboardingProfile {
   userId: string;
   learnerRole: LearnerRole;
+  /** MVP captures secondary schools only — primary and other phases are later. */
+  schoolPhase: SchoolPhase;
   schoolName: string;
   schoolNation: SchoolNation;
   yearGroup: string;
@@ -35,10 +39,25 @@ export interface LearnerOnboardingProfile {
   updatedAt: string;
 }
 
+export interface OnboardingQualificationOption {
+  id: QualificationPath;
+  label: string;
+  description: string;
+}
+
+export interface DeferredOnboardingQualificationOption extends OnboardingQualificationOption {
+  statusNote: string;
+}
+
 export interface OnboardingOptions {
   learnerRoles: Array<{ id: LearnerRole; label: string; description: string }>;
   yearGroups: string[];
-  qualificationPaths: Array<{ id: QualificationPath; label: string; description: string }>;
+  /** Active MVP routes — shown as selectable in onboarding step 1. */
+  qualificationPaths: OnboardingQualificationOption[];
+  /** Wales / Northern Ireland GCSE routes — signposted only until a later release. */
+  deferredQualificationPaths: DeferredOnboardingQualificationOption[];
+  /** Nations selectable on the school step during MVP (England only). */
+  mvpSchoolNations: SchoolNation[];
   subjects: Array<{
     subjectId: string;
     name: string;

@@ -16,9 +16,15 @@ interface StudentAppShellProps {
   children: ReactNode;
   displayName?: string;
   supportChips?: string[];
+  /** Hide desktop SEND column when the page already renders SendSupportRail */
+  showSendSideRail?: boolean;
 }
 
-export function StudentAppShell({ children, displayName, supportChips = [] }: StudentAppShellProps) {
+export function StudentAppShell({
+  children,
+  displayName,
+  showSendSideRail = true,
+}: StudentAppShellProps) {
   const pathname = usePathname();
   const firstName = displayName?.trim().split(/\s+/)[0] ?? "Student";
   const hour = new Date().getHours();
@@ -91,25 +97,15 @@ export function StudentAppShell({ children, displayName, supportChips = [] }: St
             <h1 className="text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
               {greeting}, {firstName}
             </h1>
-            <p className="text-sm text-stone-600">Study Pulse active · planner and access tools ready below</p>
+            <p className="text-sm text-stone-600">Your study home — saved work, next steps, and access tools.</p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {supportChips.slice(0, 4).map((chip) => (
-              <span
-                key={chip}
-                className="border border-teal-200 bg-white px-3 py-1 text-[11px] font-medium text-teal-900"
-              >
-                {chip}
-              </span>
-            ))}
-            <Link
-              href="/accessibility"
-              className="border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:border-teal-400"
-            >
-              Access settings
-            </Link>
-          </div>
+          <Link
+            href="/accessibility"
+            className="border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:border-teal-400"
+          >
+            Access settings
+          </Link>
         </div>
 
         <div className="mx-auto flex max-w-[1400px] gap-2 overflow-x-auto px-4 pb-3 sm:px-6 lg:hidden">
@@ -128,12 +124,16 @@ export function StudentAppShell({ children, displayName, supportChips = [] }: St
         </div>
       </section>
 
-      <div className="mx-auto grid w-full max-w-[1400px] gap-6 px-4 py-6 sm:px-6 xl:grid-cols-[minmax(0,1fr)_11rem]">
+      <div
+        className={`mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 ${
+          showSendSideRail ? "grid gap-6 xl:grid-cols-[minmax(0,1fr)_11rem]" : ""
+        }`}
+      >
         <main className="min-w-0 pb-20 lg:pb-8">{children}</main>
 
-        <aside className="hidden xl:block">
-          <div className="sticky top-28 space-y-4">
-            <div className="border border-stone-200 bg-white p-4 shadow-sm">
+        {showSendSideRail ? (
+          <aside className="hidden xl:block">
+            <div className="sticky top-28 border border-stone-200 bg-white p-4 shadow-sm">
               <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-stone-500">
                 SEND overlays
               </p>
@@ -156,13 +156,8 @@ export function StudentAppShell({ children, displayName, supportChips = [] }: St
                 ))}
               </div>
             </div>
-
-            <div className="border border-dashed border-teal-300 bg-teal-50/60 p-4 text-xs leading-6 text-teal-900">
-              Access arrangements and SEND signposting stay independent modules — this rail only links
-              to them.
-            </div>
-          </div>
-        </aside>
+          </aside>
+        ) : null}
       </div>
 
       <nav

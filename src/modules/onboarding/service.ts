@@ -13,6 +13,7 @@ import type {
   OnboardingSupportChoice,
   QualificationPath,
   SchoolNation,
+  SchoolPhase,
 } from "./types";
 
 const YEAR_GROUPS = [
@@ -59,6 +60,39 @@ const ONBOARDING_STEPS = [
   "guardian",
   "consent",
 ];
+
+/** Selectable in onboarding UI during MVP. Wales and Northern Ireland GCSE routes are deferred. */
+export const MVP_ONBOARDING_QUALIFICATION_PATHS = [
+  {
+    id: "gcse-england" as const,
+    label: "GCSE (England)",
+    description:
+      "GCSE Mathematics, English Language, and Combined Science (biology, chemistry, and physics).",
+  },
+  {
+    id: "igcse" as const,
+    label: "iGCSE",
+    description: "International GCSE Mathematics — the current iGCSE launch subject.",
+  },
+];
+
+export const DEFERRED_ONBOARDING_QUALIFICATION_PATHS = [
+  {
+    id: "gcse-wales" as const,
+    label: "GCSE (Wales)",
+    description: "Wales GCSE route — same MVP subject set planned when this route opens.",
+    statusNote: "Coming later",
+  },
+  {
+    id: "gcse-northern-ireland" as const,
+    label: "GCSE (Northern Ireland)",
+    description: "Northern Ireland GCSE route — planned for a later release.",
+    statusNote: "Coming later",
+  },
+];
+
+/** School step nation picker during MVP — England only until Wales / NI routes ship. */
+export const MVP_ONBOARDING_SCHOOL_NATIONS: SchoolNation[] = ["england"];
 
 /** MVP launch subjects come from the student-visible content catalog only. */
 export function qualificationPathToCatalogType(
@@ -192,6 +226,7 @@ function createDefaultProfile(userId: string): LearnerOnboardingProfile {
   return {
     userId,
     learnerRole: "student",
+    schoolPhase: "secondary",
     schoolName: "",
     schoolNation: "england",
     yearGroup: "Year 11",
@@ -212,6 +247,7 @@ function createLaunchWalkthroughProfile(userId: string): LearnerOnboardingProfil
   return {
     userId,
     learnerRole: "student",
+    schoolPhase: "secondary",
     schoolName: "Launch verification school",
     schoolNation: "england",
     yearGroup: "Year 11",
@@ -246,31 +282,9 @@ export function getOnboardingOptions(): OnboardingOptions {
       },
     ],
     yearGroups: YEAR_GROUPS,
-    qualificationPaths: [
-      {
-        id: "gcse-england",
-        label: "GCSE (England)",
-        description:
-          "GCSE Mathematics, English Language, and Combined Science (biology, chemistry, and physics).",
-      },
-      {
-        id: "gcse-wales",
-        label: "GCSE (Wales)",
-        description:
-          "Wales GCSE route with the same MVP subjects: Maths, English Language, and Combined Science.",
-      },
-      {
-        id: "gcse-northern-ireland",
-        label: "GCSE (Northern Ireland)",
-        description:
-          "Northern Ireland GCSE route with Maths, English Language, and Combined Science.",
-      },
-      {
-        id: "igcse",
-        label: "iGCSE",
-        description: "International GCSE Mathematics — the current iGCSE launch subject.",
-      },
-    ],
+    qualificationPaths: MVP_ONBOARDING_QUALIFICATION_PATHS,
+    deferredQualificationPaths: DEFERRED_ONBOARDING_QUALIFICATION_PATHS,
+    mvpSchoolNations: MVP_ONBOARDING_SCHOOL_NATIONS,
     subjects: mapCatalogSubjectsToOnboardingOptions(),
     schoolSources: SCHOOL_SOURCES,
     steps: ONBOARDING_STEPS,
@@ -358,6 +372,7 @@ function normalizeProfileUpdate(
     ...update,
     userId,
     learnerRole: (update.learnerRole ?? base.learnerRole) as LearnerRole,
+    schoolPhase: (update.schoolPhase ?? base.schoolPhase ?? "secondary") as SchoolPhase,
     schoolNation: (update.schoolNation ?? base.schoolNation) as SchoolNation,
     qualificationPath: (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
     selectedSubjectIds: filterOnboardingSubjectIds(
@@ -380,7 +395,7 @@ export function validateOnboardingProfile(profile: LearnerOnboardingProfile): st
   }
 
   if (!profile.schoolName.trim()) {
-    return "Enter your school name.";
+    return "Enter your secondary school name.";
   }
 
   if (!profile.yearGroup.trim()) {

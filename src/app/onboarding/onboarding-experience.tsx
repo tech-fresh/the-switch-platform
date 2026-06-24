@@ -44,6 +44,13 @@ const YEAR_PERSONAS = [
   { yearGroup: "Year 10", title: "Building momentum", emoji: "😅" },
 ];
 
+const SCHOOL_NATION_LABELS: Record<string, string> = {
+  england: "England",
+  scotland: "Scotland",
+  wales: "Wales",
+  "northern-ireland": "Northern Ireland",
+};
+
 function catalogTypeForQualificationPath(
   qualificationPath: LearnerOnboardingProfile["qualificationPath"] | undefined,
 ): "GCSE" | "IGCSE" {
@@ -182,40 +189,72 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
 
     if (stepIndex === 1) {
       return (
-        <div className="mx-auto grid max-w-2xl gap-3 sm:grid-cols-2">
-          {options.qualificationPaths.map((path) => {
-            const selected = profile.qualificationPath === path.id;
-            return (
-              <label
-                key={path.id}
-                className={`flex cursor-pointer items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-sm transition ${
-                  selected ? "border-sky-400 ring-2 ring-sky-100" : "border-slate-200"
-                }`}
-              >
-                <input
-                  className="size-4 rounded border-slate-300 text-sky-600"
-                  type="radio"
-                  name="qualificationPath"
-                  checked={selected}
-                  onChange={() => {
-                    const nextPath = path.id as LearnerOnboardingProfile["qualificationPath"];
-                    const catalogType = catalogTypeForQualificationPath(nextPath);
-                    const nextSelected = selectedSubjectIds.filter((subjectId) =>
-                      options.subjects.find((subject) => subject.subjectId === subjectId)
-                        ?.qualificationLabel === catalogType,
-                    );
-                    setProfile({
-                      ...profile,
-                      qualificationPath: nextPath,
-                      selectedSubjectIds: nextSelected,
-                    });
-                  }}
-                />
-                <span className="flex-1 text-sm font-medium text-slate-700">{path.label}</span>
-                <span className="text-xl">{QUALIFICATION_ICONS[path.id] ?? "📘"}</span>
-              </label>
-            );
-          })}
+        <div className="mx-auto max-w-2xl space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {options.qualificationPaths.map((path) => {
+              const selected = profile.qualificationPath === path.id;
+              return (
+                <label
+                  key={path.id}
+                  className={`flex cursor-pointer items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-sm transition ${
+                    selected ? "border-sky-400 ring-2 ring-sky-100" : "border-slate-200"
+                  }`}
+                >
+                  <input
+                    className="size-4 rounded border-slate-300 text-sky-600"
+                    type="radio"
+                    name="qualificationPath"
+                    checked={selected}
+                    onChange={() => {
+                      const nextPath = path.id as LearnerOnboardingProfile["qualificationPath"];
+                      const catalogType = catalogTypeForQualificationPath(nextPath);
+                      const nextSelected = selectedSubjectIds.filter((subjectId) =>
+                        options.subjects.find((subject) => subject.subjectId === subjectId)
+                          ?.qualificationLabel === catalogType,
+                      );
+                      setProfile({
+                        ...profile,
+                        qualificationPath: nextPath,
+                        selectedSubjectIds: nextSelected,
+                      });
+                    }}
+                  />
+                  <span className="flex-1">
+                    <span className="block text-sm font-medium text-slate-700">{path.label}</span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">{path.description}</span>
+                  </span>
+                  <span className="text-xl">{QUALIFICATION_ICONS[path.id] ?? "📘"}</span>
+                </label>
+              );
+            })}
+          </div>
+          {options.deferredQualificationPaths?.length ? (
+            <div className="space-y-2">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                Coming later
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {options.deferredQualificationPaths.map((path) => (
+                  <div
+                    key={path.id}
+                    className="flex items-start gap-3 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-3 opacity-80"
+                    aria-disabled="true"
+                  >
+                    <span className="text-xl">{QUALIFICATION_ICONS[path.id] ?? "📘"}</span>
+                    <span className="flex-1">
+                      <span className="flex flex-wrap items-center gap-2">
+                        <span className="text-sm font-medium text-slate-600">{path.label}</span>
+                        <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-600">
+                          {path.statusNote}
+                        </span>
+                      </span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-500">{path.description}</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       );
     }
@@ -246,15 +285,32 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
     }
 
     if (stepIndex === 3) {
+      const activeSchoolSources = options.schoolSources.filter((source) =>
+        (options.mvpSchoolNations ?? ["england"]).includes(source.nation),
+      );
+
       return (
         <div className="mx-auto max-w-xl space-y-4 rounded-2xl bg-white p-6 shadow-sm">
+          <div className="rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm text-sky-950">
+            <p className="font-medium">Secondary school</p>
+            <p className="mt-1 text-xs leading-5 text-sky-900/80">
+              The Switch MVP is built for secondary learners studying GCSE or iGCSE. Primary and
+              other school phases are planned for later.
+            </p>
+          </div>
           <label className="block space-y-2 text-sm">
-            <span className="font-medium text-slate-700">School name</span>
+            <span className="font-medium text-slate-700">Secondary school name</span>
             <input
               className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
               value={profile.schoolName ?? ""}
-              onChange={(event) => setProfile({ ...profile, schoolName: event.target.value })}
-              placeholder="Start typing your school"
+              onChange={(event) =>
+                setProfile({
+                  ...profile,
+                  schoolPhase: "secondary",
+                  schoolName: event.target.value,
+                })
+              }
+              placeholder="e.g. Riverside Secondary School"
             />
           </label>
           <label className="block space-y-2 text-sm">
@@ -265,20 +321,26 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
               onChange={(event) =>
                 setProfile({
                   ...profile,
+                  schoolPhase: "secondary",
                   schoolNation: event.target.value as LearnerOnboardingProfile["schoolNation"],
                 })
               }
             >
-              <option value="england">England</option>
-              <option value="scotland">Scotland</option>
-              <option value="wales">Wales</option>
-              <option value="northern-ireland">Northern Ireland</option>
+              {(options.mvpSchoolNations ?? ["england"]).map((nation) => (
+                <option key={nation} value={nation}>
+                  {SCHOOL_NATION_LABELS[nation] ?? nation}
+                </option>
+              ))}
             </select>
           </label>
+          <p className="text-xs leading-5 text-slate-500">
+            GCSE routes for Wales and Northern Ireland are coming later. MVP onboarding uses GCSE
+            (England) and iGCSE only.
+          </p>
           <div className="rounded-xl bg-sky-50 p-4 text-sm text-sky-950">
-            <p className="font-medium">Find your school using official UK sources</p>
+            <p className="font-medium">Find your secondary school using official UK sources</p>
             <ul className="mt-2 space-y-1">
-              {options.schoolSources.map((source) => (
+              {activeSchoolSources.map((source) => (
                 <li key={source.nation}>
                   <a className="underline" href={source.href} target="_blank" rel="noreferrer">
                     {source.label}
@@ -405,15 +467,16 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
     0: { title: "Select your Switch account type:" },
     1: {
       title: "What are you studying for this year?",
-      subtitle: "More than one? Pick your main route — we'll narrow down the specifics later.",
+      subtitle:
+        "MVP: GCSE (England) or iGCSE. Wales and Northern Ireland GCSE routes are coming later.",
     },
     2: {
       title: `Great to meet you, ${learnerFirstName}!`,
       subtitle: "Which profile matches your vibe? You can change this later.",
     },
     3: {
-      title: "Where do you go to school?",
-      subtitle: "We use official UK school sources — not a static guess list.",
+      title: "Which secondary school do you go to?",
+      subtitle: "Enter your secondary school and use the official England school lookup link if you need it.",
     },
     4: {
       title: (

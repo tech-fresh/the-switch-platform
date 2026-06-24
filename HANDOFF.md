@@ -65,26 +65,26 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-24 (full MD sync — dual-agent map + MVP at a glance)
+- **Last updated:** 2026-06-24 (docs pushed — `31be1ae` on `origin/main`)
 
 - **Platform label:** **`fully complete` / 100% end to end** — all 22 Full End-to-End Completion List items closed on Fly
 
 ### Active task
 
-- **Priority item #:** `project-workflow` — dual-agent doc alignment
-- **Module:** HANDOFF + AGENTS + PLATFORM-GUIDE + README
-- **Status:** Four core MD files synced — dual-agent system, MVP display, standard prompt
-- **Branch:** `main`
+- **Priority item #:** post-launch polish
+- **Module:** `dashboard` / `project-workflow`
+- **Status:** All doc alignment on GitHub — working tree clean; ready for Phase 2 shell rollout
+- **Branch:** `main` (synced with `origin/main`)
 
 ### What was just completed
 
-- **Dual-agent document system** in HANDOFF (Cursor + Codex read/write map, diagram, standard prompt)
-- **MVP at a glance** added to HANDOFF, AGENTS, PLATFORM-GUIDE, README (modules, subjects, routes, onboarding)
-- README duplicate session bullets trimmed — pointer to HANDOFF
+- Git push confirmed — `31be1ae` on https://github.com/tech-fresh/the-switch-platform
+- Four core MD files aligned: HANDOFF, AGENTS, PLATFORM-GUIDE, README (dual-agent + MVP at a glance)
+- No uncommitted changes in repo
 
 ### What is next
 
-- Phase 2: `StudentAppShell` on `/subjects`, `/assessments`, `/progress`
+- Phase 2: `StudentAppShell` on `/subjects`, `/assessments`, `/progress` — `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
 - Wales/NI GCSE when operator prioritises
 
 ### Blockers
@@ -740,6 +740,12 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-24 — Cursor — Git push confirmed (docs on origin/main)
+
+- Done: `origin/main` at `31be1ae` — HANDOFF, AGENTS, PLATFORM-GUIDE, README aligned; working tree clean
+- Next: Phase 2 shell rollout
+- Blocker: none
 
 ### 2026-06-24 — Cursor — Full MD sync (dual-agent + MVP display)
 

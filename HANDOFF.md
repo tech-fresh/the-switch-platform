@@ -65,28 +65,27 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-24 (HANDOFF + AGENTS + README sync — plain-English story)
+- **Last updated:** 2026-06-24 (full MD sync — dual-agent map + MVP at a glance)
 
 - **Platform label:** **`fully complete` / 100% end to end** — all 22 Full End-to-End Completion List items closed on Fly
 
 ### Active task
 
-- **Priority item #:** post-launch polish (docs sync + onboarding/website lanes)
-- **Module:** `project-workflow` + cross-doc alignment
-- **Status:** HANDOFF, AGENTS, README aligned — same plain-English story, diagrams, doc map
+- **Priority item #:** `project-workflow` — dual-agent doc alignment
+- **Module:** HANDOFF + AGENTS + PLATFORM-GUIDE + README
+- **Status:** Four core MD files synced — dual-agent system, MVP display, standard prompt
 - **Branch:** `main`
 
 ### What was just completed
 
-- **Plain-English project story** added to HANDOFF (diagrams: two lanes, doc read order, onboarding MVP table)
-- **AGENTS.md** and **README.md** synced — point to HANDOFF; removed stale Item 3 “still to prove live” wording
-- Stale Vercel DNS note replaced with live Fly site reference
-- Item 3 HANDOFF notes reconciled (complete + MVP scope)
+- **Dual-agent document system** in HANDOFF (Cursor + Codex read/write map, diagram, standard prompt)
+- **MVP at a glance** added to HANDOFF, AGENTS, PLATFORM-GUIDE, README (modules, subjects, routes, onboarding)
+- README duplicate session bullets trimmed — pointer to HANDOFF
 
 ### What is next
 
-- Phase 2: `StudentAppShell` on `/subjects`, `/assessments`, `/progress` — `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
-- Wales/NI GCSE routes when operator prioritises (update HANDOFF + onboarding README first)
+- Phase 2: `StudentAppShell` on `/subjects`, `/assessments`, `/progress`
+- Wales/NI GCSE when operator prioritises
 
 ### Blockers
 
@@ -183,6 +182,174 @@ flowchart LR
 
 ---
 
+## Dual-agent document system (Cursor + Codex)
+
+**Plain English:** Two AI tools share one repo. **`HANDOFF.md` is the baton** — whoever finishes must update it before the other starts. The four core markdown files below stay in sync; do not let them drift.
+
+### Who does what
+
+| Tool | Best for | Must read first | Must update before handoff |
+|------|----------|-----------------|----------------------------|
+| **Cursor Agent** | Multi-file UI, API, tests, terminal, git | `HANDOFF.md` | `HANDOFF.md` Live session state + session log |
+| **Codex** | Planning, review, debugging, focused service logic | `HANDOFF.md` | Same |
+
+### The four core markdown files — read and write
+
+| File | Read when | Write when | Plain English |
+|------|-----------|------------|---------------|
+| **`HANDOFF.md`** | **Every session start** | **After every action** + session end | *What is happening right now* — live task, blockers, next step |
+| **`AGENTS.md`** | Session start (after HANDOFF) | When agent entry rules or launch notes change | *Front door for agents* — same story as HANDOFF, links inward |
+| **`PLATFORM-GUIDE.md`** | Before code or module work | When architecture, modules, or dev rules change | *How to build* — rules, modules, 22-item list detail |
+| **`README.md`** | When handoff points (build record, MVP spec) | **Append only** — Ordered Build Record + MVP notes | *Product history* — what we asked for and what shipped (never delete old records) |
+
+**Rule:** If you change the project story (MVP scope, lanes, live status), update **HANDOFF + AGENTS + README operator section + PLATFORM-GUIDE session/MVP notes** in the same session.
+
+```mermaid
+flowchart TB
+  subgraph operator["You (operator)"]
+    O1["Read HANDOFF Live session state"]
+  end
+  subgraph cursor["Cursor Agent"]
+    C1["Code / UI / tests / git"]
+    C2["Update HANDOFF"]
+  end
+  subgraph codex["Codex"]
+    X1["Plan / review / service logic"]
+    X2["Update HANDOFF"]
+  end
+  subgraph docs["Four core MD files — stay aligned"]
+    H["HANDOFF.md"]
+    A["AGENTS.md"]
+    P["PLATFORM-GUIDE.md"]
+    R["README.md"]
+  end
+  O1 --> H
+  H --> C1
+  H --> X1
+  C1 --> C2 --> H
+  X1 --> X2 --> H
+  H --- A
+  H --- P
+  H --- R
+```
+
+### Standard prompt — paste into Cursor or Codex
+
+```text
+Project: The Switch Platform Mark 3.2
+Root: /Users/lloydnwagbara/Documents/THE SWITCH 3
+Live: https://theswitchplatform.com
+
+Read HANDOFF.md first.
+
+Then read in order:
+1. HANDOFF.md → Live session state + Plain-English story + MVP at a glance
+2. AGENTS.md → agent entry
+3. PLATFORM-GUIDE.md → rules + modules (section handoff points to)
+4. README.md → sections only when handoff points (build record, MVP spec)
+
+Task: [one module only]
+Priority #: [number or post-launch polish]
+
+Rules:
+- Dual-agent: update HANDOFF before switching tools; commit + push when done
+- Onboarding stays (8 steps) — builds dashboard; England GCSE + iGCSE MVP
+- Website polish = declutter only — see docs/ideas/STREAMLINE-WEBSITE-PLAN.md
+- One module per session; API-first; mobile + accessibility first
+
+On completion:
+- npm run lint && npm run type-check && npm run test
+- Update HANDOFF Live session state + session log
+- Append README Ordered Build Record if behavior changed
+- Commit and push
+```
+
+---
+
+## MVP at a glance (operators + agents)
+
+**Synced copies:** `AGENTS.md` · `PLATFORM-GUIDE.md` · `README.md` → MVP at a glance. **Full product history** stays in `README.md` → Mark 3.2 Product Spec / Blueprint (append only — do not delete).
+
+### What The Switch is
+
+| | |
+|--|--|
+| **Product** | GCSE / iGCSE revision, timed practice, exam readiness, progress tracking |
+| **Live site** | https://theswitchplatform.com (Fly.io) |
+| **Launch status** | **Complete** — all 22 Final Path Mark 2 items done (23 June 2026) |
+| **Current phase** | Post-launch **polish** (Study Atelier UI, calmer home/dashboard) |
+
+### Core MVP modules (build priority order)
+
+| # | Module | Plain English |
+|---|--------|---------------|
+| 1 | Exam Engine | Full papers, timing, exam mode |
+| 2 | Power Grid | Progress levels and “what to do next” |
+| 3 | Saved Progress | Autosave and resume everywhere |
+| 4 | Read Aloud | Text-to-speech in student flows |
+| 5 | Dashboard | Student home — aggregates modules |
+| 6 | Timed Assessments | Shorter timed checkpoints |
+| 7 | Full GCSE Exams | Official-duration exam path |
+| 8 | Content / editorial | Fact-check before students see content |
+| 9 | Results | Performance summaries |
+| 10 | Recommendations | Next-step suggestions |
+| 11 | Accessibility | Contrast, font, focus, SEND settings |
+| 12 | Access Arrangements | Exam support foundation (independent module) |
+
+**Also in MVP:** Guided **onboarding** (8 steps) · **Auth** · **Support Hub** signposting · **CMS/Admin** placeholder
+
+### Launch subjects (student-visible catalog)
+
+| Subject | Qualification |
+|---------|---------------|
+| Mathematics | GCSE (England) |
+| English Language | GCSE (England) |
+| Combined Science (biology, chemistry, physics) | GCSE (England) |
+| Mathematics | iGCSE |
+
+Wales / Northern Ireland GCSE routes: **coming later** (signposted in onboarding, not selectable).
+
+### Key student routes
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Public homepage (marketing) |
+| `/login` | Sign in (Google / Microsoft) |
+| `/onboarding` | 8-step setup — **creates the dashboard** |
+| `/dashboard` | Signed-in home (gated until onboarding complete) |
+| `/subjects` | Subject and topic revision |
+| `/assessments` | Timed assessments |
+| `/exams` | Full exam sessions |
+| `/progress` | Saved progress / planner destination |
+| `/accessibility` | Accessibility + SEND colour settings |
+| `/support` | Support Hub (signposting only) |
+
+### Onboarding MVP (locked — do not shorten)
+
+| Step | What learner does |
+|------|-------------------|
+| 0 | Account type (student / parent / teacher) |
+| 1 | Qualification — **GCSE (England)** or **iGCSE** (Wales/NI shown as coming later) |
+| 2 | Year group profile |
+| 3 | **Secondary school** name — **England** nation only (MVP) |
+| 4 | MVP subjects from catalog |
+| 5 | Accessibility / access / SEND choices (optional) |
+| 6 | Guardian invite (optional) |
+| 7 | Consent → **personal dashboard** |
+
+Detail: `src/modules/onboarding/README.md`
+
+### UI direction (post-launch)
+
+| Item | Where |
+|------|-------|
+| Study Atelier shell | `src/components/mock-idea/` |
+| Build reference | `docs/MOCK-IDEA-BUILD-REFERENCE.md` |
+| Visual gallery | `/mock-idea-preview` |
+| Streamline plan | `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` |
+
+---
+
 ## Source of truth
 
 | Item | Value |
@@ -202,10 +369,10 @@ flowchart LR
 
 | Document | Purpose |
 |----------|---------|
-| `HANDOFF.md` | **Live session state** + plain-English project story (this file) |
-| `AGENTS.md` | Agent entry — synced with this file |
-| `README.md` | Product rules + Ordered Build Record — synced operator section at top |
-| `PLATFORM-GUIDE.md` | Rules, modules, full 22-item launch list |
+| `HANDOFF.md` | **Live session state** + plain-English story + **dual-agent map** + **MVP at a glance** (this file) |
+| `AGENTS.md` | Agent entry — synced with HANDOFF |
+| `README.md` | Product rules + **MVP at a glance** + Ordered Build Record — synced operator section at top |
+| `PLATFORM-GUIDE.md` | Rules, modules, full 22-item launch list, operator sync |
 | `docs/ideas/` | Plans (`STREAMLINE-WEBSITE-PLAN.md`, onboarding stays) |
 | `src/modules/onboarding/README.md` | Onboarding MVP scope (England GCSE, secondary school) |
 | `docs/MOCK-IDEA-BUILD-REFERENCE.md` | UI build-from reference |
@@ -573,6 +740,13 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-24 — Cursor — Full MD sync (dual-agent + MVP display)
+
+- Done: dual-agent document system in HANDOFF; MVP at a glance in HANDOFF, AGENTS, PLATFORM-GUIDE, README
+- Done: standard session prompt; four-file read/write map for Cursor + Codex
+- Next: Phase 2 shell rollout
+- Blocker: none
 
 ### 2026-06-24 — Cursor — HANDOFF + AGENTS + README sync
 

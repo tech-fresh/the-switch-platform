@@ -11,14 +11,48 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | **`README.md`** | Cumulative product history and Ordered Build Record (append only) |
 | **`AGENTS.md`** | Short entry point → points here |
 
+**Dual-agent rule:** `HANDOFF.md` is the baton between **Cursor** and **Codex** — read it first; update before switching tools. Full map → [`HANDOFF.md` → Dual-agent document system](./HANDOFF.md#dual-agent-document-system-cursor--codex).
+
 **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`  
 **GitHub:** `https://github.com/tech-fresh/the-switch-platform`  
 **Live site:** `https://theswitchplatform.com`
 
 ---
 
+## Operator and agent sync
+
+**Synced with `HANDOFF.md`, `AGENTS.md`, and `README.md`.** Live task detail → **`HANDOFF.md` → Live session state**.
+
+| Question | Answer |
+|----------|--------|
+| Is the platform live? | Yes — https://theswitchplatform.com. All **22** launch items **complete**. |
+| What are we doing now? | Post-launch **polish** — Study Atelier UI, calmer home/dashboard. |
+| Onboarding | **8 steps stay** — they **create the dashboard**. Secondary school; GCSE (England) + iGCSE; Wales/NI **later**. |
+| Website polish | Declutter only — see `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`. |
+
+### MVP at a glance
+
+| | |
+|--|--|
+| **Product** | GCSE / iGCSE revision, timed practice, exam readiness, progress |
+| **Build priority #1–12** | Exam Engine → Power Grid → Saved Progress → Read Aloud → Dashboard → Timed Assessments → Full GCSE Exams → Editorial → Results → Recommendations → Accessibility → Access Arrangements |
+| **Launch subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
+| **Onboarding** | 8 steps; `/onboarding` → `/dashboard`; see `src/modules/onboarding/README.md` |
+| **Key routes** | `/`, `/login`, `/onboarding`, `/dashboard`, `/subjects`, `/exams`, `/assessments`, `/progress` |
+
+Full MVP spec and history → **`README.md` → Mark 3.2 Product Spec** (append only).
+
+```mermaid
+flowchart LR
+  H["HANDOFF.md"] --> P["PLATFORM-GUIDE.md"]
+  P --> R["README sections"]
+```
+
+---
+
 ## Table of contents
 
+0. [Operator and agent sync](#operator-and-agent-sync)
 1. [Session rules](#session-rules)
 2. [Architecture](#architecture)
 3. [Development rules](#development-rules)

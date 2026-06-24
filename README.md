@@ -27,6 +27,53 @@ flowchart LR
 
 ---
 
+## MVP at a glance
+
+**Synced with `HANDOFF.md`, `AGENTS.md`, and `PLATFORM-GUIDE.md`.** Deeper spec → [Mark 3.2 Product Spec](#mark-32-product-spec) and [Mark 3.2 Blueprint](#mark-32-blueprint) below (append only — do not delete history).
+
+### Product
+
+| | |
+|--|--|
+| **What it is** | GCSE / iGCSE revision platform — practice, timed tests, full exams, progress |
+| **Live** | https://theswitchplatform.com |
+| **Launch** | **Complete** — 22-item Final Path Mark 2 (23 June 2026) |
+| **Now** | Post-launch polish — Study Atelier UI, focused home/dashboard |
+
+### Core MVP modules (priority order)
+
+1. Exam Engine · 2. Power Grid · 3. Saved Progress · 4. Read Aloud · 5. Dashboard · 6. Timed Assessments · 7. Full GCSE Exams · 8. Content editorial · 9. Results · 10. Recommendations · 11. Accessibility · 12. Access Arrangements foundation
+
+**Plus:** Onboarding (8 steps) · Auth · Support Hub · CMS/Admin placeholder
+
+### Launch subjects (onboarding + catalog)
+
+| Subject | Route |
+|---------|--------|
+| GCSE Mathematics | `gcse-england` |
+| GCSE English Language | `gcse-england` |
+| GCSE Combined Science | `gcse-england` |
+| iGCSE Mathematics | `igcse` |
+
+Wales / Northern Ireland GCSE: **coming later** (visible in onboarding, not selectable).
+
+### Key routes
+
+`/login` → `/onboarding` (8 steps) → `/dashboard` → `/subjects` · `/assessments` · `/exams` · `/progress` · `/accessibility` · `/support`
+
+### Two lanes (current polish)
+
+| Lane | Do |
+|------|-----|
+| **A — Onboarding** | Keep 8 steps; builds dashboard; England GCSE + iGCSE |
+| **B — Website** | Declutter home/dashboard only; previews on `/mock-idea-preview` |
+
+Diagrams and detail → [`HANDOFF.md` → Plain-English](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents)
+
+---
+
+## Local Restore Notes For THE SWITCH 3
+
 If project information appears to have disappeared after switching to local
 mode, open these files first:
 
@@ -59,44 +106,16 @@ This project is built with **Cursor Agent** and **Codex** on the same repo. **Fu
 
 | Document | Purpose |
 |----------|---------|
-| `HANDOFF.md` | Live state + **plain-English project story** (read first) |
+| `HANDOFF.md` | Live state + plain-English story + **dual-agent map** + **MVP at a glance** (read first) |
 | `AGENTS.md` | Agent entry — synced with HANDOFF |
-| `PLATFORM-GUIDE.md` | Rules, modules, 22-item launch list |
-| `README.md` | Product rules + Ordered Build Record (this file) |
+| `PLATFORM-GUIDE.md` | Rules, modules, 22-item launch list, MVP modules |
+| `README.md` | Product rules + **MVP at a glance** + Ordered Build Record (this file) |
 | `docs/ideas/` | Plans — streamline website, onboarding stays |
 | `.cursor/rules/` | Cursor enforcement |
 
 **Session start:** `Read HANDOFF.md first.`  
-**Session end:** update HANDOFF **Live session state**; append **Ordered Build Record** below when behavior changed.
-
-## Local Restore Notes For THE SWITCH 3
-
-#### Every session must
-
-1. Tell the agent: **Read HANDOFF.md first**
-2. Read `AGENTS.md` and this file's priority order
-3. Work on one module / one feature branch
-4. Run `npm run lint && npm run type-check && npm run test` before closeout
-5. Commit, push, update **Live session state** in `HANDOFF.md`
-6. Append to Ordered Build Record below
-
-#### Handoff rule
-
-Never switch between Cursor and Codex with uncommitted work. Commit + push + update `HANDOFF.md` first. Full workflow details live in `HANDOFF.md`.
-
-### Agent workflow diagram
-
-```mermaid
-flowchart LR
-    A["AGENTS.md + README priorities"] --> B["Cursor Agent"]
-    A --> C["Codex"]
-    B --> D["Feature branch + commit"]
-    C --> D
-    D --> E["HANDOFF.md update"]
-    E --> F["GitHub origin/main"]
-    F --> B
-    F --> C
-```
+**Session end:** update HANDOFF **Live session state**; append **Ordered Build Record** below when behavior changed.  
+**Dual-agent:** full Cursor + Codex map → [`HANDOFF.md` → Dual-agent document system](./HANDOFF.md#dual-agent-document-system-cursor--codex).
 
 ### Free-tier launch workaround plan (persistence fix)
 
@@ -324,6 +343,12 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-24 Full MD alignment — dual-agent + MVP at a glance
+
+- **HANDOFF:** Dual-agent document system (Cursor + Codex read/write map, diagram, standard prompt); MVP at a glance (modules, subjects, routes, onboarding).
+- **AGENTS / PLATFORM-GUIDE / README:** Synced operator blocks and MVP display — point to HANDOFF for live detail; README duplicate session bullets trimmed.
+- Preservation: 22-item launch list and cumulative README history unchanged.
 
 ### 2026-06-24 HANDOFF + AGENTS + README sync (plain-English story)
 

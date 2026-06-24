@@ -32,11 +32,47 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 | Document | Purpose |
 |----------|---------|
-| **`HANDOFF.md`** | Live session state — read first every session |
-| **`PLATFORM-GUIDE.md`** | **Single merged guide** — AGENTS rules + all module READMEs + 22-item launch list |
-| **`AGENTS.md`** | This entry point |
-| **`README.md`** | Cumulative product history and Ordered Build Record (append only) |
+| **`HANDOFF.md`** | **Read first** — live state, plain-English story, **dual-agent map**, **MVP at a glance** |
+| **`AGENTS.md`** | This entry point — synced with HANDOFF |
+| **`PLATFORM-GUIDE.md`** | Rules, architecture, modules, 22-item launch list, MVP modules |
+| **`README.md`** | Cumulative product spec, **MVP at a glance**, Ordered Build Record (append only) |
+| **`docs/ideas/`** | Plans — streamline, onboarding stays |
+| **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
+| **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
 | **`.cursor/rules/`** | Cursor enforcement |
+
+**Dual-agent handoff:** `HANDOFF.md` → **Dual-agent document system** — never switch tools without updating it.
+
+## Dual-agent usage (Cursor + Codex)
+
+| | Cursor Agent | Codex |
+|--|--------------|-------|
+| **Use for** | UI, API, tests, git, multi-file edits | Planning, review, debugging, service logic |
+| **Read first** | `HANDOFF.md` | `HANDOFF.md` |
+| **Update before switch** | Live session state + session log | Same |
+| **Full map** | `HANDOFF.md` → Dual-agent document system | Same |
+
+```mermaid
+flowchart LR
+  H["HANDOFF.md\nbaton"] --> C["Cursor"]
+  H --> X["Codex"]
+  C --> H
+  X --> H
+```
+
+## MVP at a glance
+
+**Authoritative sync:** `HANDOFF.md` → **MVP at a glance**. Full history: `README.md` → Mark 3.2 Product Spec / Blueprint.
+
+| Area | MVP today |
+|------|-----------|
+| **Live** | https://theswitchplatform.com — launch **complete** (22 items) |
+| **Modules** | Exam Engine, Power Grid, Saved Progress, Read Aloud, Dashboard, Timed Assessments, Full GCSE Exams, Results, Recommendations, Accessibility, Access Arrangements, Onboarding |
+| **Subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
+| **Onboarding** | 8 steps → builds dashboard; secondary school; GCSE (England) + iGCSE; Wales/NI **later** |
+| **Polish lane** | Calmer `/` and `/dashboard`; Study Atelier UI — `docs/MOCK-IDEA-BUILD-REFERENCE.md` |
+
+---
 
 ## Where the full content lives
 
@@ -64,7 +100,8 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 
 ## Quick links
 
-- **Plain-English project story (synced)** → **`HANDOFF.md` → Plain-English — what the project is doing**
+- **Dual-agent handoff** → [`HANDOFF.md` → Dual-agent document system](./HANDOFF.md#dual-agent-document-system-cursor--codex)
+- **MVP at a glance** → [`HANDOFF.md` → MVP at a glance](./HANDOFF.md#mvp-at-a-glance-operators--agents)
 - Launch checklist → **`PLATFORM-GUIDE.md` → Full End-to-End Completion List** (full 22 items also below)
 - Module docs → **`PLATFORM-GUIDE.md` → Module reference**
 - Live state → **`HANDOFF.md` → Live session state**

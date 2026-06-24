@@ -2,6 +2,8 @@ import Link from "next/link";
 import { MarketingSiteHeader } from "@/components/marketing-site-header";
 import { MarketingSiteFooter } from "@/components/mock-idea/marketing-site-footer";
 import { PlannerPromptCard } from "@/components/mock-idea/planner-prompt-card";
+import { SubjectToneChip, subjectToneBlockClasses } from "@/components/subject-tone-chip";
+import { WeeklyPlannerGrid } from "@/components/weekly-planner-grid";
 import { SendSupportRail } from "@/components/mock-idea/send-support-rail";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import type {
@@ -190,10 +192,13 @@ function SubjectFocusGrid({ cards }: { cards: DashboardHomeData["focusCards"] })
       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">Subject focus</p>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {cards.slice(0, 4).map((focus) => (
-          <div key={focus.subject} className="border border-stone-200 bg-stone-50 p-4">
+          <div
+            key={focus.subject}
+            className={`border p-4 ${subjectToneBlockClasses(focus.tone ?? "teal")}`}
+          >
             <div className="flex items-center justify-between gap-3">
-              <h3 className="text-sm font-semibold text-stone-950">{focus.subject}</h3>
-              <span className="text-xs uppercase tracking-[0.2em] text-stone-500">{focus.level}</span>
+              <SubjectToneChip label={focus.subject} tone={focus.tone ?? "teal"} />
+              <span className="text-xs uppercase tracking-[0.2em] opacity-80">{focus.level}</span>
             </div>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-stone-200">
               <div
@@ -307,7 +312,8 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
   return (
     <>
       <div className="space-y-4">
-        <PlannerPromptCard />
+        <PlannerPromptCard initialDismissed={data.plannerPromptDismissed} />
+        <WeeklyPlannerGrid planner={data.weeklyPlanner} compact />
         <SendSupportRail summary={data.supportSnapshotSummary} chips={data.supportPreferenceChips} />
       </div>
 

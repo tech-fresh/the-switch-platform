@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { PublicMarketingPage } from "@/components/public-marketing-page";
 import { SignInBrandMark } from "@/components/sign-in-brand-mark";
 import { UnifiedSignInCard } from "@/components/unified-sign-in-card";
 import { getAccountOverviewApiData } from "@/lib/api/server";
@@ -74,22 +75,17 @@ export default async function LoginPage({
     account.session.status === "authenticated" ? account.session : null;
 
   return (
-    <main className="min-h-screen bg-white text-stone-950">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 py-6 sm:px-6">
-        <header className="pb-8">
-          <SignInBrandMark />
-        </header>
-
-        <div className="flex flex-1 items-start justify-center pb-10 pt-4">
-          <UnifiedSignInCard
-            signInOptions={account.signInOptions}
-            returnTo={returnTo}
-            authErrorMessage={getAuthErrorMessage(authError)}
-            signedInAs={authenticatedSession?.user.displayName ?? null}
-            showReauthNotice={Boolean(authenticatedSession && reauth)}
-          />
-        </div>
+    <PublicMarketingPage isAuthenticated={account.isAuthenticated}>
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 py-4">
+        <SignInBrandMark />
+        <UnifiedSignInCard
+          signInOptions={account.signInOptions}
+          returnTo={returnTo}
+          authErrorMessage={getAuthErrorMessage(authError)}
+          signedInAs={authenticatedSession?.user.displayName ?? null}
+          showReauthNotice={Boolean(authenticatedSession && reauth)}
+        />
       </div>
-    </main>
+    </PublicMarketingPage>
   );
 }

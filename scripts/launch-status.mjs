@@ -87,6 +87,7 @@ console.log("\nFinal live sequence:");
 console.log("- npm run verify:persistence-health");
 console.log("- npm run verify:live-readiness");
 console.log("- npm run verify:persistence-recovery");
-console.log("- npm run verify:live-walkthrough");
+console.log("- npm run verify:live-oidc-proof");
+console.log("- npm run verify:live-walkthrough:real-auth");
 console.log("- npm run verify:launch-signoff");
 console.log("- npm run verify:launch-complete");

@@ -71,10 +71,20 @@ const routeChecks = [
   },
 ];
 
-const { baseUrl, studentHeaders, adminHeaders, authMode } =
+const {
+  baseUrl,
+  studentHeaders,
+  adminHeaders,
+  authMode,
+  walkthroughMode,
+  usingLaunchVerificationHeaders,
+} =
   getLiveWalkthroughConfig();
 
 console.log(`Live walkthrough target: ${baseUrl}`);
+console.log(
+  `Auth proof mode: ${walkthroughMode}${usingLaunchVerificationHeaders ? " (launch-verification headers active)" : ""}`,
+);
 console.log(
   "Waking the deployed site (Fly free tier may cold-start for up to 60–90s on the first request)...",
 );

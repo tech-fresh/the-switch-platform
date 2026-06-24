@@ -154,23 +154,20 @@ export function AccessibilityExperience({
   };
 
   return (
-    <main className="min-h-screen bg-stone-100 text-stone-950">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
-        <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">
-              Accessibility + Support
+    <div className="flex flex-col gap-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
+        <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.2fr_1fr]">
+          <div className="space-y-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
+              Accessibility + access
             </p>
-            <div className="space-y-3">
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Support settings, read aloud preview, and next-step guidance in one student-ready route.
-              </h1>
-              <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                This route turns the support architecture into a real product slice. It shows what
-                the student can control, what access-arrangement support is active, and how those
-                settings connect to live recommendations.
-              </p>
-            </div>
+            <h1 className="max-w-2xl text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
+              Support settings, read aloud, and next-step guidance
+            </h1>
+            <p className="max-w-xl text-sm leading-6 text-stone-600">
+              Control what you need for study — colour overlays, focus modes, read aloud preview, and
+              links to access arrangements and support.
+            </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
@@ -460,6 +457,6 @@ export function AccessibilityExperience({
           </aside>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

@@ -11,11 +11,11 @@
 
 | Question | Answer |
 |----------|--------|
-| Is the platform live? | Yes — https://theswitchplatform.com. All **22** launch items **complete** (Final Path Mark 2). |
-| What are we doing now? | **Post-launch polish** — Study Atelier UI, calmer homepage/dashboard, onboarding scope locked. |
+| Is the platform live? | Yes — https://theswitchplatform.com. Live on Fly; full-completion proof is under Priority A truth audit in `docs/ideas/FINAL-PHASE-PLAN.md`. |
+| What are we doing now? | **Final Phase** — full completion audit first, then remaining Study Atelier finish work. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
-| Website (Lane B) | **Declutter only** — no duplicate mockups on live home/dashboard. Previews: `/mock-idea-preview`. |
-| What is next? | Phase 3 planner persistence; `/results` shell optional. See [`docs/ideas/STREAMLINE-WEBSITE-PLAN.md`](./docs/ideas/STREAMLINE-WEBSITE-PLAN.md). |
+| Website (Lane B) | Prior declutter **done**; remaining work in **Final Phase**. |
+| What is next? | **Priority A — truthful completion (fix the proof gap)** — A-1 to A-8 in [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL-PHASE-PLAN.md). |
 
 **Every session:** tell the agent `Read HANDOFF.md first.` Full checklists and diagrams → [`HANDOFF.md` → Plain-English — what the project is doing](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents).
 
@@ -37,8 +37,8 @@ flowchart LR
 |--|--|
 | **What it is** | GCSE / iGCSE revision platform — practice, timed tests, full exams, progress |
 | **Live** | https://theswitchplatform.com |
-| **Launch** | **Complete** — 22-item Final Path Mark 2 (23 June 2026) |
-| **Now** | Post-launch polish — Study Atelier UI, focused home/dashboard |
+| **Launch** | Live on Fly; Final Path Mark 2 completion claim is being re-checked by the Priority A truth audit |
+| **Now** | **Final Phase** — full completion audit + remaining Study Atelier work — `docs/ideas/FINAL-PHASE-PLAN.md` |
 
 ### Core MVP modules (priority order)
 
@@ -61,12 +61,14 @@ Wales / Northern Ireland GCSE: **coming later** (visible in onboarding, not sele
 
 `/login` → `/onboarding` (8 steps) → `/dashboard` → `/subjects` · `/assessments` · `/exams` · `/progress` · `/accessibility` · `/support`
 
-### Two lanes (current polish)
+### Two lanes (locked — Final Phase executes the rest)
 
 | Lane | Do |
 |------|-----|
 | **A — Onboarding** | Keep 8 steps; builds dashboard; England GCSE + iGCSE |
-| **B — Website** | Declutter home/dashboard only; previews on `/mock-idea-preview` |
+| **B — Website** | **Final Phase** — shell on remaining routes, planner, marketing trim |
+
+Active plan → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL-PHASE-PLAN.md)
 
 Diagrams and detail → [`HANDOFF.md` → Plain-English](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents)
 
@@ -343,6 +345,47 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-24 Priority C complete — Study Atelier product finish lane
+
+- **C-2 Exams focus mode:** lobby stays in `StudentAppShell`; active papers use `focus=1` without the study rail (`src/lib/exams/focus-mode.ts`).
+- **C-3/C-4 Public routes:** `/support` is a public marketing hub; `/how-it-works`, `/login`, and homepage share `PublicMarketingPage` chrome.
+- **C-5 Planner dismiss:** persisted per user via `/api/dashboard/ui-preferences`.
+- **C-6 Weekly planner:** `src/modules/weekly-planner/` + `/api/planner/week`; same grid on dashboard and `/progress`.
+- **C-7 Subject tones:** catalog-backed chips via `src/lib/subjects/tone.ts` on dashboard, planner, and progress.
+- **C-10 Recovery pass:** shared `StudentRouteRecovery` on exams, progress, and saved-progress empty state.
+- Verification: **102/102** tests, lint, type-check.
+
+### 2026-06-24 Priority A hardening — strict real-auth proof path
+
+- Added **`npm run verify:live-oidc-proof`** to prove the real OIDC evidence chain without launch-verification headers: provider redirect, blocked local session mutation, authenticated real session, protected access, sign-out, and post-sign-out denial.
+- Added **`npm run verify:live-walkthrough:real-auth`** so the final walkthrough fails fast if `SWITCH_LAUNCH_VERIFICATION_SECRET` is present.
+- Hardened `scripts/live-walkthrough-utils.mjs` with an explicit **`real-auth`** mode and added regression tests for the strict path.
+- Local verification passed: **`npm test`** and **`npm run lint`**.
+
+### 2026-06-24 Priority A sync — truthful completion audit now leads Final Phase
+
+- Synced `AGENTS.md`, `HANDOFF.md`, and the top `README.md` operator block to the real role of `docs/ideas/FINAL-PHASE-PLAN.md`: full completion audit first, then remaining Study Atelier finish work.
+- Repointed “What is next?” to **Priority A — truthful completion (A-1 to A-8)** instead of the next product-shell item.
+- Updated the opening live-status wording to reflect the current truth audit: platform is live on Fly, but the full-completion claim is being re-checked against the proof gap.
+
+### 2026-06-24 C-1 — Student shell rollout complete
+
+- **`/saved-progress`**, **`/recommendations`**, **`/accessibility`** — `StudentAppShell` + `requireStudentAppRouteContext()`.
+- **`/account`** — shell when signed in; standalone when signed out.
+- C-1 complete; `/exams` and `/support` deferred to C-2/C-3.
+
+### 2026-06-24 FP-1.1 — `/results` in StudentAppShell
+
+- Wrapped **`/results`** in `StudentAppShell` with **`requireStudentAppRouteContext()`** (auth + onboarding gate).
+- Added **`results-experience.tsx`** — slim summary layout; study rail chrome; teal primary CTAs.
+
+### 2026-06-24 Final Phase plan — sole active roadmap
+
+- Created **`docs/ideas/FINAL-PHASE-PLAN.md`** — FP-1 through FP-6 for Study Atelier 100% redesign.
+- Marked prior phases complete: launch 22/22, Study Atelier 1–2, Streamline 1–2.
+- Updated HANDOFF, AGENTS, README, PLATFORM-GUIDE, ideas index, MOCK-IDEA docs to consult Final Phase first.
+- **`STREAMLINE-WEBSITE-PLAN.md`** phases 3–5 superseded (file kept as historical record).
 
 ### 2026-06-24 Phase 2 — StudentAppShell on subjects, assessments, progress
 

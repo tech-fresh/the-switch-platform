@@ -20,6 +20,7 @@ import type { SupportHubData } from "@/modules/support/types";
 import type { TimedAssessmentAttemptSeed, TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
 import type { Topic } from "@/modules/topics/types";
 import type { WebsiteGuideData } from "@/modules/website-guide/types";
+import type { WeeklyPlannerSummary } from "@/modules/weekly-planner/types";
 import type { PersistenceRuntimeSummary } from "@/lib/server/repositories";
 
 export interface SubjectsExperienceData {
@@ -270,6 +271,12 @@ export async function getSubjectsExperienceApiData(): Promise<SubjectsExperience
   );
 
   return response.experience;
+}
+
+export async function getWeeklyPlannerApiData(): Promise<WeeklyPlannerSummary> {
+  const response = await fetchApiJson<{ planner: WeeklyPlannerSummary }>("/api/planner/week");
+
+  return response.planner;
 }
 
 export async function getWebsiteGuideApiData(): Promise<WebsiteGuideData> {

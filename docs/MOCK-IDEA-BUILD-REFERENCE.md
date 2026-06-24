@@ -1,7 +1,8 @@
 # Mock Idea · Study Atelier — Build Reference
 
 > **AI ideas bank (plans + copy blocks):** [`MOCK-IDEA-AI-IDEAS.md`](./MOCK-IDEA-AI-IDEAS.md)  
-> **Streamline + onboarding plan:** [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md)  
+> **Active plan:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — sole roadmap for remaining work  
+> **Historical:** [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) (phases 1–2 complete)  
 > **Use this file when building UI like the Mock Idea direction.**  
 > **Visual mockups:** [`SENECA-STYLE-ONBOARDING-MOCKUP.md`](./SENECA-STYLE-ONBOARDING-MOCKUP.md)  
 > **Live gallery:** https://theswitchplatform.com/mock-idea-preview  
@@ -13,7 +14,7 @@ Plain English: **Mock Idea · Study Atelier** is the saved design direction for 
 
 ## Quick start (operators and agents)
 
-1. Read this file.
+1. Read `HANDOFF.md` and `docs/ideas/FINAL-PHASE-PLAN.md`.
 2. Open the live gallery: `/mock-idea-preview`.
 3. Import tokens from `src/components/mock-idea/brand-tokens.ts` — do not hard-code colours elsewhere.
 4. Reuse existing shell components before inventing new layout patterns.
@@ -23,7 +24,8 @@ Plain English: **Mock Idea · Study Atelier** is the saved design direction for 
 
 ```text
 Read HANDOFF.md first.
-Read docs/MOCK-IDEA-AI-IDEAS.md and docs/MOCK-IDEA-BUILD-REFERENCE.md.
+Read docs/ideas/FINAL-PHASE-PLAN.md for the next FP-* item.
+Read docs/MOCK-IDEA-BUILD-REFERENCE.md for UI patterns.
 Build UI to match Mock Idea · Study Atelier.
 Reuse src/components/mock-idea/* and brand-tokens.ts.
 ```
@@ -42,7 +44,7 @@ Reuse src/components/mock-idea/* and brand-tokens.ts.
 - Link access arrangements to `/how-it-works` and Support Hub to `/support`.
 - Wrap signed-in dashboard content in `StudentAppShell`.
 - Wrap public homepage in `MarketingSiteHeader` + `MarketingSiteFooter`.
-- **Keep onboarding as the dashboard factory** — 8 steps, gate on `/dashboard`; dashboard reads onboarding via module API (see [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md)).
+- **Keep onboarding as the dashboard factory** — 8 steps, gate on `/dashboard`; see [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) and [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) § onboarding stays.
 
 ### Do not
 
@@ -225,7 +227,7 @@ On complete: `provisionMvpAccessSetupFromOnboarding()` seeds access profile; das
 | `complete: true` | Access profile provision; `/dashboard` gate opens |
 | Incomplete profile | Redirect to `/onboarding` from `/dashboard` |
 
-See [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) for the full data-flow diagram and streamlining phases.
+See [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) for remaining shell routes and [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) for the onboarding data-flow diagram.
 
 **Shell styling:**
 
@@ -358,7 +360,8 @@ Manual checks:
 docs/
   ideas/
     README.md                        ← ideas folder index
-    STREAMLINE-WEBSITE-PLAN.md       ← declutter plan; onboarding stays
+    FINAL-PHASE-PLAN.md            ← **active** — sole roadmap for remaining work
+    STREAMLINE-WEBSITE-PLAN.md     ← historical; phases 1–2 complete
   MOCK-IDEA-BUILD-REFERENCE.md     ← this file (build from here)
   MOCK-IDEA-AI-IDEAS.md              ← copy blocks + phase plans
   SENECA-STYLE-ONBOARDING-MOCKUP.md ← visual mockups + diagrams
@@ -400,3 +403,4 @@ src/modules/onboarding/service.ts
 |------|--------|
 | 2026-06-24 | Created build reference; Study Atelier shipped with `/mock-idea-preview` |
 | 2026-06-24 | Onboarding-stays decision; onboarding→dashboard contract; linked `docs/ideas/` |
+| 2026-06-24 | Active plan: `docs/ideas/FINAL-PHASE-PLAN.md`; prior phases complete |

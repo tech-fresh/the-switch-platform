@@ -3,12 +3,34 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export function PlannerPromptCard() {
-  const [dismissed, setDismissed] = useState(false);
+interface PlannerPromptCardProps {
+  initialDismissed?: boolean;
+}
+
+export function PlannerPromptCard({ initialDismissed = false }: PlannerPromptCardProps) {
+  const [dismissed, setDismissed] = useState(initialDismissed);
+  const [saving, setSaving] = useState(false);
 
   if (dismissed) {
     return null;
   }
+
+  const handleDismiss = async () => {
+    setDismissed(true);
+    setSaving(true);
+
+    try {
+      await fetch("/api/dashboard/ui-preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plannerPromptDismissed: true }),
+      });
+    } catch {
+      // Keep dismissed locally; persistence retry on next visit is acceptable for MVP.
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <article className="overflow-hidden border border-stone-200 bg-white shadow-lg shadow-stone-200/60">
@@ -16,8 +38,9 @@ export function PlannerPromptCard() {
         <div className="relative border-b border-stone-200 bg-gradient-to-br from-teal-800 via-teal-700 to-emerald-800 p-6 text-white md:border-b-0 md:border-r">
           <button
             type="button"
-            onClick={() => setDismissed(true)}
-            className="absolute right-3 top-3 border border-white/30 px-2 py-0.5 text-[10px] text-white/90 hover:bg-white/10"
+            onClick={handleDismiss}
+            disabled={saving}
+            className="absolute right-3 top-3 border border-white/30 px-2 py-0.5 text-[10px] text-white/90 hover:bg-white/10 disabled:opacity-60"
             aria-label="Dismiss planner prompt"
           >
             Close

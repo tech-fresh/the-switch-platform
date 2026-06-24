@@ -1,10 +1,11 @@
 # Streamline website plan — Study Atelier
 
-> **Status:** In progress (homepage + dashboard declutter shipped 2026-06-24)  
+> **Status:** **Historical** — phases 1–2 complete (24 June 2026)  
+> **Active plan:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) — consult that for all remaining work  
 > **Build priority:** #5 Dashboard  
 > **Related:** [`MOCK-IDEA-BUILD-REFERENCE.md`](../MOCK-IDEA-BUILD-REFERENCE.md) · [`MOCK-IDEA-AI-IDEAS.md`](../MOCK-IDEA-AI-IDEAS.md)
 
-Plain English: make the public site and signed-in home **clear and calm** — one place for each idea — **without** touching the 8-step onboarding that builds each student’s dashboard.
+Plain English: phases 1–2 of this plan are **shipped**. Remaining work (planner, marketing trim, verify) lives in **`FINAL-PHASE-PLAN.md`**. Keep this file for the onboarding-stays decision and completed-phase record — do not delete.
 
 ---
 
@@ -105,7 +106,9 @@ Apply `StudentAppShell` to high-traffic signed-in routes so nav is not rebuilt p
 
 ---
 
-## Phase 3 — Planner + dismiss persistence (planned)
+## Phase 3 — Planner + dismiss persistence — **moved to Final Phase**
+
+> **Active items:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) → **FP-2 Planner integration**
 
 | Item | Description | Module boundary |
 |------|-------------|-----------------|
@@ -117,7 +120,9 @@ Onboarding **already** supplies subject IDs; planner UI should **read** them, no
 
 ---
 
-## Phase 4 — Marketing trim (planned)
+## Phase 4 — Marketing trim — **moved to Final Phase**
+
+> **Active items:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) → **FP-3 Marketing consistency**
 
 Safe to simplify **public** surfaces only:
 
@@ -140,7 +145,9 @@ School step: **secondary school** name, **England** nation only during MVP. Full
 
 ---
 
-## Phase 5 — Verify and deploy (planned)
+## Phase 5 — Verify and deploy — **moved to Final Phase**
+
+> **Active items:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) → **FP-5 Verify and deploy**
 
 ```bash
 npm run lint && npm run type-check && npm run test
@@ -161,7 +168,7 @@ Manual checks:
 
 ```text
 Read HANDOFF.md first.
-Read docs/ideas/STREAMLINE-WEBSITE-PLAN.md.
+Read docs/ideas/FINAL-PHASE-PLAN.md.
 Read docs/MOCK-IDEA-BUILD-REFERENCE.md.
 
 Rules:
@@ -178,3 +185,4 @@ Rules:
 | Date | Change |
 |------|--------|
 | 2026-06-24 | Created plan; recorded operator decision to keep onboarding; Phase 1 marked shipped |
+| 2026-06-24 | Phases 1–2 complete; phases 3–5 superseded by `FINAL-PHASE-PLAN.md` |

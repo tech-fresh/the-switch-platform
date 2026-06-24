@@ -7,7 +7,7 @@ Owns guided sign-up and first-time learner setup for **Full End-to-End Completio
 Service entry: `src/modules/onboarding/service.ts`  
 UI route: `/onboarding` → `src/app/onboarding/onboarding-experience.tsx`
 
-Plain English: onboarding **creates the student dashboard**. Do not shorten or skip steps without an operator override in `HANDOFF.md`. See also [`docs/ideas/STREAMLINE-WEBSITE-PLAN.md`](../../../docs/ideas/STREAMLINE-WEBSITE-PLAN.md).
+Plain English: onboarding **creates the student dashboard**. Do not shorten or skip steps without an operator override in `HANDOFF.md`. Active plan: [`docs/ideas/FINAL-PHASE-PLAN.md`](../../../docs/ideas/FINAL-PHASE-PLAN.md).
 
 ---
 

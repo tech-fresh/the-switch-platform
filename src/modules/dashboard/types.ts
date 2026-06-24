@@ -1,5 +1,6 @@
 import type { PowerGridSummary, PowerGridTrend } from "@/modules/power-grid/types";
 import type { DailyMotivation } from "@/modules/motivation/service";
+import type { WeeklyPlannerSummary } from "@/modules/weekly-planner/types";
 
 export interface DashboardMetric {
   label: string;
@@ -36,6 +37,8 @@ export interface DashboardSessionCard {
 
 export interface DashboardFocusCard {
   subject: string;
+  subjectId?: string;
+  tone?: "teal" | "emerald" | "amber" | "sky" | "rose";
   level: string;
   trend: PowerGridTrend;
   readinessScore: number;
@@ -60,4 +63,6 @@ export interface DashboardHomeData {
   continuityActionLabel: string;
   supportSnapshotSummary: string;
   supportPreferenceChips: string[];
+  plannerPromptDismissed: boolean;
+  weeklyPlanner: WeeklyPlannerSummary;
 }

@@ -16,6 +16,9 @@ import {
   getSavedProgressOverview,
 } from "@/modules/saved-progress/overview-service";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
+import { getDashboardUiPreferences } from "./ui-preferences-service";
+import { getWeeklyPlannerSummary } from "@/modules/weekly-planner/service";
+import { resolveCatalogSubjectByLabel, resolveSubjectToneById, resolveSubjectToneByLabel } from "@/lib/subjects/tone";
 import type {
   DashboardFocusCard,
   DashboardHomeData,
@@ -25,10 +28,14 @@ import type {
 } from "./types";
 
 export async function getDashboardHomeData(userId = "guest-preview"): Promise<DashboardHomeData> {
-  const [summary, savedProgress, onboardingOverview] = await Promise.all([
+  const [summary, savedProgress, onboardingOverview, uiPreferences, weeklyPlanner] = await Promise.all([
     getMockPowerGridSummary({ userId }),
     getSavedProgressOverview({ userId }),
     userId === "guest-preview" ? Promise.resolve(null) : getOnboardingOverview(userId),
+    userId === "guest-preview"
+      ? Promise.resolve({ plannerPromptDismissed: false })
+      : getDashboardUiPreferences(userId),
+    getWeeklyPlannerSummary({ userId }),
   ]);
   const setup = buildDashboardSetupSummary(onboardingOverview?.profile ?? null);
   const onboardingSupport = buildOnboardingSupportSummary(onboardingOverview?.profile ?? null);
@@ -269,14 +276,24 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
   const sortedExamSessionCards = [...examSessionCards].sort(sortDashboardSessions);
   const sortedAssessmentSessionCards = [...assessmentSessionCards].sort(sortDashboardSessions);
 
-  let focusCards: DashboardFocusCard[] = summary.subjectProgress.map((subject) => ({
-    subject: subject.subject,
-    level: subject.level,
-    trend: subject.trend,
-    readinessScore: subject.readinessScore,
-    recommendedFocus: subject.recommendedFocus,
-    evidence: subject.evidence,
-  }));
+  let focusCards: DashboardFocusCard[] = summary.subjectProgress.map((subject) => {
+    const catalogSubject = subject.subjectId
+      ? { subjectId: subject.subjectId, name: subject.subject }
+      : resolveCatalogSubjectByLabel(subject.subject);
+
+    return {
+      subject: subject.subject,
+      subjectId: catalogSubject?.subjectId ?? subject.subjectId,
+      tone: catalogSubject?.subjectId
+        ? resolveSubjectToneById(catalogSubject.subjectId)
+        : resolveSubjectToneByLabel(subject.subject),
+      level: subject.level,
+      trend: subject.trend,
+      readinessScore: subject.readinessScore,
+      recommendedFocus: subject.recommendedFocus,
+      evidence: subject.evidence,
+    };
+  });
 
   if (setup.subjectFilterIds.length > 0) {
     const allowedSubjectNames = new Set(
@@ -325,6 +342,8 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
         ? `${readAloudReadyCount} active exam sessions already have read aloud enabled.`
         : "Saved progress already stores access snapshots, so future support settings can travel with the student session."),
     supportPreferenceChips: [...onboardingSupport.chips, ...latestSupportSnapshot],
+    plannerPromptDismissed: uiPreferences.plannerPromptDismissed,
+    weeklyPlanner,
   };
 }
 

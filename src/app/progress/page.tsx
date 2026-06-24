@@ -1,8 +1,12 @@
 import Link from "next/link";
 
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
-import { getProgressSummaryApiData } from "@/lib/api/server";
+import { StudentRouteRecovery } from "@/components/student-route-recovery";
+import { SubjectToneChip, subjectToneBlockClasses } from "@/components/subject-tone-chip";
+import { WeeklyPlannerGrid } from "@/components/weekly-planner-grid";
+import { getProgressSummaryApiData, getWeeklyPlannerApiData } from "@/lib/api/server";
 import { requireStudentAppRouteContext } from "@/lib/server/student-route";
+import { resolveCatalogSubjectByLabel, resolveSubjectToneById, resolveSubjectToneByLabel } from "@/lib/subjects/tone";
 import type { PowerGridSummary } from "@/modules/power-grid/types";
 
 export const dynamic = "force-dynamic";
@@ -30,60 +34,13 @@ function formatActivityTimestamp(value?: string): string {
   }).format(new Date(value));
 }
 
-function ProgressRecoveryContent({
-  title,
-  description,
+function ProgressMainContent({
   summary,
+  planner,
 }: {
-  title: string;
-  description: string;
-  summary?: PowerGridSummary;
+  summary: PowerGridSummary;
+  planner: Awaited<ReturnType<typeof getWeeklyPlannerApiData>>;
 }) {
-  return (
-    <section className="border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">
-        Power Grid Recovery
-      </p>
-      <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-        {title}
-      </h2>
-      <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600 sm:text-base">{description}</p>
-
-      {summary?.sourceWarnings.length ? (
-        <div className="mt-6 grid gap-3">
-          {summary.sourceWarnings.map((warning) => (
-            <div key={warning} className="border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
-              {warning}
-            </div>
-          ))}
-        </div>
-      ) : null}
-
-      <div className="mt-8 flex flex-wrap gap-3">
-        <Link
-          href={summary?.resumeHref ?? "/saved-progress"}
-          className="inline-flex items-center justify-center border border-emerald-700 bg-emerald-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-emerald-800"
-        >
-          Open saved progress
-        </Link>
-        <Link
-          href={summary?.nextBestActionHref ?? "/assessments"}
-          className="inline-flex items-center justify-center border border-sky-700 bg-sky-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-sky-800"
-        >
-          Start next safe route
-        </Link>
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-800 transition hover:bg-stone-50"
-        >
-          Return to dashboard
-        </Link>
-      </div>
-    </section>
-  );
-}
-
-function ProgressMainContent({ summary }: { summary: PowerGridSummary }) {
   return (
     <>
       <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
@@ -134,19 +91,27 @@ function ProgressMainContent({ summary }: { summary: PowerGridSummary }) {
         </div>
       </section>
 
+      <WeeklyPlannerGrid planner={planner} />
+
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-5">
-          {summary.subjectProgress.map((subject) => (
+          {summary.subjectProgress.map((subject) => {
+            const catalogSubject = subject.subjectId
+              ? { subjectId: subject.subjectId, name: subject.subject }
+              : resolveCatalogSubjectByLabel(subject.subject);
+            const tone = catalogSubject?.subjectId
+              ? resolveSubjectToneById(catalogSubject.subjectId)
+              : resolveSubjectToneByLabel(subject.subject);
+
+            return (
             <article
               key={subject.subject}
               className="grid gap-5 border border-stone-200 bg-white p-5 sm:p-6 lg:grid-cols-[1.1fr_0.9fr]"
             >
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="text-2xl font-semibold tracking-tight text-stone-950">
-                    {subject.subject}
-                  </h3>
-                  <span className="border border-stone-300 bg-stone-50 px-2 py-1 text-xs font-medium uppercase tracking-[0.2em] text-stone-700">
+                  <SubjectToneChip label={subject.subject} tone={tone} />
+                  <span className={`border px-2 py-1 text-xs font-medium uppercase tracking-[0.2em] ${subjectToneBlockClasses(tone)}`}>
                     {subject.level}
                   </span>
                   <span className={`text-sm font-medium capitalize ${getTrendTone(subject.trend)}`}>
@@ -211,7 +176,8 @@ function ProgressMainContent({ summary }: { summary: PowerGridSummary }) {
                 </div>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
 
         <aside className="space-y-6">
@@ -269,18 +235,27 @@ export default async function ProgressPage() {
   const shell = await requireStudentAppRouteContext();
 
   try {
-    const summary = await getProgressSummaryApiData();
+    const [summary, planner] = await Promise.all([
+      getProgressSummaryApiData(),
+      getWeeklyPlannerApiData(),
+    ]);
 
     if (summary.dataState === "degraded" || summary.subjectProgress.length === 0) {
       return (
         <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
-          <ProgressRecoveryContent
+          <StudentRouteRecovery
+            eyebrow="Power Grid recovery"
             title={summary.recoveryTitle ?? "Power Grid progress is not ready yet."}
             description={
               summary.recoveryDescription ??
               "The progress route loaded without enough reliable subject evidence to build a safe readiness summary."
             }
-            summary={summary}
+            warnings={summary.sourceWarnings}
+            actions={[
+              { href: summary.resumeHref ?? "/saved-progress", label: "Open saved progress", variant: "primary" },
+              { href: summary.nextBestActionHref ?? "/assessments", label: "Start next safe route", variant: "secondary" },
+              { href: "/dashboard", label: "Return to dashboard", variant: "secondary" },
+            ]}
           />
         </StudentAppShell>
       );
@@ -289,14 +264,15 @@ export default async function ProgressPage() {
     return (
       <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
         <div className="flex flex-col gap-8">
-          <ProgressMainContent summary={summary} />
+          <ProgressMainContent summary={summary} planner={planner} />
         </div>
       </StudentAppShell>
     );
   } catch {
     return (
       <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
-        <ProgressRecoveryContent
+        <StudentRouteRecovery
+          eyebrow="Power Grid recovery"
           title="The Power Grid route could not finish loading."
           description="The progress route could not build a safe readiness summary from the current saved or linked activity data. The safest next step is to resume a known-good saved session or return to the dashboard."
         />

@@ -19,6 +19,8 @@ const requiredScripts = [
   "verify:live-readiness",
   "verify:launch-status",
   "verify:live-walkthrough",
+  "verify:live-walkthrough:real-auth",
+  "verify:live-oidc-proof",
   "verify:live-onboarding",
   "verify:launch-signoff",
   "verify:launch-complete",

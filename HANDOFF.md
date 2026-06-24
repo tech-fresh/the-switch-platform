@@ -19,8 +19,9 @@ Read HANDOFF.md first.
 Before **every** action — code, docs, commands, git, planning, or review — consult in order:
 
 1. This file (`HANDOFF.md`) → Live session state, What is next, Blockers
-2. `PLATFORM-GUIDE.md` → Rules, architecture, modules, launch checklist
-3. `README.md` → Relevant sections only (build record, launch notes)
+2. **`docs/ideas/FINAL-PHASE-PLAN.md`** → sole active roadmap for remaining work
+3. `PLATFORM-GUIDE.md` → Rules, architecture, modules, launch checklist
+4. `README.md` → Relevant sections only (build record, launch notes)
 
 Do not start until the action still matches live state and build priorities.
 
@@ -40,7 +41,7 @@ Commit and push when the action produced repo changes, unless a task explicitly 
 
 | Step | Action |
 |------|--------|
-| Before each task | Read `HANDOFF.md` → `PLATFORM-GUIDE.md` → README **sections only** (when needed) |
+| Before each task | Read `HANDOFF.md` → **`docs/ideas/FINAL-PHASE-PLAN.md`** → `PLATFORM-GUIDE.md` → README **sections only** (when needed) |
 | During task | One module, one priority, match architecture gate |
 | After each task | Update Live session state below (short bullets) |
 | End of session | Verification, commit, push, session log entry, README build record if behavior changed |
@@ -65,33 +66,32 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-24 (Phase 2 — StudentAppShell on subjects, assessments, progress)
+- **Last updated:** 2026-06-24 (Priority C complete — product completion lane)
 
 ### Active task
 
-- **Priority item #:** 5 — Dashboard (post-launch polish)
-- **Module:** `dashboard` + student shell
-- **Status:** Phase 2 complete — `/subjects`, `/assessments`, `/progress` use `StudentAppShell`
+- **Priority item #:** A — Truthful completion (fix the proof gap)
+- **Module:** launch verification + truth surfaces
+- **Status:** **Active** — A-1 to A-8 opened from `docs/ideas/FINAL-PHASE-PLAN.md`
 - **Branch:** `main`
 
 ### What was just completed
 
-- **`requireStudentAppRouteContext()`** — shared auth, onboarding gate, display name, support chips
-- **`StudentAppShell`** on `/subjects`, `/assessments`, `/progress` (study rail + mobile dock)
-- Subjects: **Your subject** badges from onboarding; default subject from onboarding profile
-- Progress: planner copy trimmed; recovery states inside shell
-- Tests 95/95 pass
+- **Priority C complete (C-2 through C-10):** exams focus mode, public support hub, marketing chrome, planner dismiss persistence, API-backed weekly planner, subject tone chips, account/login alignment, accessibility shell, shared recovery UI
+- New module: `src/modules/weekly-planner/` + `/api/planner/week`; shared `StudentRouteRecovery`, `WeeklyPlannerGrid`, `src/lib/subjects/tone.ts`
+- Verification: `npm run lint && npm run type-check && npm run test` — **102/102 passed**
 
 ### What is next
 
-- Phase 3: planner dismiss persistence — `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
-- Optional: wrap `/results` in shell; Wales/NI GCSE when prioritised
+- **A-1** — run `npm run verify:live-oidc-proof` against production with real live cookies and record evidence
+- **A-3 / A-4** — extend the same strict real-auth evidence path to fresh-learner onboarding and final sign-out records
+- **A-5 to A-8** — tie persistence recovery, evidence bundle, and truth surfaces back to one canonical story in `docs/ideas/FINAL-PHASE-PLAN.md`
 
 ### Blockers
 
-- None
-
-**Item 22 closed:** marked **Completed** in AGENTS + README end-to-end lists (23 June 2026). `npm run verify:live-truth-match` passed on Fly.
+- No coding blocker found for A-2
+- Main remaining blocker for A-1 is evidence, not implementation: production proof still requires a real live OIDC session cookie run
+- Current audit position: strict tooling is in place, but item 22 is not treated as airtight again until the real production proof is recorded
 
 ### Verification last run
 
@@ -109,15 +109,16 @@ Update this section every session.
 
 ### In one sentence
 
-The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). Launch is **complete** (all 22 checklist items). Current work is **polish**: a calmer website, a clear student dashboard, and **onboarding that builds each learner’s dashboard** — not shortening onboarding.
+The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). Current work is **Final Phase** as a **full completion audit** — truthful completion first, then remaining Study Atelier finish work per **`docs/ideas/FINAL-PHASE-PLAN.md`**.
 
 ### Where we are
 
 | Stage | Plain English | Status |
 |-------|---------------|--------|
-| **Final Path Mark 2** | Real site proven end-to-end; evidence on file | **Done** (23 June 2026) |
-| **Post-launch polish** | Study Atelier UI, decluttered home/dashboard, **study shell on main routes** | **In progress** |
-| **Next product slice** | Planner dismiss persistence; Wales/NI GCSE when you prioritise | **Planned** |
+| **Final Path Mark 2** | Live evidence exists, but the completion claim is under Priority A truth audit | **Re-checking proof gap** |
+| **Prior polish (Phases 1–2)** | Marketing shell, dashboard declutter, shell on main study routes | **Done** (24 June 2026) |
+| **Final Phase** | Truthful completion audit, then shell/planner/marketing finish work | **Active** — see `docs/ideas/FINAL-PHASE-PLAN.md` |
+| **Optional (FP-6)** | Wales/NI GCSE, parent/teacher onboarding, admin restyle | **Operator gate only** |
 
 ### Two lanes — do not mix them
 
@@ -138,18 +139,24 @@ flowchart TD
     A3["Personal dashboard"]
     A1 --> A2 --> A3
   end
-  subgraph laneB["Lane B — Website polish"]
+  subgraph donePolish["Done — prior polish"]
     B1["Calmer homepage"]
     B2["Focused dashboard"]
+    B3["Shell: dashboard, subjects, assessments, progress"]
   end
-  subgraph later["Later — when prioritised"]
+  subgraph final["Active — Final Phase"]
+    F1["FP-1 shell on remaining routes"]
+    F2["FP-2 planner"]
+    F3["FP-3 marketing + verify"]
+  end
+  subgraph later["Later — FP-6 operator gate"]
     L1["GCSE Wales + Northern Ireland"]
-    L2["Study shell on subjects / assessments / progress"]
   end
   done --> laneA
-  done --> laneB
+  done --> donePolish
+  donePolish --> final
   laneA --> later
-  laneB --> later
+  final --> later
 ```
 
 ### Onboarding MVP (locked 24 June 2026)
@@ -160,24 +167,26 @@ flowchart TD
 | 3 School | Secondary school name | **England only** nation picker + official England school link |
 | 8 Consent | Open my dashboard | Incomplete users cannot reach `/dashboard` until finished |
 
-Full detail: `src/modules/onboarding/README.md` · Plan: `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
+Full detail: `src/modules/onboarding/README.md` · **Active plan:** `docs/ideas/FINAL-PHASE-PLAN.md`
 
 ### Doc read order (every session)
 
 ```mermaid
 flowchart LR
-  H["1. HANDOFF.md\nlive state"] --> P["2. PLATFORM-GUIDE.md\nrules + modules"]
-  P --> R["3. README sections\nwhen handoff points"]
+  H["1. HANDOFF.md\nlive state"] --> F["2. FINAL-PHASE-PLAN.md\nactive roadmap"]
+  F --> P["3. PLATFORM-GUIDE.md\nrules + modules"]
+  P --> R["4. README sections\nwhen handoff points"]
   H --> M["Module README\nif touching one module"]
 ```
 
 | Doc | You read it for |
 |-----|-----------------|
 | `HANDOFF.md` | **What is happening now**, next steps, blockers |
+| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **What to build** — sole active roadmap |
 | `AGENTS.md` | Agent entry + launch list (same story as here) |
 | `README.md` | Product rules + **Ordered Build Record** (history) |
 | `PLATFORM-GUIDE.md` | Architecture, modules, 22-item list detail |
-| `docs/ideas/` | Plans (streamline, onboarding stays) |
+| `docs/ideas/` | Plan index — **FINAL-PHASE-PLAN** active; prior plans historical |
 | `docs/MOCK-IDEA-*.md` | UI build direction |
 
 ---
@@ -244,17 +253,18 @@ Read HANDOFF.md first.
 
 Then read in order:
 1. HANDOFF.md → Live session state + Plain-English story + MVP at a glance
-2. AGENTS.md → agent entry
-3. PLATFORM-GUIDE.md → rules + modules (section handoff points to)
-4. README.md → sections only when handoff points (build record, MVP spec)
+2. docs/ideas/FINAL-PHASE-PLAN.md → next FP-* item (sole active roadmap)
+3. AGENTS.md → agent entry
+4. PLATFORM-GUIDE.md → rules + modules (section handoff points to)
+5. README.md → sections only when handoff points (build record, MVP spec)
 
-Task: [one module only]
-Priority #: [number or post-launch polish]
+Task: [one module only — pick from FINAL-PHASE-PLAN.md]
+Priority #: 5 Dashboard (Final Phase)
 
 Rules:
 - Dual-agent: update HANDOFF before switching tools; commit + push when done
 - Onboarding stays (8 steps) — builds dashboard; England GCSE + iGCSE MVP
-- Website polish = declutter only — see docs/ideas/STREAMLINE-WEBSITE-PLAN.md
+- Active plan: docs/ideas/FINAL-PHASE-PLAN.md — prior phases complete
 - One module per session; API-first; mobile + accessibility first
 
 On completion:
@@ -276,8 +286,8 @@ On completion:
 |--|--|
 | **Product** | GCSE / iGCSE revision, timed practice, exam readiness, progress tracking |
 | **Live site** | https://theswitchplatform.com (Fly.io) |
-| **Launch status** | **Complete** — all 22 Final Path Mark 2 items done (23 June 2026) |
-| **Current phase** | Post-launch **polish** (Study Atelier UI, calmer home/dashboard) |
+| **Launch status** | Live on Fly; Final Path Mark 2 completion claim is being re-checked by Priority A |
+| **Current phase** | Final Phase **full completion audit** first, then remaining Study Atelier finish work |
 
 ### Core MVP modules (build priority order)
 
@@ -346,7 +356,8 @@ Detail: `src/modules/onboarding/README.md`
 | Study Atelier shell | `src/components/mock-idea/` |
 | Build reference | `docs/MOCK-IDEA-BUILD-REFERENCE.md` |
 | Visual gallery | `/mock-idea-preview` |
-| Streamline plan | `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` |
+| Streamline plan (historical) | `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` |
+| **Active plan** | **`docs/ideas/FINAL-PHASE-PLAN.md`** |
 
 ---
 
@@ -373,7 +384,7 @@ Detail: `src/modules/onboarding/README.md`
 | `AGENTS.md` | Agent entry — synced with HANDOFF |
 | `README.md` | Product rules + **MVP at a glance** + Ordered Build Record — synced operator section at top |
 | `PLATFORM-GUIDE.md` | Rules, modules, full 22-item launch list, operator sync |
-| `docs/ideas/` | Plans (`STREAMLINE-WEBSITE-PLAN.md`, onboarding stays) |
+| `docs/ideas/` | **Active:** `FINAL-PHASE-PLAN.md` · Historical: `STREAMLINE-WEBSITE-PLAN.md` |
 | `src/modules/onboarding/README.md` | Onboarding MVP scope (England GCSE, secondary school) |
 | `docs/MOCK-IDEA-BUILD-REFERENCE.md` | UI build-from reference |
 | `.cursor/rules/` | Cursor enforcement |
@@ -402,13 +413,14 @@ Before any code or doc change:
 
 1. Tell the agent: `Read HANDOFF.md first.`
 2. Read this file (`HANDOFF.md`) → Live session state + What is next
-3. Read `AGENTS.md` → Session rules, architecture, and completion standard
-4. Read `README.md` → Non-negotiable development rules + Active build priority order
-5. Read `PROJECT_RECOVERY.md` if folder or history context is unclear
-6. Read the relevant `src/modules/<module>/README.md`
-7. Run `git status` and `git pull origin main` (or checkout the active feature branch)
-8. Confirm the task maps to **one module** and one build-priority item
-9. Paste the standard session prompt below into the active tool
+3. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → next incomplete FP-* item
+4. Read `AGENTS.md` → Session rules, architecture, and completion standard
+5. Read `README.md` → Non-negotiable development rules + Active build priority order
+6. Read `PROJECT_RECOVERY.md` if folder or history context is unclear
+7. Read the relevant `src/modules/<module>/README.md`
+8. Run `git status` and `git pull origin main` (or checkout the active feature branch)
+9. Confirm the task maps to **one module** and one Final Phase item (FP-*)
+10. Paste the standard session prompt below into the active tool
 
 ---
 
@@ -572,7 +584,7 @@ Full item descriptions: see `README.md` → Final Path Mark 2 → Full End-to-En
 - Onboarding **stays** (8 steps) — it **creates the student dashboard**.
 - Step 3: **secondary school**, England nation only (MVP).
 - Step 1: **GCSE (England)** + **iGCSE**; Wales/NI **coming later**.
-- Module doc: `src/modules/onboarding/README.md` · Plan: `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
+- Module doc: `src/modules/onboarding/README.md` · Active plan: `docs/ideas/FINAL-PHASE-PLAN.md`
 
 | Area | Status |
 |------|--------|
@@ -740,6 +752,50 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-24 — Codex — A-1/A-2 strict real-auth hardening
+
+- Done: added `verify:live-oidc-proof` for real OIDC proof without launch-verification headers
+- Done: added `verify:live-walkthrough:real-auth`; strict walkthrough now fails if `SWITCH_LAUNCH_VERIFICATION_SECRET` is present
+- Done: updated `launch-status`, `repo-lint`, and regression tests for the new real-auth verification path
+- Verification: `npm test` and `npm run lint` passed
+- Next: run the new proof command against production with real live cookies, then continue A-3 to A-8 evidence cleanup
+
+### 2026-06-24 — Codex — Priority A sync alignment
+
+- Done: synced `AGENTS.md`, `HANDOFF.md`, and `README.md` top-level operator story to `docs/ideas/FINAL-PHASE-PLAN.md` as the active full completion audit
+- Done: moved “What is next?” from C-2 product polish to **Priority A — truthful completion**
+- Done: updated live-session state to reflect the proof-gap audit as the active task
+- Next: implement strict real-auth verification path and retire synthetic auth from final-proof claims
+- Blocker: none technical; real production proof still needs valid live auth cookies / operator run
+
+### 2026-06-24 — Codex — Full completion audit + Final Phase rewrite
+
+- Done: audited launch scripts, release evidence, route coverage, governance truth surfaces, and active docs
+- Done: rewrote `docs/ideas/FINAL-PHASE-PLAN.md` from a UI-only roadmap into a full completion plan
+- Done: split remaining work into truthful-launch blockers, docs/governance sync, product completion, quality coverage, and deferred scope
+- Next: start Priority A from the new plan — remove synthetic-auth dependence from final live proof, then sync truth surfaces
+- Blocker: none technical; main risk is overclaiming completion before real-auth proof is hardened
+
+### 2026-06-24 — Cursor — C-1 student shell rollout complete
+
+- Done: `/saved-progress`, `/recommendations`, `/accessibility`, `/account` (signed-in) in `StudentAppShell`
+- Done: C-1 marked complete in FINAL-PHASE-PLAN (exams/support → C-2/C-3)
+- Next: C-2 `/exams` shell decision
+- Blocker: none
+
+### 2026-06-24 — Cursor — FP-1.1 `/results` StudentAppShell
+
+- Done: `/results` in `StudentAppShell`; `requireStudentAppRouteContext()`; `results-experience.tsx`
+- Next: FP-1.2 `/saved-progress`
+- Blocker: none
+
+### 2026-06-24 — Cursor — Final Phase plan (sole active roadmap)
+
+- Done: `docs/ideas/FINAL-PHASE-PLAN.md` — FP-1 through FP-6; prior phases marked complete
+- Done: HANDOFF, AGENTS, README, PLATFORM-GUIDE, ideas index, MOCK-IDEA refs, STREAMLINE superseded note
+- Next: FP-1.1 — `/results` in `StudentAppShell`
+- Blocker: none
 
 ### 2026-06-24 — Cursor — Phase 2 StudentAppShell rollout
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { buildAccessibilityPreferenceChips, formatColourSchemeLabel } from "@/modules/accessibility/presentation";
+import { buildExamLobbyHref } from "@/lib/exams/focus-mode";
 import type { ExamPaper, ExamQuestion, ExamQuestionResponse, ExamSession } from "@/modules/exam-engine/types";
 import type { ReadAloudSession } from "@/modules/read-aloud/types";
 
@@ -12,6 +13,7 @@ interface ExamExperienceProps {
   readAloudSession: ReadAloudSession;
   initialExamId?: string;
   initialQuestionId?: string;
+  focusMode?: boolean;
 }
 
 interface SubmittedQuestionReviewItem {
@@ -306,6 +308,7 @@ export function ExamExperience({
   readAloudSession,
   initialExamId,
   initialQuestionId,
+  focusMode = true,
 }: ExamExperienceProps) {
   const initialSessionCache: Record<string, ExamSession> = Object.fromEntries(
     Object.entries(sessionSeeds).map(([examId, session]) => [examId, cloneSession(session)]),
@@ -786,65 +789,31 @@ export function ExamExperience({
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
-        <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
-              Exam Engine Preview
-            </p>
-            <div className="space-y-3">
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Exam session UI with Year 10 progression papers, full GCSE papers, timing, autosave, and progress flow.
-              </h1>
-              <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                This now keeps learning repetition at topic level while rotating question variants
-                between attempts so papers feel fresher for active students while still showing a
-                clear bridge from Year 10 end-of-year work into GCSE-style papers.
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+        {focusMode ? (
+          <section className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-4">
+            <div className="space-y-1">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-teal-700">
+                Exam focus mode
+              </p>
+              <p className="text-lg font-semibold text-stone-950">{paper.title}</p>
+              <p className="text-sm text-stone-600">
+                {paper.board} {paper.paperName} • attempt {session.attemptNumber}
               </p>
             </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Current paper</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">{paper.title}</p>
-              <p className="mt-1 text-sm text-stone-600">
-                {paper.board} {paper.paperName} • {paper.qualificationType} • attempt {session.attemptNumber}
-              </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className={`text-lg font-semibold tabular-nums ${timerAlertTone}`}>
+                {formatCountdown(timeRemainingSeconds)}
+              </span>
+              <Link
+                href={buildExamLobbyHref(paper.examId)}
+                className="border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:border-teal-400"
+              >
+                Exit to lobby
+              </Link>
             </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Autosave</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">
-                Saved {formatSavedAt(session.lastSavedAt)}
-              </p>
-              <p className="mt-1 text-sm text-stone-600">
-                {autosaveState === "saving"
-                  ? "Saving latest changes now."
-                  : autosaveState === "error"
-                    ? "Autosave is temporarily stuck. Use reload or saved progress if this keeps happening."
-                    : autosaveState === "saved"
-                      ? "Latest question mix and responses are saved with this session."
-                      : "Generated question mix is stored with the session."}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Progression path</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">
-                {getStudentStageLabel(paper.studentStage)} • {getPaperModeLabel(paper.paperMode)}
-              </p>
-              <p className="mt-1 text-sm text-stone-600">
-                {paper.gcsePreparationSummary}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Completion</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">{completion}% complete</p>
-              <p className="mt-1 text-sm text-stone-600">
-                {answeredCount} of {sessionQuestions.length} questions answered
-              </p>
-            </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
         <section className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)_18rem]">
           <aside className="space-y-6">

@@ -80,4 +80,54 @@ test("live walkthrough config prefers launch verification headers when the secre
     config.adminHeaders["x-switch-launch-roles"],
     "admin,editor,student",
   );
+  assert.equal(config.walkthroughMode, "default");
+  assert.equal(config.usingLaunchVerificationHeaders, true);
+});
+
+test("live walkthrough real-auth mode rejects launch verification secrets", async () => {
+  const { getLiveWalkthroughConfig } = await import(
+    `../scripts/live-walkthrough-utils.mjs?test=${Date.now()}-real-auth-rejects-launch-secret`
+  );
+
+  assert.throws(
+    () =>
+      getLiveWalkthroughConfig(
+        {
+          SWITCH_AUTH_MODE: "oidc",
+          SWITCH_LIVE_BASE_URL: "https://switch.example.com",
+          SWITCH_LAUNCH_VERIFICATION_SECRET: "launch-secret",
+        },
+        {
+          walkthroughMode: "real-auth",
+        },
+      ),
+    /SWITCH_LAUNCH_VERIFICATION_SECRET must be unset/i,
+  );
+});
+
+test("live walkthrough real-auth mode requires real cookies in oidc mode", async () => {
+  const { getLiveWalkthroughConfig } = await import(
+    `../scripts/live-walkthrough-utils.mjs?test=${Date.now()}-real-auth-cookies`
+  );
+
+  const config = getLiveWalkthroughConfig(
+    {
+      SWITCH_AUTH_MODE: "oidc",
+      SWITCH_LIVE_BASE_URL: "https://switch.example.com/",
+      SWITCH_LIVE_STUDENT_COOKIE: "switch_auth_session=student-cookie",
+      SWITCH_LIVE_ADMIN_COOKIE: "switch_auth_session=admin-cookie",
+    },
+    {
+      walkthroughMode: "real-auth",
+    },
+  );
+
+  assert.equal(config.walkthroughMode, "real-auth");
+  assert.equal(config.usingLaunchVerificationHeaders, false);
+  assert.deepEqual(config.studentHeaders, {
+    cookie: "switch_auth_session=student-cookie",
+  });
+  assert.deepEqual(config.adminHeaders, {
+    cookie: "switch_auth_session=admin-cookie",
+  });
 });

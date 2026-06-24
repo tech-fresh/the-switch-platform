@@ -26,9 +26,9 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. All **22** launch items **complete**. |
-| What are we doing now? | Post-launch **polish** — Study Atelier UI, calmer home/dashboard. |
+| What are we doing now? | **Final Phase** — Study Atelier 100% redesign — `docs/ideas/FINAL-PHASE-PLAN.md`. |
 | Onboarding | **8 steps stay** — they **create the dashboard**. Secondary school; GCSE (England) + iGCSE; Wales/NI **later**. |
-| Website polish | Declutter only — see `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`. |
+| Website polish | Prior phases **done**; active work in **Final Phase**. |
 
 ### MVP at a glance
 
@@ -81,14 +81,15 @@ Read HANDOFF.md first.
 Then:
 
 1. Read **`HANDOFF.md`** → Live session state, What is next, Blockers
-2. Read **`PLATFORM-GUIDE.md`** (this file) → rules, priorities, modules
-3. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
-4. Run `git status` and `git pull origin main`
-5. Confirm the task maps to **one module** and one build-priority item
+2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → next FP-* item (sole active roadmap)
+3. Read **`PLATFORM-GUIDE.md`** (this file) → rules, priorities, modules
+4. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
+5. Run `git status` and `git pull origin main`
+6. Confirm the task maps to **one module** and one Final Phase item (FP-*)
 
 ### Before each action
 
-Consult in order: **`HANDOFF.md`** → **`PLATFORM-GUIDE.md`** → relevant **`README.md`** section.
+Consult in order: **`HANDOFF.md`** → **`docs/ideas/FINAL-PHASE-PLAN.md`** → **`PLATFORM-GUIDE.md`** → relevant **`README.md`** section.
 
 ### After each action
 
@@ -577,7 +578,7 @@ UK school sources: [Get Information about Schools](https://www.get-information-s
 
 ### Efficiency
 
-1. Before each action: `HANDOFF.md` → `PLATFORM-GUIDE.md` → README section if needed
+1. Before each action: `HANDOFF.md` → `docs/ideas/FINAL-PHASE-PLAN.md` → `PLATFORM-GUIDE.md` → README section if needed
 2. One module, one priority per session
 3. One build-record append per session/milestone
 4. Student data on production must live in one shared durable place (Fly `/data` sqlite on current live host)

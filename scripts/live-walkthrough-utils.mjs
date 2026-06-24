@@ -158,16 +158,38 @@ function buildLaunchVerificationHeaders(audience, env, overrides = {}) {
 
 export { buildLaunchVerificationHeaders };
 
-export function getLiveWalkthroughConfig(env = process.env) {
+function resolveWalkthroughMode(value) {
+  if (!value || value === "default") {
+    return "default";
+  }
+
+  assert(
+    value === "real-auth",
+    `Unsupported live walkthrough mode "${value}". Use "default" or "real-auth".`,
+  );
+
+  return value;
+}
+
+export function getLiveWalkthroughConfig(env = process.env, options = {}) {
   const authMode = (env.SWITCH_AUTH_MODE ?? "oidc").trim();
   const liveBaseUrl = env.SWITCH_LIVE_BASE_URL?.trim();
+  const walkthroughMode = resolveWalkthroughMode(
+    options.walkthroughMode ?? env.SWITCH_LIVE_WALKTHROUGH_MODE?.trim() ?? "default",
+  );
 
   assert(liveBaseUrl, "SWITCH_LIVE_BASE_URL is required for the live route walkthrough.");
 
   const baseUrl = normalizeBaseUrl(liveBaseUrl);
-  const useLaunchVerificationHeaders = Boolean(
+  const hasLaunchVerificationSecret = Boolean(
     env.SWITCH_LAUNCH_VERIFICATION_SECRET?.trim(),
   );
+  assert(
+    walkthroughMode !== "real-auth" || !hasLaunchVerificationSecret,
+    "SWITCH_LAUNCH_VERIFICATION_SECRET must be unset when SWITCH_LIVE_WALKTHROUGH_MODE=real-auth.",
+  );
+  const useLaunchVerificationHeaders =
+    walkthroughMode !== "real-auth" && hasLaunchVerificationSecret;
   const studentHeaders =
     useLaunchVerificationHeaders
       ? buildLaunchVerificationHeaders("student", env)
@@ -184,6 +206,8 @@ export function getLiveWalkthroughConfig(env = process.env) {
   return {
     authMode,
     baseUrl,
+    walkthroughMode,
+    usingLaunchVerificationHeaders: useLaunchVerificationHeaders,
     studentHeaders,
     adminHeaders,
   };

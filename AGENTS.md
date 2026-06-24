@@ -5,7 +5,8 @@
 Before doing ANY work in this repository:
 
 1. Read **`HANDOFF.md`** for live session state, next steps, and blockers
-2. Read **`PLATFORM-GUIDE.md`** — the single consolidated guide (rules, architecture, modules, launch checklist)
+2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** — sole active roadmap for remaining work
+3. Read **`PLATFORM-GUIDE.md`** — the single consolidated guide (rules, architecture, modules, launch checklist)
 3. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 4. Read **`PROJECT_RECOVERY.md`** and **`RESTORED_CHATS.md`** if folder or history context is unclear
 5. For module work, open the matching section in **`PLATFORM-GUIDE.md` → Module reference**
@@ -22,7 +23,7 @@ Read HANDOFF.md first.
 
 Then read **`PLATFORM-GUIDE.md`** before making changes.
 
-**Before each action:** consult **`HANDOFF.md`**, then **`PLATFORM-GUIDE.md`**, then relevant **`README.md`** section.
+**Before each action:** consult **`HANDOFF.md`**, then **`docs/ideas/FINAL-PHASE-PLAN.md`**, then **`PLATFORM-GUIDE.md`**, then relevant **`README.md`** section.
 
 **After each action:** update **`HANDOFF.md`** Live session state. Append **`README.md`** Ordered Build Record when behavior changed.
 
@@ -36,7 +37,8 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`AGENTS.md`** | This entry point — synced with HANDOFF |
 | **`PLATFORM-GUIDE.md`** | Rules, architecture, modules, 22-item launch list, MVP modules |
 | **`README.md`** | Cumulative product spec, **MVP at a glance**, Ordered Build Record (append only) |
-| **`docs/ideas/`** | Plans — streamline, onboarding stays |
+| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole active roadmap** — full completion audit: truthful completion first, then remaining Study Atelier work |
+| **`docs/ideas/`** | Plan index — prior plans historical |
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
 | **`.cursor/rules/`** | Cursor enforcement |
@@ -66,11 +68,11 @@ flowchart LR
 
 | Area | MVP today |
 |------|-----------|
-| **Live** | https://theswitchplatform.com — launch **complete** (22 items) |
+| **Live** | https://theswitchplatform.com — live on Fly; full-completion proof under Priority A audit |
 | **Modules** | Exam Engine, Power Grid, Saved Progress, Read Aloud, Dashboard, Timed Assessments, Full GCSE Exams, Results, Recommendations, Accessibility, Access Arrangements, Onboarding |
 | **Subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
 | **Onboarding** | 8 steps → builds dashboard; secondary school; GCSE (England) + iGCSE; Wales/NI **later** |
-| **Polish lane** | Calmer `/` and `/dashboard`; Study Atelier UI — `docs/MOCK-IDEA-BUILD-REFERENCE.md` |
+| **Polish lane** | **Final Phase** — Priority **C complete** (24 June 2026); next: Priority **A** truth audit |
 
 ---
 
@@ -106,7 +108,7 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Module docs → **`PLATFORM-GUIDE.md` → Module reference**
 - Live state → **`HANDOFF.md` → Live session state**
 - Build history → **`README.md` → Ordered Build Record**
-- UI / onboarding plans → **`docs/ideas/`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
+- UI / active plan → **`docs/ideas/FINAL-PHASE-PLAN.md`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
 
 ---
 
@@ -118,11 +120,11 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 
 | Question | Answer |
 |----------|--------|
-| Is the platform live? | Yes — https://theswitchplatform.com (Fly). All **22** launch checklist items **complete**. |
-| What are we doing now? | **Post-launch polish** — calmer website, focused dashboard, **onboarding unchanged in length**. |
+| Is the platform live? | Yes — https://theswitchplatform.com (Fly). Live on Fly; the full-completion claim is under Priority A truth audit. |
+| What are we doing now? | **Final Phase** — full completion audit (`docs/ideas/FINAL-PHASE-PLAN.md`): truthful completion first, then remaining Study Atelier finish work. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
-| Lane B — website | **Declutter only** — no duplicate mockups on `/` or `/dashboard`. Gallery routes keep rich previews. |
-| What is next? | Phase 3 planner persistence; `/results` shell optional. See `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`. |
+| Lane B — website | Prior declutter **done**; **Priority C complete** (shell, planner, marketing, recovery). |
+| What is next? | **Priority A — truthful completion (fix the proof gap)** — A-1 to A-8 in **`docs/ideas/FINAL-PHASE-PLAN.md`**. |
 
 ```mermaid
 flowchart LR
@@ -207,7 +209,8 @@ npm run verify:live-truth-match
 - **UI mockup (visual):** `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md`
 - **UI build reference (code from here):** `docs/MOCK-IDEA-BUILD-REFERENCE.md`
 - **AI ideas bank (plans + copy):** `docs/MOCK-IDEA-AI-IDEAS.md`
-- **Streamline + onboarding plan:** `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
+- **Active plan:** `docs/ideas/FINAL-PHASE-PLAN.md`
+- **Streamline (historical):** `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`
 
 ## Item 3 notes (appended — do not delete)
 
@@ -215,3 +218,33 @@ npm run verify:live-truth-match
 |------|------|
 | 23 June 2026 | Shipped: `/onboarding`, API, dashboard gate. Live proof passed — see completion record above. |
 | 24 June 2026 | **MVP scope locked:** onboarding **stays** (8 steps); secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. Module doc: `src/modules/onboarding/README.md`. |
+
+---
+
+## Priority C completion record (24 June 2026)
+
+**Status: COMPLETE** — Study Atelier product finish lane (`docs/ideas/FINAL-PHASE-PLAN.md` → C-1 through C-10).
+
+| Item | What shipped |
+|------|----------------|
+| **C-1** | `StudentAppShell` on `/results`, `/saved-progress`, `/recommendations`, `/accessibility`, `/account` (signed in) |
+| **C-2** | Exams **focus mode**: lobby in shell; active paper at `/exams?examId=…&focus=1` without study rail — `src/lib/exams/focus-mode.ts` |
+| **C-3** | `/support` as public marketing hub (`PublicMarketingPage`) |
+| **C-4** | Marketing chrome on `/`, `/how-it-works`, `/login`, `/support` |
+| **C-5** | Planner dismiss persisted per user — `/api/dashboard/ui-preferences` |
+| **C-6** | API-backed weekly planner — `src/modules/weekly-planner/`, `/api/planner/week`, dashboard + `/progress` |
+| **C-7** | Catalog subject tone chips — `src/lib/subjects/tone.ts` |
+| **C-8** | Account in shell when signed in; login on marketing chrome |
+| **C-9** | Accessibility route aligned (C-1 shell) |
+| **C-10** | Shared recovery UI — `StudentRouteRecovery` on exams, progress, saved-progress empty state |
+
+**Verification:** `npm run lint && npm run type-check && npm run test` — 102/102 passed.
+
+**What is next:** Priority **A** — truthful completion audit (A-1 to A-8). Start with `npm run verify:live-oidc-proof` on production.
+
+**Key files for agents**
+
+- Active plan: `docs/ideas/FINAL-PHASE-PLAN.md`
+- UI reference: `docs/MOCK-IDEA-BUILD-REFERENCE.md`
+- Weekly planner module: `src/modules/weekly-planner/README.md`
+- Exam focus mode: `src/modules/exam-engine/README.md`

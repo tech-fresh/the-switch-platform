@@ -184,6 +184,8 @@ export const baseDashboardHomeData: DashboardHomeData = {
   focusCards: [
     {
       subject: "GCSE Mathematics",
+      subjectId: "gcse-maths",
+      tone: "teal",
       level: "Voltage Rising",
       trend: "improving",
       readinessScore: 72,
@@ -192,6 +194,8 @@ export const baseDashboardHomeData: DashboardHomeData = {
     },
     {
       subject: "GCSE Combined Science",
+      subjectId: "gcse-combined-science",
+      tone: "emerald",
       level: "Powered Up",
       trend: "declining",
       readinessScore: 45,
@@ -223,6 +227,20 @@ export const baseDashboardHomeData: DashboardHomeData = {
   supportSnapshotSummary:
     "Support settings, calmer pacing, and resume-ready progress now surface together instead of living in isolated routes.",
   supportPreferenceChips: ["Focus mode", "Reduced distraction", "Text to speech"],
+  plannerPromptDismissed: false,
+  weeklyPlanner: {
+    weekLabel: "23–29 Jun 2026",
+    dataSourceSummary: "Built from saved sessions and Power Grid signals.",
+    days: [
+      { dayKey: "2026-06-23", weekdayLabel: "Mon", isToday: true, items: [] },
+      { dayKey: "2026-06-24", weekdayLabel: "Tue", isToday: false, items: [] },
+      { dayKey: "2026-06-25", weekdayLabel: "Wed", isToday: false, items: [] },
+      { dayKey: "2026-06-26", weekdayLabel: "Thu", isToday: false, items: [] },
+      { dayKey: "2026-06-27", weekdayLabel: "Fri", isToday: false, items: [] },
+      { dayKey: "2026-06-28", weekdayLabel: "Sat", isToday: false, items: [] },
+      { dayKey: "2026-06-29", weekdayLabel: "Sun", isToday: false, items: [] },
+    ],
+  },
 };
 
 export const baseSubjects: MvpCatalogSubject[] = [

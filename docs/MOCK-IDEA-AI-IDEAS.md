@@ -7,7 +7,8 @@
 
 Plain English: this file holds the **plan** and **reusable copy** for Mock Idea · Study Atelier. Agents should read this when asked to extend onboarding, dashboard layout, marketing shell, or SEND/access surfaces — then copy blocks from here instead of reinventing.
 
-**Long-form plans:** [`docs/ideas/`](./ideas/README.md) — e.g. [`STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) (declutter + **onboarding stays**).
+> **Active plan:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md)  
+> **Historical plans:** [`docs/ideas/`](./ideas/README.md)
 
 ---
 
@@ -21,7 +22,7 @@ Onboarding **creates the student dashboard**:
 - On complete: seeds access profile, builds dashboard setup summary and support chips
 - Gates `/dashboard` until complete
 
-Full plan and data-flow diagram: [`docs/ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) § Product decision — onboarding stays.
+Full plan: [`docs/ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) · Onboarding data-flow: [`docs/ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) § Product decision.
 
 Streamlining applies to **homepage and signed-in chrome** (duplicate mockups, repeated metrics/support) — **not** `/onboarding`.
 
@@ -60,9 +61,10 @@ Streamlining applies to **homepage and signed-in chrome** (duplicate mockups, re
 | Access & SEND rail | `/dashboard` | `send-support-rail.tsx` | Shipped |
 | Live dashboard cards below | `/dashboard` | `dashboard-home.tsx` | Shipped |
 
-### Phase 3 — Extend layout to other student routes (planned)
+### Phase 3 — Extend layout to other student routes — **moved to Final Phase**
 
-Apply `StudentAppShell` when these routes should feel like the dashboard home:
+> **Active:** [`FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) → **FP-1 Shell rollout**  
+> **Shipped:** `/dashboard`, `/subjects`, `/assessments`, `/progress`
 
 | Route | Priority | Notes |
 |-------|----------|-------|
@@ -76,7 +78,9 @@ Apply `StudentAppShell` when these routes should feel like the dashboard home:
 
 **Rule:** wrap page content in `StudentAppShell`; do not rebuild nav per page.
 
-### Phase 4 — Planner integration (planned)
+### Phase 4 — Planner integration — **moved to Final Phase**
+
+> **Active:** [`FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) → **FP-2 Planner integration**
 
 | Item | Description |
 |------|-------------|
@@ -84,14 +88,16 @@ Apply `StudentAppShell` when these routes should feel like the dashboard home:
 | Dismiss persistence | Store planner prompt dismissed state in saved progress or account settings |
 | Subject colour chips | Planner events use subject tone colours (teal, emerald, amber, sky) |
 
-### Phase 5 — Polish (planned)
+### Phase 5 — Polish — **moved to Final Phase**
+
+> **Active:** [`FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) → **FP-3–FP-5**
 
 | Item | Description |
 |------|-------------|
 | Extend shell to `/subjects`, `/assessments`, `/progress` | Consistent study rail everywhere |
 | Parent/teacher onboarding variants | Separate card flows if product prioritises |
 | i18n-ready labels | Keep copy in constants; avoid hard-coded strings in many files |
-| Website streamlining | See [`docs/ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) — **onboarding excluded** |
+| Website streamlining | See [`docs/ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — **onboarding excluded** |
 
 **Do not plan:** merging onboarding steps 5–6 or removing the dashboard gate unless operator overrides in `HANDOFF.md`.
 
@@ -427,7 +433,8 @@ SEND chips signpost only — learner applies overlays in Accessibility module.
 |------|--------------|
 | `docs/MOCK-IDEA-AI-IDEAS.md` | **This file — plans + copy blocks** |
 | `docs/MOCK-IDEA-BUILD-REFERENCE.md` | Tokens, checklists, verification |
-| `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` | Declutter plan + onboarding-stays decision |
+| `docs/ideas/FINAL-PHASE-PLAN.md` | **Active** — sole roadmap for remaining work |
+| `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` | Historical — phases 1–2 complete; onboarding-stays decision |
 | `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` | ASCII mockups + diagrams |
 | `src/components/mock-idea/brand-tokens.ts` | Colours, nav, SEND chips |
 | `src/modules/onboarding/service.ts` | Step order + support choices |
@@ -442,3 +449,4 @@ SEND chips signpost only — learner applies overlays in Accessibility module.
 |------|--------|
 | 2026-06-24 | Created AI ideas bank with layout + onboarding master plans |
 | 2026-06-24 | Non-negotiable: onboarding stays; linked `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` |
+| 2026-06-24 | Active plan moved to `docs/ideas/FINAL-PHASE-PLAN.md`; layout phases 3–5 superseded |

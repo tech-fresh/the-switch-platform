@@ -1,17 +1,19 @@
-import { AccessibilityExperience } from "./accessibility-experience";
+import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import {
   getAccessibilitySnapshotApiData,
   getReadAloudSessionApiData,
   getStudentRecommendationsApiData,
   getSupportHubApiData,
 } from "@/lib/api/server";
-import { requireAuthenticatedRequestSession } from "@/modules/auth/request";
+import { requireStudentAppRouteContext } from "@/lib/server/student-route";
+
+import { AccessibilityExperience } from "./accessibility-experience";
 
 export const dynamic = "force-dynamic";
 
 export default async function AccessibilityPage() {
-  await requireAuthenticatedRequestSession();
-  const [snapshot, readAloudSession, recommendations, support] = await Promise.all([
+  const [shell, snapshot, readAloudSession, recommendations, support] = await Promise.all([
+    requireStudentAppRouteContext(),
     getAccessibilitySnapshotApiData(),
     getReadAloudSessionApiData("revision-notes"),
     getStudentRecommendationsApiData(),
@@ -19,11 +21,17 @@ export default async function AccessibilityPage() {
   ]);
 
   return (
-    <AccessibilityExperience
-      snapshot={snapshot}
-      readAloudSession={readAloudSession}
-      recommendations={recommendations}
-      support={support}
-    />
+    <StudentAppShell
+      displayName={shell.displayName}
+      supportChips={shell.supportChips}
+      showSendSideRail={false}
+    >
+      <AccessibilityExperience
+        snapshot={snapshot}
+        readAloudSession={readAloudSession}
+        recommendations={recommendations}
+        support={support}
+      />
+    </StudentAppShell>
   );
 }

@@ -653,6 +653,8 @@ test("launch status script reports code-complete and missing live inputs", async
   assert.match(stdout, /The real live environment still needs proof outside local development/i);
   assert.match(stdout, /Missing live inputs:/i);
   assert.match(stdout, /SWITCH_LIVE_BASE_URL/i);
+  assert.match(stdout, /npm run verify:live-oidc-proof/i);
+  assert.match(stdout, /npm run verify:live-walkthrough:real-auth/i);
   assert.match(stdout, /npm run verify:launch-complete/i);
 });
 

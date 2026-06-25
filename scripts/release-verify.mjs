@@ -1,16 +1,17 @@
-import path from "node:path";
-
 import { getGovernanceRecordingConfig, recordLocalReleaseRehearsal } from "./launch-governance.mjs";
-import { getRepoRoot, runCommand } from "./launch-utils.mjs";
+import { fileExists, getRepoRoot, runCommand } from "./launch-utils.mjs";
 
 const repoRoot = getRepoRoot();
-const npmExecPath = process.env.npm_execpath ?? path.join(repoRoot, "node_modules", "npm", "bin", "npm-cli.js");
+const npmExecPath = process.env.npm_execpath?.trim() ?? "";
+const useNodeNpmExec = npmExecPath ? await fileExists(npmExecPath) : false;
+const npmCommand = useNodeNpmExec ? process.execPath : "npm";
+const npmArgsPrefix = useNodeNpmExec ? [npmExecPath] : [];
 
 const scriptNames = ["lint", "test", "build", "test:smoke", "test:e2e", "test:final-smoke"];
 
 for (const scriptName of scriptNames) {
   process.stdout.write(`\n> Running ${scriptName}\n`);
-  await runCommand(process.execPath, [npmExecPath, "run", scriptName], {
+  await runCommand(npmCommand, [...npmArgsPrefix, "run", scriptName], {
     label: `npm run ${scriptName}`,
     env:
       scriptName === "build"

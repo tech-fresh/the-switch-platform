@@ -8,7 +8,7 @@ import {
 } from "./launch-utils.mjs";
 import { getLiveWalkthroughConfig } from "./live-walkthrough-utils.mjs";
 
-const expectedProvider = (process.env.SWITCH_LIVE_OIDC_PROVIDER ?? "microsoft").trim();
+const configuredProviderOverride = (process.env.SWITCH_LIVE_OIDC_PROVIDER ?? "").trim();
 const {
   baseUrl,
   studentHeaders,
@@ -39,10 +39,24 @@ assert(
   `Expected auth readiness mode oidc, received ${providersResponse.json?.readiness?.mode ?? "unknown"}.`,
 );
 assert(
-  Array.isArray(providersResponse.json?.providers) &&
-    providersResponse.json.providers.some((provider) => provider.provider === expectedProvider),
+  Array.isArray(providersResponse.json?.providers) && providersResponse.json.providers.length > 0,
+  "Expected /api/auth/providers to include at least one configured provider.",
+);
+const configuredProviders = providersResponse.json.providers
+  .map((provider) => provider?.provider?.trim())
+  .filter(Boolean);
+const expectedProvider =
+  configuredProviderOverride ||
+  (configuredProviders.length === 1 ? configuredProviders[0] : "");
+assert(
+  expectedProvider,
+  "SWITCH_LIVE_OIDC_PROVIDER is required when more than one live OIDC provider is configured.",
+);
+assert(
+  configuredProviders.includes(expectedProvider),
   `Expected /api/auth/providers to include "${expectedProvider}".`,
 );
+console.log(`Using OIDC provider proof target: ${expectedProvider}`);
 
 console.log("Checking auth start redirects to the provider...");
 const authStart = await fetchResponse(

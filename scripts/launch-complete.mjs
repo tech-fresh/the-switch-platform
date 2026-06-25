@@ -1,14 +1,13 @@
 import "./load-script-env.mjs";
 
-import path from "node:path";
-
-import { getRepoRoot, runCommand } from "./launch-utils.mjs";
+import { fileExists, getRepoRoot, runCommand } from "./launch-utils.mjs";
 import { getLaunchPreflightReport } from "./launch-preflight-utils.mjs";
 
 const repoRoot = getRepoRoot();
-const npmExecPath =
-  process.env.npm_execpath ??
-  path.join(repoRoot, "node_modules", "npm", "bin", "npm-cli.js");
+const npmExecPath = process.env.npm_execpath?.trim() ?? "";
+const useNodeNpmExec = npmExecPath ? await fileExists(npmExecPath) : false;
+const npmCommand = useNodeNpmExec ? process.execPath : "npm";
+const npmArgsPrefix = useNodeNpmExec ? [npmExecPath] : [];
 
 const finalLaunchScripts = [
   "verify:persistence-health",
@@ -50,7 +49,7 @@ if (!preflight.ready) {
 
 for (const scriptName of finalLaunchScripts) {
   process.stdout.write(`\n> Running ${scriptName}\n`);
-  await runCommand(process.execPath, [npmExecPath, "run", scriptName], {
+  await runCommand(npmCommand, [...npmArgsPrefix, "run", scriptName], {
     label: `npm run ${scriptName}`,
     env: process.env,
   });

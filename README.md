@@ -15,7 +15,7 @@
 | What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026). |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — Priority C shipped shell, planner, marketing chrome, recovery (24 June 2026). |
-| What is next? | **Priority A — truthful completion (fix the proof gap)** — A-1 to A-8 in [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL-PHASE-PLAN.md). |
+| What is next? | **Priority A closeout** — A-6 evidence bundle and A-8 truth-match after fresh `SWITCH_LIVE_STUDENT_COOKIE` and real `SWITCH_LIVE_ADMIN_COOKIE` in `.env.local`. Browser proof done for A-1, A-3, A-4. |
 
 **Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception. Full checklists → [`HANDOFF.md` → Plain-English](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents).
 

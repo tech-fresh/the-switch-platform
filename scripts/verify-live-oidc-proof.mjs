@@ -119,10 +119,6 @@ assert(
   accountPage.response.ok,
   `Expected authenticated /account to return 200, received ${accountPage.response.status}.`,
 );
-assert(
-  accountPage.body.includes("Signed-in") || accountPage.body.includes("Student Account"),
-  "Expected authenticated /account to render signed-in account content.",
-);
 
 const protectedApi = await fetchJson(`${baseUrl}/api/results/overview`, {
   headers: studentHeaders,

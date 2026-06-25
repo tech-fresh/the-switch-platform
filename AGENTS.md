@@ -11,7 +11,7 @@ Before doing ANY work in this repository:
 4. Read **`PROJECT_RECOVERY.md`** and **`RESTORED_CHATS.md`** if folder or history context is unclear
 5. For module work, open the matching section in **`PLATFORM-GUIDE.md` → Module reference**
 
-Never switch between Cursor and Codex without updating **`HANDOFF.md`** and pushing committed work first.
+Never switch between Cursor and Codex without updating **`HANDOFF.md`**, **`AGENTS.md`**, and pushing committed work first.
 
 ### Operator rule — every session
 
@@ -25,11 +25,17 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 **Before each action:** consult **`HANDOFF.md`**, then **`docs/ideas/FINAL-PHASE-PLAN.md`**, then **`PLATFORM-GUIDE.md`**, then relevant **`README.md`** section.
 
-**After each action:** update **`HANDOFF.md`** Live session state. Append **`README.md`** Ordered Build Record when behavior changed.
+**After each action — non-negotiable:** after **every** completed action (not only at session end):
+
+1. Update **`HANDOFF.md`** → **Live session state** (What was just completed, What is next, Blockers, Verification last run).
+2. Update **`AGENTS.md`** → keep **Operator and agent sync**, **MVP at a glance**, and any **completion records** aligned with HANDOFF. If live state or project story changed, AGENTS **must** be updated in the same pass — no exceptions.
+3. Append **`README.md`** → **Ordered Build Record** when routes, modules, or product behavior changed (not for tiny doc-only typo fixes).
+
+**Do not skip `AGENTS.md`.** HANDOFF is the baton; AGENTS is the front door every agent reads next. If they drift, the next session starts wrong.
 
 **Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Read `HANDOFF.md` → **Priority C — COMPLETE** before any session. Do not reopen C-1–C-10 unless the operator explicitly requests an exception. Active lane is **Priority A**.
 
-**At session end:** run verification, confirm push, refresh **`HANDOFF.md`**.
+**At session end:** run verification, confirm push, refresh **`HANDOFF.md`** and **`AGENTS.md`** if the story changed.
 
 ## Document map
 

@@ -311,8 +311,9 @@ Agents and operators should **not** re-read the entire README on every small act
 **After every completed task**
 
 1. Update `HANDOFF.md` Live session state (short bullets).
-2. Append **one** README build-record entry per session or major milestone — not per tiny edit.
-3. Commit and push when repo files changed.
+2. Update `AGENTS.md` operator sync / MVP / completion records to match HANDOFF — **non-negotiable** when live state or project story changes.
+3. Append **one** README build-record entry per session or major milestone — not per tiny edit.
+4. Commit and push when repo files changed.
 
 This keeps Cursor/Codex context small, avoids wasted tokens, and stops agents repeating work.
 
@@ -449,6 +450,11 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-25 Agent workflow — AGENTS.md sync non-negotiable
+
+- After every completed action, agents must update **`HANDOFF.md`** Live session state and **`AGENTS.md`** operator sync (non-negotiable when live state or project story changes).
+- Synced rule across `AGENTS.md`, `HANDOFF.md`, `README.md`, `PLATFORM-GUIDE.md`, `.cursor/rules/00-source-of-truth.mdc`.
 
 ### 2026-06-25 README plain-English section — diagrams for operators
 

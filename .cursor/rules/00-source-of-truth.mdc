@@ -24,14 +24,21 @@ Consult `HANDOFF.md`, then `docs/ideas/FINAL-PHASE-PLAN.md`, then `PLATFORM-GUID
 
 # After each action
 
-Update `HANDOFF.md` **Live session state** after every completed action. Append `README.md` Ordered Build Record once per session/milestone. Read README **sections** only — not the whole file every time — see `PLATFORM-GUIDE.md` Completion standard.
+**Non-negotiable:** after every completed action:
+
+1. Update `HANDOFF.md` **Live session state**
+2. Update `AGENTS.md` so operator sync, MVP at a glance, and completion records match HANDOFF
+3. Append `README.md` Ordered Build Record when routes, modules, or behavior changed
+
+Read README **sections** only — not the whole file every time — see `PLATFORM-GUIDE.md` Completion standard.
 
 # Session end
 
 1. Run `npm run lint && npm run type-check && npm run test`
 2. Commit and push to GitHub
 3. Update `HANDOFF.md` live session state and session log
-4. Append `README.md` Ordered Build Record if behavior changed
+4. Update `AGENTS.md` if live state or project story changed
+5. Append `README.md` Ordered Build Record if behavior changed
 
 # Handoff rule
 

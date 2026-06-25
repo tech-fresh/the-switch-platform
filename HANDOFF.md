@@ -27,13 +27,14 @@ Do not start until the action still matches live state and build priorities.
 
 If the action touches a module, also read `src/modules/<module>/README.md`.
 
-## After each action — update this file
+## After each action — update HANDOFF and AGENTS (non-negotiable)
 
 After **every** completed action — not only at session end:
 
-1. Refresh **Live session state** below (What was just completed, What is next, Blockers, Verification last run)
-2. Add or refresh a **Session log** entry when the action materially changed repo state, blockers, or next steps
-3. Append `README.md` Ordered Build Record when routes, modules, or behavior changed
+1. Refresh **`HANDOFF.md`** → **Live session state** (What was just completed, What is next, Blockers, Verification last run)
+2. Refresh **`AGENTS.md`** → **Operator and agent sync**, **MVP at a glance**, and completion records so they match HANDOFF. **Required every time live state or project story changes** — no exceptions.
+3. Add or refresh a **Session log** entry in this file when the action materially changed repo state, blockers, or next steps
+4. Append **`README.md`** Ordered Build Record when routes, modules, or behavior changed
 
 Commit and push when the action produced repo changes, unless a task explicitly requires a local-only commit.
 
@@ -43,14 +44,14 @@ Commit and push when the action produced repo changes, unless a task explicitly 
 |------|--------|
 | Before each task | Read `HANDOFF.md` → **`docs/ideas/FINAL-PHASE-PLAN.md`** → `PLATFORM-GUIDE.md` → README **sections only** (when needed) |
 | During task | One module, one priority, match architecture gate |
-| After each task | Update Live session state below (short bullets) |
-| End of session | Verification, commit, push, session log entry, README build record if behavior changed |
+| After each task | Update **HANDOFF** Live session state + **AGENTS** operator sync (non-negotiable) |
+| End of session | Verification, commit, push, session log, README build record if behavior changed |
 
 **Live site:** https://theswitchplatform.com (Fly.io production). Re-check docs vs live: `npm run verify:live-truth-match`.
 
 ## Golden rule
 
-**Never switch between Cursor and Codex without updating this file first.**
+**Never switch between Cursor and Codex without updating `HANDOFF.md` and `AGENTS.md` first.**
 
 Commit and push to GitHub before switching tools unless a task explicitly requires a local-only commit.
 
@@ -65,8 +66,8 @@ Update this section every session.
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
-- **Last updated by:** Codex
-- **Last updated:** 2026-06-25 (real browser OIDC proof recorded; strict cookie rerun still blocked)
+- **Last updated by:** Cursor
+- **Last updated:** 2026-06-25 (agent workflow rule — AGENTS.md sync now non-negotiable)
 
 ### Active task
 
@@ -98,11 +99,8 @@ Update this section every session.
 
 ### What was just completed
 
-- Real browser-authenticated Google OIDC sign-in was proved on production: `/login` -> `/api/auth/start?provider=google` -> Google account chooser -> authenticated student session
-- Real learner completed all 8 onboarding steps on production and unlocked the dashboard; revisiting `/onboarding` kept the learner on `/dashboard`
-- Real sign-out was proved on production: `/dashboard` redirected to `/login` after sign-out and `/account` rendered the signed-out state
-- A-1, A-3, and A-4 now have production browser evidence alongside earlier A-2, A-5, and A-7 completion
-- Remaining blocker is strict script closeout: local `.env.local` still lacks a fresh `SWITCH_LIVE_STUDENT_COOKIE` and a real `SWITCH_LIVE_ADMIN_COOKIE`
+- **Agent workflow rule:** `AGENTS.md` update is now **non-negotiable** after every action (alongside `HANDOFF.md` Live session state and `README.md` build record when behavior changes)
+- Synced across `AGENTS.md`, `HANDOFF.md`, `README.md`, `PLATFORM-GUIDE.md`, `.cursor/rules/00-source-of-truth.mdc`
 
 ### What is next
 
@@ -230,7 +228,7 @@ flowchart LR
 
 | Tool | Best for | Must read first | Must update before handoff |
 |------|----------|-----------------|----------------------------|
-| **Cursor Agent** | Multi-file UI, API, tests, terminal, git | `HANDOFF.md` | `HANDOFF.md` Live session state + session log |
+| **Cursor Agent** | Multi-file UI, API, tests, terminal, git | `HANDOFF.md` | `HANDOFF.md` Live session state + **`AGENTS.md` sync** + session log |
 | **Codex** | Planning, review, debugging, focused service logic | `HANDOFF.md` | Same |
 
 ### The four core markdown files — read and write
@@ -238,7 +236,7 @@ flowchart LR
 | File | Read when | Write when | Plain English |
 |------|-----------|------------|---------------|
 | **`HANDOFF.md`** | **Every session start** | **After every action** + session end | *What is happening right now* — live task, blockers, next step |
-| **`AGENTS.md`** | Session start (after HANDOFF) | When agent entry rules or launch notes change | *Front door for agents* — same story as HANDOFF, links inward |
+| **`AGENTS.md`** | Session start (after HANDOFF) | **After every action** when live state or project story changes — **non-negotiable** | *Front door for agents* — same story as HANDOFF, links inward |
 | **`PLATFORM-GUIDE.md`** | Before code or module work | When architecture, modules, or dev rules change | *How to build* — rules, modules, 22-item list detail |
 | **`README.md`** | When handoff points (build record, MVP spec) | **Append only** — Ordered Build Record + MVP notes | *Product history* — what we asked for and what shipped (never delete old records) |
 

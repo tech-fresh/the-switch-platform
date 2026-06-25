@@ -97,8 +97,9 @@ Consult in order: **`HANDOFF.md`** → **`docs/ideas/FINAL-PHASE-PLAN.md`** → 
 ### After each action
 
 1. Update **`HANDOFF.md`** Live session state (short bullets)
-2. Append **`README.md`** Ordered Build Record when routes, modules, or behavior changed
-3. Commit and push when the action produced repo changes (unless local-only commit requested)
+2. Update **`AGENTS.md`** operator sync / MVP / completion records to match HANDOFF — **non-negotiable** when live state or project story changes
+3. Append **`README.md`** Ordered Build Record when routes, modules, or behavior changed
+4. Commit and push when the action produced repo changes (unless local-only commit requested)
 
 ### At session end
 

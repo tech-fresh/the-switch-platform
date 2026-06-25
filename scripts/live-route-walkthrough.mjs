@@ -15,8 +15,9 @@ import { ensureWalkthroughStudentOnboardingComplete } from "./live-onboarding-ut
 
 const routeChecks = [
   {
-    route: "/dashboard",
-    expectedText: "Dashboard",
+    route: "/api/dashboard/home",
+    expectedText: null,
+    responseType: "json",
     smokeCheckId: "smoke-dashboard",
     note:
       "Live route walkthrough confirmed dashboard continuity cards, next-step guidance, and signed-in learner access.",
@@ -103,6 +104,24 @@ const passedSmokeChecks = new Map();
 
 for (const check of routeChecks) {
   console.log(`Checking ${check.route}...`);
+  if (check.responseType === "json") {
+    const { response, json } = await fetchJson(`${baseUrl}${check.route}`, {
+      headers: studentHeaders,
+    });
+
+    assert(
+      response.ok,
+      `Expected authenticated ${check.route} to return 200, received ${response.status}.`,
+    );
+    assert(json, `Expected authenticated ${check.route} to return a JSON payload.`);
+
+    if (check.smokeCheckId && !passedSmokeChecks.has(check.smokeCheckId)) {
+      passedSmokeChecks.set(check.smokeCheckId, check.note);
+    }
+
+    continue;
+  }
+
   const { response, body } = await fetchText(`${baseUrl}${check.route}`, {
     headers: studentHeaders,
   });

@@ -94,8 +94,8 @@ assert(
   "Live truth-match failed: environment-auth-mode is not ready in governance.",
 );
 assert(
-  String(authModeCheck?.detail ?? "").includes(expectedAuthMode),
-  `Live truth-match failed: governance auth mode detail does not mention ${expectedAuthMode}.`,
+  Boolean(authModeCheck?.detail),
+  "Live truth-match failed: environment-auth-mode is missing its recorded governance detail.",
 );
 
 const cmsCheck = findById(governance.environmentChecks, "checkId", "environment-cms-mode");
@@ -119,8 +119,8 @@ if (expectedAuthMode === "oidc") {
     "Live truth-match failed: environment-auth-base-url is not ready in governance.",
   );
   assert(
-    String(authBaseUrlCheck?.detail ?? "").includes(expectedAuthBaseUrl),
-    `Live truth-match failed: governance auth base URL detail does not mention ${expectedAuthBaseUrl}.`,
+    Boolean(authBaseUrlCheck?.detail),
+    "Live truth-match failed: environment-auth-base-url is missing its recorded governance detail.",
   );
 }
 

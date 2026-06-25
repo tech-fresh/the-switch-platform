@@ -8,15 +8,26 @@ const npmExecPath = process.env.npm_execpath?.trim() ?? "";
 const useNodeNpmExec = npmExecPath ? await fileExists(npmExecPath) : false;
 const npmCommand = useNodeNpmExec ? process.execPath : "npm";
 const npmArgsPrefix = useNodeNpmExec ? [npmExecPath] : [];
+const delegatedSignoffCommand = process.env.SWITCH_LAUNCH_SIGNOFF_COMMAND?.trim() ?? "";
+const finalSequenceEnv = {
+  ...process.env,
+  // The final completion path must exercise real auth, not launch-verification headers.
+  SWITCH_LAUNCH_VERIFICATION_SECRET: "",
+  // Local orchestration should not try to write governance records into /data;
+  // the delegated Fly sign-off command handles the live recording step.
+  SWITCH_RECORD_GOVERNANCE: "0",
+  SWITCH_LIVE_FETCH_ATTEMPTS: process.env.SWITCH_LIVE_FETCH_ATTEMPTS ?? "5",
+  SWITCH_LIVE_FETCH_TIMEOUT_MS: process.env.SWITCH_LIVE_FETCH_TIMEOUT_MS ?? "60000",
+};
 
 const finalLaunchScripts = [
   "verify:persistence-health",
   "verify:live-readiness",
   "verify:persistence-recovery",
-  "verify:live-oidc-proof",
   "verify:live-walkthrough:real-auth",
-  "verify:launch-signoff",
   "verify:live-truth-match",
+  "verify:launch-signoff",
+  "verify:live-oidc-proof",
 ];
 const preflight = getLaunchPreflightReport(process.env);
 
@@ -49,9 +60,17 @@ if (!preflight.ready) {
 
 for (const scriptName of finalLaunchScripts) {
   process.stdout.write(`\n> Running ${scriptName}\n`);
+  if (scriptName === "verify:launch-signoff" && delegatedSignoffCommand) {
+    await runCommand("/bin/sh", ["-lc", delegatedSignoffCommand], {
+      label: `delegated ${scriptName}`,
+      env: finalSequenceEnv,
+    });
+    continue;
+  }
+
   await runCommand(npmCommand, [...npmArgsPrefix, "run", scriptName], {
     label: `npm run ${scriptName}`,
-    env: process.env,
+    env: finalSequenceEnv,
   });
 }
 

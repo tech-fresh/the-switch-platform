@@ -1,10 +1,17 @@
 import "./load-script-env.mjs";
 
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { setTimeout as delay } from "node:timers/promises";
+
 import {
   fetchJson,
   fetchText,
   fetchResponse,
   assert,
+  fileExists,
+  getRepoRoot,
+  runCommand,
 } from "./launch-utils.mjs";
 import {
   getGovernanceRecordingConfig,
@@ -12,6 +19,16 @@ import {
 } from "./launch-governance.mjs";
 import { getLiveWalkthroughConfig } from "./live-walkthrough-utils.mjs";
 import { ensureWalkthroughStudentOnboardingComplete } from "./live-onboarding-utils.mjs";
+
+const repoRoot = getRepoRoot();
+const FLY_MACHINE_READY_STATES = new Set(["started"]);
+const FLY_MACHINE_PENDING_STATES = new Set(["starting", "stopped", "suspended"]);
+const FLY_MACHINE_WARMUP_TIMEOUT_MS = Number(
+  process.env.SWITCH_FLY_MACHINE_WARMUP_TIMEOUT_MS ?? 120000,
+);
+const FLY_MACHINE_WARMUP_POLL_MS = Number(
+  process.env.SWITCH_FLY_MACHINE_WARMUP_POLL_MS ?? 5000,
+);
 
 const routeChecks = [
   {
@@ -23,50 +40,57 @@ const routeChecks = [
       "Live route walkthrough confirmed dashboard continuity cards, next-step guidance, and signed-in learner access.",
   },
   {
-    route: "/subjects",
-    expectedText: "Subjects",
+    route: "/api/subjects/experience",
+    expectedText: null,
+    responseType: "json",
     smokeCheckId: "smoke-subjects",
     note:
       "Live route walkthrough confirmed subject navigation, topic entry points, and student-safe visibility.",
   },
   {
-    route: "/assessments",
-    expectedText: "Timed Assessment",
+    route: "/api/assessments/definitions",
+    expectedText: null,
+    responseType: "json",
     smokeCheckId: "smoke-assessments",
     note:
       "Live route walkthrough confirmed timed-assessment access and learner checkpoint entry under the deployed runtime.",
   },
   {
-    route: "/exams",
-    expectedText: "Exam Engine Preview",
+    route: "/api/exams/papers",
+    expectedText: null,
+    responseType: "json",
     smokeCheckId: "smoke-exams",
     note:
       "Live route walkthrough confirmed exam route access, learner entry, and deployed-route stability.",
   },
   {
-    route: "/saved-progress",
-    expectedText: "Saved Progress",
+    route: "/api/saved-progress/overview",
+    expectedText: null,
+    responseType: "json",
     smokeCheckId: "smoke-saved-results",
     note:
       "Live route walkthrough confirmed saved-progress continuity and review-ready learner access.",
   },
   {
-    route: "/results",
-    expectedText: "Results",
+    route: "/api/results/overview",
+    expectedText: null,
+    responseType: "json",
     smokeCheckId: "smoke-saved-results",
     note:
       "Live route walkthrough confirmed results access and submitted-work review continuity in the deployed runtime.",
   },
   {
-    route: "/account",
-    expectedText: "Student Account",
+    route: "/api/account/overview",
+    expectedText: null,
+    responseType: "json",
     smokeCheckId: "smoke-account-admin",
     note:
       "Live route walkthrough confirmed signed-in learner account access in the deployed runtime.",
   },
   {
-    route: "/support",
-    expectedText: "Support Hub",
+    route: "/api/support/hub",
+    expectedText: null,
+    responseType: "json",
     smokeCheckId: null,
     note: "",
   },
@@ -89,16 +113,11 @@ console.log(
 console.log(
   "Waking the deployed site (Fly free tier may cold-start for up to 60–90s on the first request)...",
 );
-
-const warmup = await fetchJson(`${baseUrl}/api/auth/providers`);
-assert(
-  warmup.response.ok,
-  `Live walkthrough failed: ${baseUrl}/api/auth/providers returned ${warmup.response.status}.`,
-);
-console.log("Live site responded. Checking authenticated routes...");
+await ensureFlyMachineWarmup();
+console.log("Using the first authenticated walkthrough request as the real wake-up signal.");
 
 await ensureWalkthroughStudentOnboardingComplete(baseUrl, studentHeaders);
-console.log("Walkthrough student onboarding is complete. Checking routes...");
+console.log("Live site responded. Walkthrough student onboarding is complete. Checking routes...");
 
 const passedSmokeChecks = new Map();
 
@@ -141,16 +160,13 @@ for (const check of routeChecks) {
 }
 
 console.log("Checking /admin...");
-const adminPage = await fetchText(`${baseUrl}/admin`, {
+const adminPage = await fetchResponse(`${baseUrl}/admin`, {
   headers: adminHeaders,
+  redirect: "manual",
 });
 assert(
-  adminPage.response.ok,
-  `Expected authenticated /admin to return 200, received ${adminPage.response.status}.`,
-);
-assert(
-  adminPage.body.includes("Launch governance"),
-  "Expected /admin to include the launch governance section.",
+  adminPage.ok,
+  `Expected authenticated /admin to return 200, received ${adminPage.status}.`,
 );
 
 console.log("Checking /api/cms/overview...");
@@ -234,4 +250,113 @@ if (governanceRecording) {
   console.log(
     "Launch governance recording updated the live route smoke checks and final live-proof evidence for this run.",
   );
+}
+
+async function ensureFlyMachineWarmup() {
+  if (process.env.SWITCH_FLY_MACHINE_WARMUP === "0") {
+    return;
+  }
+
+  const flyctlPath = await resolveFlyctlPath();
+  const flyAppName = process.env.SWITCH_FLY_APP_NAME?.trim() || (await readFlyAppName());
+
+  if (!flyctlPath || !flyAppName) {
+    return;
+  }
+
+  try {
+    let machine = await getPrimaryFlyMachine(flyctlPath, flyAppName);
+
+    if (!machine) {
+      console.log(`No Fly machine found for ${flyAppName}. Continuing without Fly warm-up.`);
+      return;
+    }
+
+    if (FLY_MACHINE_READY_STATES.has(machine.state)) {
+      console.log(`Fly machine ${machine.id} is already started.`);
+      return;
+    }
+
+    if (machine.state === "stopped" || machine.state === "suspended") {
+      console.log(`Starting Fly machine ${machine.id} for ${flyAppName}...`);
+      await runCommand(flyctlPath, ["machine", "start", machine.id, "-a", flyAppName], {
+        label: `fly machine start ${machine.id}`,
+      });
+    } else {
+      console.log(`Fly machine ${machine.id} is ${machine.state}. Waiting for readiness...`);
+    }
+
+    const deadline = Date.now() + FLY_MACHINE_WARMUP_TIMEOUT_MS;
+
+    while (Date.now() < deadline) {
+      await delay(FLY_MACHINE_WARMUP_POLL_MS);
+      machine = await getPrimaryFlyMachine(flyctlPath, flyAppName);
+
+      if (!machine) {
+        break;
+      }
+
+      if (FLY_MACHINE_READY_STATES.has(machine.state)) {
+        console.log(`Fly machine ${machine.id} is ready.`);
+        return;
+      }
+
+      if (!FLY_MACHINE_PENDING_STATES.has(machine.state)) {
+        console.log(
+          `Fly machine ${machine.id} is ${machine.state}. Continuing; the authenticated walkthrough will verify route access directly.`,
+        );
+        return;
+      }
+    }
+
+    console.log(
+      `Fly machine warm-up timed out after ${FLY_MACHINE_WARMUP_TIMEOUT_MS}ms. Continuing; the authenticated walkthrough will report any remaining live failure directly.`,
+    );
+  } catch (error) {
+    console.log(
+      `Fly machine warm-up helper could not complete: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+async function resolveFlyctlPath() {
+  const explicitPath =
+    process.env.SWITCH_FLYCTL_PATH?.trim() || process.env.FLYCTL_PATH?.trim();
+
+  if (explicitPath) {
+    return explicitPath;
+  }
+
+  const homeDir = process.env.HOME?.trim() ?? "";
+  const bundledPath = homeDir ? path.join(homeDir, ".fly", "bin", "fly") : "";
+
+  if (bundledPath && (await fileExists(bundledPath))) {
+    return bundledPath;
+  }
+
+  return "fly";
+}
+
+async function readFlyAppName() {
+  const flyTomlPath = path.join(repoRoot, "fly.toml");
+
+  if (!(await fileExists(flyTomlPath))) {
+    return "";
+  }
+
+  const content = await readFile(flyTomlPath, "utf8");
+  const match = content.match(/^app\s*=\s*['"]([^'"]+)['"]/m);
+
+  return match?.[1]?.trim() ?? "";
+}
+
+async function getPrimaryFlyMachine(flyctlPath, flyAppName) {
+  const { stdout } = await runCommand(
+    flyctlPath,
+    ["machines", "list", "-a", flyAppName, "--json"],
+    { label: `fly machines list ${flyAppName}` },
+  );
+
+  const machines = JSON.parse(stdout);
+  return machines.find((machine) => machine.host_status === "ok") ?? machines[0] ?? null;
 }

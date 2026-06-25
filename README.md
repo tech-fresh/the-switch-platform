@@ -15,7 +15,7 @@
 | What are we doing now? | **Priority A** — making sure our proof and notes tell the truth. **Priority C** (website polish) is **finished** (24 June 2026). |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
-| What is next? | Finish the **proof pack** (Priority A): bundle all evidence in one place, then run a final check that the website, admin screen, and written notes all agree. Browser sign-in and onboarding proof are already recorded; we still need fresh sign-in keys copied locally for the last automated checks. |
+| What is next? | Finish the **proof pack** (Priority A): bundle all evidence in one place. Real auth, onboarding, sign-out, readiness, persistence, sign-off, and truth-match are proved; the last blocker is the flaky `verify:live-walkthrough:real-auth` / `verify:launch-complete` wrapper path. |
 
 **Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception.
 
@@ -451,6 +451,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-25 Auth email allowlist — admin sign-in showcase
+
+- **`src/modules/auth/allowlist-service.ts`** — parses `SWITCH_AUTH_ADMIN_EMAILS` / `SWITCH_AUTH_EDITOR_EMAILS`, maps roles, masks entries, builds `AuthAccessPathSummary` from the live session.
+- **`AuthAccessPathPanel`** on `/login` (student + `?intent=admin`), `/account`, and `/admin` — distinguishes student vs admin path, shows allowlist counts, masked configured emails (for admin/editor viewers), and website sign-in record (email, provider, roles, expiry).
+- Admin sign-in URL: `/login?intent=admin&returnTo=/admin` — same OIDC flow, no separate admin password.
+- Tests: `tests/auth-allowlist.test.mjs`.
+
 ### 2026-06-25 Agent workflow — AGENTS.md sync non-negotiable
 
 - After every completed action, agents must update **`HANDOFF.md`** Live session state and **`AGENTS.md`** operator sync (non-negotiable when live state or project story changes).
@@ -467,7 +474,19 @@ This section is the running record of what has been requested, added, and commit
 - Extended [release-evidence/2026-06-25-priority-a-truth-audit.md](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/release-evidence/2026-06-25-priority-a-truth-audit.md) with the real production browser proof path.
 - Proved Google OIDC auth start, provider redirect, callback-backed signed session, protected dashboard access, real 8-step learner onboarding, dashboard unlock, onboarding revisit redirect, and real sign-out lockout on https://theswitchplatform.com.
 - Closed **A-1**, **A-3**, and **A-4** in browser evidence.
-- Remaining closeout blocker is script input, not product behavior: the strict reruns still need a freshly copied `SWITCH_LIVE_STUDENT_COOKIE` and a real `SWITCH_LIVE_ADMIN_COOKIE` in `.env.local` before **A-6** and **A-8** can be finished honestly.
+- Later June 25 update: fresh cookies were validated, strict OIDC proof passed, Fly sign-off passed, and strict truth-match passed. The remaining blocker is no longer cookie input; it is the flaky `verify:live-walkthrough:real-auth` / `verify:launch-complete` wrapper path, so **A-6** remains open until one canonical final bundle is green end to end.
+
+### 2026-06-25 Priority A audit — strict proofs and truth-match green, canonical bundle still blocked
+
+- Verified fresh production student/admin cookies against `/api/auth/session`; both returned authenticated Google sessions with `admin` and `student` roles.
+- Passed `npm run verify:launch-status`.
+- Passed `npm run verify:live-readiness`.
+- Passed `SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-oidc-proof`.
+- Passed Fly production persistence recovery again on real `/data`.
+- Passed Fly production `launch-signoff`.
+- Passed `SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-truth-match`.
+- Hardened the verification scripts for real-provider selection, Fly `npm` execution, delegated sign-off, and stricter launch-complete ordering.
+- Remaining honest blocker: `verify:live-walkthrough:real-auth` and downstream `verify:launch-complete` are still flaky under production fetch load, so **A-6** is still open.
 
 ### 2026-06-25 Priority A audit — strict live proof run recorded
 

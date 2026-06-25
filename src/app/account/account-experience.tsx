@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AccountAuthControls } from "@/components/account-auth-controls";
+import { AuthAccessPathPanel } from "@/components/auth-access-path-panel";
 import type { AccountOverview } from "@/modules/auth/types";
 
 function getAuthReadinessClasses(
@@ -141,6 +142,8 @@ export function AccountExperience({ account, authErrorMessage }: AccountExperien
 
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="grid gap-6">
+          <AuthAccessPathPanel accessPath={account.accessPath} variant="account" />
+
           <article className="border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
             <div className="border-b border-stone-200 pb-5">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">

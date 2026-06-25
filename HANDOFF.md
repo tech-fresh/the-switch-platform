@@ -67,7 +67,7 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-25 (agent workflow rule — AGENTS.md sync now non-negotiable)
+- **Last updated:** 2026-06-25 (auth email allowlist + admin sign-in showcase)
 
 ### Active task
 
@@ -99,29 +99,38 @@ Update this section every session.
 
 ### What was just completed
 
-- **Agent workflow rule:** `AGENTS.md` update is now **non-negotiable** after every action (alongside `HANDOFF.md` Live session state and `README.md` build record when behavior changes)
-- Synced across `AGENTS.md`, `HANDOFF.md`, `README.md`, `PLATFORM-GUIDE.md`, `.cursor/rules/00-source-of-truth.mdc`
+- **Mock Log in visibility** — marketing header layout fixed so **Log in** is never clipped in the mock gallery; nav always visible on mobile; explicit **Log in** on homepage hero, `/mock-idea-preview` top bar, and signed-out student shell.
+- **Auth allowlist showcase** — `allowlist-service.ts`, `AuthAccessPathPanel` on `/login?intent=admin`, `/account`, and `/admin`; shows student vs admin path, masked allowlist entries (admin/editor viewers), and live sign-in record (email, provider, roles, session expiry). Tests: `tests/auth-allowlist.test.mjs`. Admin sign-in URL: `/login?intent=admin&returnTo=/admin`.
+- Fresh production student/admin cookies authenticated real Google OIDC sessions on `https://theswitchplatform.com`
+- Strict real-auth OIDC proof passed
+- Live readiness passed
+- Fly production persistence recovery passed again on real `/data`
+- Fly production launch sign-off passed
+- Strict `npm run verify:live-truth-match` passed after blanking `SWITCH_LAUNCH_VERIFICATION_SECRET` for the process
+- `launch-complete`, `live-truth-match`, `verify-live-oidc-proof`, and related helpers were hardened for real-provider selection, Fly runtime `npm`, delegated sign-off, and stricter real-auth sequencing
 
 ### What is next
 
-- **A-6** — create the canonical final release-evidence bundle that rolls in the new browser proof plus the strict command outputs
-- **A-8** — rerun `npm run verify:live-truth-match` after fresh student/admin cookies are copied into `.env.local`
-- Refresh `SWITCH_LIVE_STUDENT_COOKIE` and obtain a real `SWITCH_LIVE_ADMIN_COOKIE` from production using `/account/live-cookie-guide`
+- **A-6** — create the canonical final release-evidence bundle that rolls in the browser proof, strict OIDC proof, readiness, persistence recovery, Fly sign-off, and truth-match outputs
+- Stabilise `verify:live-walkthrough:real-auth` and the downstream `verify:launch-complete` wrapper so the final bundle is backed by a green canonical walkthrough/closeout path instead of individual green subproofs
 
 ### Blockers
 
-- No coding blocker found for A-2, A-5, or A-7
-- No product blocker found for A-1, A-3, or A-4: browser-authenticated production proof now exists for all three
-- Main remaining blocker is local strict-proof input: `.env.local` still does not contain a fresh student cookie or a real admin cookie for the final script reruns
-- Current audit position: browser proof gap is closed, but item 22 is not treated as airtight again until the strict cookie-backed reruns are recorded
+- No live credential blocker remains; fresh student/admin cookies were validated successfully
+- No product blocker remains for A-1, A-3, A-4, A-5, A-7, or A-8
+- Main remaining blocker is orchestration stability: `verify:live-walkthrough:real-auth` still intermittently fails under production fetch load, and `verify:launch-complete` depends on that wrapper path
+- Current audit position: truth-match is green and most of Priority A is proved, but A-6 stays open until the canonical final walkthrough/completion bundle is green end to end
 
 ### Verification last run
 
-- [x] Item 3 `npm run verify:live-onboarding` — passed 23 June 2026
-- [x] Item 22 `npm run verify:live-truth-match` — passed 23 June 2026
-- [x] `npm run verify:live-walkthrough` — passed 23 June 2026
-- [x] `npm run verify:launch-signoff` (Fly ssh)
-- [x] Manual browser Microsoft sign-in + admin launch view
+- [x] `npm run verify:launch-status`
+- [x] `npm run verify:live-readiness`
+- [x] `SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-oidc-proof`
+- [x] `SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-truth-match`
+- [x] Fly ssh `node scripts/persistence-recovery-check.mjs`
+- [x] Fly ssh `node scripts/launch-signoff.mjs`
+- [ ] `SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-walkthrough:real-auth` — still flaky (`ECONNRESET` / route assertion instability)
+- [ ] `npm run verify:launch-complete` — still blocked downstream by the walkthrough wrapper
 
 ---
 

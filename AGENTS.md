@@ -77,6 +77,7 @@ flowchart LR
 | Area | MVP today |
 |------|-----------|
 | **Live** | https://theswitchplatform.com — live on Fly; full-completion proof under Priority A audit |
+| **Auth** | One Google/Microsoft sign-in; admin/editor via email allowlists; panel on `/login`, `/account`, `/admin` |
 | **Modules** | Exam Engine, Power Grid, Saved Progress, Read Aloud, Dashboard, Timed Assessments, Full GCSE Exams, Results, Recommendations, Accessibility, Access Arrangements, Onboarding |
 | **Subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
 | **Onboarding** | 8 steps → builds dashboard; secondary school; GCSE (England) + iGCSE; Wales/NI **later** |
@@ -134,7 +135,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026). |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | **Priority A closeout** — bundle all proof in one place, then final truth check that notes match the live site. Browser sign-in and onboarding proof are recorded; fresh sign-in keys still needed locally for last automated checks. |
+| What is next? | **Priority A closeout** — finish the canonical release-evidence bundle. Real auth, onboarding, sign-out, readiness, persistence, sign-off, and truth-match are now proved; the remaining blocker is the flaky `verify:live-walkthrough:real-auth` / `verify:launch-complete` wrapper path. |
 
 ```mermaid
 flowchart LR
@@ -269,7 +270,7 @@ route (thin page) → module service → API route → persistence
 
 **What is next:** Priority **A** — truthful completion audit (A-1 to A-8). Start with `npm run verify:live-oidc-proof` on production.
 
-**Current A status (25 June 2026):** `A-1`, `A-2`, `A-3`, `A-4`, `A-5`, and `A-7` are complete. Real browser-authenticated production evidence now exists for Google OIDC sign-in, 8-step learner onboarding, dashboard unlock, onboarding revisit redirect, and sign-out lockout. Remaining blocker is strict script closeout: `.env.local` still needs a fresh `SWITCH_LIVE_STUDENT_COOKIE` plus a real admin cookie before `A-6` and `A-8` can close.
+**Current A status (25 June 2026):** `A-1`, `A-2`, `A-3`, `A-4`, `A-5`, `A-7`, and `A-8` are proved. Real production evidence now exists for Google OIDC sign-in, 8-step learner onboarding, dashboard unlock, onboarding revisit redirect, sign-out lockout, readiness, persistence, Fly sign-off, and `verify:live-truth-match`. `A-6` is still open because the canonical final bundle is blocked by the flaky `verify:live-walkthrough:real-auth` / `verify:launch-complete` wrapper path.
 
 **Key files for agents**
 

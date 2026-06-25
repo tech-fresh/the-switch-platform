@@ -55,11 +55,39 @@ export interface AccountLink {
   description: string;
 }
 
+export interface AuthAllowlistEntry {
+  maskedEmail: string;
+  role: "admin" | "editor";
+  isCurrentUser: boolean;
+}
+
+export interface AuthAccessPathSummary {
+  model: "one-sign-in-role-allowlist";
+  title: string;
+  description: string;
+  studentPathLabel: string;
+  adminPathLabel: string;
+  currentUserEmail?: string;
+  currentUserRoles: AuthRole[];
+  mappedRolesFromAllowlist: AuthRole[];
+  isAllowlistedAdmin: boolean;
+  isAllowlistedEditor: boolean;
+  canOpenAdmin: boolean;
+  adminAllowlistCount: number;
+  editorAllowlistCount: number;
+  allowlistEntries: AuthAllowlistEntry[];
+  configurationHint: string;
+  signInProvider?: AuthProvider;
+  signedInAt?: string;
+  sessionExpiresAt?: string;
+}
+
 export interface AccountOverview {
   isAuthenticated: boolean;
   session: AuthSession;
   signInOptions: SignInOption[];
   authReadiness: AuthReadinessSummary;
+  accessPath: AuthAccessPathSummary;
   metrics: AccountMetric[];
   quickLinks: AccountLink[];
   supportSummary: string;

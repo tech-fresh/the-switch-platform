@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import { buildAuthAccessPathSummary } from "@/modules/auth/allowlist-service";
 import {
   getAuthReadinessSummary,
   getConfiguredOidcProviders,
@@ -295,6 +296,7 @@ export async function getAccountOverview(
     session,
     signInOptions,
     authReadiness,
+    accessPath: buildAuthAccessPathSummary(session),
     metrics,
     quickLinks,
     supportSummary:

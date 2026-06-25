@@ -18,7 +18,7 @@ export function MockIdeaShowcase({ dashboardData, displayName = "Student" }: Moc
     <div className="space-y-16">
       <section className="space-y-4">
         <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Mockup 1 · Marketing</p>
-        <div className="overflow-hidden border border-stone-300 shadow-xl">
+        <div className="overflow-x-auto border border-stone-300 shadow-xl">
           <MarketingSiteHeader />
           <div className="bg-stone-100 px-6 py-16">
             <p className="text-sm text-stone-600">Homepage hero area preview</p>

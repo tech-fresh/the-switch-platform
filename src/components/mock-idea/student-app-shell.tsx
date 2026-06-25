@@ -16,6 +16,7 @@ interface StudentAppShellProps {
   children: ReactNode;
   displayName?: string;
   supportChips?: string[];
+  isAuthenticated?: boolean;
   /** Hide desktop SEND column when the page already renders SendSupportRail */
   showSendSideRail?: boolean;
 }
@@ -23,6 +24,7 @@ interface StudentAppShellProps {
 export function StudentAppShell({
   children,
   displayName,
+  isAuthenticated = true,
   showSendSideRail = true,
 }: StudentAppShellProps) {
   const pathname = usePathname();
@@ -77,13 +79,30 @@ export function StudentAppShell({
             >
               SEND colours
             </Link>
-            <Link
-              href="/account"
-              className="inline-flex size-9 items-center justify-center border-2 border-teal-700 bg-teal-700 text-xs font-bold text-white"
-              aria-label={`${firstName} account`}
-            >
-              {firstName.slice(0, 1).toUpperCase()}
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href="/account"
+                className="inline-flex size-9 items-center justify-center border-2 border-teal-700 bg-teal-700 text-xs font-bold text-white"
+                aria-label={`${firstName} account`}
+              >
+                {firstName.slice(0, 1).toUpperCase()}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login?reauth=1"
+                  className="border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-800 hover:border-teal-400"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/login?reauth=1"
+                  className="bg-teal-800 px-3 py-2 text-xs font-semibold text-white hover:bg-teal-900"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>

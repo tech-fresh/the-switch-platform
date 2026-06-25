@@ -1,3 +1,4 @@
+import { mapRolesFromEmail } from "./allowlist-service";
 import type {
   AuthProvider,
   AuthReadinessSummary,
@@ -350,32 +351,6 @@ function normalizeClaimRoles(value: string[] | string | undefined): AuthRole[] {
   return roles
     .map((role) => role.trim())
     .filter((role): role is AuthRole => role === "student" || role === "editor" || role === "admin");
-}
-
-function mapRolesFromEmail(email: string): AuthRole[] {
-  const normalizedEmail = email.trim().toLowerCase();
-  const roles: AuthRole[] = [];
-  const editorEmails = splitEmails(process.env.SWITCH_AUTH_EDITOR_EMAILS);
-  const adminEmails = splitEmails(process.env.SWITCH_AUTH_ADMIN_EMAILS);
-
-  if (editorEmails.has(normalizedEmail)) {
-    roles.push("editor");
-  }
-
-  if (adminEmails.has(normalizedEmail)) {
-    roles.push("admin");
-  }
-
-  return roles;
-}
-
-function splitEmails(value: string | undefined): Set<string> {
-  return new Set(
-    (value ?? "")
-      .split(",")
-      .map((item) => item.trim().toLowerCase())
-      .filter(Boolean),
-  );
 }
 
 function normalizeStringArray(value: string[] | string | undefined): string[] {

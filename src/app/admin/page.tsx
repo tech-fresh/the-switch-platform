@@ -5,6 +5,8 @@ import {
   getPastPaperCatalogApiData,
   getPersistenceRuntimeSummaryApiData,
 } from "@/lib/api/server";
+import { AuthAccessPathPanel } from "@/components/auth-access-path-panel";
+import { buildAuthAccessPathSummary } from "@/modules/auth/allowlist-service";
 import { requireRequestSessionRoles } from "@/modules/auth/request";
 import { CmsWorkflowControls } from "@/components/cms-workflow-controls";
 import { LaunchGovernanceControls } from "@/components/launch-governance-controls";
@@ -89,6 +91,7 @@ export default async function AdminPage() {
     cms,
     persistence,
   });
+  const accessPath = buildAuthAccessPathSummary(session);
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -227,6 +230,8 @@ export default async function AdminPage() {
           </article>
         </section>
 
+        <AuthAccessPathPanel accessPath={accessPath} variant="admin" />
+
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <article className="border border-stone-200 bg-white p-5 sm:p-6">
             <div className="border-b border-stone-200 pb-5">
@@ -255,16 +260,6 @@ export default async function AdminPage() {
           </article>
 
           <aside className="space-y-4">
-            <section className="border border-stone-200 bg-white p-4">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                Admin access path
-              </h2>
-              <div className="mt-4 space-y-3 text-sm leading-6 text-stone-600">
-                <p>Use one main sign-in flow for the website.</p>
-                <p>The signed-in email becomes admin-capable only when it is allowlisted through the auth environment.</p>
-                <p>This keeps auth, route protection, and future mobile reuse on one session model instead of splitting student and admin into two disconnected login systems.</p>
-              </div>
-            </section>
             <section className="border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 Metrics this page already exposes

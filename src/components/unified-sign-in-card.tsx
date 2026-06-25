@@ -6,6 +6,7 @@ import type { AuthProvider, SignInOption } from "@/modules/auth/types";
 interface UnifiedSignInCardProps {
   signInOptions: SignInOption[];
   returnTo: string;
+  signInIntent?: "student" | "admin";
   authErrorMessage?: string | null;
   signedInAs?: string | null;
   showReauthNotice?: boolean;
@@ -113,6 +114,7 @@ const providerOrder: AuthProvider[] = ["google", "microsoft", "apple", "email-ma
 export function UnifiedSignInCard({
   signInOptions,
   returnTo,
+  signInIntent = "student",
   authErrorMessage,
   signedInAs,
   showReauthNotice,
@@ -128,10 +130,13 @@ export function UnifiedSignInCard({
     <div className="w-full max-w-md rounded-2xl border border-stone-200 bg-white px-6 py-8 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:px-8">
       <div className="space-y-6 text-center">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-stone-950">Welcome back!</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-stone-950">
+            {signInIntent === "admin" ? "Operator sign-in" : "Welcome back!"}
+          </h1>
           <p className="text-sm leading-6 text-stone-600">
-            One sign-in for students and admin. The same Google or Microsoft account opens your
-            study routes; admin tools appear automatically when your email is allowlisted.
+            {signInIntent === "admin"
+              ? "Use the same Google or Microsoft sign-in as learners. Admin tools unlock when your email is on the server allowlist."
+              : "One sign-in for students and admin. The same Google or Microsoft account opens your study routes; admin tools appear automatically when your email is allowlisted."}
           </p>
         </div>
 
@@ -202,7 +207,16 @@ export function UnifiedSignInCard({
         </p>
 
         <p className="text-xs leading-5 text-stone-500">
-          Setting up Microsoft for your school?{" "}
+          Need admin access?{" "}
+          <Link
+            href="/login?intent=admin&returnTo=/admin"
+            className="font-medium text-sky-700 underline underline-offset-2"
+          >
+            Open the admin sign-in path
+          </Link>
+        </p>
+
+        <p className="text-xs leading-5 text-stone-500">
           <Link
             href="/login/microsoft-guide"
             className="font-medium text-stone-700 underline underline-offset-2"

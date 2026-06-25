@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { PublicMarketingPage } from "@/components/public-marketing-page";
+import { AuthAccessPathPanel } from "@/components/auth-access-path-panel";
 import { SignInBrandMark } from "@/components/sign-in-brand-mark";
 import { UnifiedSignInCard } from "@/components/unified-sign-in-card";
 import { getAccountOverviewApiData } from "@/lib/api/server";
@@ -31,9 +32,9 @@ function getAuthErrorMessage(authError: string | undefined): string | null {
   return "Sign-in could not be completed. Please try again.";
 }
 
-function sanitizeReturnTo(value: string | undefined): string {
+function sanitizeReturnTo(value: string | undefined, intent: "student" | "admin"): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/dashboard";
+    return intent === "admin" ? "/admin" : "/dashboard";
   }
 
   return value;
@@ -46,6 +47,7 @@ export default async function LoginPage({
     authError?: string | string[] | undefined;
     returnTo?: string | string[] | undefined;
     reauth?: string | string[] | undefined;
+    intent?: string | string[] | undefined;
   }>;
 }) {
   const [account, resolvedSearchParams] = await Promise.all([
@@ -55,13 +57,14 @@ export default async function LoginPage({
         authError?: string | string[] | undefined;
         returnTo?: string | string[] | undefined;
         reauth?: string | string[] | undefined;
+        intent?: string | string[] | undefined;
       }),
   ]);
 
+  const rawIntent = resolvedSearchParams.intent;
+  const intent = (Array.isArray(rawIntent) ? rawIntent[0] : rawIntent) === "admin" ? "admin" : "student";
   const rawReturnTo = resolvedSearchParams.returnTo;
-  const returnTo = sanitizeReturnTo(
-    Array.isArray(rawReturnTo) ? rawReturnTo[0] : rawReturnTo,
-  );
+  const returnTo = sanitizeReturnTo(Array.isArray(rawReturnTo) ? rawReturnTo[0] : rawReturnTo, intent);
   const rawAuthError = resolvedSearchParams.authError;
   const authError = Array.isArray(rawAuthError) ? rawAuthError[0] : rawAuthError;
   const rawReauth = resolvedSearchParams.reauth;
@@ -78,9 +81,13 @@ export default async function LoginPage({
     <PublicMarketingPage isAuthenticated={account.isAuthenticated}>
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 py-4">
         <SignInBrandMark />
+        {intent === "admin" ? (
+          <AuthAccessPathPanel accessPath={account.accessPath} variant="login" />
+        ) : null}
         <UnifiedSignInCard
           signInOptions={account.signInOptions}
           returnTo={returnTo}
+          signInIntent={intent}
           authErrorMessage={getAuthErrorMessage(authError)}
           signedInAs={authenticatedSession?.user.displayName ?? null}
           showReauthNotice={Boolean(authenticatedSession && reauth)}

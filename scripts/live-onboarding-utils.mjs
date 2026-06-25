@@ -1,4 +1,14 @@
-import { assert, fetchJson } from "./launch-utils.mjs";
+import { setTimeout as delay } from "node:timers/promises";
+
+import { assert, fetchJson, fetchResponse } from "./launch-utils.mjs";
+
+const ONBOARDING_WARMUP_STATUSES = new Set([502, 503, 504]);
+const ONBOARDING_WARMUP_ATTEMPTS = Number(
+  process.env.SWITCH_LIVE_ONBOARDING_WARMUP_ATTEMPTS ?? 6,
+);
+const ONBOARDING_WARMUP_DELAY_MS = Number(
+  process.env.SWITCH_LIVE_ONBOARDING_WARMUP_DELAY_MS ?? 2000,
+);
 
 export function jsonHeaders(headers) {
   return {
@@ -24,9 +34,7 @@ export async function putOnboardingProfile(baseUrl, headers, profile) {
 }
 
 export async function ensureWalkthroughStudentOnboardingComplete(baseUrl, studentHeaders) {
-  const overview = await fetchJson(`${baseUrl}/api/onboarding/profile`, {
-    headers: jsonHeaders(studentHeaders),
-  });
+  const overview = await fetchOnboardingOverviewWithWarmup(baseUrl, studentHeaders);
 
   assert(
     overview.response.ok,
@@ -57,5 +65,46 @@ export async function ensureWalkthroughStudentOnboardingComplete(baseUrl, studen
   await putOnboardingProfile(baseUrl, studentHeaders, {
     ageOrConsentConfirmed: true,
     complete: true,
+  });
+}
+
+async function fetchOnboardingOverviewWithWarmup(baseUrl, studentHeaders) {
+  const url = `${baseUrl}/api/onboarding/profile`;
+
+  for (let attempt = 1; attempt <= ONBOARDING_WARMUP_ATTEMPTS; attempt += 1) {
+    const response = await fetchResponse(url, {
+      headers: jsonHeaders(studentHeaders),
+    });
+
+    const body = await response.text();
+
+    if (response.ok) {
+      return {
+        response,
+        body,
+        json: body ? JSON.parse(body) : null,
+      };
+    }
+
+    if (
+      ONBOARDING_WARMUP_STATUSES.has(response.status) &&
+      attempt < ONBOARDING_WARMUP_ATTEMPTS
+    ) {
+      console.log(
+        `Onboarding overview wake-up attempt ${attempt}/${ONBOARDING_WARMUP_ATTEMPTS} returned ${response.status}. Retrying...`,
+      );
+      await delay(ONBOARDING_WARMUP_DELAY_MS);
+      continue;
+    }
+
+    return {
+      response,
+      body,
+      json: null,
+    };
+  }
+
+  return fetchJson(url, {
+    headers: jsonHeaders(studentHeaders),
   });
 }

@@ -794,6 +794,12 @@ Rules:
 
 Add a new entry here at the end of every session. Do not delete older entries.
 
+### 2026-06-25 — Cursor — AGENTS.md sync rule non-negotiable
+
+- Done: after-each-action workflow now requires **HANDOFF + AGENTS + README (when behavior changes)**
+- Synced across `AGENTS.md`, `HANDOFF.md`, `README.md`, `PLATFORM-GUIDE.md`, `.cursor/rules/00-source-of-truth.mdc`
+- Commit: `01d3664`
+
 ### 2026-06-25 — Codex — Priority A audit run + A-7 truth sync
 
 - Done: ran strict real-auth proof commands against production

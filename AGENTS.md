@@ -118,6 +118,8 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 
 **Authoritative live detail:** `HANDOFF.md` → **Live session state** + **Plain-English — what the project is doing**.
 
+**Non-coder summary with diagrams:** `README.md` → **Plain English — what this project is doing**.
+
 This block stays aligned with `README.md` → **Operator and agent sync**. Do not drift.
 
 | Question | Answer |
@@ -126,7 +128,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026). |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | **Priority A — truthful completion (fix the proof gap)** — browser proof is in for A-1, A-3, and A-4; remaining closeout is A-6 and A-8 after fresh production student/admin cookies are copied into `.env.local`. |
+| What is next? | **Priority A closeout** — bundle all proof in one place, then final truth check that notes match the live site. Browser sign-in and onboarding proof are recorded; fresh sign-in keys still needed locally for last automated checks. |
 
 ```mermaid
 flowchart LR

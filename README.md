@@ -11,13 +11,102 @@
 
 | Question | Answer |
 |----------|--------|
-| Is the platform live? | Yes — https://theswitchplatform.com. Live on Fly; full-completion proof is under Priority A truth audit in `docs/ideas/FINAL-PHASE-PLAN.md`. |
-| What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026). |
+| Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io. We are double-checking that our written records match what really happens when someone signs in. |
+| What are we doing now? | **Priority A** — making sure our proof and notes tell the truth. **Priority C** (website polish) is **finished** (24 June 2026). |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
-| Website (Lane B) | **Complete** — Priority C shipped shell, planner, marketing chrome, recovery (24 June 2026). |
-| What is next? | **Priority A closeout** — A-6 evidence bundle and A-8 truth-match after fresh `SWITCH_LIVE_STUDENT_COOKIE` and real `SWITCH_LIVE_ADMIN_COOKIE` in `.env.local`. Browser proof done for A-1, A-3, A-4. |
+| Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
+| What is next? | Finish the **proof pack** (Priority A): bundle all evidence in one place, then run a final check that the website, admin screen, and written notes all agree. Browser sign-in and onboarding proof are already recorded; we still need fresh sign-in keys copied locally for the last automated checks. |
 
-**Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception. Full checklists → [`HANDOFF.md` → Plain-English](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents).
+**Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception.
+
+---
+
+## Plain English — what this project is doing
+
+**For operators, parents, and anyone who is not coding.** Technical detail lives in `HANDOFF.md`, `AGENTS.md`, and `PLATFORM-GUIDE.md`. This section stays in sync with them.
+
+### In one sentence
+
+**The Switch** is a live GCSE revision website at https://theswitchplatform.com. The student website polish work is **done**. What remains is making sure our **records and proof** honestly match what learners experience when they sign in, set up, and study.
+
+### Where we are (simple view)
+
+| Stage | What it means | Status |
+|-------|----------------|--------|
+| **Live website** | Students can use the real site on Fly.io | **Running** |
+| **Website polish (Priority C)** | Shared study layout, planner, public pages, recovery screens | **Done — 24 June 2026** |
+| **Proof audit (Priority A)** | Written notes, admin screen, and live site must all tell the same story | **In progress** |
+| **Wales / NI GCSE** | Extra qualification routes | **Later — not in MVP yet** |
+
+### Two lanes — do not mix them up
+
+| Lane | Plain English | Status |
+|------|---------------|--------|
+| **A — Onboarding** | New learners answer 8 setup questions; that builds their personal dashboard (subjects, support, access choices) | **Locked — keep all 8 steps** |
+| **B — Website look and feel** | Public homepage plus a consistent signed-in study experience | **Done** |
+
+```mermaid
+flowchart TD
+  subgraph live["Live today"]
+    L1["theswitchplatform.com"]
+    L2["Sign in with Google or Microsoft"]
+  end
+  subgraph laneA["Lane A — Onboarding (stays)"]
+    A1["Choose GCSE England or iGCSE"]
+    A2["School, year, subjects, support"]
+    A3["Personal dashboard unlocks"]
+    A1 --> A2 --> A3
+  end
+  subgraph doneC["Done — website polish (24 June 2026)"]
+    C1["Same study layout on student pages"]
+    C2["Weekly planner from real saved work"]
+    C3["Exam focus mode during papers"]
+    C4["Helpful recovery when something is empty"]
+  end
+  subgraph activeA["Active — proof audit"]
+    P1["Record real sign-in proof"]
+    P2["Bundle evidence in one place"]
+    P3["Final check: notes match live site"]
+  end
+  live --> laneA
+  laneA --> doneC
+  doneC --> activeA
+```
+
+### Student journey (what a learner experiences)
+
+```mermaid
+flowchart LR
+  H["Homepage"] --> L["Sign in"]
+  L --> O["8-step setup"]
+  O --> D["Dashboard"]
+  D --> S["Subjects and revision"]
+  D --> P["Practice and timed tests"]
+  D --> E["Full exam papers"]
+  D --> R["Progress and planner"]
+  D --> A["Accessibility settings"]
+```
+
+### How agents should work (Cursor + Codex)
+
+Two AI tools share one repo. **`HANDOFF.md` is the baton`** — whoever finishes updates it before the other starts.
+
+```mermaid
+flowchart LR
+  H["HANDOFF.md\nwhat is happening now"] --> F["FINAL-PHASE-PLAN.md\nwhat to do next"]
+  F --> P["PLATFORM-GUIDE.md\nhow to build safely"]
+  P --> R["README\nhistory when needed"]
+  H --> X["AGENTS.md\nfront door for agents"]
+```
+
+| Read first | Why |
+|------------|-----|
+| `HANDOFF.md` | Live task, blockers, what just finished |
+| `AGENTS.md` | Same story, agent rules, completion records |
+| `README.md` (this file) | Product history and plain-English summary |
+| `PLATFORM-GUIDE.md` | Modules, architecture, launch checklist detail |
+
+**Rule:** Priority **C** is **closed**. Active work is Priority **A** only, unless the operator explicitly reopens something.
 
 ### Priority C — COMPLETE (24 June 2026)
 
@@ -38,11 +127,7 @@
 
 Checklist and evidence → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL-PHASE-PLAN.md) · Build record below.
 
-```mermaid
-flowchart LR
-  H["HANDOFF.md\nlive state"] --> P["PLATFORM-GUIDE.md"]
-  P --> R["README sections\nwhen handoff points"]
-```
+**Plain-English detail:** [`HANDOFF.md` → Plain-English](./HANDOFF.md#plain-english--what-the-project-is-doing-operator--agents) · [`AGENTS.md` → Operator sync](./AGENTS.md#operator-and-agent-sync-plain-english)
 
 ---
 
@@ -364,6 +449,12 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-25 README plain-English section — diagrams for operators
+
+- Added **Plain English — what this project is doing** to `README.md` with mermaid diagrams (project stages, student journey, agent doc flow).
+- Rewrote operator sync table in plain language; synced `AGENTS.md` operator “What is next?” to match.
+- Non-coders: start at README plain-English section; agents: `HANDOFF.md` first, then `AGENTS.md`.
 
 ### 2026-06-25 Priority A audit — real browser-authenticated OIDC proof recorded
 

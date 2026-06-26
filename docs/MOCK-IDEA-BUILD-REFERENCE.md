@@ -1,7 +1,7 @@
 # Mock Idea · Study Atelier — Build Reference
 
 > **AI ideas bank (plans + copy blocks):** [`MOCK-IDEA-AI-IDEAS.md`](./MOCK-IDEA-AI-IDEAS.md)  
-> **Active plan:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — full completion roadmap for remaining repo, product, and quality work  
+> **Current plan record:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — current MVP closeout complete; Priority E is deferred scope only  
 > **Historical:** [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) (phases 1–2 complete)  
 > **Use this file when building UI like the Mock Idea direction.**  
 > **Visual mockups:** [`SENECA-STYLE-ONBOARDING-MOCKUP.md`](./SENECA-STYLE-ONBOARDING-MOCKUP.md)  
@@ -24,7 +24,7 @@ Plain English: **Mock Idea · Study Atelier** is the saved design direction for 
 
 ```text
 Read HANDOFF.md first.
-Read docs/ideas/FINAL-PHASE-PLAN.md for the next open Priority B, D, or E item.
+Read docs/ideas/FINAL-PHASE-PLAN.md for the current completion record and any operator-approved Priority E expansion item.
 Read docs/MOCK-IDEA-BUILD-REFERENCE.md for UI patterns.
 Build UI to match Mock Idea · Study Atelier.
 Reuse src/components/mock-idea/* and brand-tokens.ts.
@@ -227,7 +227,7 @@ On complete: `provisionMvpAccessSetupFromOnboarding()` seeds access profile; das
 | `complete: true` | Access profile provision; `/dashboard` gate opens |
 | Incomplete profile | Redirect to `/onboarding` from `/dashboard` |
 
-See [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) for the current remaining-work roadmap and [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) for the onboarding data-flow diagram.
+See [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) for the current completion record and [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) for the onboarding data-flow diagram.
 
 **Shell styling:**
 
@@ -360,7 +360,7 @@ Manual checks:
 docs/
   ideas/
     README.md                        ← ideas folder index
-    FINAL-PHASE-PLAN.md            ← **active** — full completion roadmap for remaining work
+    FINAL-PHASE-PLAN.md            ← **current record** — MVP closeout complete; deferred scope tracked there
     STREAMLINE-WEBSITE-PLAN.md     ← historical; phases 1–2 complete
   MOCK-IDEA-BUILD-REFERENCE.md     ← this file (build from here)
   MOCK-IDEA-AI-IDEAS.md              ← copy blocks + phase plans

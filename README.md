@@ -721,6 +721,11 @@ This section is the running record of what has been requested, added, and commit
 - Closed the remaining Priority D item and synced the repo-wide completion snapshot to A `8/8`, B `4/4`, C `10/10`, D `6/6`, overall active plan `28/28` complete (`100%`).
 - Restored the 25 June canonical Priority A evidence bundle as the authoritative closeout record and removed the stray failed 26 June “canonical” rerun file from the working tree.
 
+### 2026-06-26 Final source-of-truth doc sync
+
+- Aligned `AGENTS.md`, `HANDOFF.md`, `PLATFORM-GUIDE.md`, `docs/ideas/README.md`, `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`, and the Mock Idea reference docs to the same current story: current MVP closeout complete, Priorities A-D closed, Priority E deferred only.
+- Left historical archive/build-record sections intact where they are explicitly marked as history, but removed stale active-instruction wording that still pointed agents toward open Priority B or D work.
+
 ### 2026-06-21 Exam Engine service test coverage (Priority #1)
 
 - Added `tests/exam-engine-service.test.mjs` with eight automated tests for the highest-priority module.

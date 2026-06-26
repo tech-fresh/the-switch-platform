@@ -1,7 +1,7 @@
 # Streamline website plan — Study Atelier
 
 > **Status:** **Historical** — phases 1–2 complete (24 June 2026)  
-> **Active plan:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) — consult that for all remaining work  
+> **Current plan record:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) — consult that for the closed MVP record and any deferred-scope follow-up  
 > **Build priority:** #5 Dashboard  
 > **Related:** [`MOCK-IDEA-BUILD-REFERENCE.md`](../MOCK-IDEA-BUILD-REFERENCE.md) · [`MOCK-IDEA-AI-IDEAS.md`](../MOCK-IDEA-AI-IDEAS.md)
 
@@ -122,7 +122,7 @@ Onboarding **already** supplies subject IDs; planner UI should **read** them, no
 
 ## Phase 4 — Marketing trim — **historical archive**
 
-> **Historical note:** this section used to point to `FINAL-PHASE-PLAN.md` as `FP-3 Marketing consistency`. Read the current plan for open Priority B or D items instead.
+> **Historical note:** this section used to point to `FINAL-PHASE-PLAN.md` as `FP-3 Marketing consistency`. Read the current plan record for closed MVP status and any operator-approved Priority E follow-up instead.
 
 Safe to simplify **public** surfaces only:
 

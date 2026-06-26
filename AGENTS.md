@@ -5,7 +5,7 @@
 Before doing ANY work in this repository:
 
 1. Read **`HANDOFF.md`** for live session state, next steps, blockers — **Priority A** and **Priority C** are **COMPLETE**
-2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** — active Priority **D** work (do not reopen A or C unless operator requests)
+2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** — current MVP closeout record; Priority **E** is deferred scope only unless the operator reopens A, C, or D
 3. Read **`PLATFORM-GUIDE.md`** — the single consolidated guide (rules, architecture, modules, launch checklist)
 3. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 4. Read **`PROJECT_RECOVERY.md`** and **`RESTORED_CHATS.md`** if folder or history context is unclear
@@ -47,7 +47,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`AGENTS.md`** | This entry point — synced with HANDOFF |
 | **`PLATFORM-GUIDE.md`** | Rules, architecture, modules, 22-item launch list, MVP modules |
 | **`README.md`** | Cumulative product spec, **MVP at a glance**, Ordered Build Record (append only) |
-| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole active roadmap** — Priority **D** active; Priority **A** complete (26 June 2026); Priority **C** complete (24 June 2026) |
+| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole completion roadmap** — current MVP closeout complete; Priority **E** deferred scope only |
 | **`docs/ideas/`** | Plan index — prior plans historical |
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |

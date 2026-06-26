@@ -3,7 +3,7 @@
 > **Purpose:** Longer-form plans, product decisions, and phased work that agents and operators can pick up without re-debating in chat.  
 > **Handoff docs:** [`HANDOFF.md`](../../HANDOFF.md) · [`MOCK-IDEA-AI-IDEAS.md`](../MOCK-IDEA-AI-IDEAS.md) · [`MOCK-IDEA-BUILD-REFERENCE.md`](../MOCK-IDEA-BUILD-REFERENCE.md)
 
-Plain English: this folder holds **plans** — not live session state. Read `HANDOFF.md` first every session; use **`FINAL-PHASE-PLAN.md`** for all remaining work.
+Plain English: this folder holds **plans** — not live session state. Read `HANDOFF.md` first every session; use **`FINAL-PHASE-PLAN.md`** as the current MVP completion record and deferred-scope reference.
 
 ---
 
@@ -11,7 +11,7 @@ Plain English: this folder holds **plans** — not live session state. Read `HAN
 
 | Plan | What it covers |
 |------|----------------|
-| **[`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md)** | **Sole active roadmap** — full completion audit: Priority **B** docs sync and Priority **D** quality/tests (A and C complete) |
+| **[`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md)** | **Current completion record** — MVP closeout complete; Priority **E** is deferred scope only |
 
 ---
 

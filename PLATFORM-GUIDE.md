@@ -87,11 +87,11 @@ Read HANDOFF.md first.
 Then:
 
 1. Read **`HANDOFF.md`** → Live session state, What is next, Blockers
-2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → active Priority **B** or **D** item (Priorities **A** and **C** are **complete** — do not reopen unless operator requests)
+2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → current MVP closeout record and any operator-approved Priority **E** expansion item
 3. Read **`PLATFORM-GUIDE.md`** (this file) → rules, priorities, modules
 4. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 5. Run `git status` and `git pull origin main`
-6. Confirm the task maps to **one module** and one Final Phase priority item (A, B, D, or E — not C unless reopened)
+6. Confirm the task maps to **one module** and either a doc-truth update or an operator-approved Priority **E** expansion item
 
 ### Before each action
 

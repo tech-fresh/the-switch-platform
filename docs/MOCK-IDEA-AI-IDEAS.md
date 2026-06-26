@@ -7,7 +7,7 @@
 
 Plain English: this file holds the **plan** and **reusable copy** for Mock Idea · Study Atelier. Agents should read this when asked to extend onboarding, dashboard layout, marketing shell, or SEND/access surfaces — then copy blocks from here instead of reinventing.
 
-> **Active plan:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — full completion roadmap  
+> **Current plan record:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — MVP closeout complete; deferred scope tracked there  
 > **Historical plans:** [`docs/ideas/`](./ideas/README.md)
 
 ---
@@ -97,7 +97,7 @@ Streamlining applies to **homepage and signed-in chrome** (duplicate mockups, re
 | Extend shell to `/subjects`, `/assessments`, `/progress` | Consistent study rail everywhere |
 | Parent/teacher onboarding variants | Separate card flows if product prioritises |
 | i18n-ready labels | Keep copy in constants; avoid hard-coded strings in many files |
-| Website streamlining | See [`docs/ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) for current remaining work; onboarding stays excluded |
+| Website streamlining | See [`docs/ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) for the current completion record; onboarding stays excluded |
 
 **Do not plan:** merging onboarding steps 5–6 or removing the dashboard gate unless operator overrides in `HANDOFF.md`.
 
@@ -433,7 +433,7 @@ SEND chips signpost only — learner applies overlays in Accessibility module.
 |------|--------------|
 | `docs/MOCK-IDEA-AI-IDEAS.md` | **This file — plans + copy blocks** |
 | `docs/MOCK-IDEA-BUILD-REFERENCE.md` | Tokens, checklists, verification |
-| `docs/ideas/FINAL-PHASE-PLAN.md` | **Active** — sole roadmap for remaining work |
+| `docs/ideas/FINAL-PHASE-PLAN.md` | **Current record** — MVP closeout complete; deferred scope tracked there |
 | `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` | Historical — phases 1–2 complete; onboarding-stays decision |
 | `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` | ASCII mockups + diagrams |
 | `src/components/mock-idea/brand-tokens.ts` | Colours, nav, SEND chips |

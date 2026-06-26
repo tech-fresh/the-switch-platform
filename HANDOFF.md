@@ -19,7 +19,7 @@ Read HANDOFF.md first.
 Before **every** action — code, docs, commands, git, planning, or review — consult in order:
 
 1. This file (`HANDOFF.md`) → Live session state, What is next, Blockers
-2. **`docs/ideas/FINAL-PHASE-PLAN.md`** → sole active roadmap for remaining work
+2. **`docs/ideas/FINAL-PHASE-PLAN.md`** → current MVP completion record and deferred-scope reference
 3. `PLATFORM-GUIDE.md` → Rules, architecture, modules, launch checklist
 4. `README.md` → Relevant sections only (build record, launch notes)
 
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Final source-of-truth doc sync (26 June 2026)** — aligned `AGENTS.md`, `HANDOFF.md`, `PLATFORM-GUIDE.md`, `docs/ideas/README.md`, `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`, and the Mock Idea reference docs so the active repo entry points all describe the same closed A–D / deferred E story.
 - **Priority D-5 content/editorial quality pass (26 June 2026)** — updated admin, operations, CMS release-check, and subject-route copy so current live surfaces describe the MVP plainly without stale placeholder or pre-launch wording; restored the canonical 25 June Priority A evidence bundle and removed the stray failed 26 June rerun file.
 - **Priority D hardening pass (26 June 2026)** — added auth session lifecycle coverage for sign-out/session denial assumptions, added `StudentAppShell` route coverage tests, and aligned launch governance assertions with the completed Priority A closeout/admin wording.
 - **Priority B roadmap-reference sync (26 June 2026)** — docs that point to `FINAL-PHASE-PLAN.md` now describe it as the full remaining-work audit instead of the old `FP-*` redesign tracker; historical FP references are kept but labeled as archive context.
@@ -237,7 +238,7 @@ flowchart LR
 | Doc | You read it for |
 |-----|-----------------|
 | `HANDOFF.md` | **What is happening now**, next steps, blockers |
-| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **What to build** — sole active roadmap |
+| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Completion record** — current MVP closeout + deferred scope |
 | `AGENTS.md` | Agent entry + launch list (same story as here) |
 | `README.md` | Product rules + **Ordered Build Record** (history) |
 | `PLATFORM-GUIDE.md` | Architecture, modules, 22-item list detail |
@@ -308,7 +309,7 @@ Read HANDOFF.md first.
 
 Then read in order:
 1. HANDOFF.md → Live session state + Plain-English story + MVP at a glance
-2. docs/ideas/FINAL-PHASE-PLAN.md → next open Priority D or E item (sole active roadmap)
+2. docs/ideas/FINAL-PHASE-PLAN.md → current closeout record and any operator-approved Priority E item
 3. AGENTS.md → agent entry
 4. PLATFORM-GUIDE.md → rules + modules (section handoff points to)
 5. README.md → sections only when handoff points (build record, MVP spec)

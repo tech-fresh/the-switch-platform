@@ -106,9 +106,9 @@ export default async function AdminPage() {
                 Live content and past-paper operating path for the current product runtime.
               </h1>
               <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                This route now exposes the real operating path for reviewed learning content and
-                curated past-paper updates, including where live workflow control ends and future
-                source-provider replacement can begin safely.
+                This route exposes the real operating path for reviewed learning content and
+                curated past-paper updates, including how editorial control and source-provider
+                boundaries work in the live MVP.
               </p>
               <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
                 One sign-in now powers both student and admin access. This page is visible because

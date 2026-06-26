@@ -35,7 +35,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 **Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Do not reopen C-1–C-10 unless the operator explicitly requests an exception.
 
-**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Active lane is **Priority D** unless operator reopens A or C.
+**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Priorities **B**, **C**, and **D** are also complete for the current MVP.
 
 **At session end:** run verification, confirm push, refresh **`HANDOFF.md`** and **`AGENTS.md`** if the story changed.
 
@@ -134,12 +134,12 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). Active work: **Priority D** quality/tests and copy hardening. |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). **Priority D** is complete too; only deferred Priority E scope remains. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | **Priority D-5** — content/editorial quality pass after the D-2, D-4, and D-6 hardening updates. |
+| What is next? | **Priority E** — deferred scope review only if the operator wants post-MVP expansion. |
 
-**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `5/6` complete · overall active plan `27/28` complete (`96.4%`).
+**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 
 ```mermaid
 flowchart LR
@@ -241,7 +241,7 @@ npm run verify:live-truth-match
 
 **Status: COMPLETE — CLOSED.** Study Atelier product finish lane (`docs/ideas/FINAL-PHASE-PLAN.md` → C-1 through C-10).
 
-**Moving forward:** every agent session starts with `HANDOFF.md`. Priority **C** and **A** are **complete**. Active work is **Priority D** unless operator reopens A or C.
+**Moving forward:** every agent session starts with `HANDOFF.md`. Priorities **A** through **D** are complete for the current MVP. Priority **E** is deferred scope only unless the operator reopens something.
 
 **Architecture gate (must hold for all C work already shipped):**
 

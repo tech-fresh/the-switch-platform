@@ -1,6 +1,6 @@
 # Final Phase Plan — Full Completion Audit
 
-> **Status:** **ACTIVE** — this is the single completion plan for the repository; Priorities A, B, and C are closed; Priority D-5 remains
+> **Status:** **CURRENT MVP COMPLETE** — this is the single completion plan for the repository; Priorities A, B, C, and D are closed; Priority E is deferred
 > **Created:** 2026-06-24
 > **Purpose:** stop partial closeout; list everything still required for an honest full-completion claim
 > **Live site:** https://theswitchplatform.com
@@ -29,7 +29,7 @@ Read order every session:
 
 - **Documented status:** all 22 launch items are complete on Fly production
 - **Audit status:** Priority A is **airtight enough to close** as of 26 June 2026; canonical evidence is recorded
-- **Product status:** live MVP with remaining docs cleanup and quality/test passes
+- **Product status:** live MVP with active-plan closeout complete and only deferred expansion scope remaining
 
 ### Completion snapshot
 
@@ -38,15 +38,15 @@ Read order every session:
 | **Priority A** | **8 / 8 complete** |
 | **Priority B** | **4 / 4 complete** |
 | **Priority C** | **10 / 10 complete** |
-| **Priority D** | **5 / 6 complete** |
-| **Overall active plan (A+B+C+D)** | **27 / 28 complete — 96.4%** |
+| **Priority D** | **6 / 6 complete** |
+| **Overall active plan (A+B+C+D)** | **28 / 28 complete — 100%** |
 
 ### What remains open now
 
-The repo no longer has a truthful-completion proof gap. The open work is narrower:
+The repo no longer has a truthful-completion proof gap or an open active-plan blocker. What remains is operational discipline:
 
-- complete the remaining Priority D-5 content/editorial quality pass
 - keep future release reruns synced with the canonical closeout evidence
+- treat Priority E as deferred scope, not current MVP incompleteness
 
 ### Completion rule
 
@@ -70,7 +70,7 @@ flowchart TD
 
 ## Priority A — Truthful completion — **COMPLETE (26 June 2026)**
 
-**Status: CLOSED.** All A-1–A-8 items below are done. Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout`. Active work is **Priority D** unless the operator reopens A or C.
+**Status: CLOSED.** All A-1–A-8 items below are done. Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout`. Do not reopen A unless new evidence breaks the closeout or the operator explicitly asks for it.
 
 These were the blockers to an honest full-completion claim. They are now closed.
 
@@ -518,7 +518,7 @@ Mark these only when evidence exists.
 - [x] D-2 sign-out/session denial tests added (`tests/auth-session-lifecycle.test.mjs`)
 - [x] D-3 planner persistence tests added (`tests/final-phase-product.test.mjs`)
 - [x] D-4 shell coverage tests added (`tests/student-app-shell-coverage.test.mjs`)
-- [ ] D-5 content/editorial quality pass complete
+- [x] D-5 content/editorial quality pass complete
 - [x] D-6 admin/governance copy pass complete
 
 ---
@@ -532,7 +532,7 @@ The project can only be called **fully complete** when:
 3. active truth surfaces no longer contradict each other
 4. the release evidence bundle proves the real deployed system, not a synthetic shortcut
 
-Those conditions are now met for the current MVP closeout. Remaining Priority D and E work is hardening/deferred scope, not a reopened truthful-completion blocker.
+Those conditions are now met for the current MVP closeout. Priority E remains a deferred expansion list, not a reopened truthful-completion blocker.
 
 ---
 

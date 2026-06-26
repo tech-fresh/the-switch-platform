@@ -71,14 +71,14 @@ Update this section every session.
 
 ### Active task
 
-- **Priority item #:** D — Quality/tests and final copy alignment
-- **Module:** auth/governance tests + remaining admin/editorial copy
-- **Status:** **In progress** — D-5 content/editorial quality pass
+- **Priority item #:** E — Deferred scope review
+- **Module:** operator-gated expansion only
+- **Status:** **No active blocker** — A through D complete for the current MVP
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
 
-**Authoritative status:** Priority **C** (product completion lane) is **closed**. Priority **A** (truthful completion) is **closed** (26 June 2026). Active work is **Priority D** unless the operator reopens A or C.
+**Authoritative status:** Priorities **A**, **B**, **C**, and **D** are **closed** for the current MVP. Priority **E** is deferred scope unless the operator explicitly reopens another lane.
 
 | Item | Status | Evidence |
 |------|--------|----------|
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Priority D-5 content/editorial quality pass (26 June 2026)** — updated admin, operations, CMS release-check, and subject-route copy so current live surfaces describe the MVP plainly without stale placeholder or pre-launch wording; restored the canonical 25 June Priority A evidence bundle and removed the stray failed 26 June rerun file.
 - **Priority D hardening pass (26 June 2026)** — added auth session lifecycle coverage for sign-out/session denial assumptions, added `StudentAppShell` route coverage tests, and aligned launch governance assertions with the completed Priority A closeout/admin wording.
 - **Priority B roadmap-reference sync (26 June 2026)** — docs that point to `FINAL-PHASE-PLAN.md` now describe it as the full remaining-work audit instead of the old `FP-*` redesign tracker; historical FP references are kept but labeled as archive context.
 - **Priority B stale-note cleanup (26 June 2026)** — active README/admin/governance truth surfaces now say Priority A is complete; older near-launch wording is explicitly marked as historical archive context instead of current live status.
@@ -117,7 +118,7 @@ Update this section every session.
 
 ### What is next
 
-- **Priority D-5** — content/editorial quality pass across route-level copy and CMS/product wording
+- **Priority E** — deferred scope review only if the operator wants Wales/NI, parent/teacher variants, or other expansion beyond the current MVP
 - Re-run `npm run verify:priority-a-closeout` after cookie refresh when repeating closeout for a new release
 
 ### Completion snapshot
@@ -125,8 +126,8 @@ Update this section every session.
 - **Priority A:** `8 / 8` complete
 - **Priority B:** `4 / 4` complete
 - **Priority C:** `10 / 10` complete
-- **Priority D:** `5 / 6` complete
-- **Overall active plan:** `27 / 28` complete (`96.4%`)
+- **Priority D:** `6 / 6` complete
+- **Overall active plan:** `28 / 28` complete (`100%`)
 
 ### Blockers
 
@@ -151,7 +152,7 @@ Update this section every session.
 
 ### In one sentence
 
-The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). **Priority C** (product finish) and **Priority A** (truthful completion) are **complete** (24 and 26 June 2026). Active work is **Priority D** — quality/tests and copy hardening per **`docs/ideas/FINAL-PHASE-PLAN.md`**.
+The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). **Priority C** (product finish), **Priority A** (truthful completion), and **Priority D** (quality/tests and copy hardening) are **complete**. Only deferred Priority E scope remains.
 
 ### Where we are
 
@@ -161,7 +162,7 @@ The Switch is a **live GCSE revision platform** (https://theswitchplatform.com).
 | **Priority A — truthful completion** | A-1 through A-8 with canonical evidence bundle | **Complete — 26 June 2026** |
 | **Priority C — product finish** | Shell, exams focus mode, planner, marketing chrome, recovery UI | **Complete — 24 June 2026** |
 | **Prior polish (Phases 1–2)** | Marketing shell, dashboard declutter, shell on main study routes | **Done** |
-| **Final Phase — active** | **Priority D** — quality/tests and final copy hardening | **Active** |
+| **Final Phase — current MVP** | **Priorities A–D complete** | **Closed** |
 | **Optional (FP-6)** | Wales/NI GCSE, parent/teacher onboarding, admin restyle | **Operator gate only** |
 
 ### Two lanes — do not mix them
@@ -198,7 +199,7 @@ flowchart TD
     PA1["Real OIDC proof"]
     PA2["Canonical closeout bundle"]
   end
-  subgraph activeD["Active — Priority D"]
+  subgraph doneD["Done — Priority D"]
     D1["Quality and test hardening"]
     D2["Content and admin copy pass"]
   end
@@ -209,8 +210,8 @@ flowchart TD
   done --> donePolish
   donePolish --> doneC
   doneC --> doneA
-  doneA --> activeD
-  activeD --> later
+  doneA --> doneD
+  doneD --> later
 ```
 
 ### Onboarding MVP (locked 24 June 2026)

@@ -12,12 +12,12 @@
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
-| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C** (website polish) **finished** (24 June 2026). Active work: **Priority D** quality/tests and copy hardening. |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C** (website polish) **finished** (24 June 2026). **Priority D** is now complete too; only deferred Priority E scope remains. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
-| What is next? | **Priority D-5** — content/editorial quality pass after the D-2, D-4, and D-6 hardening updates. |
+| What is next? | **Priority E** — deferred scope review only if the operator wants to expand beyond the current MVP. |
 
-**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `5/6` complete · overall active plan `27/28` complete (`96.4%`).
+**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 
 **Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception.
 
@@ -29,7 +29,7 @@
 
 ### In one sentence
 
-**The Switch** is a live GCSE revision website at https://theswitchplatform.com. The student website polish work is **done**, the Priority A proof closeout is **complete**, and the remaining work is Priority D hardening around tests and final copy quality.
+**The Switch** is a live GCSE revision website at https://theswitchplatform.com. The student website polish work is **done**, the Priority A proof closeout is **complete**, and the active MVP completion plan is now closed in full.
 
 ### Where we are (simple view)
 
@@ -65,14 +65,14 @@ flowchart TD
     C3["Exam focus mode during papers"]
     C4["Helpful recovery when something is empty"]
   end
-  subgraph activeD["Active — hardening"]
-    P1["Protect auth and shell rules with tests"]
-    P2["Finish final copy quality pass"]
-    P3["Keep one current truth story"]
+  subgraph doneD["Done — hardening"]
+    P1["Auth and shell rules protected by tests"]
+    P2["Final copy quality pass complete"]
+    P3["One current truth story across docs and admin"]
   end
   live --> laneA
   laneA --> doneC
-  doneC --> activeD
+  doneC --> doneD
 ```
 
 ### Student journey (what a learner experiences)
@@ -108,7 +108,7 @@ flowchart LR
 | `README.md` (this file) | Product history and plain-English summary |
 | `PLATFORM-GUIDE.md` | Modules, architecture, launch checklist detail |
 
-**Rule:** Priority **C** and **A** are **closed** (24 and 26 June 2026). Active work is **Priority D** unless the operator explicitly reopens something.
+**Rule:** Priority **C**, **A**, and **D** are **closed** (24 and 26 June 2026). Priority **E** is deferred scope, not a current blocker.
 
 ### Priority A — COMPLETE (26 June 2026)
 
@@ -159,7 +159,7 @@ Checklist and evidence → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL
 | **What it is** | GCSE / iGCSE revision platform — practice, timed tests, full exams, progress |
 | **Live** | https://theswitchplatform.com |
 | **Launch** | Live on Fly; Final Path Mark 2 and Priority A **complete** (26 June 2026) |
-| **Now** | **Priority D** hardening · **Priority A complete** (26 June) · **Priority C complete** (24 June) |
+| **Now** | **Active MVP plan complete** · **Priority A complete** (26 June) · **Priority C complete** (24 June) · **Priority D complete** (26 June) |
 
 ### Core MVP modules (priority order)
 
@@ -714,6 +714,12 @@ This section is the running record of what has been requested, added, and commit
 
 - Added one shared completion snapshot across the front-door docs: Priority A `8/8`, Priority B `4/4`, Priority C `10/10`, Priority D `5/6`, overall active plan `27/28` complete (`96.4%`).
 - Updated the live handoff/testing count to reflect the current suite: `npm test` passing `111/111`.
+
+### 2026-06-26 Priority D-5 content/editorial quality pass
+
+- Updated admin, operations, CMS release checklist, and subject-route copy so live MVP surfaces no longer talk like pre-launch placeholders where the current behavior is already acceptable.
+- Closed the remaining Priority D item and synced the repo-wide completion snapshot to A `8/8`, B `4/4`, C `10/10`, D `6/6`, overall active plan `28/28` complete (`100%`).
+- Restored the 25 June canonical Priority A evidence bundle as the authoritative closeout record and removed the stray failed 26 June “canonical” rerun file from the working tree.
 
 ### 2026-06-21 Exam Engine service test coverage (Priority #1)
 

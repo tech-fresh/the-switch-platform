@@ -33,12 +33,12 @@ export function SubjectExperience({
               Subjects
             </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
-              Reviewed learning content is not available to students yet.
+              No reviewed subject topics are published for students right now.
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-              This route now follows the editorial gate, so draft, unreviewed, or unverified
-              topics stay hidden until they pass review, source checks, and fact-checking through
-              the content workflow.
+              This route follows the editorial gate, so draft, unreviewed, or unverified topics
+              stay hidden until they clear review, source checks, and fact-checking through the
+              content workflow.
             </p>
           </section>
       </div>
@@ -72,13 +72,12 @@ export function SubjectExperience({
             </p>
             <div className="space-y-3">
               <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Subject entry, Year 10 context, revision guidance, and GCSE-preparation practice in one route.
+                Subject entry, revision guidance, and GCSE-preparation practice in one route.
               </h1>
               <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
                 This is the start of the learn-practise flow. A student can pick a subject, open a
                 topic, see how it supports Year 10 end-of-year exams, read the key revision
-                guidance, and step into GCSE-style practice without dropping into a dead-end
-                placeholder.
+                guidance, and step into GCSE-style practice without dropping into a dead end.
               </p>
             </div>
           </div>

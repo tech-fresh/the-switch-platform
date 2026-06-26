@@ -58,13 +58,13 @@ export function buildOperationsOverview(input: BuildOperationsOverviewInput): Op
           ? "Data would reset on restart."
           : input.isPrototypePersistence
             ? "Student data is still tied to a provisional local storage setup."
-            : "Persistence runtime looks launch-ready.",
+            : "Persistence runtime is durable in this environment.",
       detail:
         input.persistenceDriver === "memory"
           ? "In-memory storage is useful for previews, but it is not safe for live student continuity."
           : input.isPrototypePersistence
-            ? `Student data is currently written to ${input.dataDirectory}, so backup and restore checks should stay visible until the intended live data location is fully settled.`
-            : "The persistence layer is no longer relying on a prototype-only runtime shape.",
+            ? `Student data is currently written to ${input.dataDirectory}, so backup and restore evidence should stay attached until this environment is treated as the durable student record.`
+            : "The persistence layer is running on the intended durable runtime shape.",
       metricLabel: "Saved records",
       metricValue: String(input.totalSavedProgressRecords),
     },
@@ -93,12 +93,12 @@ export function buildOperationsOverview(input: BuildOperationsOverviewInput): Op
       status: input.assessmentCount >= 4 ? "healthy" : "warning",
       headline:
         input.assessmentCount >= 4
-          ? "Checkpoint inventory is broad enough for current launch scope."
+          ? "Checkpoint inventory is broad enough for the current learner scope."
           : "Checkpoint coverage is still narrow.",
       detail:
         input.assessmentCount >= 4
           ? "Timed checkpoints now cover multiple subjects and can be monitored as a real student product surface."
-          : "More checkpoint breadth is still needed before this area can be treated as comfortably launch-ready.",
+          : "More checkpoint breadth would improve learner coverage in this area.",
       metricLabel: "Checkpoint count",
       metricValue: String(input.assessmentCount),
     },
@@ -108,12 +108,12 @@ export function buildOperationsOverview(input: BuildOperationsOverviewInput): Op
       status: input.examPaperCount >= 4 ? "healthy" : "warning",
       headline:
         input.examPaperCount >= 4
-          ? "Exam inventory is in a usable launch range."
+          ? "Exam inventory is in a usable learner range."
           : "Exam inventory still needs broader coverage.",
       detail:
         input.examPaperCount >= 4
           ? "Exam papers, resume paths, and result review flows can now be tracked as one operational slice."
-          : "The live exam path exists, but broader paper coverage still needs attention before launch confidence is high.",
+          : "The live exam path exists, and broader paper coverage remains the next content-expansion step.",
       metricLabel: "Paper count",
       metricValue: String(input.examPaperCount),
     },
@@ -130,7 +130,7 @@ export function buildOperationsOverview(input: BuildOperationsOverviewInput): Op
             : "Editorial workflow is active and writable.",
       detail:
         input.cmsBackendMode === "read-only"
-          ? "The launch view should keep highlighting that content review is visible, but not yet fully writable."
+          ? "This runtime keeps content review visible while editorial writes remain intentionally blocked."
           : input.blockedCount > 0
             ? "Blocked items are part of safe publishing, but they should stay visible until resolved."
             : "Review, approval, rollback, and publish checks are all available through the current workflow path.",
@@ -210,6 +210,7 @@ export function buildOperationsOverview(input: BuildOperationsOverviewInput): Op
       currentValue: `${input.contentTopicCount} topics`,
       targetValue: "30 topics or fewer in the current MVP scope",
       detail: "The content catalog is still small enough that route payload growth should stay manageable for this launch phase.",
+      detail: "The content catalog is still small enough that route payload growth should stay manageable for the current MVP footprint.",
     },
     {
       budgetId: "session-payloads",
@@ -224,8 +225,8 @@ export function buildOperationsOverview(input: BuildOperationsOverviewInput): Op
       label: "Assessment inventory watch",
       status: input.assessmentCount + input.examPaperCount <= 25 ? "within-budget" : "watch",
       currentValue: `${input.assessmentCount + input.examPaperCount} live inventory items`,
-      targetValue: "25 items or fewer in the current seeded launch scope",
-      detail: "This keeps route rendering and seeded data growth visible while the product is still in launch preparation mode.",
+      targetValue: "25 items or fewer in the current MVP scope",
+      detail: "This keeps route rendering and seed-data growth visible while the current catalog stays intentionally small.",
     },
   ];
 

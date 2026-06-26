@@ -1154,7 +1154,7 @@ function buildFinalPathSummary(): GovernanceFinalPathSummary {
     biggestBlockers: [
       "No Priority A blocker remains. Keep the canonical closeout evidence file and docs in sync when repeating release checks.",
       "Refresh live cookies before rerunning the closeout bundle for a later release window.",
-      "Priority D remains: content/editorial quality pass across route-level and CMS-facing copy.",
+      "Priority E is deferred scope only; there is no remaining active-plan blocker in the current MVP closeout.",
     ],
     closeoutItems,
   };

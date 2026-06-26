@@ -60,7 +60,7 @@ test("operations overview can report a healthier launch picture", async () => {
   assert.equal(overview.alertCount, 0);
   assert.equal(
     overview.domains.find((domain) => domain.domainId === "persistence")?.headline,
-    "Persistence runtime looks launch-ready.",
+    "Persistence runtime is durable in this environment.",
   );
   assert.equal(
     overview.recoveryReadiness.every((item) => item.status === "ready"),

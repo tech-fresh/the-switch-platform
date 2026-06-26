@@ -106,11 +106,26 @@ flowchart LR
 | `README.md` (this file) | Product history and plain-English summary |
 | `PLATFORM-GUIDE.md` | Modules, architecture, launch checklist detail |
 
-**Rule:** Priority **C** is **closed**. Active work is Priority **A** only, unless the operator explicitly reopens something.
+**Rule:** Priority **C** and **A** are **closed** (24 and 26 June 2026). Active work is **Priority B** unless the operator explicitly reopens something.
+
+### Priority A — COMPLETE (26 June 2026)
+
+**Authoritative:** synced with `HANDOFF.md` and `AGENTS.md`. Truthful completion lane **closed**. Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout` after cookie refresh for new releases.
+
+| Item | Status |
+|------|--------|
+| A-1 Real OIDC sign-in proof | **Complete** |
+| A-2 Strict real-auth walkthrough mode | **Complete** |
+| A-3 Sign-out and lockout proof | **Complete** |
+| A-4 Real onboarding proof | **Complete** |
+| A-5 Fly persistence recovery | **Complete** |
+| A-6 Canonical evidence bundle | **Complete** |
+| A-7 Truth surfaces sync | **Complete** |
+| A-8 Truth-match rerun | **Complete** |
 
 ### Priority C — COMPLETE (24 June 2026)
 
-**Authoritative:** synced with `HANDOFF.md` and `AGENTS.md`. Product completion lane **closed**. Active work is **Priority A** only.
+**Authoritative:** synced with `HANDOFF.md` and `AGENTS.md`. Product completion lane **closed**.
 
 | Item | Status |
 |------|--------|
@@ -141,8 +156,8 @@ Checklist and evidence → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL
 |--|--|
 | **What it is** | GCSE / iGCSE revision platform — practice, timed tests, full exams, progress |
 | **Live** | https://theswitchplatform.com |
-| **Launch** | Live on Fly; Final Path Mark 2 completion claim is being re-checked by the Priority A truth audit |
-| **Now** | **Priority A** truth audit active · **Priority C complete** (24 June 2026) |
+| **Launch** | Live on Fly; Final Path Mark 2 and Priority A **complete** (26 June 2026) |
+| **Now** | **Priority B** docs sync · **Priority A complete** (26 June) · **Priority C complete** (24 June) |
 
 ### Core MVP modules (priority order)
 
@@ -451,6 +466,11 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-26 Priority A doc sync — truth surfaces aligned
+
+- Synced Priority A **COMPLETE** (26 June 2026) across `HANDOFF.md`, `AGENTS.md`, `PLATFORM-GUIDE.md`, `docs/ideas/FINAL-PHASE-PLAN.md`, `.cursor/rules/00-source-of-truth.mdc`.
+- MVP tables and Item 22 records: Final Path Mark 2 + Priority A closed; active lane **Priority B**.
+
 ### 2026-06-26 Priority A complete — A-6 and A-8 closed
 
 - `npm run verify:priority-a-closeout` passed end to end with refreshed live cookies.
@@ -462,7 +482,7 @@ This section is the running record of what has been requested, added, and commit
 - **`npm run verify:check-live-cookies`** — validates student/admin `switch_auth_session` cookies against production.
 - **`npm run verify:priority-a-closeout`** — writes canonical `release-evidence/<date>-priority-a-canonical-closeout.md` (launch-status, launch-complete with Fly persistence/sign-off delegates, onboarding proof, truth-match).
 - Walkthrough retries on 502/503/504; expired-cookie errors point to `/account/live-cookie-guide`.
-- **Status:** A-6 and A-8 remain open until closeout passes with fresh cookies.
+- **Status:** closed 26 June 2026 when closeout passed with fresh cookies.
 
 ### 2026-06-25 Auth email allowlist — admin sign-in showcase
 

@@ -25,8 +25,8 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 
 | Question | Answer |
 |----------|--------|
-| Is the platform live? | Yes — https://theswitchplatform.com. Live on Fly; the full-completion claim is under Priority A truth audit. |
-| What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026) — `docs/ideas/FINAL-PHASE-PLAN.md`. |
+| Is the platform live? | Yes — https://theswitchplatform.com (Fly). **Fully complete** on production — Priority A closed 26 June 2026. |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). Next: **Priority B** docs sync. |
 | Onboarding | **8 steps stay** — they **create the dashboard**. Secondary school; GCSE (England) + iGCSE; Wales/NI **later**. |
 | Website polish | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
 | Priority C | **Complete — closed.** Do not reopen unless operator requests exception. |
@@ -40,7 +40,8 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | **Launch subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
 | **Onboarding** | 8 steps; `/onboarding` → `/dashboard`; see `src/modules/onboarding/README.md` |
 | **Priority C** | **Complete — 24 June 2026** (shell, focus mode, planner, marketing, recovery) |
-| **Active work** | **Priority A** — truthful completion audit |
+| **Priority A** | **Complete — 26 June 2026** (A-1–A-8; evidence in `release-evidence/2026-06-25-priority-a-canonical-closeout.md`) |
+| **Active work** | **Priority B** — stale notes and near-launch wording cleanup |
 | **Key routes** | `/`, `/login`, `/onboarding`, `/dashboard`, `/subjects`, `/exams`, `/assessments`, `/progress` |
 
 Full MVP spec and history → **`README.md` → Mark 3.2 Product Spec** (append only).
@@ -267,17 +268,19 @@ Do not describe the platform as fully complete unless **every** item below is co
 | **21** | Store release evidence permanently in `release-evidence/` |
 | **22** | Confirm system-wide truth: `README.md`, admin launch view, runtime state, and evidence all match — `npm run verify:live-truth-match` |
 
-### Item 22 record (23 June 2026 — Fly production, reopened for audit)
+### Item 22 record (26 June 2026 — Fly production — Priority A closed)
 
-**Status: under Priority A truth audit** on https://theswitchplatform.com
+**Status: COMPLETE** on https://theswitchplatform.com
 
 | Proof | Result |
 |-------|--------|
-| `npm run verify:live-truth-match` | Passed 23 June 2026 — rerun required after Priority A closes |
+| `npm run verify:live-truth-match` (A-8) | Passed 26 June 2026 |
+| `npm run verify:priority-a-closeout` (A-6) | Passed 26 June 2026 |
 | Admin launch view | 6/6 environment · 5/5 sign-off · 8/8 evidence |
-| Evidence file | `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` |
+| Canonical evidence | `release-evidence/2026-06-25-priority-a-canonical-closeout.md` |
+| Historical evidence | `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` |
 
-**Completion rule:** Only when all 22 items are done in the real target environment and the refreshed Priority A proof is recorded → platform may be called fully complete, fully live, 100% end to end.
+**Completion rule:** All 22 items are done in the real target environment with refreshed Priority A proof recorded (26 June 2026). The platform may be described as fully complete, fully live, and 100% end to end.
 
 **Item 3 status (23 June 2026):** **COMPLETE** — live proof in `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`. Re-check: `npm run verify:live-onboarding`.
 

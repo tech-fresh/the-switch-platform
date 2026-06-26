@@ -71,15 +71,14 @@ Update this section every session.
 
 ### Active task
 
-- **Priority item #:** A — Truthful completion
-- **Module:** launch verification + truth surfaces
-- **Status:** **COMPLETE** — A-1 to A-8 closed 26 June 2026
-- **Evidence:** `release-evidence/2026-06-25-priority-a-canonical-closeout.md`
+- **Priority item #:** B — Docs + governance sync
+- **Module:** truth surfaces (`HANDOFF`, `AGENTS`, `README`, `PLATFORM-GUIDE`, `FINAL-PHASE-PLAN`)
+- **Status:** **In progress** — Priority A doc closeout sync (26 June 2026)
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
 
-**Authoritative status:** Priority **C** (product completion lane) is **closed**. Do not reopen C-1–C-10 unless the operator explicitly requests an exception. Active work is **Priority A** only.
+**Authoritative status:** Priority **C** (product completion lane) is **closed**. Priority **A** (truthful completion) is **closed** (26 June 2026). Active work is **Priority B** unless the operator reopens A or C.
 
 | Item | Status | Evidence |
 |------|--------|----------|
@@ -100,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Priority A doc sync (26 June 2026)** — aligned `HANDOFF`, `AGENTS`, `README`, `PLATFORM-GUIDE`, `FINAL-PHASE-PLAN`, and `.cursor/rules` so Priority A is **COMPLETE** everywhere; active lane is **Priority B**.
 - **Priority A — COMPLETE (26 June 2026)** — `npm run verify:priority-a-closeout` passed end to end. **A-6** canonical evidence bundle and **A-8** truth-match green. Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Fixed `verify-live-onboarding.mjs` dashboard shell assertion (Study Atelier / study home markers).
 - **A-6 / A-8 closeout tooling** — `npm run verify:check-live-cookies`, `npm run verify:priority-a-closeout`, Fly-delegated persistence/sign-off in `launch-complete.mjs`.
 - **Mock Log in visibility** — marketing header layout fixed so **Log in** is never clipped in the mock gallery; nav always visible on mobile; explicit **Log in** on homepage hero, `/mock-idea-preview` top bar, and signed-out student shell.
@@ -140,16 +140,17 @@ Update this section every session.
 
 ### In one sentence
 
-The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). **Priority C** (product finish) is **complete** (24 June 2026). Active work is **Priority A** — truthful completion audit per **`docs/ideas/FINAL-PHASE-PLAN.md`**.
+The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). **Priority C** (product finish) and **Priority A** (truthful completion) are **complete** (24 and 26 June 2026). Active work is **Priority B** — docs sync per **`docs/ideas/FINAL-PHASE-PLAN.md`**.
 
 ### Where we are
 
 | Stage | Plain English | Status |
 |-------|---------------|--------|
-| **Final Path Mark 2** | Live evidence exists, but the completion claim is under Priority A truth audit | **Re-checking proof gap** |
+| **Final Path Mark 2** | All 22 launch items proved on Fly production | **Complete — 26 June 2026** |
+| **Priority A — truthful completion** | A-1 through A-8 with canonical evidence bundle | **Complete — 26 June 2026** |
 | **Priority C — product finish** | Shell, exams focus mode, planner, marketing chrome, recovery UI | **Complete — 24 June 2026** |
 | **Prior polish (Phases 1–2)** | Marketing shell, dashboard declutter, shell on main study routes | **Done** |
-| **Final Phase — active** | Priority **A** truthful completion (A-1 to A-8) | **Active** — `docs/ideas/FINAL-PHASE-PLAN.md` |
+| **Final Phase — active** | **Priority B** — stale notes and near-launch wording cleanup | **Active** |
 | **Optional (FP-6)** | Wales/NI GCSE, parent/teacher onboarding, admin restyle | **Operator gate only** |
 
 ### Two lanes — do not mix them
@@ -182,9 +183,13 @@ flowchart TD
     C3["Weekly planner + dismiss"]
     C4["Marketing chrome + recovery"]
   end
-  subgraph activeA["Active — Priority A"]
-    A1["Real OIDC proof"]
-    A2["Truth surfaces sync"]
+  subgraph doneA["Done — Priority A (26 June 2026)"]
+    PA1["Real OIDC proof"]
+    PA2["Canonical closeout bundle"]
+  end
+  subgraph activeB["Active — Priority B"]
+    B1["Stale notes cleanup"]
+    B2["Near-launch wording sync"]
   end
   subgraph later["Later — FP-6 operator gate"]
     L1["GCSE Wales + Northern Ireland"]
@@ -192,9 +197,9 @@ flowchart TD
   done --> laneA
   done --> donePolish
   donePolish --> doneC
-  laneA --> activeA
-  doneC --> activeA
-  activeA --> later
+  doneC --> doneA
+  doneA --> activeB
+  activeB --> later
 ```
 
 ### Onboarding MVP (locked 24 June 2026)
@@ -324,8 +329,8 @@ On completion:
 |--|--|
 | **Product** | GCSE / iGCSE revision, timed practice, exam readiness, progress tracking |
 | **Live site** | https://theswitchplatform.com (Fly.io) |
-| **Launch status** | Live on Fly; Final Path Mark 2 completion claim is being re-checked by Priority A |
-| **Current phase** | Priority **A** truth audit active · Priority **C** product finish **complete** (24 June 2026) |
+| **Launch status** | Live on Fly; Final Path Mark 2 and Priority A **complete** (26 June 2026) |
+| **Current phase** | Priority **B** docs sync · Priority **A** complete (26 June 2026) · Priority **C** complete (24 June 2026) |
 
 ### Core MVP modules (build priority order)
 
@@ -802,6 +807,12 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-26 — Cursor — Priority A doc sync + push
+
+- Done: synced Priority A **COMPLETE** across `HANDOFF.md`, `AGENTS.md`, `README.md`, `PLATFORM-GUIDE.md`, `docs/ideas/FINAL-PHASE-PLAN.md`, `.cursor/rules/00-source-of-truth.mdc`
+- Done: MVP tables and Item 22 records now say Final Path Mark 2 + Priority A closed (26 June 2026); active lane **Priority B**
+- Next: Priority B stale-notes cleanup (B-1, B-2)
 
 ### 2026-06-25 — Cursor — AGENTS.md sync rule non-negotiable
 

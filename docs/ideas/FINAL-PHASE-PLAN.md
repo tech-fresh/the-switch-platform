@@ -47,7 +47,7 @@ The repo has real evidence, but the final proof path still has gaps:
 
 ### Completion rule from now on
 
-Do **not** describe the platform as “100% complete”, “fully complete”, or “true final completion” unless **all Priority A items below are done**.
+Do **not** describe the platform as “100% complete”, “fully complete”, or “true final completion” unless **all Priority A items below are done** — **they are done as of 26 June 2026**. Keep docs synced when re-running closeout for new releases.
 
 Product polish alone is not enough.
 
@@ -65,9 +65,11 @@ flowchart TD
 
 ---
 
-## Priority A — Truthful completion blockers
+## Priority A — Truthful completion — **COMPLETE (26 June 2026)**
 
-These are the blockers to an honest full-completion claim. Do these first.
+**Status: CLOSED.** All A-1–A-8 items below are done. Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout`. Active work is **Priority B** unless the operator reopens A.
+
+These were the blockers to an honest full-completion claim. They are now closed.
 
 ### A-1. Prove real live OIDC sign-in end to end without launch-verification bypass
 
@@ -293,7 +295,7 @@ These items stop the repo from contradicting itself.
 
 ## Priority C — Product completion work — **COMPLETE (24 June 2026)**
 
-**Status: CLOSED.** All C-1–C-10 items below are done. Agents must not reopen this lane unless the operator explicitly requests an exception. Active work is **Priority A**.
+**Status: CLOSED.** All C-1–C-10 items below are done. Agents must not reopen this lane unless the operator explicitly requests an exception. Priority **A** is also **complete** (26 June 2026).
 
 **Architecture gate:** all shipped C work follows `route → module service → API → persistence`. See `AGENTS.md` → Priority C completion record for module paths.
 

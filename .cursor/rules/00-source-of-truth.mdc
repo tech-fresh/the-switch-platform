@@ -11,8 +11,8 @@ alwaysApply: true
 
 # Session start
 
-1. Read `HANDOFF.md` first — check **Priority C — COMPLETE** (lane closed; active work is Priority A)
-2. Read `docs/ideas/FINAL-PHASE-PLAN.md` — active Priority A item
+1. Read `HANDOFF.md` first — check **Priority A — COMPLETE** (26 June 2026) and **Priority C — COMPLETE** (24 June 2026); active work is **Priority B**
+2. Read `docs/ideas/FINAL-PHASE-PLAN.md` — active Priority B items
 3. Read `PLATFORM-GUIDE.md` (rules, modules, launch checklist)
 4. Read `README.md` sections only when needed
 5. Work on one module per session

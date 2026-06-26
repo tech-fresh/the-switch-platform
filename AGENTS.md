@@ -47,7 +47,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`AGENTS.md`** | This entry point — synced with HANDOFF |
 | **`PLATFORM-GUIDE.md`** | Rules, architecture, modules, 22-item launch list, MVP modules |
 | **`README.md`** | Cumulative product spec, **MVP at a glance**, Ordered Build Record (append only) |
-| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole active roadmap** — Priority **A** truth audit active; Priority **C** complete (24 June 2026) |
+| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole active roadmap** — Priority **B** active; Priority **A** complete (26 June 2026); Priority **C** complete (24 June 2026) |
 | **`docs/ideas/`** | Plan index — prior plans historical |
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
@@ -198,17 +198,18 @@ Do not describe the platform as fully complete unless every item below is comple
    Execute `npm run verify:launch-complete`.
 21. Store the release evidence permanently.
    Keep the outputs from launch-status, readiness, recovery, walkthrough, sign-off, and launch-complete as the permanent release record.
-22. Confirm system-wide truth matches. **Completed — 23 June 2026 (Fly production)**
+22. Confirm system-wide truth matches. **Completed — 23 June 2026 (Fly production); re-confirmed 26 June 2026 (Priority A closeout)**
    Ensure `README.md`, the admin launch view, runtime state, and recorded release evidence all match exactly.
    Plain-English: the notes, admin screen, and live website all tell the same story — no hidden mismatch.
 
 **Completion rule:** Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
 
-**As of 23 June 2026:** all 22 items are complete on Fly production at https://theswitchplatform.com. Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md`.
+**As of 26 June 2026:** all 22 items remain complete on Fly production at https://theswitchplatform.com. Priority A closeout re-confirmed A-6 and A-8. Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md` (canonical); `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` (historical).
 
 Re-check item 22 anytime:
 
 ```bash
+npm run verify:priority-a-closeout
 npm run verify:live-truth-match
 ```
 

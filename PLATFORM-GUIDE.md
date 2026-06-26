@@ -26,10 +26,12 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). **Fully complete** on production — Priority A closed 26 June 2026. |
-| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). Next: **Priority B** docs sync. |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). Next: **Priority D** quality/tests and copy hardening. |
 | Onboarding | **8 steps stay** — they **create the dashboard**. Secondary school; GCSE (England) + iGCSE; Wales/NI **later**. |
 | Website polish | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
 | Priority C | **Complete — closed.** Do not reopen unless operator requests exception. |
+
+**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `5/6` complete · overall active plan `27/28` complete (`96.4%`).
 
 ### MVP at a glance
 
@@ -41,7 +43,7 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | **Onboarding** | 8 steps; `/onboarding` → `/dashboard`; see `src/modules/onboarding/README.md` |
 | **Priority C** | **Complete — 24 June 2026** (shell, focus mode, planner, marketing, recovery) |
 | **Priority A** | **Complete — 26 June 2026** (A-1–A-8; evidence in `release-evidence/2026-06-25-priority-a-canonical-closeout.md`) |
-| **Active work** | **Priority B** — stale notes and near-launch wording cleanup |
+| **Active work** | **Priority D** — quality/tests and final copy hardening |
 | **Key routes** | `/`, `/login`, `/onboarding`, `/dashboard`, `/subjects`, `/exams`, `/assessments`, `/progress` |
 
 Full MVP spec and history → **`README.md` → Mark 3.2 Product Spec** (append only).
@@ -85,7 +87,7 @@ Read HANDOFF.md first.
 Then:
 
 1. Read **`HANDOFF.md`** → Live session state, What is next, Blockers
-2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → active Priority **A** item (Priority **C** is **complete** — do not reopen unless operator requests)
+2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → active Priority **B** or **D** item (Priorities **A** and **C** are **complete** — do not reopen unless operator requests)
 3. Read **`PLATFORM-GUIDE.md`** (this file) → rules, priorities, modules
 4. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 5. Run `git status` and `git pull origin main`

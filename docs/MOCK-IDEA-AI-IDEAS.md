@@ -7,7 +7,7 @@
 
 Plain English: this file holds the **plan** and **reusable copy** for Mock Idea · Study Atelier. Agents should read this when asked to extend onboarding, dashboard layout, marketing shell, or SEND/access surfaces — then copy blocks from here instead of reinventing.
 
-> **Active plan:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md)  
+> **Active plan:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — full completion roadmap  
 > **Historical plans:** [`docs/ideas/`](./ideas/README.md)
 
 ---
@@ -61,10 +61,10 @@ Streamlining applies to **homepage and signed-in chrome** (duplicate mockups, re
 | Access & SEND rail | `/dashboard` | `send-support-rail.tsx` | Shipped |
 | Live dashboard cards below | `/dashboard` | `dashboard-home.tsx` | Shipped |
 
-### Phase 3 — Extend layout to other student routes — **moved to Final Phase**
+### Phase 3 — Extend layout to other student routes — **historical; later shipped under Priority C**
 
-> **Active:** [`FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) → **FP-1 Shell rollout**  
-> **Shipped:** `/dashboard`, `/subjects`, `/assessments`, `/progress`
+> **Historical note:** this used to point to `FINAL-PHASE-PLAN.md` as `FP-1 Shell rollout`. That work is now shipped under Priority C.  
+> **Current active plan:** [`FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) → open Priority B and D items.
 
 | Route | Priority | Notes |
 |-------|----------|-------|
@@ -78,9 +78,9 @@ Streamlining applies to **homepage and signed-in chrome** (duplicate mockups, re
 
 **Rule:** wrap page content in `StudentAppShell`; do not rebuild nav per page.
 
-### Phase 4 — Planner integration — **moved to Final Phase**
+### Phase 4 — Planner integration — **historical; later shipped under Priority C**
 
-> **Active:** [`FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) → **FP-2 Planner integration**
+> **Historical note:** this used to point to `FINAL-PHASE-PLAN.md` as `FP-2 Planner integration`. That work is now shipped under Priority C.
 
 | Item | Description |
 |------|-------------|
@@ -88,16 +88,16 @@ Streamlining applies to **homepage and signed-in chrome** (duplicate mockups, re
 | Dismiss persistence | Store planner prompt dismissed state in saved progress or account settings |
 | Subject colour chips | Planner events use subject tone colours (teal, emerald, amber, sky) |
 
-### Phase 5 — Polish — **moved to Final Phase**
+### Phase 5 — Polish — **historical archive**
 
-> **Active:** [`FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) → **FP-3–FP-5**
+> **Historical note:** this used to point to `FINAL-PHASE-PLAN.md` as `FP-3–FP-5`. The active plan is now the full audit/quality roadmap, not a polish-only tracker.
 
 | Item | Description |
 |------|-------------|
 | Extend shell to `/subjects`, `/assessments`, `/progress` | Consistent study rail everywhere |
 | Parent/teacher onboarding variants | Separate card flows if product prioritises |
 | i18n-ready labels | Keep copy in constants; avoid hard-coded strings in many files |
-| Website streamlining | See [`docs/ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — **onboarding excluded** |
+| Website streamlining | See [`docs/ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) for current remaining work; onboarding stays excluded |
 
 **Do not plan:** merging onboarding steps 5–6 or removing the dashboard gate unless operator overrides in `HANDOFF.md`.
 

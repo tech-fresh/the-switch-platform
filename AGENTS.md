@@ -4,8 +4,8 @@
 
 Before doing ANY work in this repository:
 
-1. Read **`HANDOFF.md`** for live session state, next steps, blockers — and **Priority C — COMPLETE** (lane closed)
-2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** — active Priority **A** work (Priority **C** is complete — do not reopen unless operator requests)
+1. Read **`HANDOFF.md`** for live session state, next steps, blockers — **Priority A** and **Priority C** are **COMPLETE**
+2. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** — active Priority **D** work (do not reopen A or C unless operator requests)
 3. Read **`PLATFORM-GUIDE.md`** — the single consolidated guide (rules, architecture, modules, launch checklist)
 3. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 4. Read **`PROJECT_RECOVERY.md`** and **`RESTORED_CHATS.md`** if folder or history context is unclear
@@ -35,7 +35,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 **Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Do not reopen C-1–C-10 unless the operator explicitly requests an exception.
 
-**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Active lane is **Priority B** unless operator reopens A.
+**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Active lane is **Priority D** unless operator reopens A or C.
 
 **At session end:** run verification, confirm push, refresh **`HANDOFF.md`** and **`AGENTS.md`** if the story changed.
 
@@ -47,7 +47,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`AGENTS.md`** | This entry point — synced with HANDOFF |
 | **`PLATFORM-GUIDE.md`** | Rules, architecture, modules, 22-item launch list, MVP modules |
 | **`README.md`** | Cumulative product spec, **MVP at a glance**, Ordered Build Record (append only) |
-| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole active roadmap** — Priority **B** active; Priority **A** complete (26 June 2026); Priority **C** complete (24 June 2026) |
+| **`docs/ideas/FINAL-PHASE-PLAN.md`** | **Sole active roadmap** — Priority **D** active; Priority **A** complete (26 June 2026); Priority **C** complete (24 June 2026) |
 | **`docs/ideas/`** | Plan index — prior plans historical |
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
@@ -134,10 +134,12 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). Next: **Priority B** docs sync. |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). Active work: **Priority D** quality/tests and copy hardening. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | **Priority B** — stale notes and near-launch wording per `docs/ideas/FINAL-PHASE-PLAN.md`. |
+| What is next? | **Priority D-5** — content/editorial quality pass after the D-2, D-4, and D-6 hardening updates. |
+
+**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `5/6` complete · overall active plan `27/28` complete (`96.4%`).
 
 ```mermaid
 flowchart LR
@@ -239,7 +241,7 @@ npm run verify:live-truth-match
 
 **Status: COMPLETE — CLOSED.** Study Atelier product finish lane (`docs/ideas/FINAL-PHASE-PLAN.md` → C-1 through C-10).
 
-**Moving forward:** every agent session starts with `HANDOFF.md`. Priority **C** and **A** are **complete**. Active work is **Priority B** unless operator reopens A or C.
+**Moving forward:** every agent session starts with `HANDOFF.md`. Priority **C** and **A** are **complete**. Active work is **Priority D** unless operator reopens A or C.
 
 **Architecture gate (must hold for all C work already shipped):**
 

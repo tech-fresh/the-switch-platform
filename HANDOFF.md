@@ -71,14 +71,14 @@ Update this section every session.
 
 ### Active task
 
-- **Priority item #:** B — Docs + governance sync
-- **Module:** truth surfaces (`HANDOFF`, `AGENTS`, `README`, `PLATFORM-GUIDE`, `FINAL-PHASE-PLAN`)
-- **Status:** **In progress** — Priority A doc closeout sync (26 June 2026)
+- **Priority item #:** D — Quality/tests and final copy alignment
+- **Module:** auth/governance tests + remaining admin/editorial copy
+- **Status:** **In progress** — D-5 content/editorial quality pass
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
 
-**Authoritative status:** Priority **C** (product completion lane) is **closed**. Priority **A** (truthful completion) is **closed** (26 June 2026). Active work is **Priority B** unless the operator reopens A or C.
+**Authoritative status:** Priority **C** (product completion lane) is **closed**. Priority **A** (truthful completion) is **closed** (26 June 2026). Active work is **Priority D** unless the operator reopens A or C.
 
 | Item | Status | Evidence |
 |------|--------|----------|
@@ -99,6 +99,9 @@ Update this section every session.
 
 ### What was just completed
 
+- **Priority D hardening pass (26 June 2026)** — added auth session lifecycle coverage for sign-out/session denial assumptions, added `StudentAppShell` route coverage tests, and aligned launch governance assertions with the completed Priority A closeout/admin wording.
+- **Priority B roadmap-reference sync (26 June 2026)** — docs that point to `FINAL-PHASE-PLAN.md` now describe it as the full remaining-work audit instead of the old `FP-*` redesign tracker; historical FP references are kept but labeled as archive context.
+- **Priority B stale-note cleanup (26 June 2026)** — active README/admin/governance truth surfaces now say Priority A is complete; older near-launch wording is explicitly marked as historical archive context instead of current live status.
 - **Priority A doc sync (26 June 2026)** — aligned `HANDOFF`, `AGENTS`, `README`, `PLATFORM-GUIDE`, `FINAL-PHASE-PLAN`, and `.cursor/rules` so Priority A is **COMPLETE** everywhere; active lane is **Priority B**.
 - **Priority A — COMPLETE (26 June 2026)** — `npm run verify:priority-a-closeout` passed end to end. **A-6** canonical evidence bundle and **A-8** truth-match green. Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Fixed `verify-live-onboarding.mjs` dashboard shell assertion (Study Atelier / study home markers).
 - **A-6 / A-8 closeout tooling** — `npm run verify:check-live-cookies`, `npm run verify:priority-a-closeout`, Fly-delegated persistence/sign-off in `launch-complete.mjs`.
@@ -114,8 +117,16 @@ Update this section every session.
 
 ### What is next
 
-- **Priority B** — repo/docs sync (B-1 stale notes, B-2 near-launch wording) per `docs/ideas/FINAL-PHASE-PLAN.md`
+- **Priority D-5** — content/editorial quality pass across route-level copy and CMS/product wording
 - Re-run `npm run verify:priority-a-closeout` after cookie refresh when repeating closeout for a new release
+
+### Completion snapshot
+
+- **Priority A:** `8 / 8` complete
+- **Priority B:** `4 / 4` complete
+- **Priority C:** `10 / 10` complete
+- **Priority D:** `5 / 6` complete
+- **Overall active plan:** `27 / 28` complete (`96.4%`)
 
 ### Blockers
 
@@ -130,7 +141,7 @@ Update this section every session.
 - [x] `npm run verify:launch-complete`
 - [x] `npm run verify:live-truth-match` (A-8)
 - [x] `npm run verify:priority-a-closeout` (A-6 canonical bundle)
-- [x] `npm run lint && npm run type-check && npm run test` (105 tests)
+- [x] `npm run lint && npm run type-check && npm run test` (111 tests)
 
 ---
 
@@ -140,7 +151,7 @@ Update this section every session.
 
 ### In one sentence
 
-The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). **Priority C** (product finish) and **Priority A** (truthful completion) are **complete** (24 and 26 June 2026). Active work is **Priority B** — docs sync per **`docs/ideas/FINAL-PHASE-PLAN.md`**.
+The Switch is a **live GCSE revision platform** (https://theswitchplatform.com). **Priority C** (product finish) and **Priority A** (truthful completion) are **complete** (24 and 26 June 2026). Active work is **Priority D** — quality/tests and copy hardening per **`docs/ideas/FINAL-PHASE-PLAN.md`**.
 
 ### Where we are
 
@@ -150,7 +161,7 @@ The Switch is a **live GCSE revision platform** (https://theswitchplatform.com).
 | **Priority A — truthful completion** | A-1 through A-8 with canonical evidence bundle | **Complete — 26 June 2026** |
 | **Priority C — product finish** | Shell, exams focus mode, planner, marketing chrome, recovery UI | **Complete — 24 June 2026** |
 | **Prior polish (Phases 1–2)** | Marketing shell, dashboard declutter, shell on main study routes | **Done** |
-| **Final Phase — active** | **Priority B** — stale notes and near-launch wording cleanup | **Active** |
+| **Final Phase — active** | **Priority D** — quality/tests and final copy hardening | **Active** |
 | **Optional (FP-6)** | Wales/NI GCSE, parent/teacher onboarding, admin restyle | **Operator gate only** |
 
 ### Two lanes — do not mix them
@@ -187,9 +198,9 @@ flowchart TD
     PA1["Real OIDC proof"]
     PA2["Canonical closeout bundle"]
   end
-  subgraph activeB["Active — Priority B"]
-    B1["Stale notes cleanup"]
-    B2["Near-launch wording sync"]
+  subgraph activeD["Active — Priority D"]
+    D1["Quality and test hardening"]
+    D2["Content and admin copy pass"]
   end
   subgraph later["Later — FP-6 operator gate"]
     L1["GCSE Wales + Northern Ireland"]
@@ -198,8 +209,8 @@ flowchart TD
   done --> donePolish
   donePolish --> doneC
   doneC --> doneA
-  doneA --> activeB
-  activeB --> later
+  doneA --> activeD
+  activeD --> later
 ```
 
 ### Onboarding MVP (locked 24 June 2026)
@@ -296,7 +307,7 @@ Read HANDOFF.md first.
 
 Then read in order:
 1. HANDOFF.md → Live session state + Plain-English story + MVP at a glance
-2. docs/ideas/FINAL-PHASE-PLAN.md → next FP-* item (sole active roadmap)
+2. docs/ideas/FINAL-PHASE-PLAN.md → next open Priority D or E item (sole active roadmap)
 3. AGENTS.md → agent entry
 4. PLATFORM-GUIDE.md → rules + modules (section handoff points to)
 5. README.md → sections only when handoff points (build record, MVP spec)
@@ -468,13 +479,13 @@ Before any code or doc change:
 
 1. Tell the agent: `Read HANDOFF.md first.`
 2. Read this file (`HANDOFF.md`) → Live session state + What is next
-3. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → next incomplete FP-* item
+3. Read **`docs/ideas/FINAL-PHASE-PLAN.md`** → next open Priority **B** or **D** item
 4. Read `AGENTS.md` → Session rules, architecture, and completion standard
 5. Read `README.md` → Non-negotiable development rules + Active build priority order
 6. Read `PROJECT_RECOVERY.md` if folder or history context is unclear
 7. Read the relevant `src/modules/<module>/README.md`
 8. Run `git status` and `git pull origin main` (or checkout the active feature branch)
-9. Confirm the task maps to **one module** and one Final Phase item (FP-*)
+9. Confirm the task maps to **one module** and one Final Phase priority item (B, D, or E — not A or C unless reopened)
 10. Paste the standard session prompt below into the active tool
 
 ---

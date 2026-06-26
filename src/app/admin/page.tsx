@@ -452,7 +452,7 @@ export default async function AdminPage() {
               </div>
               <div className="mt-5 border border-amber-200 bg-amber-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">
-                  Priority A truth audit
+                  Priority A closeout complete
                 </p>
                 <p className="mt-3 text-sm leading-6 text-amber-950">
                   This is the main final-path checklist for true full completion across code, architecture, operations, and launch proof.

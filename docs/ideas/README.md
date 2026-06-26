@@ -11,7 +11,7 @@ Plain English: this folder holds **plans** — not live session state. Read `HAN
 
 | Plan | What it covers |
 |------|----------------|
-| **[`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md)** | **Sole active roadmap** — Study Atelier 100% redesign: shell rollout, planner, marketing, verify |
+| **[`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md)** | **Sole active roadmap** — full completion audit: Priority **B** docs sync and Priority **D** quality/tests (A and C complete) |
 
 ---
 

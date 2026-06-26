@@ -11,11 +11,13 @@
 
 | Question | Answer |
 |----------|--------|
-| Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io. We are double-checking that our written records match what really happens when someone signs in. |
-| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C** (website polish) **finished** (24 June 2026). Next: **Priority B** docs sync. |
+| Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C** (website polish) **finished** (24 June 2026). Active work: **Priority D** quality/tests and copy hardening. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
-| What is next? | **Priority B** — stale notes and near-launch wording cleanup per `docs/ideas/FINAL-PHASE-PLAN.md`. |
+| What is next? | **Priority D-5** — content/editorial quality pass after the D-2, D-4, and D-6 hardening updates. |
+
+**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `5/6` complete · overall active plan `27/28` complete (`96.4%`).
 
 **Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception.
 
@@ -27,7 +29,7 @@
 
 ### In one sentence
 
-**The Switch** is a live GCSE revision website at https://theswitchplatform.com. The student website polish work is **done**. What remains is making sure our **records and proof** honestly match what learners experience when they sign in, set up, and study.
+**The Switch** is a live GCSE revision website at https://theswitchplatform.com. The student website polish work is **done**, the Priority A proof closeout is **complete**, and the remaining work is Priority D hardening around tests and final copy quality.
 
 ### Where we are (simple view)
 
@@ -63,14 +65,14 @@ flowchart TD
     C3["Exam focus mode during papers"]
     C4["Helpful recovery when something is empty"]
   end
-  subgraph activeA["Active — proof audit"]
-    P1["Record real sign-in proof"]
-    P2["Bundle evidence in one place"]
-    P3["Final check: notes match live site"]
+  subgraph activeD["Active — hardening"]
+    P1["Protect auth and shell rules with tests"]
+    P2["Finish final copy quality pass"]
+    P3["Keep one current truth story"]
   end
   live --> laneA
   laneA --> doneC
-  doneC --> activeA
+  doneC --> activeD
 ```
 
 ### Student journey (what a learner experiences)
@@ -106,7 +108,7 @@ flowchart LR
 | `README.md` (this file) | Product history and plain-English summary |
 | `PLATFORM-GUIDE.md` | Modules, architecture, launch checklist detail |
 
-**Rule:** Priority **C** and **A** are **closed** (24 and 26 June 2026). Active work is **Priority B** unless the operator explicitly reopens something.
+**Rule:** Priority **C** and **A** are **closed** (24 and 26 June 2026). Active work is **Priority D** unless the operator explicitly reopens something.
 
 ### Priority A — COMPLETE (26 June 2026)
 
@@ -157,7 +159,7 @@ Checklist and evidence → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL
 | **What it is** | GCSE / iGCSE revision platform — practice, timed tests, full exams, progress |
 | **Live** | https://theswitchplatform.com |
 | **Launch** | Live on Fly; Final Path Mark 2 and Priority A **complete** (26 June 2026) |
-| **Now** | **Priority B** docs sync · **Priority A complete** (26 June) · **Priority C complete** (24 June) |
+| **Now** | **Priority D** hardening · **Priority A complete** (26 June) · **Priority C complete** (24 June) |
 
 ### Core MVP modules (priority order)
 
@@ -571,7 +573,7 @@ This section is the running record of what has been requested, added, and commit
 
 ### 2026-06-24 Final Phase plan — sole active roadmap
 
-- Created **`docs/ideas/FINAL-PHASE-PLAN.md`** — FP-1 through FP-6 for Study Atelier 100% redesign.
+- Historical note: on 24 June 2026 this file was introduced as an `FP-*` redesign roadmap; it was later expanded into the full completion audit and remaining-work plan.
 - Marked prior phases complete: launch 22/22, Study Atelier 1–2, Streamline 1–2.
 - Updated HANDOFF, AGENTS, README, PLATFORM-GUIDE, ideas index, MOCK-IDEA docs to consult Final Phase first.
 - **`STREAMLINE-WEBSITE-PLAN.md`** phases 3–5 superseded (file kept as historical record).
@@ -700,7 +702,18 @@ This section is the running record of what has been requested, added, and commit
 - Added `npm run verify:blob-health` as the first step in the final live launch sequence.
 - Suspended Vercel Blob stores now surface through recovery (`store-suspended`), persistence runtime summary, governance environment checks, admin runtime, and item 22 truth-match.
 - Updated `FINAL_LAUNCH_RUNBOOK.md`, `AGENTS.md`, `launch-complete.mjs`, and `launch-status.mjs` with Blob repair operator steps.
-- Platform label remains `near-launch` until production Blob byte reads succeed and the full live verification chain passes cleanly.
+- Historical note (superseded by 26 June 2026 Priority A closeout): the platform label remained `near-launch` until production Blob byte reads succeeded and the full live verification chain passed cleanly.
+
+### 2026-06-26 Priority B stale-note cleanup
+
+- Updated the active README summary to say Priority A closeout is complete and Priority B docs sync is the active lane.
+- Marked older near-launch and “still to prove live” wording as historical archive context where it would otherwise read like current status.
+- Updated admin/governance truth-surface labels from an active Priority A audit to completed Priority A closeout wording.
+
+### 2026-06-26 Completion snapshot sync
+
+- Added one shared completion snapshot across the front-door docs: Priority A `8/8`, Priority B `4/4`, Priority C `10/10`, Priority D `5/6`, overall active plan `27/28` complete (`96.4%`).
+- Updated the live handoff/testing count to reflect the current suite: `npm test` passing `111/111`.
 
 ### 2026-06-21 Exam Engine service test coverage (Priority #1)
 
@@ -748,7 +761,7 @@ This section is the running record of what has been requested, added, and commit
 - Current truth is still not `100% complete`: the latest deployed `dashboard`, `account`, `results`, `/api/dashboard/home`, and `/api/results/overview` routes still fail under live launch verification because shared-store reads are returning `Vercel Blob: Failed to fetch blob: 403 Forbidden`.
 - A direct production Blob SDK probe confirmed the deeper platform-side blocker: the control plane can still return sqlite blob metadata, but issuing a signed read for `switch-live-data/switch-live.sqlite` fails with `BlobStoreSuspendedError: Vercel Blob: This store has been suspended.`
 - Until that live Blob store is unsuspended in Vercel or replaced with another real shared durable store, the final walkthrough, final sign-off, final launch-complete run, and item 22 truth-match cannot be called complete honestly.
-- Because those protected live routes still fail and the final walkthrough cannot yet finish cleanly against the deployed runtime, the honest platform label remains `near-launch`.
+- Historical note (superseded by 26 June 2026 Priority A closeout): because those protected live routes still failed and the final walkthrough could not yet finish cleanly against the deployed runtime, the honest platform label remained `near-launch`.
 
 ### 1. Mark 3.2 modular MVP foundation
 
@@ -2865,7 +2878,13 @@ The four biggest things still stopping a true 100% launch are:
 
 ### Full completion plan
 
-This is the full plan for taking the project from a strong near-launch build to a true 100% production-ready release.
+Historical archive note:
+
+- This section preserves the pre-closeout roadmap that explained why the project was still described as `near-launch`.
+- It is now superseded by the 26 June 2026 Priority A closeout and the canonical evidence file `release-evidence/2026-06-25-priority-a-canonical-closeout.md`.
+- Keep this history for context, but do not read the wording below as the current live status.
+
+This was the full plan for taking the project from a strong near-launch build to a true 100% production-ready release.
 
 #### 1. Make the project story tell the exact truth
 
@@ -3024,7 +3043,7 @@ This project should only be called 100% complete when all of the statements belo
 10. The live environment has passed the final full route walk-through.
 11. Privacy, safeguarding, support, alerts, ownership, and release approval are confirmed in the live environment.
 
-Until all of those are true together, the project should be described as near-launch, not fully complete.
+Historical completion rule at that stage: until all of those were true together, the project should be described as near-launch, not fully complete.
 
 ### Final phase for actual completion
 
@@ -3058,7 +3077,7 @@ That means:
 
 ```mermaid
 flowchart TD
-    A["Current strong near-launch platform"] --> B["Real live sign-in"]
+    A["Historical near-launch platform"] --> B["Real live sign-in"]
     B --> C["Real shared student-data setup"]
     C --> D["Real editorial and content operating path"]
     D --> E["Real live environment proof"]
@@ -3139,7 +3158,7 @@ If even one of those is still missing, the project is not yet at true 100% compl
 
 The project should only be called fully complete when this final phase is finished in full.
 
-Until then, the honest description is:
+Historical label at that stage was:
 
 - strong
 - advanced
@@ -3284,14 +3303,14 @@ SWITCH_AUTH_EDITOR_EMAILS=your-real-google-email@example.com
 SWITCH_AUTH_ADMIN_EMAILS=your-real-google-email@example.com
 ```
 
-Current recorded blocker state from that same live run:
+Historical recorded blocker state from that same live run:
 
 - `npm run verify:live-readiness` passed
 - `npm run verify:persistence-recovery` passed
 - `npm run verify:live-walkthrough` failed because authenticated `/assessments` returned `500`
 - `npm run verify:launch-complete` failed because it depends on `verify:live-walkthrough`
 
-The honest project label remains `near-launch` until the walkthrough, sign-off, launch-complete, permanent evidence storage, and system-wide truth-match steps are all complete.
+Historical note: the project label remained `near-launch` until the walkthrough, sign-off, launch-complete, permanent evidence storage, and system-wide truth-match steps were all complete.
 
 #### June 21, 2026 later live-run update
 
@@ -3307,7 +3326,7 @@ Important remaining truth:
 - a later same-day rerun replaced the placeholder ownership values with `TF Solutions` in the local evidence path
 - the final system-wide truth match across README, admin runtime view, runtime state, and recorded evidence was then checked explicitly and found a remaining deployed-runtime mismatch
 
-Because of those remaining gaps, the honest label remains `near-launch` rather than final true `100% complete`.
+Historical note: because of those remaining gaps, the honest label remained `near-launch` rather than final true `100% complete`.
 
 ### Final target architecture
 
@@ -5015,7 +5034,7 @@ Plain-English explanation:
 
 - the final command sequence passed in the local live-check path
 - but the deployed admin runtime is still telling a different story about persistence and governance state
-- until that deployed runtime story matches the final evidence story, the project remains `near-launch`
+- Historical note: until that deployed runtime story matched the final evidence story, the project remained `near-launch`
 
 - `netlify.toml` for deployment configuration
 - stronger completion language that points back to the full end-to-end launch criteria

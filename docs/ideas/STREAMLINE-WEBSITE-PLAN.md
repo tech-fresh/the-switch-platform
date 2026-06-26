@@ -5,7 +5,7 @@
 > **Build priority:** #5 Dashboard  
 > **Related:** [`MOCK-IDEA-BUILD-REFERENCE.md`](../MOCK-IDEA-BUILD-REFERENCE.md) · [`MOCK-IDEA-AI-IDEAS.md`](../MOCK-IDEA-AI-IDEAS.md)
 
-Plain English: phases 1–2 of this plan are **shipped**. Remaining work (planner, marketing trim, verify) lives in **`FINAL-PHASE-PLAN.md`**. Keep this file for the onboarding-stays decision and completed-phase record — do not delete.
+Plain English: phases 1–2 of this plan are **shipped**. This file is now a historical record for the onboarding-stays decision and the early website declutter work. The active roadmap lives in **`FINAL-PHASE-PLAN.md`**, which is no longer only an `FP-*` UI tracker.
 
 ---
 
@@ -106,9 +106,9 @@ Apply `StudentAppShell` to high-traffic signed-in routes so nav is not rebuilt p
 
 ---
 
-## Phase 3 — Planner + dismiss persistence — **moved to Final Phase**
+## Phase 3 — Planner + dismiss persistence — **historical; later shipped under Priority C**
 
-> **Active items:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) → **FP-2 Planner integration**
+> **Historical note:** this section used to point to `FINAL-PHASE-PLAN.md` as `FP-2 Planner integration`. That work is now shipped under Priority C.
 
 | Item | Description | Module boundary |
 |------|-------------|-----------------|
@@ -120,9 +120,9 @@ Onboarding **already** supplies subject IDs; planner UI should **read** them, no
 
 ---
 
-## Phase 4 — Marketing trim — **moved to Final Phase**
+## Phase 4 — Marketing trim — **historical archive**
 
-> **Active items:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) → **FP-3 Marketing consistency**
+> **Historical note:** this section used to point to `FINAL-PHASE-PLAN.md` as `FP-3 Marketing consistency`. Read the current plan for open Priority B or D items instead.
 
 Safe to simplify **public** surfaces only:
 
@@ -145,9 +145,9 @@ School step: **secondary school** name, **England** nation only during MVP. Full
 
 ---
 
-## Phase 5 — Verify and deploy — **moved to Final Phase**
+## Phase 5 — Verify and deploy — **historical archive**
 
-> **Active items:** [`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md) → **FP-5 Verify and deploy**
+> **Historical note:** this section used to point to `FINAL-PHASE-PLAN.md` as `FP-5 Verify and deploy`. The current plan is now the full remaining-work audit.
 
 ```bash
 npm run lint && npm run type-check && npm run test

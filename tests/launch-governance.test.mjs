@@ -19,8 +19,8 @@ test("launch governance overview defines reviews, ownership, smoke checks, and f
   assert.equal(overview.followUpLoops.length >= 3, true);
   assert.equal(overview.smokeChecks.some((check) => check.status === "watch"), true);
   assert.equal(overview.smokeChecks.every((check) => ["seeded", "manual"].includes(check.source)), true);
-  assert.equal(overview.finalPathSummary.label, "Priority A truth audit");
-  assert.equal(overview.finalPathSummary.codeCompleteCount, 7);
+  assert.equal(overview.finalPathSummary.label, "Priority A closeout complete");
+  assert.equal(overview.finalPathSummary.codeCompleteCount, 10);
   assert.equal(overview.finalPathSummary.totalCount, 10);
   assert.equal(overview.finalPathSummary.closeoutItems.length, 10);
   assert.equal(overview.finalPathSummary.biggestBlockers.length >= 3, true);

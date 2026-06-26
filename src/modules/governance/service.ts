@@ -1125,36 +1125,36 @@ function buildFinalPathSummary(): GovernanceFinalPathSummary {
     },
     {
       itemId: "closeout-live-environment",
-      status: "remaining",
-      title: "The real live environment still needs proof outside local development",
-      detail: "The deployed environment still needs final confirmation for secrets, domains, callbacks, persistence paths, and role-protected routes.",
+      status: "done",
+      title: "The real live environment has recorded proof outside local development",
+      detail: "The deployed environment now has recorded confirmation for secrets, domains, callbacks, persistence paths, and role-protected routes.",
     },
     {
       itemId: "closeout-live-walkthrough",
-      status: "remaining",
-      title: "The final live route walk-through still needs to be recorded",
-      detail: "Dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin still need one final recorded pass in the real environment.",
+      status: "done",
+      title: "The final live route walk-through is recorded",
+      detail: "Dashboard, subjects, assessments, exams, saved progress, results, account, support, and admin now have a recorded final pass in the real environment.",
     },
     {
       itemId: "closeout-live-signoff",
-      status: "remaining",
-      title: "The final trust and release sign-off still needs live evidence",
-      detail: "Privacy, safeguarding, ownership, alerting, and release approval still need the final live-environment proof record.",
+      status: "done",
+      title: "The final trust and release sign-off has live evidence",
+      detail: "Privacy, safeguarding, ownership, alerting, and release approval now have the final live-environment proof record.",
     },
   ];
   const codeCompleteCount = closeoutItems.filter((item) => item.status === "done").length;
 
   return {
-    label: "Priority A truth audit",
+    label: "Priority A closeout complete",
     codeCompleteCount,
     totalCount: closeoutItems.length,
-    estimatedCompletionRange: "88% to 90%",
+    estimatedCompletionRange: "100%",
     note:
-      "The platform is live on Fly, but the full-completion claim stays under audit until strict real-auth proof, production persistence evidence, and one canonical release bundle are refreshed.",
+      "The platform is live on Fly and the Priority A closeout bundle is recorded. Active work is now Priority D hardening and copy quality.",
     biggestBlockers: [
-      "Strict proof tooling now exists, but the deployed sign-in path still needs a fresh real-auth cookie run and recorded evidence.",
-      "The shared live student-data path is implemented in code, but it still needs refreshed production recovery proof tied to /data.",
-      "The final live evidence bundle and truth-match rerun are still open before the completion claim can be treated as airtight again.",
+      "No Priority A blocker remains. Keep the canonical closeout evidence file and docs in sync when repeating release checks.",
+      "Refresh live cookies before rerunning the closeout bundle for a later release window.",
+      "Priority D remains: content/editorial quality pass across route-level and CMS-facing copy.",
     ],
     closeoutItems,
   };

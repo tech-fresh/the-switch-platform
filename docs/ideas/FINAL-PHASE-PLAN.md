@@ -1,15 +1,11 @@
 # Final Phase Plan — Full Completion Audit
 
-> **Status:** **ACTIVE** — this is now the single completion plan for the repository
+> **Status:** **ACTIVE** — this is the single completion plan for the repository; Priorities A, B, and C are closed; Priority D-5 remains
 > **Created:** 2026-06-24
 > **Purpose:** stop partial closeout; list everything still required for an honest full-completion claim
 > **Live site:** https://theswitchplatform.com
 
-Plain English: the repo currently mixes three stories:
-
-- docs that say the platform is fully complete
-- evidence that is stronger than before, but not airtight
-- product/UI work that is still obviously unfinished
+Plain English: this file now tracks the remaining cleanup and quality work after the Priority A closeout. Keep it as the one place that says what is still open, what is historical, and what is deferred.
 
 This file replaces the older UI-only Final Phase roadmap with one full audit. It covers:
 
@@ -31,23 +27,30 @@ Read order every session:
 
 ### Current honest status
 
-- **Documented status:** “all 22 items complete”
-- **Audit status:** **not yet airtight**
-- **Product status:** strong MVP/live platform with remaining finish work
+- **Documented status:** all 22 launch items are complete on Fly production
+- **Audit status:** Priority A is **airtight enough to close** as of 26 June 2026; canonical evidence is recorded
+- **Product status:** live MVP with remaining docs cleanup and quality/test passes
 
-### Why the current claim is not airtight
+### Completion snapshot
 
-The repo has real evidence, but the final proof path still has gaps:
+| Lane | Status |
+|------|--------|
+| **Priority A** | **8 / 8 complete** |
+| **Priority B** | **4 / 4 complete** |
+| **Priority C** | **10 / 10 complete** |
+| **Priority D** | **5 / 6 complete** |
+| **Overall active plan (A+B+C+D)** | **27 / 28 complete — 96.4%** |
 
-- “Live” walkthrough tooling can use `SWITCH_LAUNCH_VERIFICATION_SECRET` to bypass the real OIDC session path.
-- Live onboarding proof currently depends on that bypass path.
-- Persistence recovery proof depends on where the script is run, not only on the deployed runtime.
-- The docs still contain stale and conflicting “near-launch” / “complete” statements.
-- The current Final Phase plan only tracked UI polish, so completion-truth work kept getting skipped.
+### What remains open now
 
-### Completion rule from now on
+The repo no longer has a truthful-completion proof gap. The open work is narrower:
 
-Do **not** describe the platform as “100% complete”, “fully complete”, or “true final completion” unless **all Priority A items below are done** — **they are done as of 26 June 2026**. Keep docs synced when re-running closeout for new releases.
+- complete the remaining Priority D-5 content/editorial quality pass
+- keep future release reruns synced with the canonical closeout evidence
+
+### Completion rule
+
+Do **not** reopen a truthful-completion blocker unless new evidence breaks the 26 June 2026 closeout. Keep docs and evidence synced when re-running closeout for new releases.
 
 Product polish alone is not enough.
 
@@ -67,13 +70,13 @@ flowchart TD
 
 ## Priority A — Truthful completion — **COMPLETE (26 June 2026)**
 
-**Status: CLOSED.** All A-1–A-8 items below are done. Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout`. Active work is **Priority B** unless the operator reopens A.
+**Status: CLOSED.** All A-1–A-8 items below are done. Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout`. Active work is **Priority D** unless the operator reopens A or C.
 
 These were the blockers to an honest full-completion claim. They are now closed.
 
 ### A-1. Prove real live OIDC sign-in end to end without launch-verification bypass
 
-**Why this is open**
+**Historical problem**
 
 - [`scripts/live-walkthrough-utils.mjs`](../../scripts/live-walkthrough-utils.mjs) prefers launch-verification headers when `SWITCH_LAUNCH_VERIFICATION_SECRET` is present.
 - [`src/modules/auth/request.ts`](../../src/modules/auth/request.ts) accepts those headers as an authenticated session before normal auth.
@@ -97,7 +100,7 @@ These were the blockers to an honest full-completion claim. They are now closed.
 
 ### A-2. Add a final live walkthrough mode that forbids launch-verification auth
 
-**Why this is open**
+**Historical problem**
 
 - Current walkthrough tooling can pass even when real auth has not been exercised.
 
@@ -114,7 +117,7 @@ These were the blockers to an honest full-completion claim. They are now closed.
 
 ### A-3. Prove real deployed sign-out, session invalidation, and protected-route lockout
 
-**Why this is open**
+**Historical problem**
 
 - Current local rehearsal covers sign-out better than the production closeout path.
 - Current final evidence leans on manual/operator notes rather than a strict production proof chain.
@@ -132,7 +135,7 @@ These were the blockers to an honest full-completion claim. They are now closed.
 
 ### A-4. Prove a fresh learner completes onboarding through real auth, not synthetic headers
 
-**Why this is open**
+**Historical problem**
 
 - [`scripts/verify-live-onboarding.mjs`](../../scripts/verify-live-onboarding.mjs) requires `SWITCH_LAUNCH_VERIFICATION_SECRET` and drives a synthetic user through API updates.
 
@@ -151,7 +154,7 @@ These were the blockers to an honest full-completion claim. They are now closed.
 
 ### A-5. Prove persistence recovery on the real deployed storage path
 
-**Why this is open**
+**Historical problem**
 
 - [`scripts/persistence-recovery-check.mjs`](../../scripts/persistence-recovery-check.mjs) checks the runtime where the script executes.
 - That is useful, but not enough by itself unless the script is run in the true deployed environment or against the true mounted store.
@@ -172,7 +175,7 @@ These were the blockers to an honest full-completion claim. They are now closed.
 
 ### A-6. Create one canonical release-evidence bundle for full completion
 
-**Why this is open**
+**Historical problem**
 
 - Evidence is split across multiple files and older contradictory evidence still exists.
 
@@ -205,7 +208,7 @@ npm run verify:priority-a-closeout
 
 ### A-7. Make launch-status and governance surfaces tell the current truth
 
-**Why this is open**
+**Historical problem**
 
 - [`scripts/launch-status.mjs`](../../scripts/launch-status.mjs) still prints “remaining live-only items” as static closeout output.
 - Governance service still contains seeded “remaining” closeout language and near-launch framing.
@@ -507,16 +510,16 @@ Mark these only when evidence exists.
 
 ### Quality and sync
 
-- [ ] B-1 stale “still to prove live” notes cleaned up
-- [ ] B-2 stale “near-launch” active truth surfaces cleaned up
-- [ ] B-3 all roadmap references point to this full audit
-- [ ] B-4 handoff state reflects audit-first priority
+- [x] B-1 stale “still to prove live” notes cleaned up
+- [x] B-2 stale “near-launch” active truth surfaces cleaned up
+- [x] B-3 all roadmap references point to this full audit
+- [x] B-4 handoff state reflects audit-first priority
 - [x] D-1 strict real-auth proof tests added
-- [ ] D-2 sign-out/session denial tests added
+- [x] D-2 sign-out/session denial tests added (`tests/auth-session-lifecycle.test.mjs`)
 - [x] D-3 planner persistence tests added (`tests/final-phase-product.test.mjs`)
-- [ ] D-4 shell coverage tests added
+- [x] D-4 shell coverage tests added (`tests/student-app-shell-coverage.test.mjs`)
 - [ ] D-5 content/editorial quality pass complete
-- [ ] D-6 admin/governance copy pass complete
+- [x] D-6 admin/governance copy pass complete
 
 ---
 
@@ -529,13 +532,7 @@ The project can only be called **fully complete** when:
 3. active truth surfaces no longer contradict each other
 4. the release evidence bundle proves the real deployed system, not a synthetic shortcut
 
-Until then, describe the platform more carefully:
-
-- “live”
-- “strong MVP”
-- “documented as complete, but completion truth is being hardened”
-
-Do **not** collapse that into “100% complete”.
+Those conditions are now met for the current MVP closeout. Remaining Priority D and E work is hardening/deferred scope, not a reopened truthful-completion blocker.
 
 ---
 

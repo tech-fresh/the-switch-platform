@@ -28,7 +28,7 @@ const useLaunchVerification = Boolean(process.env.SWITCH_LAUNCH_VERIFICATION_SEC
 
 assert(
   useLaunchVerification,
-  "SWITCH_LAUNCH_VERIFICATION_SECRET is required for live onboarding proof (fresh learner simulation).",
+  "SWITCH_LAUNCH_VERIFICATION_SECRET is required for the API-assisted live onboarding regression check (fresh learner simulation).",
 );
 
 const proofUserId = `onboarding-live-proof-${Date.now()}`;
@@ -39,7 +39,7 @@ const proofHeaders = buildLaunchVerificationHeaders("student", process.env, {
   sessionId: `${proofUserId}-session`,
 });
 
-console.log(`Live onboarding proof target: ${baseUrl}`);
+console.log(`Live onboarding regression target: ${baseUrl}`);
 console.log(`Proof learner user id: ${proofUserId}`);
 
 console.log("Checking signed-out /onboarding redirect...");
@@ -204,7 +204,7 @@ assert(
   `Expected completed /onboarding to redirect to /dashboard, received ${completedOnboardingRoute.status} (${completedLocation}).`,
 );
 
-console.log("Live onboarding proof passed:");
+console.log("Live onboarding regression check passed:");
 console.log("- Signed-out route protection on /onboarding");
 console.log("- Account type, qualification (GCSE + iGCSE), profile/year, school + UK sources");
 console.log("- Subject selection, accessibility/SEND flags, guardian invite, age/consent");

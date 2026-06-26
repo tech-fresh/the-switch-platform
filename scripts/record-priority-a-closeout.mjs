@@ -49,15 +49,6 @@ const steps = [
     env: closeoutEnv,
   },
   {
-    id: "live-onboarding",
-    label: "verify:live-onboarding (fresh learner API proof)",
-    script: "verify:live-onboarding",
-    env: {
-      ...closeoutEnv,
-      SWITCH_LAUNCH_VERIFICATION_SECRET: process.env.SWITCH_LAUNCH_VERIFICATION_SECRET,
-    },
-  },
-  {
     id: "launch-complete",
     label: "verify:launch-complete (full final sequence)",
     script: "verify:launch-complete",
@@ -97,10 +88,15 @@ From \`release-evidence/2026-06-25-priority-a-truth-audit.md\`:
 - **A-4** real 8-step learner onboarding through the browser
 - **A-5** Fly production persistence recovery on \`/data\`
 
+## Supportive regression proof kept outside the strict closeout chain
+
+- \`npm run verify:live-onboarding\` remains a useful API-assisted onboarding regression check.
+- It is **not** counted as part of the strict A-4 real-auth proof inside this canonical bundle because it uses launch-verification headers to simulate a fresh learner.
+
 ## Run metadata
 
 - Generated: ${new Date().toISOString()}
-- Strict real-auth: \`SWITCH_LAUNCH_VERIFICATION_SECRET\` blanked for closeout steps
+- Strict real-auth closeout steps: \`SWITCH_LAUNCH_VERIFICATION_SECRET\` blanked
 - Fly persistence delegate: \`${flyPersistenceCommand}\`
 - Fly sign-off delegate: \`${flySignoffCommand}\`
 `);

@@ -67,13 +67,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-26 (Priority A complete — A-6 and A-8 closed)
+- **Last updated:** 2026-06-26 (launch-ready hardening pass complete)
 
 ### Active task
 
 - **Priority item #:** E — Deferred scope review
 - **Module:** operator-gated expansion only
-- **Status:** **No active blocker** — A through D complete for the current MVP
+- **Status:** Release-clean again — launch-readiness hardening complete; only deferred Priority E scope remains
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,8 @@ Update this section every session.
 
 ### What was just completed
 
+- **Launch-readiness hardening (26 June 2026)** — fixed the checked-in TypeScript blocker in `src/modules/operations/overview.ts` and tightened Priority A closeout wording so strict real-auth evidence no longer implies that `verify:live-onboarding` is part of the strict chain.
+- **ChatGPT prompt pack added (26 June 2026)** — added reusable prompt files for external analysis and website streamlining: `docs/CHATGPT-PROJECT-AUDIT-PROMPT.md`, `docs/CHATGPT-WEBSITE-STREAMLINE-PROMPT.md`, and `docs/CHATGPT-PROMPTS-README.md`.
 - **Final source-of-truth doc sync (26 June 2026)** — aligned `AGENTS.md`, `HANDOFF.md`, `PLATFORM-GUIDE.md`, `docs/ideas/README.md`, `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`, and the Mock Idea reference docs so the active repo entry points all describe the same closed A–D / deferred E story.
 - **Priority D-5 content/editorial quality pass (26 June 2026)** — updated admin, operations, CMS release-check, and subject-route copy so current live surfaces describe the MVP plainly without stale placeholder or pre-launch wording; restored the canonical 25 June Priority A evidence bundle and removed the stray failed 26 June rerun file.
 - **Priority D hardening pass (26 June 2026)** — added auth session lifecycle coverage for sign-out/session denial assumptions, added `StudentAppShell` route coverage tests, and aligned launch governance assertions with the completed Priority A closeout/admin wording.
@@ -119,8 +121,8 @@ Update this section every session.
 
 ### What is next
 
-- **Priority E** — deferred scope review only if the operator wants Wales/NI, parent/teacher variants, or other expansion beyond the current MVP
-- Re-run `npm run verify:priority-a-closeout` after cookie refresh when repeating closeout for a new release
+- **Priority E** deferred scope review only if the operator wants post-MVP expansion
+- Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
 ### Completion snapshot
 
@@ -132,7 +134,7 @@ Update this section every session.
 
 ### Blockers
 
-- **None** for Priority A (A-1 through A-8 complete 26 June 2026)
+- None for the current MVP closeout
 - Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
 
 ### Verification last run
@@ -635,7 +637,8 @@ Full item descriptions: see `README.md` → Final Path Mark 2 → Full End-to-En
 
 | Proof | Result |
 |-------|--------|
-| `npm run verify:live-onboarding` | Passed — fresh learner → dashboard |
+| Browser-authenticated production walkthrough | Recorded in `release-evidence/2026-06-25-priority-a-truth-audit.md` |
+| `npm run verify:live-onboarding` | Passed — API-assisted fresh learner simulation → dashboard |
 | Evidence file | `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md` |
 | UI mockup (visual) | `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md` |
 | UI build reference | `docs/MOCK-IDEA-BUILD-REFERENCE.md` |

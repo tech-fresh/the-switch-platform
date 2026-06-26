@@ -15,7 +15,7 @@
 | What are we doing now? | **Priority A complete** (26 June 2026). **Priority C** (website polish) **finished** (24 June 2026). **Priority D** is now complete too; only deferred Priority E scope remains. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
-| What is next? | **Priority E** — deferred scope review only if the operator wants to expand beyond the current MVP. |
+| What is next? | **Priority E** deferred scope review only if the operator wants to expand beyond the current MVP. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 
@@ -119,7 +119,7 @@ flowchart LR
 | A-1 Real OIDC sign-in proof | **Complete** |
 | A-2 Strict real-auth walkthrough mode | **Complete** |
 | A-3 Sign-out and lockout proof | **Complete** |
-| A-4 Real onboarding proof | **Complete** |
+| A-4 Real onboarding proof | **Complete** — browser-authenticated production evidence; `verify:live-onboarding` remains API-assisted regression coverage |
 | A-5 Fly persistence recovery | **Complete** |
 | A-6 Canonical evidence bundle | **Complete** |
 | A-7 Truth surfaces sync | **Complete** |
@@ -468,6 +468,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-26 Launch-readiness hardening
+
+- Fixed the checked-in TypeScript failure in `src/modules/operations/overview.ts`, returning the repo to a release-clean `npm run type-check` state.
+- Tightened `scripts/record-priority-a-closeout.mjs` so the canonical closeout chain stays strict real-auth only and no longer restores launch-verification headers for onboarding.
+- Reworded `verify:live-onboarding` and the source-of-truth docs so it is clearly treated as API-assisted onboarding regression coverage, while A-4 remains backed by browser-authenticated production evidence in `release-evidence/2026-06-25-priority-a-truth-audit.md`.
+- Verified the hardened repo with `npm run lint`, `npm run type-check`, and `npm run test` (`111/111` passed).
+
 ### 2026-06-26 Priority A doc sync — truth surfaces aligned
 
 - Synced Priority A **COMPLETE** (26 June 2026) across `HANDOFF.md`, `AGENTS.md`, `PLATFORM-GUIDE.md`, `docs/ideas/FINAL-PHASE-PLAN.md`, `.cursor/rules/00-source-of-truth.mdc`.
@@ -641,7 +648,7 @@ This section is the running record of what has been requested, added, and commit
 
 ### 2026-06-23 Item 3 live proof complete — Full End-to-End List closed
 
-- Added **`npm run verify:live-onboarding`** and **`scripts/live-onboarding-utils.mjs`** for automated live onboarding proof.
+- Added **`npm run verify:live-onboarding`** and **`scripts/live-onboarding-utils.mjs`** for API-assisted live onboarding regression coverage.
 - Live walkthrough now ensures walkthrough student onboarding is complete before route checks (dashboard gate compatibility).
 - **Item 3 status:** **COMPLETE** — evidence in `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`.
 - **All 22 items** now have live proof on Fly production at https://theswitchplatform.com.
@@ -725,6 +732,12 @@ This section is the running record of what has been requested, added, and commit
 
 - Aligned `AGENTS.md`, `HANDOFF.md`, `PLATFORM-GUIDE.md`, `docs/ideas/README.md`, `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`, and the Mock Idea reference docs to the same current story: current MVP closeout complete, Priorities A-D closed, Priority E deferred only.
 - Left historical archive/build-record sections intact where they are explicitly marked as history, but removed stale active-instruction wording that still pointed agents toward open Priority B or D work.
+
+### 2026-06-26 ChatGPT prompt pack
+
+- Added `docs/CHATGPT-PROJECT-AUDIT-PROMPT.md` for high-context project analysis, architecture review, and change recommendations in ChatGPT.
+- Added `docs/CHATGPT-WEBSITE-STREAMLINE-PROMPT.md` for website look-and-feel refinement, UI streamlining, and front-end recommendation work in ChatGPT.
+- Added `docs/CHATGPT-PROMPTS-README.md` so the prompt files can be reused quickly without rebuilding project context each time.
 
 ### 2026-06-21 Exam Engine service test coverage (Priority #1)
 
@@ -3255,7 +3268,8 @@ Also indexed in [`PLATFORM-GUIDE.md` → Full End-to-End Completion List](./PLAT
 
 **COMPLETE** on https://theswitchplatform.com (Fly.io, sqlite `/data`).
 
-- `npm run verify:live-onboarding` — passed (fresh learner → guided setup → personalised dashboard)
+- Browser-authenticated production proof recorded in `release-evidence/2026-06-25-priority-a-truth-audit.md`
+- `npm run verify:live-onboarding` — passed as API-assisted regression coverage (fresh learner simulation → guided setup → personalised dashboard)
 - Evidence: `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
 - Seneca-style UI at `/onboarding`; mockup: `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md`
 

@@ -120,6 +120,7 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Live state → **`HANDOFF.md` → Live session state**
 - Build history → **`README.md` → Ordered Build Record**
 - UI / active plan → **`docs/ideas/FINAL-PHASE-PLAN.md`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
+- External prompt pack → **`docs/CHATGPT-PROMPTS-README.md`**
 
 ---
 
@@ -220,7 +221,8 @@ npm run verify:live-truth-match
 ## Item 3 completion record (23 June 2026)
 
 - **Status: COMPLETE** on https://theswitchplatform.com
-- **Proof:** `npm run verify:live-onboarding` passed
+- **Proof:** browser-authenticated production onboarding evidence in `release-evidence/2026-06-25-priority-a-truth-audit.md`
+- **Supportive automation:** `npm run verify:live-onboarding` passed as an API-assisted fresh-learner regression check
 - **Evidence:** `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`
 - **UI mockup (visual):** `docs/SENECA-STYLE-ONBOARDING-MOCKUP.md`
 - **UI build reference (code from here):** `docs/MOCK-IDEA-BUILD-REFERENCE.md`

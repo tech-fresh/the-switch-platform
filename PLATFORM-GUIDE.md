@@ -284,7 +284,7 @@ Do not describe the platform as fully complete unless **every** item below is co
 
 **Completion rule:** All 22 items are done in the real target environment with refreshed Priority A proof recorded (26 June 2026). The platform may be described as fully complete, fully live, and 100% end to end.
 
-**Item 3 status (23 June 2026):** **COMPLETE** — live proof in `release-evidence/2026-06-23-final-path-mark-2-item-3-complete.md`. Re-check: `npm run verify:live-onboarding`.
+**Item 3 status (23 June 2026; browser-auth proof strengthened 25 June 2026):** **COMPLETE** — browser-authenticated production proof is recorded in `release-evidence/2026-06-25-priority-a-truth-audit.md`. `npm run verify:live-onboarding` remains API-assisted regression coverage, not the strict A-4 real-auth proof.
 
 ### Operator notes
 

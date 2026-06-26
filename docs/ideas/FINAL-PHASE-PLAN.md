@@ -192,7 +192,7 @@ npm run verify:priority-a-closeout
   - live-readiness (via `verify:launch-complete`)
   - persistence-recovery (Fly delegate on `/data`)
   - real-auth walkthrough
-  - real onboarding proof (`verify:live-onboarding`)
+  - referenced browser-authenticated onboarding proof from the interim truth audit
   - launch-signoff (Fly delegate)
   - launch-complete
   - live-truth-match (A-8 explicit rerun)
@@ -205,6 +205,7 @@ npm run verify:priority-a-closeout
 - `npm run verify:priority-a-closeout` passes end to end.
 - The new evidence file supersedes earlier partial evidence.
 - Older evidence remains in repo but is marked historical/superseded where necessary.
+- The canonical bundle does not imply that API-assisted onboarding regression coverage is part of the strict real-auth chain.
 
 ### A-7. Make launch-status and governance surfaces tell the current truth
 

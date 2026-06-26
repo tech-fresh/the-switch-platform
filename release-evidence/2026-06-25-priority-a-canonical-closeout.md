@@ -23,10 +23,15 @@ From `release-evidence/2026-06-25-priority-a-truth-audit.md`:
 - **A-4** real 8-step learner onboarding through the browser
 - **A-5** Fly production persistence recovery on `/data`
 
+## Supportive regression proof kept outside the strict closeout chain
+
+- `npm run verify:live-onboarding` remains a useful API-assisted onboarding regression check.
+- It is not counted as part of the strict A-4 real-auth proof inside this canonical bundle because it uses launch-verification headers to simulate a fresh learner.
+
 ## Run metadata
 
 - Generated: 2026-06-25T23:43:16.312Z
-- Strict real-auth: `SWITCH_LAUNCH_VERIFICATION_SECRET` blanked for closeout steps
+- Strict real-auth closeout steps: `SWITCH_LAUNCH_VERIFICATION_SECRET` blanked
 - Fly persistence delegate: `fly ssh console -a the-switch-platform -C "sh -lc 'cd /app && node scripts/persistence-recovery-check.mjs'"`
 - Fly sign-off delegate: `fly ssh console -a the-switch-platform -C "sh -lc 'cd /app && node scripts/launch-signoff.mjs'"`
 
@@ -83,29 +88,11 @@ Final live sequence:
 npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
 ```
 
-## verify:live-onboarding (fresh learner API proof)
+## Onboarding proof note
 
-```text
-> the-switch-platform@0.1.0 verify:live-onboarding
-> node scripts/verify-live-onboarding.mjs
+The strict canonical closeout relies on the browser-authenticated A-4 evidence recorded in `release-evidence/2026-06-25-priority-a-truth-audit.md`.
 
-Live onboarding proof target: https://theswitchplatform.com
-Proof learner user id: onboarding-live-proof-1782430998859
-Checking signed-out /onboarding redirect...
-Checking fresh learner onboarding overview...
-Checking Seneca-style onboarding page...
-Completing onboarding via API (mirrors guided setup steps)...
-Checking completed onboarding overview...
-Checking personalised dashboard access...
-Checking completed onboarding route redirect...
-Live onboarding proof passed:
-- Signed-out route protection on /onboarding
-- Account type, qualification (GCSE + iGCSE), profile/year, school + UK sources
-- Subject selection, accessibility/SEND flags, guardian invite, age/consent
-- Dashboard gate opens with personalised home after completion
-
-npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
-```
+`npm run verify:live-onboarding` is kept as useful API-assisted regression coverage for the onboarding module, but it is not counted as part of the strict real-auth closeout chain.
 
 ## verify:launch-complete (full final sequence)
 
@@ -164,4 +151,3 @@ npm warn Unknown env config "devdir". This will stop working in the next major v
 ```bash
 npm run verify:priority-a-closeout
 ```
-

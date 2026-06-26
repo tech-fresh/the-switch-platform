@@ -209,7 +209,6 @@ export function buildOperationsOverview(input: BuildOperationsOverviewInput): Op
       status: input.contentTopicCount <= 30 ? "within-budget" : "watch",
       currentValue: `${input.contentTopicCount} topics`,
       targetValue: "30 topics or fewer in the current MVP scope",
-      detail: "The content catalog is still small enough that route payload growth should stay manageable for this launch phase.",
       detail: "The content catalog is still small enough that route payload growth should stay manageable for the current MVP footprint.",
     },
     {

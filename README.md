@@ -112,7 +112,7 @@ flowchart LR
 
 ### Priority A — COMPLETE (26 June 2026)
 
-**Authoritative:** synced with `HANDOFF.md` and `AGENTS.md`. Truthful completion lane **closed**. Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout` after cookie refresh for new releases.
+**Authoritative:** synced with `HANDOFF.md` and `AGENTS.md`. Truthful completion lane **closed**. Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. `verify:live-onboarding` is documented as API-assisted regression only; strict A-4 remains browser proof in `release-evidence/2026-06-25-priority-a-truth-audit.md`. Re-run: `npm run verify:priority-a-closeout` after cookie refresh for new releases.
 
 | Item | Status |
 |------|--------|
@@ -468,6 +468,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-26 Priority A fresh closeout — onboarding proof split
+
+- Re-ran `npm run verify:priority-a-closeout` on clean branch `verify/priority-a-closeout-2026-06-26`; strict real-auth chain green (cookies, launch-status, launch-complete, live-truth-match).
+- Fresh superseding canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`.
+- Split onboarding proof story: **A-4** stays browser-authenticated in `release-evidence/2026-06-25-priority-a-truth-audit.md`; `verify:live-onboarding` is API-assisted/synthetic regression only (launch-verification headers) and runs **after** the strict closeout chain in `record-priority-a-closeout.mjs`.
+- Added explicit file header on `scripts/verify-live-onboarding.mjs` documenting evidence class.
+
 ### 2026-06-26 Launch-readiness hardening
 
 - Fixed the checked-in TypeScript failure in `src/modules/operations/overview.ts`, returning the repo to a release-clean `npm run type-check` state.
@@ -483,7 +490,7 @@ This section is the running record of what has been requested, added, and commit
 ### 2026-06-26 Priority A complete — A-6 and A-8 closed
 
 - `npm run verify:priority-a-closeout` passed end to end with refreshed live cookies.
-- Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md` (A-6 + A-8 **COMPLETE**).
+- Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md` (A-6 + A-8 **COMPLETE**).
 - Fixed `verify-live-onboarding.mjs` dashboard assertion for Study Atelier student shell (no literal "Dashboard" in HTML).
 
 ### 2026-06-26 Priority A closeout tooling — A-6 / A-8 recorder
@@ -2905,7 +2912,7 @@ The four biggest things still stopping a true 100% launch are:
 Historical archive note:
 
 - This section preserves the pre-closeout roadmap that explained why the project was still described as `near-launch`.
-- It is now superseded by the 26 June 2026 Priority A closeout and the canonical evidence file `release-evidence/2026-06-25-priority-a-canonical-closeout.md`.
+- It is now superseded by the 26 June 2026 Priority A closeout and the canonical evidence file `release-evidence/2026-06-26-priority-a-canonical-closeout.md`.
 - Keep this history for context, but do not read the wording below as the current live status.
 
 This was the full plan for taking the project from a strong near-launch build to a true 100% production-ready release.

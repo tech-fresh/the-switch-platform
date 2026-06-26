@@ -25,6 +25,9 @@ const flySignoffCommand =
   process.env.SWITCH_LAUNCH_SIGNOFF_COMMAND?.trim() ||
   `fly ssh console -a ${flyAppName} -C "sh -lc 'cd /app && node scripts/launch-signoff.mjs'"`;
 
+const launchVerificationSecret =
+  process.env.SWITCH_LAUNCH_VERIFICATION_SECRET?.trim() ?? "";
+
 const closeoutEnv = {
   ...process.env,
   SWITCH_LAUNCH_VERIFICATION_SECRET: "",
@@ -33,6 +36,11 @@ const closeoutEnv = {
   SWITCH_LIVE_FETCH_TIMEOUT_MS: process.env.SWITCH_LIVE_FETCH_TIMEOUT_MS ?? "90000",
   SWITCH_PERSISTENCE_RECOVERY_COMMAND: flyPersistenceCommand,
   SWITCH_LAUNCH_SIGNOFF_COMMAND: flySignoffCommand,
+};
+
+const onboardingRegressionEnv = {
+  ...process.env,
+  SWITCH_LAUNCH_VERIFICATION_SECRET: launchVerificationSecret,
 };
 
 const steps = [
@@ -122,6 +130,53 @@ for (const step of steps) {
       console.error("Stop here until SWITCH_LIVE_STUDENT_COOKIE and SWITCH_LIVE_ADMIN_COOKIE are refreshed.");
       break;
     }
+  }
+}
+
+sections.push(`## Onboarding proof note
+
+The strict canonical closeout relies on the browser-authenticated **A-4** evidence recorded in \`release-evidence/2026-06-25-priority-a-truth-audit.md\`.
+
+\`npm run verify:live-onboarding\` is kept as useful API-assisted regression coverage for the onboarding module, but it is **not** counted as part of the strict real-auth closeout chain.
+`);
+
+if (allPassed) {
+  if (launchVerificationSecret) {
+    console.log("\n> verify:live-onboarding (API-assisted regression — outside strict chain)");
+
+    try {
+      const result = await runCommand(npmCommand, [...npmArgsPrefix, "run", "verify:live-onboarding"], {
+        label: "verify:live-onboarding (API-assisted regression)",
+        env: onboardingRegressionEnv,
+      });
+      const output = `${result.stdout}\n${result.stderr}`.trim();
+      sections.push(`## verify:live-onboarding (API-assisted regression — not strict A-4)
+
+Evidence class: synthetic/API-assisted only (launch-verification headers + API profile updates).
+
+\`\`\`text
+${output}
+\`\`\``);
+      console.log("- passed (supportive regression only)");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      sections.push(`## verify:live-onboarding (API-assisted regression — not strict A-4)
+
+Evidence class: synthetic/API-assisted only.
+
+**FAILED** — this does not invalidate A-4 browser proof or the strict closeout above.
+
+\`\`\`text
+${message}
+\`\`\``);
+      console.error(`- failed (supportive regression only): ${message}`);
+    }
+  } else {
+    sections.push(`## verify:live-onboarding (API-assisted regression — skipped)
+
+\`SWITCH_LAUNCH_VERIFICATION_SECRET\` was unset in the operator environment, so the API-assisted onboarding regression check was not run. Strict closeout steps above remain valid. Set the secret locally to run \`npm run verify:live-onboarding\` separately.
+`);
+    console.log("\n- skipped verify:live-onboarding (SWITCH_LAUNCH_VERIFICATION_SECRET unset)");
   }
 }
 

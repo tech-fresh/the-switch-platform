@@ -70,7 +70,7 @@ flowchart TD
 
 ## Priority A — Truthful completion — **COMPLETE (26 June 2026)**
 
-**Status: CLOSED.** All A-1–A-8 items below are done. Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout`. Do not reopen A unless new evidence breaks the closeout or the operator explicitly asks for it.
+**Status: CLOSED.** All A-1–A-8 items below are done. Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. `verify:live-onboarding` is recorded as API-assisted regression outside strict A-4 (browser proof remains in `release-evidence/2026-06-25-priority-a-truth-audit.md`). Re-run: `npm run verify:priority-a-closeout`. Do not reopen A unless new evidence breaks the closeout or the operator explicitly asks for it.
 
 These were the blockers to an honest full-completion claim. They are now closed.
 

@@ -1,3 +1,12 @@
+/**
+ * API-assisted live onboarding regression check — NOT strict real-auth A-4 proof.
+ *
+ * Requires SWITCH_LAUNCH_VERIFICATION_SECRET and simulates a fresh learner via
+ * launch-verification headers plus API profile updates. Use for module regression
+ * coverage only. Strict A-4 browser-authenticated proof lives in
+ * release-evidence/2026-06-25-priority-a-truth-audit.md and is referenced by
+ * npm run verify:priority-a-closeout without running this command in that chain.
+ */
 import "./load-script-env.mjs";
 
 import { assert, fetchJson, fetchResponse, fetchText } from "./launch-utils.mjs";

@@ -88,3 +88,11 @@ Dashboard module reads onboarding via `getOnboardingOverview()` — **do not re-
 npm run test -- tests/onboarding-service.test.mjs
 npm run verify:live-onboarding
 ```
+
+### Live proof classes (appended 26 June 2026)
+
+| Command | Evidence class | Priority letter |
+|---------|----------------|-----------------|
+| Browser onboarding on production | Strict real-auth **A-4** | Recorded in `release-evidence/2026-06-25-priority-a-truth-audit.md` |
+| `npm run verify:live-onboarding` | API-assisted / synthetic only (requires `SWITCH_LAUNCH_VERIFICATION_SECRET`) | Supportive regression — **not** strict A-4; runs outside `verify:priority-a-closeout` strict chain |
+| `npm run verify:priority-a-closeout` | Strict real-auth A-6 + A-8 | Latest: `release-evidence/2026-06-26-priority-a-canonical-closeout.md` |

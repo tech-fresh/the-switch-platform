@@ -42,7 +42,7 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | **Launch subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
 | **Onboarding** | 8 steps; `/onboarding` → `/dashboard`; see `src/modules/onboarding/README.md` |
 | **Priority C** | **Complete — 24 June 2026** (shell, focus mode, planner, marketing, recovery) |
-| **Priority A** | **Complete — 26 June 2026** (A-1–A-8; evidence in `release-evidence/2026-06-25-priority-a-canonical-closeout.md`) |
+| **Priority A** | **Complete — 26 June 2026** (A-1–A-8; canonical evidence in `release-evidence/2026-06-26-priority-a-canonical-closeout.md`) |
 | **Active work** | **Priority E** — deferred scope only; current MVP completion plan is closed |
 | **Key routes** | `/`, `/login`, `/onboarding`, `/dashboard`, `/subjects`, `/exams`, `/assessments`, `/progress` |
 
@@ -279,7 +279,8 @@ Do not describe the platform as fully complete unless **every** item below is co
 | `npm run verify:live-truth-match` (A-8) | Passed 26 June 2026 |
 | `npm run verify:priority-a-closeout` (A-6) | Passed 26 June 2026 |
 | Admin launch view | 6/6 environment · 5/5 sign-off · 8/8 evidence |
-| Canonical evidence | `release-evidence/2026-06-25-priority-a-canonical-closeout.md` |
+| Canonical evidence | `release-evidence/2026-06-26-priority-a-canonical-closeout.md` |
+| Prior canonical rerun | `release-evidence/2026-06-25-priority-a-canonical-closeout.md` |
 | Historical evidence | `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` |
 
 **Completion rule:** All 22 items are done in the real target environment with refreshed Priority A proof recorded (26 June 2026). The platform may be described as fully complete, fully live, and 100% end to end.

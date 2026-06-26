@@ -65,9 +65,9 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
+- **Current branch:** `main`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-26 (launch-ready hardening pass complete)
+- **Last updated:** 2026-06-26 (Priority A fresh closeout merged to main)
 
 ### Active task
 
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Priority A onboarding proof split + fresh closeout (26 June 2026)** — re-ran `npm run verify:priority-a-closeout`; all strict real-auth steps green. Fresh canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. `verify:live-onboarding` is recorded separately as API-assisted/synthetic regression only (not strict A-4). A-4 remains browser-authenticated proof in `release-evidence/2026-06-25-priority-a-truth-audit.md`.
 - **Launch-readiness hardening (26 June 2026)** — fixed the checked-in TypeScript blocker in `src/modules/operations/overview.ts` and tightened Priority A closeout wording so strict real-auth evidence no longer implies that `verify:live-onboarding` is part of the strict chain.
 - **ChatGPT prompt pack added (26 June 2026)** — added reusable prompt files for external analysis and website streamlining: `docs/CHATGPT-PROJECT-AUDIT-PROMPT.md`, `docs/CHATGPT-WEBSITE-STREAMLINE-PROMPT.md`, and `docs/CHATGPT-PROMPTS-README.md`.
 - **Final source-of-truth doc sync (26 June 2026)** — aligned `AGENTS.md`, `HANDOFF.md`, `PLATFORM-GUIDE.md`, `docs/ideas/README.md`, `docs/ideas/STREAMLINE-WEBSITE-PLAN.md`, and the Mock Idea reference docs so the active repo entry points all describe the same closed A–D / deferred E story.
@@ -107,7 +108,7 @@ Update this section every session.
 - **Priority B roadmap-reference sync (26 June 2026)** — docs that point to `FINAL-PHASE-PLAN.md` now describe it as the full remaining-work audit instead of the old `FP-*` redesign tracker; historical FP references are kept but labeled as archive context.
 - **Priority B stale-note cleanup (26 June 2026)** — active README/admin/governance truth surfaces now say Priority A is complete; older near-launch wording is explicitly marked as historical archive context instead of current live status.
 - **Priority A doc sync (26 June 2026)** — aligned `HANDOFF`, `AGENTS`, `README`, `PLATFORM-GUIDE`, `FINAL-PHASE-PLAN`, and `.cursor/rules` so Priority A is **COMPLETE** everywhere; active lane is **Priority B**.
-- **Priority A — COMPLETE (26 June 2026)** — `npm run verify:priority-a-closeout` passed end to end. **A-6** canonical evidence bundle and **A-8** truth-match green. Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Fixed `verify-live-onboarding.mjs` dashboard shell assertion (Study Atelier / study home markers).
+- **Priority A — COMPLETE (26 June 2026)** — `npm run verify:priority-a-closeout` passed end to end. **A-6** canonical evidence bundle and **A-8** truth-match green. Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. Fixed `verify-live-onboarding.mjs` dashboard shell assertion (Study Atelier / study home markers).
 - **A-6 / A-8 closeout tooling** — `npm run verify:check-live-cookies`, `npm run verify:priority-a-closeout`, Fly-delegated persistence/sign-off in `launch-complete.mjs`.
 - **Mock Log in visibility** — marketing header layout fixed so **Log in** is never clipped in the mock gallery; nav always visible on mobile; explicit **Log in** on homepage hero, `/mock-idea-preview` top bar, and signed-out student shell.
 - **Auth allowlist showcase** — `allowlist-service.ts`, `AuthAccessPathPanel` on `/login?intent=admin`, `/account`, and `/admin`; shows student vs admin path, masked allowlist entries (admin/editor viewers), and live sign-in record (email, provider, roles, session expiry). Tests: `tests/auth-allowlist.test.mjs`. Admin sign-in URL: `/login?intent=admin&returnTo=/admin`.
@@ -139,12 +140,14 @@ Update this section every session.
 
 ### Verification last run
 
+Fresh rerun on 26 June 2026:
+
 - [x] `npm run verify:check-live-cookies`
 - [x] `npm run verify:launch-status`
-- [x] `npm run verify:live-onboarding`
-- [x] `npm run verify:launch-complete`
+- [x] `npm run verify:live-onboarding` (API-assisted regression — **not** strict A-4)
+- [x] `npm run verify:launch-complete` (strict real-auth; `SWITCH_LAUNCH_VERIFICATION_SECRET` blanked)
 - [x] `npm run verify:live-truth-match` (A-8)
-- [x] `npm run verify:priority-a-closeout` (A-6 canonical bundle)
+- [x] `npm run verify:priority-a-closeout` (A-6 canonical bundle → `release-evidence/2026-06-26-priority-a-canonical-closeout.md`)
 - [x] `npm run lint && npm run type-check && npm run test` (111 tests)
 
 ---
@@ -823,6 +826,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-26 — Cursor — Priority A onboarding proof split + fresh closeout
+
+- Done: marked `verify:live-onboarding` explicitly as API-assisted/synthetic regression only (file header + closeout recorder runs it outside the strict chain)
+- Done: re-ran full Priority A closeout on clean branch `verify/priority-a-closeout-2026-06-26`; all strict steps green
+- Done: fresh canonical evidence `release-evidence/2026-06-26-priority-a-canonical-closeout.md` (includes supportive onboarding regression output labeled **not strict A-4**)
+- Done: A-4 real-auth proof remains referenced from `release-evidence/2026-06-25-priority-a-truth-audit.md`
+- Verification: `verify:check-live-cookies`, `verify:launch-status`, `verify:launch-complete`, `verify:live-truth-match`, `verify:live-onboarding`, `verify:priority-a-closeout` — all passed
+- Next: Priority E deferred scope only if the operator wants expansion beyond the current MVP
 
 ### 2026-06-26 — Cursor — Priority A doc sync + push
 

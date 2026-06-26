@@ -35,7 +35,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 **Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Do not reopen C-1–C-10 unless the operator explicitly requests an exception.
 
-**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Priorities **B**, **C**, and **D** are also complete for the current MVP.
+**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. Strict closeout chain blanks `SWITCH_LAUNCH_VERIFICATION_SECRET`; `verify:live-onboarding` runs afterward as API-assisted regression only (not strict A-4). Browser-authenticated A-4 proof remains in `release-evidence/2026-06-25-priority-a-truth-audit.md`. Priorities **B**, **C**, and **D** are also complete for the current MVP.
 
 **At session end:** run verification, confirm push, refresh **`HANDOFF.md`** and **`AGENTS.md`** if the story changed.
 
@@ -207,7 +207,7 @@ Do not describe the platform as fully complete unless every item below is comple
 
 **Completion rule:** Only when all 22 items above are done should the platform be described as fully complete, fully live, and 100% end to end.
 
-**As of 26 June 2026:** all 22 items remain complete on Fly production at https://theswitchplatform.com. Priority A closeout re-confirmed A-6 and A-8. Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md` (canonical); `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` (historical).
+**As of 26 June 2026:** all 22 items remain complete on Fly production at https://theswitchplatform.com. Priority A closeout re-confirmed A-6 and A-8. Evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md` (canonical); `release-evidence/2026-06-25-priority-a-canonical-closeout.md` and `release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md` (historical).
 
 Re-check item 22 anytime:
 
@@ -277,7 +277,7 @@ route (thin page) → module service → API route → persistence
 
 **What is next:** Priority **B** — repo/docs sync. Priority **A** and **C** are **complete**.
 
-**Current A status (26 June 2026):** **COMPLETE** — A-1 through A-8 closed. Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout` after cookie refresh for new releases.
+**Current A status (26 June 2026):** **COMPLETE** — A-1 through A-8 closed. Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout` after cookie refresh for new releases.
 
 **Key files for agents**
 

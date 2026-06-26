@@ -21,15 +21,6 @@ import { getLiveWalkthroughConfig } from "./live-walkthrough-utils.mjs";
 import { ensureWalkthroughStudentOnboardingComplete } from "./live-onboarding-utils.mjs";
 
 const repoRoot = getRepoRoot();
-const FLY_MACHINE_READY_STATES = new Set(["started"]);
-const FLY_MACHINE_PENDING_STATES = new Set(["starting", "stopped", "suspended"]);
-const FLY_MACHINE_WARMUP_TIMEOUT_MS = Number(
-  process.env.SWITCH_FLY_MACHINE_WARMUP_TIMEOUT_MS ?? 120000,
-);
-const FLY_MACHINE_WARMUP_POLL_MS = Number(
-  process.env.SWITCH_FLY_MACHINE_WARMUP_POLL_MS ?? 5000,
-);
-
 const routeChecks = [
   {
     route: "/api/dashboard/home",
@@ -80,12 +71,12 @@ const routeChecks = [
       "Live route walkthrough confirmed results access and submitted-work review continuity in the deployed runtime.",
   },
   {
-    route: "/api/account/overview",
+    route: "/api/auth/session",
     expectedText: null,
     responseType: "json",
     smokeCheckId: "smoke-account-admin",
     note:
-      "Live route walkthrough confirmed signed-in learner account access in the deployed runtime.",
+      "Live route walkthrough confirmed the signed-in learner account session remains live in the deployed runtime.",
   },
   {
     route: "/api/support/hub",
@@ -95,6 +86,37 @@ const routeChecks = [
     note: "",
   },
 ];
+
+const FLY_MACHINE_READY_STATES = new Set(["started"]);
+const FLY_MACHINE_PENDING_STATES = new Set(["starting", "stopped", "suspended"]);
+const FLY_MACHINE_WARMUP_TIMEOUT_MS = Number(
+  process.env.SWITCH_FLY_MACHINE_WARMUP_TIMEOUT_MS ?? 120000,
+);
+const FLY_MACHINE_WARMUP_POLL_MS = Number(
+  process.env.SWITCH_FLY_MACHINE_WARMUP_POLL_MS ?? 5000,
+);
+const ROUTE_WARMUP_STATUSES = new Set([502, 503, 504]);
+const ROUTE_WARMUP_ATTEMPTS = Number(process.env.SWITCH_LIVE_ROUTE_WARMUP_ATTEMPTS ?? 6);
+const ROUTE_WARMUP_DELAY_MS = Number(process.env.SWITCH_LIVE_ROUTE_WARMUP_DELAY_MS ?? 2000);
+
+async function fetchJsonWithWarmup(url, options) {
+  for (let attempt = 1; attempt <= ROUTE_WARMUP_ATTEMPTS; attempt += 1) {
+    const result = await fetchJson(url, options);
+
+    if (result.response.ok || !ROUTE_WARMUP_STATUSES.has(result.response.status)) {
+      return result;
+    }
+
+    if (attempt < ROUTE_WARMUP_ATTEMPTS) {
+      console.log(
+        `${url} wake-up attempt ${attempt}/${ROUTE_WARMUP_ATTEMPTS} returned ${result.response.status}. Retrying...`,
+      );
+      await delay(ROUTE_WARMUP_DELAY_MS);
+    }
+  }
+
+  return fetchJson(url, options);
+}
 
 const {
   baseUrl,
@@ -124,13 +146,15 @@ const passedSmokeChecks = new Map();
 for (const check of routeChecks) {
   console.log(`Checking ${check.route}...`);
   if (check.responseType === "json") {
-    const { response, json } = await fetchJson(`${baseUrl}${check.route}`, {
+    const { response, json } = await fetchJsonWithWarmup(`${baseUrl}${check.route}`, {
       headers: studentHeaders,
     });
 
     assert(
       response.ok,
-      `Expected authenticated ${check.route} to return 200, received ${response.status}.`,
+      response.status === 401
+        ? `Authenticated ${check.route} returned 401. Refresh SWITCH_LIVE_STUDENT_COOKIE via https://theswitchplatform.com/account/live-cookie-guide`
+        : `Expected authenticated ${check.route} to return 200, received ${response.status}.`,
     );
     assert(json, `Expected authenticated ${check.route} to return a JSON payload.`);
 

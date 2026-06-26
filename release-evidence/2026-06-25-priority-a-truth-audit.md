@@ -1,5 +1,7 @@
 # Priority A truth audit — 25 June 2026
 
+> **Interim record — superseded for closeout by** `release-evidence/<date>-priority-a-canonical-closeout.md` **once** `npm run verify:priority-a-closeout` **passes.**
+
 Live host: https://theswitchplatform.com  
 Workspace branch: `main`
 

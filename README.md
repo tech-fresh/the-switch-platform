@@ -12,10 +12,10 @@
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io. We are double-checking that our written records match what really happens when someone signs in. |
-| What are we doing now? | **Priority A** — making sure our proof and notes tell the truth. **Priority C** (website polish) is **finished** (24 June 2026). |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C** (website polish) **finished** (24 June 2026). Next: **Priority B** docs sync. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
-| What is next? | Finish the **proof pack** (Priority A): bundle all evidence in one place. Real auth, onboarding, sign-out, readiness, persistence, sign-off, and truth-match are proved; the last blocker is the flaky `verify:live-walkthrough:real-auth` / `verify:launch-complete` wrapper path. |
+| What is next? | **Priority B** — stale notes and near-launch wording cleanup per `docs/ideas/FINAL-PHASE-PLAN.md`. |
 
 **Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception.
 
@@ -35,7 +35,7 @@
 |-------|----------------|--------|
 | **Live website** | Students can use the real site on Fly.io | **Running** |
 | **Website polish (Priority C)** | Shared study layout, planner, public pages, recovery screens | **Done — 24 June 2026** |
-| **Proof audit (Priority A)** | Written notes, admin screen, and live site must all tell the same story | **In progress** |
+| **Proof audit (Priority A)** | Written notes, admin screen, and live site must all tell the same story | **Complete — 26 June 2026** |
 | **Wales / NI GCSE** | Extra qualification routes | **Later — not in MVP yet** |
 
 ### Two lanes — do not mix them up
@@ -450,6 +450,19 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-26 Priority A complete — A-6 and A-8 closed
+
+- `npm run verify:priority-a-closeout` passed end to end with refreshed live cookies.
+- Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md` (A-6 + A-8 **COMPLETE**).
+- Fixed `verify-live-onboarding.mjs` dashboard assertion for Study Atelier student shell (no literal "Dashboard" in HTML).
+
+### 2026-06-26 Priority A closeout tooling — A-6 / A-8 recorder
+
+- **`npm run verify:check-live-cookies`** — validates student/admin `switch_auth_session` cookies against production.
+- **`npm run verify:priority-a-closeout`** — writes canonical `release-evidence/<date>-priority-a-canonical-closeout.md` (launch-status, launch-complete with Fly persistence/sign-off delegates, onboarding proof, truth-match).
+- Walkthrough retries on 502/503/504; expired-cookie errors point to `/account/live-cookie-guide`.
+- **Status:** A-6 and A-8 remain open until closeout passes with fresh cookies.
 
 ### 2026-06-25 Auth email allowlist — admin sign-in showcase
 

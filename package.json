@@ -26,6 +26,8 @@
     "verify:live-truth-match": "node scripts/live-truth-match.mjs",
     "verify:launch-signoff": "node scripts/launch-signoff.mjs",
     "verify:launch-complete": "node scripts/launch-complete.mjs",
+    "verify:check-live-cookies": "node scripts/check-live-auth-cookies.mjs",
+    "verify:priority-a-closeout": "node scripts/record-priority-a-closeout.mjs",
     "verify:persistence-recovery": "node scripts/persistence-recovery-check.mjs",
     "verify:blob-health": "node scripts/verify-blob-health.mjs",
     "verify:persistence-health": "node scripts/verify-persistence-health.mjs",

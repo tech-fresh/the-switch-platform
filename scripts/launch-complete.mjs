@@ -9,6 +9,8 @@ const useNodeNpmExec = npmExecPath ? await fileExists(npmExecPath) : false;
 const npmCommand = useNodeNpmExec ? process.execPath : "npm";
 const npmArgsPrefix = useNodeNpmExec ? [npmExecPath] : [];
 const delegatedSignoffCommand = process.env.SWITCH_LAUNCH_SIGNOFF_COMMAND?.trim() ?? "";
+const delegatedPersistenceRecoveryCommand =
+  process.env.SWITCH_PERSISTENCE_RECOVERY_COMMAND?.trim() ?? "";
 const finalSequenceEnv = {
   ...process.env,
   // The final completion path must exercise real auth, not launch-verification headers.
@@ -62,6 +64,14 @@ for (const scriptName of finalLaunchScripts) {
   process.stdout.write(`\n> Running ${scriptName}\n`);
   if (scriptName === "verify:launch-signoff" && delegatedSignoffCommand) {
     await runCommand("/bin/sh", ["-lc", delegatedSignoffCommand], {
+      label: `delegated ${scriptName}`,
+      env: finalSequenceEnv,
+    });
+    continue;
+  }
+
+  if (scriptName === "verify:persistence-recovery" && delegatedPersistenceRecoveryCommand) {
+    await runCommand("/bin/sh", ["-lc", delegatedPersistenceRecoveryCommand], {
       label: `delegated ${scriptName}`,
       env: finalSequenceEnv,
     });

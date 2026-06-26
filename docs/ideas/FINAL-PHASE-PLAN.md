@@ -176,20 +176,29 @@ These are the blockers to an honest full-completion claim. Do these first.
 
 **Required work**
 
-- Create one canonical, date-stamped final evidence bundle that includes:
+- Run the canonical closeout recorder:
+
+```bash
+npm run verify:priority-a-closeout
+```
+
+- That command writes `release-evidence/<date>-priority-a-canonical-closeout.md` and includes:
   - launch-status
-  - live-readiness
-  - persistence-recovery
+  - live-readiness (via `verify:launch-complete`)
+  - persistence-recovery (Fly delegate on `/data`)
   - real-auth walkthrough
-  - real onboarding proof
-  - launch-signoff
+  - real onboarding proof (`verify:live-onboarding`)
+  - launch-signoff (Fly delegate)
   - launch-complete
-  - live-truth-match
-  - browser/manual notes
+  - live-truth-match (A-8 explicit rerun)
+  - browser/manual notes (referenced from interim audit)
+
+**Prerequisite:** refresh `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE` — run `npm run verify:check-live-cookies` first.
 
 **Done when**
 
-- A new single evidence file supersedes earlier partial evidence.
+- `npm run verify:priority-a-closeout` passes end to end.
+- The new evidence file supersedes earlier partial evidence.
 - Older evidence remains in repo but is marked historical/superseded where necessary.
 
 ### A-7. Make launch-status and governance surfaces tell the current truth
@@ -216,11 +225,16 @@ These are the blockers to an honest full-completion claim. Do these first.
 
 **Required work**
 
-- Run `npm run verify:live-truth-match` again after truth cleanup.
+- Run `npm run verify:live-truth-match` after truth cleanup, or run the full closeout:
+
+```bash
+npm run verify:priority-a-closeout
+```
 
 **Done when**
 
 - Item 22 is true in both content and proof, not only in mirrored docs.
+- `verify:live-truth-match` is green inside the canonical closeout bundle.
 
 ---
 
@@ -471,9 +485,9 @@ Mark these only when evidence exists.
 - [x] A-3 Real sign-out + route rejection proof recorded
 - [x] A-4 Real fresh-learner onboarding proof recorded
 - [x] A-5 Persistence recovery proven on true production storage path
-- [ ] A-6 Canonical final release-evidence bundle created
+- [x] A-6 Canonical final release-evidence bundle created
 - [x] A-7 Launch-status / governance / docs all tell the same truth
-- [ ] A-8 Final truth-match rerun and green
+- [x] A-8 Final truth-match rerun and green
 
 ### Product completion
 

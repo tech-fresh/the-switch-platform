@@ -117,7 +117,24 @@ if (!liveBaseUrl) {
 const governanceRecording = await recordLiveReadiness(
   getGovernanceRecordingConfig(liveBaseUrl ? "live-readiness" : "environment-readiness"),
   `Live readiness passed for ${authMode} auth, ${persistenceDriver} persistence, and ${cmsBackendMode} editorial mode${liveBaseUrl ? ` against ${liveBaseUrl.replace(/\/+$/, "")}` : ""}.`,
-);
+).catch((error) => {
+  const sqliteError =
+    error?.code === "ERR_SQLITE_ERROR" ||
+    error?.errcode === 14 ||
+    (error instanceof Error && error.message.includes("unable to open database file"));
+
+  if (sqliteError) {
+    console.log(
+      "- Launch governance was not recorded locally because SWITCH_DATA_DIRECTORY is not writable on this machine.",
+    );
+    console.log(
+      "- Readiness still passed against the live URL. Record governance on Fly if required.",
+    );
+    return false;
+  }
+
+  throw error;
+});
 
 if (governanceRecording) {
   console.log("- Launch governance recording updated the environment checks and live-readiness evidence for this run.");

@@ -95,9 +95,15 @@ assert(options.subjects.length > 0, "Expected at least one selectable subject.")
 
 const gcseSubjects = options.subjects.filter((subject) => subject.qualificationLabel === "GCSE");
 const igcseSubjects = options.subjects.filter((subject) => subject.qualificationLabel === "IGCSE");
-assert.equal(gcseSubjects.length, 3, "Expected three GCSE MVP launch subjects.");
-assert.equal(igcseSubjects.length, 1, "Expected one iGCSE MVP launch subject.");
-assert.ok(
+assert(
+  gcseSubjects.length === 3,
+  `Expected three GCSE MVP launch subjects, received ${gcseSubjects.length}.`,
+);
+assert(
+  igcseSubjects.length === 1,
+  `Expected one iGCSE MVP launch subject, received ${igcseSubjects.length}.`,
+);
+assert(
   gcseSubjects.some((subject) => subject.subjectId === "gcse-combined-science"),
   "Expected GCSE Combined Science in onboarding options.",
 );
@@ -161,9 +167,14 @@ assert(
   dashboardPage.response.ok,
   `Expected /dashboard after onboarding to return 200, received ${dashboardPage.response.status}.`,
 );
+const dashboardShellMarkers = [
+  "Study Atelier",
+  "Your study home",
+  "Recommended now",
+];
 assert(
-  dashboardPage.body.includes("Dashboard"),
-  "Expected personalised dashboard page after onboarding completion.",
+  dashboardShellMarkers.some((marker) => dashboardPage.body.includes(marker)),
+  `Expected personalised student dashboard shell after onboarding completion (looked for: ${dashboardShellMarkers.join(", ")}).`,
 );
 
 const dashboardApi = await fetchJson(`${baseUrl}/api/dashboard/home`, {

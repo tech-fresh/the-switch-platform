@@ -67,13 +67,14 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main` (PR #4 + PR #5 merged 23 June 2026)
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-25 (auth email allowlist + admin sign-in showcase)
+- **Last updated:** 2026-06-26 (Priority A complete — A-6 and A-8 closed)
 
 ### Active task
 
-- **Priority item #:** A — Truthful completion (fix the proof gap)
+- **Priority item #:** A — Truthful completion
 - **Module:** launch verification + truth surfaces
-- **Status:** **Active** — A-1 to A-8 in `docs/ideas/FINAL-PHASE-PLAN.md`
+- **Status:** **COMPLETE** — A-1 to A-8 closed 26 June 2026
+- **Evidence:** `release-evidence/2026-06-25-priority-a-canonical-closeout.md`
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +100,8 @@ Update this section every session.
 
 ### What was just completed
 
+- **Priority A — COMPLETE (26 June 2026)** — `npm run verify:priority-a-closeout` passed end to end. **A-6** canonical evidence bundle and **A-8** truth-match green. Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Fixed `verify-live-onboarding.mjs` dashboard shell assertion (Study Atelier / study home markers).
+- **A-6 / A-8 closeout tooling** — `npm run verify:check-live-cookies`, `npm run verify:priority-a-closeout`, Fly-delegated persistence/sign-off in `launch-complete.mjs`.
 - **Mock Log in visibility** — marketing header layout fixed so **Log in** is never clipped in the mock gallery; nav always visible on mobile; explicit **Log in** on homepage hero, `/mock-idea-preview` top bar, and signed-out student shell.
 - **Auth allowlist showcase** — `allowlist-service.ts`, `AuthAccessPathPanel` on `/login?intent=admin`, `/account`, and `/admin`; shows student vs admin path, masked allowlist entries (admin/editor viewers), and live sign-in record (email, provider, roles, session expiry). Tests: `tests/auth-allowlist.test.mjs`. Admin sign-in URL: `/login?intent=admin&returnTo=/admin`.
 - Fresh production student/admin cookies authenticated real Google OIDC sessions on `https://theswitchplatform.com`
@@ -111,26 +114,23 @@ Update this section every session.
 
 ### What is next
 
-- **A-6** — create the canonical final release-evidence bundle that rolls in the browser proof, strict OIDC proof, readiness, persistence recovery, Fly sign-off, and truth-match outputs
-- Stabilise `verify:live-walkthrough:real-auth` and the downstream `verify:launch-complete` wrapper so the final bundle is backed by a green canonical walkthrough/closeout path instead of individual green subproofs
+- **Priority B** — repo/docs sync (B-1 stale notes, B-2 near-launch wording) per `docs/ideas/FINAL-PHASE-PLAN.md`
+- Re-run `npm run verify:priority-a-closeout` after cookie refresh when repeating closeout for a new release
 
 ### Blockers
 
-- No live credential blocker remains; fresh student/admin cookies were validated successfully
-- No product blocker remains for A-1, A-3, A-4, A-5, A-7, or A-8
-- Main remaining blocker is orchestration stability: `verify:live-walkthrough:real-auth` still intermittently fails under production fetch load, and `verify:launch-complete` depends on that wrapper path
-- Current audit position: truth-match is green and most of Priority A is proved, but A-6 stays open until the canonical final walkthrough/completion bundle is green end to end
+- **None** for Priority A (A-1 through A-8 complete 26 June 2026)
+- Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
 
 ### Verification last run
 
+- [x] `npm run verify:check-live-cookies`
 - [x] `npm run verify:launch-status`
-- [x] `npm run verify:live-readiness`
-- [x] `SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-oidc-proof`
-- [x] `SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-truth-match`
-- [x] Fly ssh `node scripts/persistence-recovery-check.mjs`
-- [x] Fly ssh `node scripts/launch-signoff.mjs`
-- [ ] `SWITCH_LAUNCH_VERIFICATION_SECRET= npm run verify:live-walkthrough:real-auth` — still flaky (`ECONNRESET` / route assertion instability)
-- [ ] `npm run verify:launch-complete` — still blocked downstream by the walkthrough wrapper
+- [x] `npm run verify:live-onboarding`
+- [x] `npm run verify:launch-complete`
+- [x] `npm run verify:live-truth-match` (A-8)
+- [x] `npm run verify:priority-a-closeout` (A-6 canonical bundle)
+- [x] `npm run lint && npm run type-check && npm run test` (105 tests)
 
 ---
 

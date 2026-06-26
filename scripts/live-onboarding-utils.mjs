@@ -38,7 +38,9 @@ export async function ensureWalkthroughStudentOnboardingComplete(baseUrl, studen
 
   assert(
     overview.response.ok,
-    `Expected onboarding overview for walkthrough student, received ${overview.response.status}.`,
+    overview.response.status === 401
+      ? "Walkthrough student cookie is invalid or expired (401). Refresh SWITCH_LIVE_STUDENT_COOKIE from https://theswitchplatform.com/account/live-cookie-guide after signing in on production."
+      : `Expected onboarding overview for walkthrough student, received ${overview.response.status}.`,
   );
 
   const onboarding = overview.json?.onboarding;

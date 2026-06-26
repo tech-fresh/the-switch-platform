@@ -1,0 +1,158 @@
+import "./load-script-env.mjs";
+
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+import { getRepoRoot, runCommand } from "./launch-utils.mjs";
+
+const repoRoot = getRepoRoot();
+const evidenceDir = path.join(repoRoot, "release-evidence");
+const stamp = new Date().toISOString().slice(0, 10);
+const evidencePath = path.join(
+  evidenceDir,
+  `${stamp}-priority-a-canonical-closeout.md`,
+);
+
+const npmExecPath = process.env.npm_execpath?.trim() ?? "";
+const npmCommand = npmExecPath ? process.execPath : "npm";
+const npmArgsPrefix = npmExecPath ? [npmExecPath] : [];
+
+const flyAppName = process.env.SWITCH_FLY_APP_NAME?.trim() || "the-switch-platform";
+const flyPersistenceCommand =
+  process.env.SWITCH_PERSISTENCE_RECOVERY_COMMAND?.trim() ||
+  `fly ssh console -a ${flyAppName} -C "sh -lc 'cd /app && node scripts/persistence-recovery-check.mjs'"`;
+const flySignoffCommand =
+  process.env.SWITCH_LAUNCH_SIGNOFF_COMMAND?.trim() ||
+  `fly ssh console -a ${flyAppName} -C "sh -lc 'cd /app && node scripts/launch-signoff.mjs'"`;
+
+const closeoutEnv = {
+  ...process.env,
+  SWITCH_LAUNCH_VERIFICATION_SECRET: "",
+  SWITCH_RECORD_GOVERNANCE: process.env.SWITCH_RECORD_GOVERNANCE ?? "0",
+  SWITCH_LIVE_FETCH_ATTEMPTS: process.env.SWITCH_LIVE_FETCH_ATTEMPTS ?? "6",
+  SWITCH_LIVE_FETCH_TIMEOUT_MS: process.env.SWITCH_LIVE_FETCH_TIMEOUT_MS ?? "90000",
+  SWITCH_PERSISTENCE_RECOVERY_COMMAND: flyPersistenceCommand,
+  SWITCH_LAUNCH_SIGNOFF_COMMAND: flySignoffCommand,
+};
+
+const steps = [
+  {
+    id: "check-live-cookies",
+    label: "verify:check-live-cookies",
+    script: "verify:check-live-cookies",
+    env: closeoutEnv,
+  },
+  {
+    id: "launch-status",
+    label: "verify:launch-status",
+    script: "verify:launch-status",
+    env: closeoutEnv,
+  },
+  {
+    id: "live-onboarding",
+    label: "verify:live-onboarding (fresh learner API proof)",
+    script: "verify:live-onboarding",
+    env: {
+      ...closeoutEnv,
+      SWITCH_LAUNCH_VERIFICATION_SECRET: process.env.SWITCH_LAUNCH_VERIFICATION_SECRET,
+    },
+  },
+  {
+    id: "launch-complete",
+    label: "verify:launch-complete (full final sequence)",
+    script: "verify:launch-complete",
+    env: closeoutEnv,
+  },
+  {
+    id: "live-truth-match",
+    label: "verify:live-truth-match (item 22 / A-8 explicit rerun)",
+    script: "verify:live-truth-match",
+    env: closeoutEnv,
+  },
+];
+
+const sections = [];
+let allPassed = true;
+
+sections.push(`# Priority A canonical closeout — ${stamp}
+
+Live host: ${process.env.SWITCH_LIVE_BASE_URL?.trim() || "https://theswitchplatform.com"}
+Workspace: \`${repoRoot}\`
+
+## Purpose
+
+This is the **canonical** Priority A release-evidence bundle for **A-6** and **A-8**.
+
+It supersedes partial/interim records for closeout purposes. Historical evidence remains in:
+
+- \`release-evidence/2026-06-23-final-path-mark-2-item-22-complete.md\` (historical — Mark 2 item 22)
+- \`release-evidence/2026-06-25-priority-a-truth-audit.md\` (interim truth audit — superseded by this file)
+
+## Referenced browser-authenticated proofs (still valid)
+
+From \`release-evidence/2026-06-25-priority-a-truth-audit.md\`:
+
+- **A-1** real Google OIDC sign-in on production
+- **A-3** real sign-out and protected-route lockout
+- **A-4** real 8-step learner onboarding through the browser
+- **A-5** Fly production persistence recovery on \`/data\`
+
+## Run metadata
+
+- Generated: ${new Date().toISOString()}
+- Strict real-auth: \`SWITCH_LAUNCH_VERIFICATION_SECRET\` blanked for closeout steps
+- Fly persistence delegate: \`${flyPersistenceCommand}\`
+- Fly sign-off delegate: \`${flySignoffCommand}\`
+`);
+
+for (const step of steps) {
+  console.log(`\n> ${step.label}`);
+
+  try {
+    const result = await runCommand(npmCommand, [...npmArgsPrefix, "run", step.script], {
+      label: step.label,
+      env: step.env,
+    });
+    const output = `${result.stdout}\n${result.stderr}`.trim();
+    sections.push(`## ${step.label}\n\n\`\`\`text\n${output}\n\`\`\``);
+    console.log("- passed");
+  } catch (error) {
+    allPassed = false;
+    const message = error instanceof Error ? error.message : String(error);
+    sections.push(`## ${step.label}\n\n**FAILED**\n\n\`\`\`text\n${message}\n\`\`\``);
+    console.error(`- failed: ${message}`);
+
+    if (step.id === "check-live-cookies") {
+      console.error("Stop here until SWITCH_LIVE_STUDENT_COOKIE and SWITCH_LIVE_ADMIN_COOKIE are refreshed.");
+      break;
+    }
+  }
+}
+
+sections.push(`## Closeout status
+
+- **A-6** canonical bundle: ${allPassed ? "**COMPLETE**" : "**NOT COMPLETE** — see failed sections above"}
+- **A-8** truth-match rerun: ${allPassed ? "**COMPLETE**" : "**NOT COMPLETE** — requires green verify:live-truth-match"}
+
+## If cookie check failed
+
+1. Sign in on https://theswitchplatform.com/login (student, then admin).
+2. Copy \`switch_auth_session\` values into \`.env.local\`.
+3. Guide: https://theswitchplatform.com/account/live-cookie-guide
+4. Re-run:
+
+\`\`\`bash
+npm run verify:priority-a-closeout
+\`\`\`
+`);
+
+await mkdir(evidenceDir, { recursive: true });
+await writeFile(evidencePath, `${sections.join("\n\n")}\n`, "utf8");
+
+console.log(`\nEvidence written: ${evidencePath}`);
+
+if (!allPassed) {
+  process.exit(1);
+}
+
+console.log("Priority A canonical closeout passed (A-6 + A-8).");

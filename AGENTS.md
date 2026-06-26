@@ -33,7 +33,9 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 **Do not skip `AGENTS.md`.** HANDOFF is the baton; AGENTS is the front door every agent reads next. If they drift, the next session starts wrong.
 
-**Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Read `HANDOFF.md` → **Priority C — COMPLETE** before any session. Do not reopen C-1–C-10 unless the operator explicitly requests an exception. Active lane is **Priority A**.
+**Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Do not reopen C-1–C-10 unless the operator explicitly requests an exception.
+
+**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Active lane is **Priority B** unless operator reopens A.
 
 **At session end:** run verification, confirm push, refresh **`HANDOFF.md`** and **`AGENTS.md`** if the story changed.
 
@@ -76,12 +78,12 @@ flowchart LR
 
 | Area | MVP today |
 |------|-----------|
-| **Live** | https://theswitchplatform.com — live on Fly; full-completion proof under Priority A audit |
+| **Live** | https://theswitchplatform.com — live on Fly; Priority A proof complete (26 June 2026) |
 | **Auth** | One Google/Microsoft sign-in; admin/editor via email allowlists; panel on `/login`, `/account`, `/admin` |
 | **Modules** | Exam Engine, Power Grid, Saved Progress, Read Aloud, Dashboard, Timed Assessments, Full GCSE Exams, Results, Recommendations, Accessibility, Access Arrangements, Onboarding |
 | **Subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
 | **Onboarding** | 8 steps → builds dashboard; secondary school; GCSE (England) + iGCSE; Wales/NI **later** |
-| **Polish lane** | **Final Phase** — Priority **C complete** (24 June 2026); next: Priority **A** truth audit |
+| **Polish lane** | **Final Phase** — Priority **C complete** (24 June 2026); Priority **A complete** (26 June 2026) |
 
 ---
 
@@ -131,11 +133,11 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 
 | Question | Answer |
 |----------|--------|
-| Is the platform live? | Yes — https://theswitchplatform.com (Fly). Live on Fly; the full-completion claim is under Priority A truth audit. |
-| What are we doing now? | **Priority A** — truthful completion audit. **Priority C is complete** (24 June 2026). |
+| Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). Next: **Priority B** docs sync. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | **Priority A closeout** — finish the canonical release-evidence bundle. Real auth, onboarding, sign-out, readiness, persistence, sign-off, and truth-match are now proved; the remaining blocker is the flaky `verify:live-walkthrough:real-auth` / `verify:launch-complete` wrapper path. |
+| What is next? | **Priority B** — stale notes and near-launch wording per `docs/ideas/FINAL-PHASE-PLAN.md`. |
 
 ```mermaid
 flowchart LR
@@ -236,7 +238,7 @@ npm run verify:live-truth-match
 
 **Status: COMPLETE — CLOSED.** Study Atelier product finish lane (`docs/ideas/FINAL-PHASE-PLAN.md` → C-1 through C-10).
 
-**Moving forward:** every agent session starts with `HANDOFF.md` → **Priority C — COMPLETE**. Do **not** plan or implement C items unless the operator explicitly reopens one. Active work is **Priority A** only.
+**Moving forward:** every agent session starts with `HANDOFF.md`. Priority **C** and **A** are **complete**. Active work is **Priority B** unless operator reopens A or C.
 
 **Architecture gate (must hold for all C work already shipped):**
 
@@ -268,9 +270,9 @@ route (thin page) → module service → API route → persistence
 
 **Verification:** `npm run lint && npm run type-check && npm run test` — 102/102 passed.
 
-**What is next:** Priority **A** — truthful completion audit (A-1 to A-8). Start with `npm run verify:live-oidc-proof` on production.
+**What is next:** Priority **B** — repo/docs sync. Priority **A** and **C** are **complete**.
 
-**Current A status (25 June 2026):** `A-1`, `A-2`, `A-3`, `A-4`, `A-5`, `A-7`, and `A-8` are proved. Real production evidence now exists for Google OIDC sign-in, 8-step learner onboarding, dashboard unlock, onboarding revisit redirect, sign-out lockout, readiness, persistence, Fly sign-off, and `verify:live-truth-match`. `A-6` is still open because the canonical final bundle is blocked by the flaky `verify:live-walkthrough:real-auth` / `verify:launch-complete` wrapper path.
+**Current A status (26 June 2026):** **COMPLETE** — A-1 through A-8 closed. Canonical evidence: `release-evidence/2026-06-25-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout` after cookie refresh for new releases.
 
 **Key files for agents**
 

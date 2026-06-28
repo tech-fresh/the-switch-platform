@@ -1,7 +1,7 @@
 /** Mock Idea — creative Study Atelier direction on The Switch Platform (not Seneca). */
 export const MOCK_IDEA_BRAND = {
-  name: "Mock Idea",
-  tagline: "Study Atelier · powered by The Switch Platform",
+  name: "The Switch Platform",
+  tagline: "Study Atelier · GCSE revision",
   logoGlyph: "◆",
   creativeNote:
     "Bento layouts, stone/teal palette, top study rail — deliberately not a narrow icon sidebar clone.",
@@ -44,6 +44,7 @@ export type NavAccent = "teal" | "emerald" | "amber" | "sky" | "rose";
 export const STUDENT_NAV_ITEMS = [
   { href: "/dashboard", label: "Home", short: "H", accent: "teal" as const },
   { href: "/assessments", label: "Practice", short: "P", accent: "emerald" as const },
+  { href: "/exams", label: "Exams", short: "E", accent: "teal" as const },
   { href: "/progress", label: "Planner", short: "L", accent: "sky" as const },
   { href: "/subjects", label: "Subjects", short: "S", accent: "amber" as const },
   { href: "/accessibility", label: "Access", short: "A", accent: "rose" as const },

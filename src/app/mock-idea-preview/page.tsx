@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { buildMockPreviewDashboardData } from "@/components/mock-idea/mock-preview-fallback";
 import { MockIdeaShowcase } from "@/components/mock-idea/mock-idea-showcase";
 import { getDashboardHomeData } from "@/modules/dashboard/service";
 import { getRequestUserId } from "@/modules/auth/request";
@@ -8,7 +9,13 @@ export const dynamic = "force-dynamic";
 
 export default async function MockIdeaPreviewPage() {
   const userId = await getRequestUserId();
-  const dashboardData = await getDashboardHomeData(userId);
+  const dashboardData = await getDashboardHomeData(userId).catch((error) => {
+    if (error instanceof Error && error.message.includes("unable to open database file")) {
+      return buildMockPreviewDashboardData();
+    }
+
+    throw error;
+  });
 
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
@@ -23,6 +30,12 @@ export default async function MockIdeaPreviewPage() {
             </p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-2">
+            <Link
+              href="/streamlined-mockup"
+              className="border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-950 hover:bg-white"
+            >
+              Streamlined mockup
+            </Link>
             <Link
               href="/login?reauth=1"
               className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AccessibilityRuntime } from "@/components/accessibility-runtime";
+import { buildMockPreviewAccessibilitySnapshot } from "@/components/mock-idea/mock-preview-fallback";
 import { getRequestUserId } from "@/modules/auth/request";
 import { getAccessibilitySnapshot } from "@/modules/accessibility/service";
 import { getLineHeightValue } from "@/modules/accessibility/presentation";
@@ -18,7 +19,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const userId = await getRequestUserId();
-  const snapshot = await getAccessibilitySnapshot(userId);
+  const snapshot = await getAccessibilitySnapshot(userId).catch((error) => {
+    if (error instanceof Error && error.message.includes("unable to open database file")) {
+      return buildMockPreviewAccessibilitySnapshot(userId);
+    }
+
+    throw error;
+  });
 
   return (
     <html

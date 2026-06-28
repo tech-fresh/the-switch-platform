@@ -1,15 +1,12 @@
-# Free-tier deploy — Fly.io with persistent SQLite
+# Fly deploy — persistent SQLite on mounted storage
 
-Use this when **Vercel cannot redeploy** (tokens exhausted) or **Vercel Blob is suspended** and you still need a durable live site for **Final Path Mark 2**.
-
-No repo code changes are required beyond this folder. The app already supports filesystem SQLite.
+Use this when you need to provision or recover the production runtime on Fly.io. The repo now assumes a filesystem-backed sqlite path on a mounted volume.
 
 ## Why Fly.io
 
 | Host | Durable disk on free/cheap tier | Works with this repo today |
 |------|----------------------------------|----------------------------|
 | **Fly.io** | Yes — attach a 1 GB volume (~$0.15/mo) | Yes — `fly.toml` + `Dockerfile` in repo |
-| Vercel serverless | No — needs Blob (yours is suspended) | Blocked |
 | Render | Disk needs paid Starter ($7/mo) | Env-only, no blueprint in repo |
 
 Fly’s shared VM can sleep when idle (cold start). Student data stays on the volume.
@@ -17,7 +14,7 @@ Fly’s shared VM can sleep when idle (cold start). Student data stays on the vo
 ## What you need (15–30 minutes)
 
 1. Free [Fly.io](https://fly.io) account + [flyctl](https://fly.io/docs/hands-on/install-flyctl/)
-2. Auth secrets from your old Vercel project (you can **copy env vars without redeploying**)
+2. Auth secrets from your identity provider or current production environment
 3. Google (or other) OIDC app — add the new Fly URL as redirect URI
 
 ## Step 1 — Install flyctl
@@ -39,9 +36,7 @@ fly volumes create switch_data --size 1 --region lhr
 
 If the app name is taken, pick another name and update `app = '...'` in `fly.toml`.
 
-## Step 3 — Set secrets (copy from Vercel)
-
-Copy auth and governance values from Vercel → Settings → Environment Variables.
+## Step 3 — Set secrets
 
 Minimum set (see `docs/free-tier-secrets.example`):
 
@@ -89,7 +84,7 @@ fly logs
 
 ## Step 5 — Verify from your machine
 
-Create or update `.env.local` with the **Fly** URL (not Vercel):
+Create or update `.env.local` with the **Fly** URL:
 
 ```bash
 SWITCH_LIVE_BASE_URL=https://the-switch-platform.fly.dev
@@ -115,8 +110,6 @@ npm run verify:launch-complete
 npm run verify:live-truth-match
 ```
 
-`verify:persistence-health` replaces `verify:blob-health` when not using Vercel Blob.
-
 ## Step 6 — Point your domain (optional)
 
 ```bash
@@ -135,11 +128,9 @@ fly ssh console -C "cd /app && SWITCH_PERSISTENCE_DRIVER=sqlite SWITCH_DATA_DIRE
 
 - Fly shared VM: often within free allowance; may bill a few dollars if always-on
 - 1 GB volume: about **$0.15/month**
-- Still far cheaper than fixing suspended Vercel Blob when you cannot redeploy
 
 ## What does NOT count as launch complete
 
-- Leaving production on suspended Vercel Blob
 - Using `local-json`, `memory`, or `/tmp` SQLite on serverless
 - Skipping `verify:live-truth-match` against the **new** live URL
 

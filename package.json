@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/prepare-next-route-types.mjs && next build",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "node scripts/repo-lint.mjs",
     "type-check": "tsc --noEmit",
@@ -29,7 +29,6 @@
     "verify:check-live-cookies": "node scripts/check-live-auth-cookies.mjs",
     "verify:priority-a-closeout": "node scripts/record-priority-a-closeout.mjs",
     "verify:persistence-recovery": "node scripts/persistence-recovery-check.mjs",
-    "verify:blob-health": "node scripts/verify-blob-health.mjs",
     "verify:persistence-health": "node scripts/verify-persistence-health.mjs",
     "verify:google-oauth-live": "node scripts/verify-google-oauth-live.mjs",
     "setup:google-oauth-live": "bash scripts/setup-google-oauth-live.sh",
@@ -46,7 +45,6 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@vercel/blob": "^2.4.1",
     "next": "^15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

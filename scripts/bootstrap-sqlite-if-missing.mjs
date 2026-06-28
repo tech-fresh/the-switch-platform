@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 const driver = process.env.SWITCH_PERSISTENCE_DRIVER?.trim();
 const dataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim();
 
-if (driver !== "sqlite" || !dataDirectory || dataDirectory.startsWith("vercel-blob://")) {
+if (driver !== "sqlite" || !dataDirectory) {
   process.exit(0);
 }
 

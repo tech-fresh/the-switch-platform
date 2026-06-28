@@ -1,6 +1,4 @@
 import { getPersistenceRuntimeConfig } from "../../lib/persistence/runtime.ts";
-import type { VercelBlobReadHealthStatus } from "../../lib/persistence/vercel-blob.ts";
-import { probeVercelBlobReadHealth } from "../../lib/persistence/vercel-blob.ts";
 import {
   readLaunchGovernanceRecords,
   writeLaunchGovernanceRecords,
@@ -55,8 +53,6 @@ interface GovernanceRuntimeInput {
   authSecretConfigured: boolean;
   authBaseUrl: string | null;
   persistenceRuntime: ReturnType<typeof getPersistenceRuntimeConfig>;
-  blobStoreHealth: VercelBlobReadHealthStatus;
-  blobStoreHealthDetail: string | null;
   cmsRuntime: ReturnType<typeof getCmsRuntimeConfig>;
   configuredOidcProviderCount: number;
 }
@@ -585,21 +581,6 @@ export async function recordLaunchGovernanceSmokeCheck(input: {
 }
 
 function getPersistencePathDetail(input: GovernanceRuntimeInput): string {
-  if (input.blobStoreHealth === "suspended") {
-    return `The configured Vercel Blob store appears suspended. Byte reads for ${input.persistenceRuntime.primaryStorePath} are failing, so shared live student data cannot load yet. Unsuspend or replace the Blob store in Vercel, then rerun npm run verify:blob-health and the final launch sequence.`;
-  }
-
-  if (input.blobStoreHealth === "unreadable") {
-    return input.blobStoreHealthDetail
-      ? `Shared live student data is configured at ${input.persistenceRuntime.dataDirectory}, but Blob reads are failing: ${input.blobStoreHealthDetail}`
-      : `Shared live student data is configured at ${input.persistenceRuntime.dataDirectory}, but Blob reads are still failing.`;
-  }
-
-  if (input.blobStoreHealth === "missing-auth") {
-    return input.blobStoreHealthDetail
-      ?? "Blob-backed persistence is configured, but the runtime is missing Blob auth credentials.";
-  }
-
   if (input.persistenceRuntime.driver === "memory") {
     return "This runtime would lose student data on restart.";
   }
@@ -620,32 +601,18 @@ function getPersistencePathDetail(input: GovernanceRuntimeInput): string {
 function isPersistencePathReady(input: GovernanceRuntimeInput): boolean {
   return (
     input.persistenceRuntime.driver !== "memory" &&
-    !input.persistenceRuntime.isPrototypePersistence &&
-    input.blobStoreHealth !== "suspended" &&
-    input.blobStoreHealth !== "unreadable" &&
-    input.blobStoreHealth !== "missing-auth"
+    !input.persistenceRuntime.isPrototypePersistence
   );
 }
 
 async function getGovernanceRuntimeInput(): Promise<GovernanceRuntimeInput> {
   const persistenceRuntime = getPersistenceRuntimeConfig();
-  const blobHealth =
-    persistenceRuntime.storageBackend === "vercel-blob"
-      ? await probeVercelBlobReadHealth(persistenceRuntime.primaryStorePath)
-      : { status: "not-applicable" as const };
 
   return {
     authMode: (process.env.SWITCH_AUTH_MODE ?? "oidc").trim(),
     authSecretConfigured: Boolean(process.env.SWITCH_AUTH_SECRET?.trim()),
     authBaseUrl: process.env.SWITCH_AUTH_BASE_URL?.trim() ?? null,
     persistenceRuntime,
-    blobStoreHealth: blobHealth.status,
-    blobStoreHealthDetail:
-      blobHealth.status === "suspended" ||
-      blobHealth.status === "unreadable" ||
-      blobHealth.status === "missing-auth"
-        ? blobHealth.detail
-        : null,
     cmsRuntime: getCmsRuntimeConfig(),
     configuredOidcProviderCount: getConfiguredOidcProviderCount(),
   };

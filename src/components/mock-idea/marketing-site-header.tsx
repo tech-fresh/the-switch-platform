@@ -27,17 +27,17 @@ export function MarketingSiteHeader({ isAuthenticated = false }: MarketingSiteHe
                   {MOCK_IDEA_BRAND.name}
                 </p>
                 <p className="hidden text-[10px] uppercase tracking-[0.24em] text-stone-500 sm:block">
-                  Study Atelier mock
+                  {MOCK_IDEA_BRAND.tagline}
                 </p>
               </div>
             </Link>
 
             <div className="flex shrink-0 items-center gap-2 text-sm">
               <Link
-                href="/support"
+                href="/how-it-works"
                 className="hidden px-3 py-2 font-medium text-stone-700 hover:text-teal-800 sm:inline"
               >
-                Join class
+                How it works
               </Link>
               <Link
                 href={loginHref}

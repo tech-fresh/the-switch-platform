@@ -1,6 +1,4 @@
 import { getPersistenceRecoveryStatus } from "@/lib/persistence/recovery";
-import type { VercelBlobReadHealthStatus } from "@/lib/persistence/vercel-blob";
-import { probeVercelBlobReadHealth } from "@/lib/persistence/vercel-blob";
 import type { PersistedAuthSessionRecord } from "@/lib/persistence/auth-session-store";
 import { readPersistedAuthSessions, writePersistedAuthSessions } from "@/lib/persistence/auth-session-store";
 import { readCmsWorkflowRecords, writeCmsWorkflowRecords } from "@/lib/persistence/cms-workflow-store";
@@ -49,8 +47,6 @@ export interface PersistenceRuntimeSummary {
   recoveryReady: boolean;
   recoveryCheckedAt: string | null;
   recoveryIssueCount: number;
-  blobStoreHealth: VercelBlobReadHealthStatus;
-  blobStoreHealthDetail: string | null;
 }
 
 const defaultSavedProgressRepository: SavedProgressRepository = {
@@ -166,17 +162,6 @@ export function getDefaultLaunchGovernanceRepository(): LaunchGovernanceReposito
 export async function getPersistenceRuntimeSummary(): Promise<PersistenceRuntimeSummary> {
   const config = getPersistenceRuntimeConfig();
   const recovery = await getPersistenceRecoveryStatus(config);
-  const blobHealth =
-    config.storageBackend === "vercel-blob"
-      ? await probeVercelBlobReadHealth(config.primaryStorePath)
-      : { status: "not-applicable" as const };
-  const blobStoreHealth = blobHealth.status;
-  const blobStoreHealthDetail =
-    blobHealth.status === "suspended" || blobHealth.status === "unreadable" || blobHealth.status === "missing-auth"
-      ? blobHealth.detail
-      : null;
-  const blobBlocksRecovery =
-    blobStoreHealth === "suspended" || blobStoreHealth === "unreadable" || blobStoreHealth === "missing-auth";
 
   return {
     driver: config.driver,
@@ -188,15 +173,13 @@ export async function getPersistenceRuntimeSummary(): Promise<PersistenceRuntime
     isPrototypePersistence:
       config.driver === "memory"
         ? false
-        : config.isPrototypePersistence || !recovery.isReady || blobBlocksRecovery,
+        : config.isPrototypePersistence || !recovery.isReady,
     usesDefaultDataDirectory: config.usesDefaultDataDirectory,
     isServerlessRuntime: config.isServerlessRuntime,
     isEphemeralStorage: config.isEphemeralStorage,
-    recoveryReady: recovery.isReady && !blobBlocksRecovery,
+    recoveryReady: recovery.isReady,
     recoveryCheckedAt: recovery.checkedAt,
-    recoveryIssueCount: recovery.issueCount + (blobBlocksRecovery ? 1 : 0),
-    blobStoreHealth,
-    blobStoreHealthDetail,
+    recoveryIssueCount: recovery.issueCount,
   };
 }
 

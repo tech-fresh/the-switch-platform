@@ -1,14 +1,8 @@
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-import {
-  isVercelBlobPersistencePath,
-  joinVercelBlobPersistencePath,
-  normalizeVercelBlobPersistencePath,
-} from "./vercel-blob.ts";
-
 export type PersistenceDriver = "local-json" | "sqlite" | "memory";
-export type PersistenceStorageBackend = "filesystem" | "vercel-blob";
+export type PersistenceStorageBackend = "filesystem";
 
 export interface PersistenceRuntimeConfig {
   driver: PersistenceDriver;
@@ -25,6 +19,11 @@ export interface PersistenceRuntimeConfig {
 
 const DEFAULT_DATA_DIRECTORY_NAME = ".codex-data";
 const SQLITE_DATABASE_FILENAME = "switch-live.sqlite";
+const LOCAL_FLY_VOLUME_FALLBACK_DIRECTORY = path.join(
+  process.cwd(),
+  DEFAULT_DATA_DIRECTORY_NAME,
+  "fly-volume-fallback",
+);
 
 let memoryDriverWarningShown = false;
 
@@ -32,44 +31,32 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
   const requestedDriver = process.env.SWITCH_PERSISTENCE_DRIVER;
   const configuredDataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim();
   const isServerlessRuntime = detectServerlessFilesystemRuntime();
-  const usesBlobStorageBackend = isVercelBlobPersistencePath(configuredDataDirectory);
+  const usesLocalFlyVolumeFallback = shouldUseLocalFlyVolumeFallback(configuredDataDirectory);
   const driver =
     requestedDriver === "memory"
       ? "memory"
       : requestedDriver === "sqlite"
         ? "sqlite"
         : "local-json";
-  const storageBackend: PersistenceStorageBackend =
-    driver !== "memory" && usesBlobStorageBackend ? "vercel-blob" : "filesystem";
+  const storageBackend: PersistenceStorageBackend = "filesystem";
   const usesDefaultDataDirectory = !configuredDataDirectory;
-  const dataDirectory =
-    configuredDataDirectory && usesBlobStorageBackend
-      ? normalizeVercelBlobPersistencePath(configuredDataDirectory)
-      : configuredDataDirectory
-        ? path.resolve(configuredDataDirectory)
-        : getDefaultDataDirectory(isServerlessRuntime);
-  const backupDirectory =
-    driver === "memory"
-      ? null
-      : storageBackend === "vercel-blob"
-        ? joinVercelBlobPersistencePath(dataDirectory, "backups")
-        : path.join(dataDirectory, "backups");
+  const dataDirectory = usesLocalFlyVolumeFallback
+    ? LOCAL_FLY_VOLUME_FALLBACK_DIRECTORY
+    : configuredDataDirectory
+      ? path.resolve(configuredDataDirectory)
+      : getDefaultDataDirectory(isServerlessRuntime);
+  const backupDirectory = driver === "memory" ? null : path.join(dataDirectory, "backups");
   const primaryStorePath =
     driver === "sqlite"
-      ? storageBackend === "vercel-blob"
-        ? joinVercelBlobPersistencePath(dataDirectory, SQLITE_DATABASE_FILENAME)
-        : path.join(dataDirectory, SQLITE_DATABASE_FILENAME)
+      ? path.join(dataDirectory, SQLITE_DATABASE_FILENAME)
       : dataDirectory;
   const backupStorePath =
     driver === "sqlite" && backupDirectory
-      ? storageBackend === "vercel-blob"
-        ? joinVercelBlobPersistencePath(backupDirectory, SQLITE_DATABASE_FILENAME)
-        : path.join(backupDirectory, SQLITE_DATABASE_FILENAME)
+      ? path.join(backupDirectory, SQLITE_DATABASE_FILENAME)
       : backupDirectory;
   const tempDirectoryRoot = path.resolve(tmpdir());
   const isEphemeralStorage =
     driver !== "memory" &&
-    storageBackend === "filesystem" &&
     isServerlessRuntime &&
     (path.resolve(dataDirectory) === tempDirectoryRoot ||
       path.resolve(dataDirectory).startsWith(`${tempDirectoryRoot}${path.sep}`));
@@ -89,7 +76,10 @@ export function getPersistenceRuntimeConfig(): PersistenceRuntimeConfig {
     primaryStorePath,
     backupStorePath,
     isPrototypePersistence:
-      driver === "memory" || driver === "local-json" || !configuredDataDirectory,
+      driver === "memory" ||
+      driver === "local-json" ||
+      !configuredDataDirectory ||
+      usesLocalFlyVolumeFallback,
     usesDefaultDataDirectory,
     isServerlessRuntime,
     isEphemeralStorage,
@@ -110,4 +100,20 @@ function detectServerlessFilesystemRuntime(): boolean {
       process.env.AWS_LAMBDA_FUNCTION_VERSION?.trim() ||
       process.env.LAMBDA_TASK_ROOT?.trim(),
   );
+}
+
+function shouldUseLocalFlyVolumeFallback(configuredDataDirectory: string | undefined): boolean {
+  if (!configuredDataDirectory) {
+    return false;
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    return false;
+  }
+
+  if (process.env.FLY_APP_NAME?.trim() || process.env.FLY_MACHINE_ID?.trim()) {
+    return false;
+  }
+
+  return path.resolve(configuredDataDirectory) === "/data";
 }

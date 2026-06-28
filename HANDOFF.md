@@ -67,13 +67,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-26 (Priority A fresh closeout merged to main)
+- **Last updated:** 2026-06-29 (Streamlined live UI shipped)
 
 ### Active task
 
-- **Priority item #:** E — Deferred scope review
-- **Module:** operator-gated expansion only
-- **Status:** Release-clean again — launch-readiness hardening complete; only deferred Priority E scope remains
+- **Priority item #:** E — Streamlined live student UX (launch polish)
+- **Module:** Dashboard + marketing shell
+- **Status:** Streamlined homepage and dashboard shipped to live routes; deploy to Fly when ready
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,9 @@ Update this section every session.
 
 ### What was just completed
 
+- **Streamlined live UI shipped (29 June 2026)** — applied the `/streamlined-mockup` direction to live `/` and `/dashboard`: calmer homepage hero, three study route cards, one recommended-now block, capped resume sessions with deep links into `/exams` and `/assessments`, focus cards linking to `/subjects`, and grouped support rail. Added **Exams** to the student study rail. Rebranded marketing header to **The Switch Platform**.
+- **Fly-only persistence cleanup completed (29 June 2026)** — removed the dormant Vercel Blob adapter, deleted `.vercel` and Netlify deploy artifacts, simplified the persistence/admin/governance runtime back to the mounted-filesystem path used in Fly production, and refreshed `package-lock.json`.
+- **Streamlined website mockup added (26 June 2026)** — new route `/streamlined-mockup` shows a calmer homepage direction and a decluttered signed-in dashboard concept using the existing Study Atelier visual language. Entry link added to `/mock-idea-preview`.
 - **Priority A onboarding proof split + fresh closeout (26 June 2026)** — re-ran `npm run verify:priority-a-closeout`; all strict real-auth steps green. Fresh canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. `verify:live-onboarding` is recorded separately as API-assisted/synthetic regression only (not strict A-4). A-4 remains browser-authenticated proof in `release-evidence/2026-06-25-priority-a-truth-audit.md`.
 - **Launch-readiness hardening (26 June 2026)** — fixed the checked-in TypeScript blocker in `src/modules/operations/overview.ts` and tightened Priority A closeout wording so strict real-auth evidence no longer implies that `verify:live-onboarding` is part of the strict chain.
 - **ChatGPT prompt pack added (26 June 2026)** — added reusable prompt files for external analysis and website streamlining: `docs/CHATGPT-PROJECT-AUDIT-PROMPT.md`, `docs/CHATGPT-WEBSITE-STREAMLINE-PROMPT.md`, and `docs/CHATGPT-PROMPTS-README.md`.
@@ -122,6 +125,7 @@ Update this section every session.
 
 ### What is next
 
+- Deploy streamlined UI to Fly production (`theswitchplatform.com`) when the operator is ready
 - **Priority E** deferred scope review only if the operator wants post-MVP expansion
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
@@ -140,7 +144,13 @@ Update this section every session.
 
 ### Verification last run
 
-Fresh rerun on 26 June 2026:
+Fresh rerun on 29 June 2026:
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (108 tests)
+
+Most recent Priority A closeout rerun on 26 June 2026:
 
 - [x] `npm run verify:check-live-cookies`
 - [x] `npm run verify:launch-status`
@@ -148,7 +158,6 @@ Fresh rerun on 26 June 2026:
 - [x] `npm run verify:launch-complete` (strict real-auth; `SWITCH_LAUNCH_VERIFICATION_SECRET` blanked)
 - [x] `npm run verify:live-truth-match` (A-8)
 - [x] `npm run verify:priority-a-closeout` (A-6 canonical bundle → `release-evidence/2026-06-26-priority-a-canonical-closeout.md`)
-- [x] `npm run lint && npm run type-check && npm run test` (111 tests)
 
 ---
 

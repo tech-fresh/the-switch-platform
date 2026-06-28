@@ -2,34 +2,14 @@ import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-const {
-  isVercelBlobPersistencePath,
-  normalizeVercelBlobPersistencePath,
-  joinVercelBlobPersistencePath,
-  writeVercelBlobBytes,
-} = await import("../src/lib/persistence/vercel-blob.ts");
-
 const configuredDataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim();
 const dataDirectory = configuredDataDirectory
-  ? isVercelBlobPersistencePath(configuredDataDirectory)
-    ? normalizeVercelBlobPersistencePath(configuredDataDirectory)
-    : path.resolve(configuredDataDirectory)
+  ? path.resolve(configuredDataDirectory)
   : path.join(process.cwd(), ".codex-data");
-const databasePath = isVercelBlobPersistencePath(dataDirectory)
-  ? joinVercelBlobPersistencePath(dataDirectory, "switch-live.sqlite")
-  : path.join(dataDirectory, "switch-live.sqlite");
-const backupDatabasePath = isVercelBlobPersistencePath(dataDirectory)
-  ? joinVercelBlobPersistencePath(dataDirectory, "backups", "switch-live.sqlite")
-  : path.join(dataDirectory, "backups", "switch-live.sqlite");
-const localWorkingDirectory = isVercelBlobPersistencePath(dataDirectory)
-  ? path.join(process.cwd(), ".codex-data", "blob-migration")
-  : dataDirectory;
-const localDatabasePath = isVercelBlobPersistencePath(dataDirectory)
-  ? path.join(localWorkingDirectory, "switch-live.sqlite")
-  : databasePath;
-const localBackupDatabasePath = isVercelBlobPersistencePath(dataDirectory)
-  ? path.join(localWorkingDirectory, "backups", "switch-live.sqlite")
-  : backupDatabasePath;
+const databasePath = path.join(dataDirectory, "switch-live.sqlite");
+const backupDatabasePath = path.join(dataDirectory, "backups", "switch-live.sqlite");
+const localDatabasePath = databasePath;
+const localBackupDatabasePath = backupDatabasePath;
 
 const collections = [
   {
@@ -74,9 +54,7 @@ try {
   const summary = [];
 
   for (const collection of collections) {
-    const filePath = isVercelBlobPersistencePath(dataDirectory)
-      ? path.join(process.cwd(), ".codex-data", collection.filename)
-      : path.join(dataDirectory, collection.filename);
+    const filePath = path.join(dataDirectory, collection.filename);
     const records = await readJsonArray(filePath, collection.payloadKey);
 
     database
@@ -113,13 +91,6 @@ try {
     `);
   } finally {
     backupDatabase.close();
-  }
-
-  if (isVercelBlobPersistencePath(dataDirectory)) {
-    const primaryBytes = await readFile(localDatabasePath);
-    const backupBytes = await readFile(localBackupDatabasePath);
-    await writeVercelBlobBytes(databasePath, primaryBytes);
-    await writeVercelBlobBytes(backupDatabasePath, backupBytes);
   }
 
   console.log("SQLite migration completed:");

@@ -56,12 +56,6 @@ assert(
   persistence.recoveryReady === true,
   "Live truth-match failed: deployed persistence recovery is not ready.",
 );
-assert(
-  persistence.blobStoreHealth === "healthy" ||
-    persistence.blobStoreHealth === "not-applicable" ||
-    persistence.blobStoreHealth === "missing",
-  `Live truth-match failed: blob store health is ${persistence.blobStoreHealth}.`,
-);
 
 const governanceResponse = await fetchJson(`${baseUrl}/api/governance/overview`, {
   headers: adminHeaders,

@@ -2,13 +2,10 @@ import Link from "next/link";
 import { MarketingSiteHeader } from "@/components/marketing-site-header";
 import { MarketingSiteFooter } from "@/components/mock-idea/marketing-site-footer";
 import { PlannerPromptCard } from "@/components/mock-idea/planner-prompt-card";
-import { SubjectToneChip, subjectToneBlockClasses } from "@/components/subject-tone-chip";
-import { WeeklyPlannerGrid } from "@/components/weekly-planner-grid";
 import { SendSupportRail } from "@/components/mock-idea/send-support-rail";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import type {
   DashboardHomeData,
-  DashboardMetric,
   DashboardRouteCard,
   DashboardSessionCard,
 } from "@/modules/dashboard/types";
@@ -20,7 +17,9 @@ interface DashboardHomeProps {
   displayName?: string;
 }
 
-function getToneClasses(tone: DashboardMetric["tone"] | DashboardRouteCard["tone"]): string {
+const STUDY_ROUTE_PREFIXES = ["/exams", "/assessments", "/progress", "/subjects", "/saved-progress"];
+
+function getToneClasses(tone: DashboardRouteCard["tone"]): string {
   switch (tone) {
     case "rose":
       return "border-rose-300 bg-rose-50 text-rose-950";
@@ -35,339 +34,328 @@ function getToneClasses(tone: DashboardMetric["tone"] | DashboardRouteCard["tone
   }
 }
 
-function getTrendClasses(trend: DashboardHomeData["summary"]["overallTrend"]): string {
-  if (trend === "improving") {
-    return "text-emerald-700";
-  }
-
-  if (trend === "stable") {
-    return "text-amber-700";
-  }
-
-  return "text-rose-700";
-}
-
-function getSessionKindClasses(kind: DashboardSessionCard["kind"]): string {
-  return kind === "exam"
-    ? "border-teal-300 bg-teal-50 text-teal-900"
-    : "border-emerald-300 bg-emerald-50 text-emerald-900";
-}
-
-function getSessionStatusClasses(status: DashboardSessionCard["status"]): string {
-  return status === "submitted"
-    ? "border-sky-300 bg-sky-50 text-sky-900"
-    : "border-amber-300 bg-amber-50 text-amber-900";
-}
-
-function getProgressBarClasses(score: number): string {
-  if (score >= 75) {
-    return "bg-emerald-500";
-  }
-
-  if (score >= 55) {
-    return "bg-amber-500";
-  }
-
-  return "bg-rose-500";
-}
-
-function getMotivationClasses(colour: DashboardHomeData["dailyMotivation"]["colour"]): string {
-  switch (colour) {
-    case "amber":
-      return "border-amber-300 bg-amber-50 text-amber-950";
-    case "sky":
-      return "border-sky-300 bg-sky-50 text-sky-950";
-    case "rose":
-      return "border-rose-300 bg-rose-50 text-rose-950";
-    default:
-      return "border-teal-300 bg-teal-50 text-teal-950";
-  }
-}
-
-function MetricStrip({ metrics }: { metrics: DashboardMetric[] }) {
-  return (
-    <div className="grid gap-3 sm:grid-cols-3">
-      {metrics.map((metric) => (
-        <div key={metric.label} className={`border p-4 ${getToneClasses(metric.tone)}`}>
-          <p className="text-xs uppercase tracking-[0.2em] opacity-75">{metric.label}</p>
-          <p className="mt-2 text-2xl font-semibold tracking-tight">{metric.value}</p>
-          <p className="mt-1 text-sm opacity-80">{metric.detail}</p>
-        </div>
-      ))}
-    </div>
+function pickStudyRouteCards(cards: DashboardRouteCard[], limit = 3): DashboardRouteCard[] {
+  const studyCards = cards.filter((card) =>
+    STUDY_ROUTE_PREFIXES.some((prefix) => card.href === prefix || card.href.startsWith(`${prefix}?`)),
   );
-}
 
-function RouteCardGrid({ cards }: { cards: DashboardRouteCard[] }) {
-  return (
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-      {cards.map((card) => (
-        <Link
-          key={card.href}
-          href={card.href}
-          className="group border border-stone-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-stone-300 hover:bg-stone-50"
-        >
-          <div
-            className={`inline-flex border px-2 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${getToneClasses(card.tone)}`}
-          >
-            {card.eyebrow}
-          </div>
-          <h2 className="mt-3 text-lg font-semibold tracking-tight text-stone-950">{card.title}</h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">{card.description}</p>
-          <p className="mt-4 text-sm font-medium text-stone-900">{card.stat}</p>
-        </Link>
-      ))}
-    </section>
-  );
-}
-
-function SessionList({
-  title,
-  eyebrowClass,
-  linkHref,
-  linkLabel,
-  sessions,
-}: {
-  title: string;
-  eyebrowClass: string;
-  linkHref: string;
-  linkLabel: string;
-  sessions: DashboardSessionCard[];
-}) {
-  if (!sessions.length) {
-    return null;
+  if (studyCards.length >= limit) {
+    return studyCards.slice(0, limit);
   }
 
-  return (
-    <article className="border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-4">
-        <div>
-          <p className={`text-xs font-semibold uppercase tracking-[0.24em] ${eyebrowClass}`}>{title}</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">Pick up where you left off</h2>
-        </div>
-        <Link href={linkHref} className={`text-sm font-medium ${eyebrowClass} hover:opacity-80`}>
-          {linkLabel}
-        </Link>
-      </div>
-      <div className="mt-4 grid gap-3 lg:grid-cols-2">
-        {sessions.map((session) => (
-          <Link
-            key={session.sessionId}
-            href={session.href}
-            className="block border border-stone-200 bg-stone-50 p-4 transition hover:border-stone-300 hover:bg-white"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <span
-                  className={`border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${getSessionKindClasses(session.kind)}`}
-                >
-                  {session.kind}
-                </span>
-                <span
-                  className={`border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${getSessionStatusClasses(session.status)}`}
-                >
-                  {session.status === "submitted" ? "submitted" : "live"}
-                </span>
-              </div>
-              <span className="text-sm font-medium text-stone-700">{session.completionPercentage}%</span>
-            </div>
-            <h3 className="mt-3 text-base font-semibold text-stone-950">{session.title}</h3>
-            <p className="mt-1 text-sm text-stone-600">{session.subtitle}</p>
-            <p className="mt-3 text-sm text-stone-700">{session.timeLabel}</p>
-            <p className="mt-2 text-sm font-medium text-teal-700">{session.actionLabel}</p>
-          </Link>
-        ))}
-      </div>
-    </article>
-  );
+  return cards.slice(0, limit);
 }
 
-function SubjectFocusGrid({ cards }: { cards: DashboardHomeData["focusCards"] }) {
+function pickRecentSessions(data: DashboardHomeData, limit = 2): DashboardSessionCard[] {
+  return [...data.examSessions, ...data.assessmentSessions]
+    .sort((left, right) => {
+      if (left.status !== right.status) {
+        return left.status === "in-progress" ? -1 : 1;
+      }
+
+      return right.completionPercentage - left.completionPercentage;
+    })
+    .slice(0, limit);
+}
+
+function StreamlinedRouteCards({ cards }: { cards: DashboardRouteCard[] }) {
   if (!cards.length) {
     return null;
   }
 
   return (
-    <section className="border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">Subject focus</p>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {cards.slice(0, 4).map((focus) => (
-          <div
-            key={focus.subject}
-            className={`border p-4 ${subjectToneBlockClasses(focus.tone ?? "teal")}`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <SubjectToneChip label={focus.subject} tone={focus.tone ?? "teal"} />
-              <span className="text-xs uppercase tracking-[0.2em] opacity-80">{focus.level}</span>
-            </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-stone-200">
-              <div
-                className={`h-full rounded-full ${getProgressBarClasses(focus.readinessScore)}`}
-                style={{ width: `${focus.readinessScore}%` }}
-              />
-            </div>
-            <p className="mt-2 text-sm font-medium text-stone-800">{focus.readinessScore} / 100</p>
-            <p className="mt-2 text-sm leading-6 text-stone-600">{focus.recommendedFocus}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {cards.map((card) => (
+        <Link
+          key={card.href}
+          href={card.href}
+          className="border border-stone-200 bg-white p-5 shadow-sm transition hover:border-teal-400 hover:bg-stone-50"
+        >
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-500">{card.eyebrow}</p>
+          <h3 className="mt-3 text-xl font-semibold tracking-tight text-stone-950">{card.title}</h3>
+          <p className="mt-2 text-sm leading-7 text-stone-600">{card.description}</p>
+          <p className="mt-4 text-sm font-semibold text-teal-800">{card.stat}</p>
+        </Link>
+      ))}
+    </div>
   );
 }
 
 function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeData; isAuthenticated: boolean }) {
+  const primaryHref = isAuthenticated ? "/dashboard" : "/login?reauth=1";
+  const primaryLabel = isAuthenticated ? "Open dashboard" : "Start your setup";
+
   return (
     <>
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_20rem]">
-        <article className="border border-stone-200 bg-white p-6 shadow-sm sm:p-7">
-          <div className="space-y-5">
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-teal-700">
-                Study Atelier · The Switch
+      <section className="overflow-hidden border border-stone-200 bg-white shadow-sm">
+        <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(13,148,136,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(245,158,11,0.14),_transparent_30%),linear-gradient(180deg,_#fffcf7,_#f5f5f4)]">
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:grid lg:grid-cols-[minmax(0,1.15fr)_22rem] lg:gap-10">
+            <div className="max-w-3xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-teal-700">
+                GCSE revision · Study Atelier
               </p>
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Revision, practice, and exam readiness in one place.
+              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
+                Revision, practice, and exam readiness — one clear next step at a time.
               </h1>
-              <p className="max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
-                Open the dashboard to see what is saved, what needs attention, and what to do next — with
-                accessibility and access support built in.
+              <p className="mt-4 max-w-2xl text-base leading-8 text-stone-600">
+                Sign in to open your study home, resume saved work, and follow a calmer path through practice,
+                full papers, and weekly planning.
               </p>
-            </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href={isAuthenticated ? "/dashboard" : "/login?reauth=1"}
-                className="inline-flex items-center justify-center border border-teal-700 bg-teal-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800"
-              >
-                {isAuthenticated ? "Open dashboard" : "Get started"}
-              </Link>
-              {!isAuthenticated ? (
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/login?reauth=1"
-                  className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:border-teal-400 hover:bg-stone-50"
+                  href={primaryHref}
+                  className="bg-teal-800 px-5 py-3 text-sm font-semibold text-white hover:bg-teal-900"
                 >
-                  Log in
+                  {primaryLabel}
                 </Link>
-              ) : null}
-              <Link
-                href="/how-it-works"
-                className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:bg-stone-50"
-              >
-                How it works
-              </Link>
+                {!isAuthenticated ? (
+                  <Link
+                    href="/login?reauth=1"
+                    className="border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 hover:border-teal-400"
+                  >
+                    Log in
+                  </Link>
+                ) : (
+                  <Link
+                    href="/how-it-works"
+                    className="border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 hover:border-teal-400"
+                  >
+                    How it works
+                  </Link>
+                )}
+              </div>
+
+              <div className="mt-10 grid gap-3 sm:grid-cols-3">
+                {[
+                  {
+                    title: "One clear promise",
+                    detail: "Practice, full papers, and planning in one study home — not five competing messages.",
+                  },
+                  {
+                    title: "Trust before decoration",
+                    detail: "Accessibility, support, and school scope stay visible without crowding the hero.",
+                  },
+                  {
+                    title: "Resume where you left off",
+                    detail: "Saved exams and checkpoints open from the dashboard with the right deep links.",
+                  },
+                ].map((item) => (
+                  <article key={item.title} className="border border-stone-200 bg-white/90 p-4 shadow-sm">
+                    <h2 className="text-base font-semibold tracking-tight text-stone-950">{item.title}</h2>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
+                  </article>
+                ))}
+              </div>
             </div>
 
-            <MetricStrip metrics={data.metrics} />
-          </div>
-        </article>
+            <aside className="mt-8 space-y-4 lg:mt-0">
+              <div className="border border-stone-200 bg-white p-5 shadow-sm">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-500">
+                  Recommended now
+                </p>
+                <h2 className="mt-3 text-xl font-semibold tracking-tight text-stone-950">{data.recommendedAction}</h2>
+                <p className="mt-3 text-sm leading-7 text-stone-600">{data.continuityDescription}</p>
+                <Link
+                  href={data.continuityHref}
+                  className="mt-4 inline-flex bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+                >
+                  {data.continuityActionLabel}
+                </Link>
+              </div>
 
-        <aside className="space-y-4 border border-stone-200 bg-stone-950 p-5 text-stone-50 shadow-sm sm:p-6">
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-300">Next step</p>
-            <h2 className="text-xl font-semibold tracking-tight">{data.recommendedAction}</h2>
+              <div className="border border-amber-200 bg-[#fff8c4] p-5 shadow-sm">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-950">
+                  Secondary school · GCSE England + iGCSE
+                </p>
+                <p className="mt-3 text-sm leading-7 text-amber-950/80">
+                  Wales and Northern Ireland qualification paths are coming later. Onboarding still builds your
+                  dashboard from your chosen subjects and support settings.
+                </p>
+              </div>
+            </aside>
           </div>
-          <div className="grid gap-3 border-y border-stone-800 py-4 text-sm">
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-400">Trend</p>
-              <p className={`mt-1 font-medium capitalize ${getTrendClasses(data.summary.overallTrend)}`}>
-                {data.summary.overallTrend}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-400">Strongest</p>
-              <p className="mt-1 font-medium">{data.strongestSubject?.subject ?? "Not enough activity yet"}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-400">Watch next</p>
-              <p className="mt-1 font-medium">{data.weakestSubject?.subject ?? "Start a first session"}</p>
-            </div>
+        </div>
+
+        <div className="border-t border-stone-200 bg-stone-50">
+          <div className="mx-auto grid max-w-7xl gap-4 px-4 py-10 sm:px-6 md:grid-cols-3">
+            {[
+              {
+                eyebrow: "For students",
+                title: "Know what to do next",
+                detail: "One dashboard action, one focus block, and direct links into exams and practice.",
+                tone: "teal" as const,
+              },
+              {
+                eyebrow: "For parents",
+                title: "See a safer learning path",
+                detail: "Support and access are visible without overcrowding the interface.",
+                tone: "amber" as const,
+              },
+              {
+                eyebrow: "For schools",
+                title: "Launch with confidence",
+                detail: "Cleaner structure makes the platform easier to explain and navigate.",
+                tone: "emerald" as const,
+              },
+            ].map((item) => (
+              <article key={item.title} className={`border p-5 shadow-sm ${getToneClasses(item.tone)}`}>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] opacity-80">{item.eyebrow}</p>
+                <h2 className="mt-3 text-xl font-semibold tracking-tight">{item.title}</h2>
+                <p className="mt-2 text-sm leading-7 opacity-85">{item.detail}</p>
+              </article>
+            ))}
           </div>
-          <Link
-            href={data.continuityHref}
-            className="inline-flex w-full items-center justify-center border border-teal-500 bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-600"
-          >
-            {data.continuityActionLabel}
-          </Link>
-        </aside>
+        </div>
       </section>
 
-      <section>
-        <div className="mb-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Platform routes</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Everything in one study home</h2>
+      <section className="space-y-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Core study routes</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Jump straight into study</h2>
         </div>
-        <RouteCardGrid cards={data.routeCards} />
+        <StreamlinedRouteCards cards={pickStudyRouteCards(data.routeCards)} />
       </section>
-
-      <article className={`border p-5 shadow-sm sm:p-6 ${getMotivationClasses(data.dailyMotivation.colour)}`}>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-75">Daily motivation</p>
-            <blockquote className="mt-3 max-w-3xl text-lg font-medium leading-8 sm:text-xl">
-              “{data.dailyMotivation.quote}”
-            </blockquote>
-          </div>
-          <span className="border border-current/20 bg-white/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]">
-            {data.dailyMotivation.focusLabel}
-          </span>
-        </div>
-      </article>
     </>
   );
 }
 
 function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
+  const topRoutes = pickStudyRouteCards(data.routeCards);
+  const topFocus = data.focusCards.slice(0, 3);
+  const recentSessions = pickRecentSessions(data);
+
   return (
-    <>
-      <div className="space-y-4">
+    <div className="space-y-8">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_22rem]">
+        <article className="border border-stone-200 bg-white p-6 shadow-sm sm:p-7">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Recommended now</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
+            {data.recommendedAction}
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-stone-600">{data.continuityDescription}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              href={data.continuityHref}
+              className="bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+            >
+              {data.continuityActionLabel}
+            </Link>
+            <Link
+              href="/progress"
+              className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
+            >
+              Open weekly plan
+            </Link>
+            <Link
+              href="/saved-progress"
+              className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
+            >
+              Saved progress
+            </Link>
+          </div>
+        </article>
+
+        <article className="border border-stone-200 bg-white p-6 shadow-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-500">Readiness snapshot</p>
+          <div className="mt-4 space-y-3">
+            {data.metrics.slice(0, 3).map((metric) => (
+              <div key={metric.label} className="border border-stone-200 bg-stone-50 px-3 py-2">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">
+                  {metric.label}
+                </p>
+                <p className="mt-1 text-lg font-semibold text-stone-950">{metric.value}</p>
+                <p className="text-xs leading-5 text-stone-600">{metric.detail}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
+
+      <section className="space-y-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Quick routes</p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">Open practice, exams, or planning</h2>
+        </div>
+        <StreamlinedRouteCards cards={topRoutes} />
+      </section>
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <PlannerPromptCard initialDismissed={data.plannerPromptDismissed} />
-        <WeeklyPlannerGrid planner={data.weeklyPlanner} compact />
+
+        <article className="border border-stone-200 bg-white p-6 shadow-sm">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-700">Focus right now</p>
+          <div className="mt-4 space-y-3">
+            {topFocus.length ? (
+              topFocus.map((card) => (
+                <Link
+                  key={card.subject}
+                  href={card.subjectId ? `/subjects?subjectId=${encodeURIComponent(card.subjectId)}` : "/subjects"}
+                  className="block border border-stone-200 bg-stone-50 p-4 hover:border-teal-400 hover:bg-white"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-sm font-semibold text-stone-950">{card.subject}</h3>
+                    <span className="text-xs font-semibold text-stone-500">{card.readinessScore}/100</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-stone-600">{card.recommendedFocus}</p>
+                </Link>
+              ))
+            ) : (
+              <p className="text-sm leading-6 text-stone-600">Start a practice session to build subject focus cards.</p>
+            )}
+          </div>
+        </article>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <article className="border border-stone-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700">Resume recent work</p>
+            <Link href="/saved-progress" className="text-sm font-semibold text-teal-800 hover:opacity-80">
+              View all
+            </Link>
+          </div>
+          <div className="mt-4 space-y-3">
+            {recentSessions.length ? (
+              recentSessions.map((session) => (
+                <Link
+                  key={session.sessionId}
+                  href={session.href}
+                  className="block border border-stone-200 bg-stone-50 p-4 hover:border-teal-400 hover:bg-white"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-sm font-semibold text-stone-950">{session.title}</h3>
+                    <span className="text-xs font-semibold text-stone-500">{session.completionPercentage}%</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-stone-600">{session.subtitle}</p>
+                  <p className="mt-2 text-sm font-semibold text-teal-800">{session.actionLabel}</p>
+                </Link>
+              ))
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm leading-6 text-stone-600">No saved sessions yet.</p>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href="/assessments"
+                    className="bg-teal-800 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-900"
+                  >
+                    Start practice
+                  </Link>
+                  <Link
+                    href="/exams"
+                    className="border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:border-teal-400"
+                  >
+                    Open exams
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+        </article>
+
         <SendSupportRail summary={data.supportSnapshotSummary} chips={data.supportPreferenceChips} />
       </div>
-
-      <section className="grid gap-4 border border-stone-200 bg-white p-5 shadow-sm sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">Recommended now</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">{data.recommendedAction}</h2>
-          <p className="mt-2 text-sm text-stone-600">{data.continuityDescription}</p>
-        </div>
-        <Link
-          href={data.continuityHref}
-          className="inline-flex shrink-0 items-center justify-center border border-teal-700 bg-teal-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800"
-        >
-          {data.continuityActionLabel}
-        </Link>
-      </section>
-
-      <MetricStrip metrics={data.metrics} />
-
-      <section>
-        <div className="mb-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Quick routes</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">Jump back into study</h2>
-        </div>
-        <RouteCardGrid cards={data.routeCards} />
-      </section>
-
-      <div className="grid gap-6 xl:grid-cols-2">
-        <SessionList
-          title="Exam sessions"
-          eyebrowClass="text-teal-700"
-          linkHref={data.examSessions[0]?.href ?? "/exams"}
-          linkLabel="All exams"
-          sessions={data.examSessions}
-        />
-        <SessionList
-          title="Timed assessments"
-          eyebrowClass="text-emerald-700"
-          linkHref={data.assessmentSessions[0]?.href ?? "/assessments"}
-          linkLabel="All assessments"
-          sessions={data.assessmentSessions}
-        />
-      </div>
-
-      <SubjectFocusGrid cards={data.focusCards} />
-    </>
+    </div>
   );
 }
 
@@ -391,7 +379,7 @@ export function DashboardHome({ data, mode, isAuthenticated = false, displayName
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
       <MarketingSiteHeader isAuthenticated={isAuthenticated} />
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-10 px-4 py-6 sm:px-6 lg:px-8">
         <HomeMarketingContent data={data} isAuthenticated={isAuthenticated} />
       </div>
       <MarketingSiteFooter />

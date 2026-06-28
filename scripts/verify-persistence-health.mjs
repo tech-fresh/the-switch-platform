@@ -18,41 +18,7 @@ console.log(`- Ephemeral storage: ${config.isEphemeralStorage}`);
 
 assert(config.driver === "sqlite", "SWITCH_PERSISTENCE_DRIVER must be sqlite for live launch.");
 assert(config.dataDirectory, "SWITCH_DATA_DIRECTORY is required.");
-assert(!config.isEphemeralStorage, "Persistence path resolves to ephemeral storage — use a volume or Blob store.");
-
-if (config.storageBackend === "vercel-blob") {
-  const { probeVercelBlobReadHealth } = await import("../src/lib/persistence/vercel-blob.ts");
-  const primaryHealth = await probeVercelBlobReadHealth(config.primaryStorePath);
-
-  console.log(`- Primary blob path: ${primaryHealth.status}`);
-  if ("detail" in primaryHealth && primaryHealth.detail) {
-    console.log(`  ${primaryHealth.detail}`);
-  }
-
-  assert(
-    primaryHealth.status !== "missing-auth",
-    primaryHealth.status === "missing-auth" ? primaryHealth.detail : "Blob auth credentials are missing.",
-  );
-
-  if (primaryHealth.status === "suspended") {
-    console.error("\nBlob store is suspended. Use docs/FREE_TIER_DEPLOY.md to move to Fly.io with a disk volume.");
-    process.exit(1);
-  }
-
-  assert(
-    primaryHealth.status === "healthy" || primaryHealth.status === "missing",
-    primaryHealth.status === "unreadable"
-      ? `Primary Blob store is unreadable: ${primaryHealth.detail}`
-      : `Primary Blob store health check failed with status ${primaryHealth.status}.`,
-  );
-
-  if (primaryHealth.status === "missing") {
-    console.log("\nPrimary sqlite blob is missing. Seed with: npm run persistence:migrate-to-sqlite");
-  }
-
-  console.log("\nBlob persistence health check passed.");
-  process.exit(0);
-}
+assert(!config.isEphemeralStorage, "Persistence path resolves to ephemeral storage — use a mounted volume or durable filesystem path.");
 
 try {
   await access(config.primaryStorePath);

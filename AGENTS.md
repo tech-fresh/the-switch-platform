@@ -120,7 +120,10 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Live state → **`HANDOFF.md` → Live session state**
 - Build history → **`README.md` → Ordered Build Record**
 - UI / active plan → **`docs/ideas/FINAL-PHASE-PLAN.md`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
+- Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
 - External prompt pack → **`docs/CHATGPT-PROMPTS-README.md`**
+
+**Current deployment note:** production is Fly-only. Treat `.vercel`, Netlify deploy config, and Vercel Blob persistence as retired unless the operator explicitly asks to restore a historical migration path.
 
 ---
 
@@ -138,7 +141,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). **Priority D** is complete too; only deferred Priority E scope remains. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | **Priority E** — deferred scope review only if the operator wants post-MVP expansion. |
+| What is next? | Deploy streamlined UI to Fly when ready; **Priority E** deferred scope only if the operator wants post-MVP expansion. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 

@@ -240,24 +240,19 @@ This project is built with **Cursor Agent** and **Codex** on the same repo. **Fu
 **Session end:** update HANDOFF **Live session state**; append **Ordered Build Record** below when behavior changed.  
 **Dual-agent:** full Cursor + Codex map → [`HANDOFF.md` → Dual-agent document system](./HANDOFF.md#dual-agent-document-system-cursor--codex).
 
-### Free-tier launch workaround plan (persistence fix)
+### Fly production deploy and persistence guide
 
-Use this when **Vercel Blob is suspended**, **Vercel deploy tokens are exhausted**, or you need a **free/cheap** path to finish **Final Path Mark 2**.
-
-#### Plain English — what broke
-
-The live site saves student data in one shared sqlite file. Production on Vercel pointed that file at **Vercel Blob**. The store was **suspended**, so the app could not read the file → `/dashboard` and `/account` returned **500**. If you also **cannot redeploy on Vercel**, you cannot fix Blob there — move the app to a host with a real disk folder.
+The live platform runs on **Fly.io** with a mounted filesystem path for sqlite persistence. Use this guide when you need to re-provision production, verify the `/data` volume path, or recreate the deployment in another Fly app.
 
 #### Recommended order
 
 | Step | Option | Cost | When to use |
 |------|--------|------|-------------|
-| **1 (now)** | **Fly.io + volume + filesystem sqlite** | ~$0.15/mo for 1 GB volume | **Cannot redeploy Vercel** or Blob stays suspended |
-| **2** | Unsuspend / recreate Vercel Blob + redeploy | Free on Hobby | Only if you regain Vercel deploy access |
-| **3** | Render + persistent disk | ~$7/mo (disk needs Starter) | Prefer Fly if cost matters |
-| **4** | Turso / hosted DB | Free tier exists | Needs new adapter — not wired yet |
+| **1 (now)** | **Fly.io + volume + filesystem sqlite** | ~$0.15/mo for 1 GB volume | Standard production/runtime path for this repo |
+| **2** | Render + persistent disk | ~$7/mo (disk needs Starter) | Only if you intentionally migrate off Fly |
+| **3** | Turso / hosted DB | Free tier exists | Future adapter work, not wired today |
 
-#### Option 1 — Fly.io (use this when Vercel is blocked)
+#### Fly.io production path
 
 **Full step-by-step:** [`docs/FREE_TIER_DEPLOY.md`](docs/FREE_TIER_DEPLOY.md)
 
@@ -280,22 +275,16 @@ npm run verify:launch-complete
 npm run verify:live-truth-match
 ```
 
-Copy auth secrets from Vercel **Settings → Environment Variables** (no redeploy needed). Update Google OAuth redirect URI to the Fly URL.
+Copy auth secrets from your identity provider and current production environment. Update Google OAuth redirect URI to the Fly URL.
 
-#### Option 2 — Fix Vercel Blob (only if you can redeploy)
-
-1. Vercel → Storage → unsuspend or recreate Blob store.
-2. Env: `SWITCH_PERSISTENCE_DRIVER=sqlite`, `SWITCH_DATA_DIRECTORY=vercel-blob://switch-live-data`, `BLOB_READ_WRITE_TOKEN=...`
-3. Redeploy → `npm run verify:blob-health`
-
-#### Option 3 — Render with disk
+#### Render with disk
 
 Same env as Fly but mount path `/var/data`. Persistent disk requires Render **Starter** plan.
 
 #### What does NOT count as live launch complete
 
 - `local-json`, `memory`, or `/tmp` sqlite on serverless
-- Leaving production on suspended Vercel Blob while claiming 100% complete
+- Using an unmounted or ephemeral sqlite path while claiming 100% complete
 - Skipping `verify:live-truth-match` on the **active** live URL
 
 #### After any fix — closeout sequence
@@ -310,8 +299,6 @@ npm run verify:launch-signoff
 npm run verify:launch-complete
 npm run verify:live-truth-match
 ```
-
-(`verify:persistence-health` covers Blob **or** filesystem; `verify:blob-health` remains for Blob-only checks.)
 
 Store outputs in `release-evidence/`. Update `HANDOFF.md` when each step passes.
 
@@ -467,6 +454,25 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-29 Streamlined live student UX
+
+- Applied the `/streamlined-mockup` direction to live `/` and `/dashboard` via `src/components/dashboard-home.tsx`.
+- Homepage: calmer hero, one CTA pair, three trust cards, audience cards, and three core study route links (practice, exams, planner).
+- Dashboard: one recommended-now hero, three quick routes, planner prompt, focus cards with subject deep links, two resume cards with exam/assessment hrefs, and grouped SEND support rail.
+- Student study rail now includes **Exams**; marketing header rebranded to **The Switch Platform** with corrected **How it works** link.
+
+### 2026-06-29 Fly-only deploy cleanup
+
+- Removed the dormant Vercel Blob persistence adapter and its Blob-only verification script.
+- Deleted old `.vercel` artifacts and the unused `netlify.toml` deployment config so the repo matches the current Fly production runtime.
+- Simplified persistence, governance, admin runtime, and recovery checks around the mounted filesystem sqlite path used in Fly.
+
+### 2026-06-26 Streamlined website mockup
+
+- Added `/streamlined-mockup` as a calmer visual direction reference for a more professional, less-packed public website and dashboard.
+- Added `src/components/mock-idea/streamlined-site-mockup.tsx` to show one streamlined homepage concept, one decluttered signed-in dashboard concept, and clearer content hierarchy.
+- Linked the new mockup from `/mock-idea-preview` so it stays discoverable alongside the broader visual gallery.
 
 ### 2026-06-26 Priority A fresh closeout — onboarding proof split
 

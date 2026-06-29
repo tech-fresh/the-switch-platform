@@ -7,6 +7,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
+const DEFAULT_REHEARSAL_DIST_DIR = ".next-rehearsal";
 
 export function getRepoRoot() {
   return repoRoot;
@@ -33,17 +34,28 @@ export async function readJson(targetPath) {
 }
 
 export async function ensureBuild() {
-  const buildIdPath = path.join(repoRoot, ".next", "BUILD_ID");
+  const nextDistDir = getNextDistDirName();
+  const buildIdPath = path.join(repoRoot, nextDistDir, "BUILD_ID");
+  const nextTypesPagePath = path.join(repoRoot, nextDistDir, "types", "app", "page.ts");
+  const npmExecPath = process.env.npm_execpath?.trim() ?? "";
+  const useNodeNpmExec = npmExecPath ? await fileExists(npmExecPath) : false;
+  const npmCommand = useNodeNpmExec ? process.execPath : "npm";
+  const npmArgsPrefix = useNodeNpmExec ? [npmExecPath] : [];
 
-  if (process.env.SWITCH_SKIP_BUILD === "1" && (await fileExists(buildIdPath))) {
+  if (
+    process.env.SWITCH_SKIP_BUILD === "1" &&
+    (await fileExists(buildIdPath)) &&
+    (await fileExists(nextTypesPagePath))
+  ) {
     return;
   }
 
-  await runCommand(process.execPath, [path.join(repoRoot, "node_modules", "next", "dist", "bin", "next"), "build"], {
-    label: "next build",
+  await runCommand(npmCommand, [...npmArgsPrefix, "run", "build"], {
+    label: "npm run build",
     env: {
       ...process.env,
       NODE_ENV: "production",
+      SWITCH_NEXT_DIST_DIR: nextDistDir,
       SWITCH_AUTH_SECRET: process.env.SWITCH_AUTH_SECRET ?? "launch-build-secret",
     },
   });
@@ -106,6 +118,7 @@ export async function getAvailablePort() {
 }
 
 export async function startNextServer(env = {}) {
+  const nextDistDir = getNextDistDirName();
   const port = await getAvailablePort();
   const child = spawn(
     process.execPath,
@@ -115,6 +128,7 @@ export async function startNextServer(env = {}) {
       env: {
         ...process.env,
         NODE_ENV: "production",
+        SWITCH_NEXT_DIST_DIR: nextDistDir,
         ...env,
       },
       stdio: ["ignore", "pipe", "pipe"],
@@ -141,6 +155,12 @@ export async function startNextServer(env = {}) {
 
 async function waitForServer(baseUrl, child, getLogs) {
   const deadline = Date.now() + 30000;
+  const readinessRoutes = [
+    "/",
+    "/api/auth/providers",
+    "/api/account/overview",
+    "/api/dashboard/home",
+  ];
 
   while (Date.now() < deadline) {
     if (child.exitCode !== null) {
@@ -148,11 +168,15 @@ async function waitForServer(baseUrl, child, getLogs) {
     }
 
     try {
-      const response = await fetch(`${baseUrl}/api/auth/providers`, {
-        redirect: "manual",
-      });
+      const responses = await Promise.all(
+        readinessRoutes.map((route) =>
+          fetch(`${baseUrl}${route}`, {
+            redirect: "manual",
+          }),
+        ),
+      );
 
-      if (response.status < 500) {
+      if (responses.every((response) => response.status < 500)) {
         return;
       }
     } catch {
@@ -189,6 +213,10 @@ export function getSessionCookie(setCookieHeaders) {
   assert(cookie, "Expected auth session cookie to be set.");
 
   return cookie.split(";", 1)[0];
+}
+
+function getNextDistDirName() {
+  return process.env.SWITCH_NEXT_DIST_DIR?.trim() || DEFAULT_REHEARSAL_DIST_DIR;
 }
 
 const DEFAULT_FETCH_TIMEOUT_MS = Number(process.env.SWITCH_LIVE_FETCH_TIMEOUT_MS ?? 45000);

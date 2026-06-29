@@ -20,7 +20,7 @@ Use that name when referring to the ongoing work to:
 - tighten the dashboard, homepage, and study flows
 - remove clutter while keeping the core MVP architecture intact
 
-Status: **in progress** until the route clickability, rehearsal tooling, and practical usability areas below are complete.
+Status: **in progress** until boot/runtime stability (Area 1), rehearsal tooling (Area 7), and remaining practical usability areas below are complete. **Area 2 (route clickability) and Area 9 (Mark 3.2 UI) are complete.**
 
 ## Plan name
 
@@ -87,6 +87,21 @@ Ensure the student can move through the full MVP without broken links, route tra
 - every major CTA resolves to a working route
 - no primary MVP route lands on a confusing empty shell without guidance
 
+### Progress — 29 June 2026
+
+| Step | Status | Evidence |
+|------|--------|----------|
+| 2.1 Canonical clickable route map | **Complete** | `src/lib/routes/canonical-mvp-routes.json` + `scripts/canonical-mvp-routes.mjs` |
+| 2.2 Homepage + dashboard CTA contract tests | **Complete** | `tests/mvp-route-clickability.test.mjs` — marketing sections, dashboard route cards |
+| 2.3 Account quick links + saved-progress resume contracts | **Complete** | same test file — account quick links, `buildSavedProgressHref` |
+| 2.4 Signed-out recovery / redirect verification | **Complete** | `assertSignedOutRouteBehavior` in route smoke + clickability scripts |
+| 2.5 Signed-in shell + header/recovery affordances | **Complete** | shell route list + `Mark32PageHeader` / `StudentRouteRecovery` audit test |
+| 2.6 Runtime click-through rehearsal | **Complete** | `npm run test:route-clickability` — dashboard shortcuts, account links, resume hrefs |
+
+**Area 2 summary:** `6 / 6` steps complete — route-to-route clickability lane closed for MVP.
+
+**Verification:** `npm run test` (121/121), `npm run test:route-clickability` after `npm run build`.
+
 ## Area 3 — Exams and Timed Assessments
 
 ### Goal
@@ -106,6 +121,21 @@ Make the two highest-value learning paths feel dependable: full exams and timed 
 
 - a signed-in learner can open, continue, save, resume, and submit both an exam and a timed assessment in rehearsal
 - the resulting state appears in saved progress and results without mismatch
+
+### Progress — 29 June 2026
+
+| Step | Status | Evidence |
+|------|--------|----------|
+| 3.1 Exam lobby from `/exams` | **Complete** | `scripts/mvp-exam-assessment-rehearsal.mjs` |
+| 3.2 Focused exam entry (`examId` + `questionId`) | **Complete** | rehearsal + existing `launch-e2e.mjs` |
+| 3.3 Timed assessment entry from `/assessments` | **Complete** | rehearsal script + seed API |
+| 3.4 Resume-from-save links (exam + assessment) | **Complete** | rehearsal follows saved-progress hrefs |
+| 3.5 Submit updates saved progress + results | **Complete** | rehearsal POST submit + overview APIs |
+| 3.6 Invalid/stale session recovery copy | **Complete** | `exams-recovery.tsx`, `assessments-recovery.tsx` |
+
+**Area 3 summary:** `6 / 6` steps complete — exams and timed assessments lane closed for MVP.
+
+**Verification:** `npm run test` (127/127), `npm run test:exam-assessment-rehearsal` after `npm run build`.
 
 ## Area 4 — Saved Progress, Results, and Continuity
 
@@ -245,8 +275,8 @@ Ship a streamlined light-mode student experience on live routes without removing
 
 1. Boot and runtime stability
 2. Verification and rehearsal tooling
-3. Route-to-route clickability
-4. Exams and timed assessments
+3. Route-to-route clickability — **complete (6/6 — 29 June 2026)**
+4. Exams and timed assessments — **complete (6/6 — 29 June 2026)**
 5. Saved progress, results, and continuity
 6. Auth, account, and role experience
 7. Support, accessibility, and recovery UX

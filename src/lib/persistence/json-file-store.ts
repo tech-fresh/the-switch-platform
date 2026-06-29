@@ -22,19 +22,33 @@ export function createJsonFileCollectionStore<TRecord>(options: {
 
   return {
     async read() {
-      try {
-        const raw = await readFile(storePath, "utf8");
-        const payload = JSON.parse(raw) as Record<string, unknown>;
-        const records = payload[options.collectionKey];
+      const primaryResult = await readCollectionFile<TRecord>(storePath, options.collectionKey);
 
-        return Array.isArray(records) ? (records as TRecord[]) : [];
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-          return [];
+      if (primaryResult.ok) {
+        return primaryResult.records;
+      }
+
+      if (primaryResult.notFound && !backupStorePath) {
+        return [];
+      }
+
+      if (backupStorePath) {
+        const backupResult = await readCollectionFile<TRecord>(backupStorePath, options.collectionKey);
+
+        if (backupResult.ok) {
+          return backupResult.records;
         }
 
-        throw error;
+        if (primaryResult.notFound && backupResult.notFound) {
+          return [];
+        }
       }
+
+      if (primaryResult.notFound) {
+        return [];
+      }
+
+      throw primaryResult.error;
     },
     async write(records) {
       const existingWrite = writeChains.get(storePath) ?? Promise.resolve();
@@ -73,4 +87,38 @@ export function createJsonFileCollectionStore<TRecord>(options: {
       return nextWrite;
     },
   };
+}
+
+async function readCollectionFile<TRecord>(
+  filePath: string,
+  collectionKey: string,
+): Promise<
+  | { ok: true; records: TRecord[] }
+  | { ok: false; notFound: true; error: NodeJS.ErrnoException }
+  | { ok: false; notFound: false; error: unknown }
+> {
+  try {
+    const raw = await readFile(filePath, "utf8");
+    const payload = JSON.parse(raw) as Record<string, unknown>;
+    const records = payload[collectionKey];
+
+    return {
+      ok: true,
+      records: Array.isArray(records) ? (records as TRecord[]) : [],
+    };
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return {
+        ok: false,
+        notFound: true,
+        error: error as NodeJS.ErrnoException,
+      };
+    }
+
+    return {
+      ok: false,
+      notFound: false,
+      error,
+    };
+  }
 }

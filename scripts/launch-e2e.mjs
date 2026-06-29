@@ -58,6 +58,7 @@ try {
     "/progress",
     "/accessibility",
     "/support",
+    "/how-it-works",
   ]) {
     const page = await fetchText(`${server.baseUrl}${route}`, {
       headers: {

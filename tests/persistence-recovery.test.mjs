@@ -42,6 +42,29 @@ test("json file store mirrors writes into the backup directory", async () => {
   });
 });
 
+test("json file store falls back to the backup copy when the primary file is malformed", async () => {
+  await withTempDir(async (tempDir) => {
+    const dataDirectory = path.join(tempDir, "data");
+    const backupDirectory = path.join(dataDirectory, "backups");
+    const { createJsonFileCollectionStore } = await import(
+      `../src/lib/persistence/json-file-store.ts?test=${Date.now()}-backup-read-fallback`
+    );
+    const store = createJsonFileCollectionStore({
+      filename: "saved-progress.json",
+      collectionKey: "records",
+      directory: dataDirectory,
+      backupDirectory,
+    });
+
+    await store.write([{ id: "record-1", status: "paused" }]);
+    await writeFile(path.join(dataDirectory, "saved-progress.json"), "{", "utf8");
+
+    const records = await store.read();
+
+    assert.deepEqual(records, [{ id: "record-1", status: "paused" }]);
+  });
+});
+
 test("persistence recovery status is ready when active and backup files match", async () => {
   await withTempDir(async (tempDir) => {
     const dataDirectory = path.join(tempDir, "data");

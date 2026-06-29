@@ -88,7 +88,7 @@ function openCollectionDatabase(databasePath: string): DatabaseSync {
   const database = new DatabaseSync(databasePath);
 
   database.exec(`
-    PRAGMA journal_mode = DELETE;
+    PRAGMA busy_timeout = 5000;
     CREATE TABLE IF NOT EXISTS collection_store (
       collection_key TEXT PRIMARY KEY,
       payload TEXT NOT NULL,

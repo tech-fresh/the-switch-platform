@@ -124,7 +124,7 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Build history → **`README.md` → Ordered Build Record**
 - UI / active plan → **`docs/ideas/FINAL-PHASE-PLAN.md`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
 - MVP usability plan → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`**
-- Active redesign track → **The Switch Platform v4 UI/UX Redesign** — Area 9 **10/10 complete** (29 June 2026)
+- Active redesign track → Areas **2**, **3**, and **9** complete (29 June 2026); next **Area 4**
 - Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
 - **UI masterplan** → **`docs/design/UI-UX-MASTERPLAN.md`**
 - **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
@@ -145,7 +145,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Priority A–D complete.** **Area 9 Mark 3.2 UI/UX redesign complete (10/10).** Next: MVP usability Areas 1–8 as needed. |
+| What are we doing now? | **Areas 2 + 3 + 9 complete.** Next: Area 4 saved progress continuity, then Area 1 boot/rehearsal tooling. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
 | What is next? | Mark 3.2 UI live on Fly; commit/push to GitHub; continue **Priority E** usability plan. |

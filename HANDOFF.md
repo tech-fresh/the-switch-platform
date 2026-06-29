@@ -67,13 +67,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-29 (Mark 3.2 streamlined dashboard UI)
+- **Last updated:** 2026-06-29 (MVP usability Area 2 route clickability)
 
 ### Active task
 
-- **Priority item #:** E — Mark 3.2 UI / usability polish
-- **Module:** Dashboard + student shell
-- **Status:** Area 9 **10/10 complete** — Mark 3.2 UI/UX redesign lane closed for MVP
+- **Priority item #:** MVP Usability Launch Readiness Plan — Area 4 (saved progress continuity) next
+- **Module:** Exams + timed assessments + verification
+- **Status:** Area 2 **6/6**, Area 3 **6/6**, Area 9 **10/10** complete
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,7 +99,9 @@ Update this section every session.
 
 ### What was just completed
 
-- **Mark 3.2 purple rebrand live (29 June 2026)** — replaced Study Atelier top rail with purple left sidebar (`StudentAppShell`), updated homepage hero + device preview, violet marketing chrome. Fly deploy pending commit.
+- **MVP usability Area 3 exams and assessments (29 June 2026)** — `mvp-exam-assessment-rehearsal.mjs`, assessment recovery route, contract tests. Area 3 **6/6 complete**.
+- **MVP usability Area 2 route clickability (29 June 2026)** — canonical MVP route map, contract tests, `npm run test:route-clickability`. Area 2 **6/6 complete**.
+- **Mark 3.2 styling unification deployed (29 June 2026)** — `mark32Ui` tokens across live routes; commit `2d6a1e4`; Fly deploy succeeded.
 - **MVP usability Area 9 progress recorded (29 June 2026)** — added Area 9 to `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` with step table (`6/9` complete: masterplan, live dashboard, shell, Fly deploy, docs sync done; route-wide extension open). Synced in `FINAL-PHASE-PLAN.md`, `PLATFORM-GUIDE.md`, and README build record.
 - **The Switch Platform v4 UI/UX Redesign added to docs (29 June 2026)** — the active usability hardening lane is now explicitly named in repo docs as **The Switch Platform v4 UI/UX Redesign**, tracked through `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` and the UI masterplan.
 - **Mark 3.2 streamlined dashboard UI (29 June 2026)** — added `docs/design/UI-UX-MASTERPLAN.md` and live Mark 3.2 zones on `/dashboard` (Continue learning, Next exam, Today's goal, Power Grid progress, subject rings, weakest topics). All existing MVP sections preserved below the fold. Study Atelier light-mode tokens; top study rail unchanged.
@@ -131,8 +133,7 @@ Update this section every session.
 
 ### What is next
 
-- Continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` for route clickability and rehearsal tooling
-- Commit and push Mark 3.2 UI changes to GitHub `main`
+- Continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` — **Area 4** saved progress continuity, then **Area 1** boot/runtime
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
 ### Completion snapshot

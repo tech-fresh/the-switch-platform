@@ -1,22 +1,5 @@
+import { CANONICAL_MVP_ROUTES, CANONICAL_MVP_ROUTES_DEFINITION } from "./canonical-mvp-routes.mjs";
 import { assert, ensureBuild, fetchJson, fetchText, startNextServer, stopServer } from "./launch-utils.mjs";
-
-const publicPages = [
-  ["/", "Revision, practice, and exam readiness in one place."],
-  ["/dashboard", "Student home"],
-  ["/progress", "Power Grid"],
-  ["/subjects", "Subjects"],
-  ["/assessments", "Timed assessments"],
-  ["/exams", "Exam Engine"],
-  ["/saved-progress", "Saved progress"],
-  ["/results", "Results"],
-  ["/recommendations", "Recommendations"],
-  ["/accessibility", "Accessibility"],
-  ["/login", "Welcome back!"],
-  ["/login/microsoft-guide", "Microsoft Sign-In Guide"],
-  ["/account", "Student Account"],
-  ["/support", "Support"],
-  ["/how-it-works", "Website Guide"],
-];
 
 const jsonRoutes = [
   ["/api/auth/providers", "providers"],
@@ -31,14 +14,46 @@ const server = await startNextServer({
   SWITCH_AUTH_SECRET: "launch-smoke-secret",
 });
 
-try {
-  for (const [route, expectedText] of publicPages) {
-    const { response, body } = await fetchText(`${server.baseUrl}${route}`);
+async function assertSignedOutRouteBehavior(baseUrl, route) {
+  const response = await fetch(`${baseUrl}${route.path}`, {
+    redirect: "manual",
+  });
 
-    assert(response.ok, `Expected ${route} to return 200, received ${response.status}.`);
+  if (route.requiresAuth) {
+    const location = response.headers.get("location") ?? "";
+
     assert(
-      body.includes(expectedText),
-      `Expected ${route} to include launch marker "${expectedText}".`,
+      response.status >= 300 && response.status < 400,
+      `Expected signed-out ${route.path} to redirect, received ${response.status}.`,
+    );
+    assert(
+      location.includes("/login"),
+      `Expected signed-out ${route.path} to redirect to /login, received ${location}.`,
+    );
+    return;
+  }
+
+  const body = await response.text();
+
+  assert(response.ok, `Expected ${route.path} to return 200 when signed out, received ${response.status}.`);
+  assert(
+    body.includes(route.signedOutMarker),
+    `Expected ${route.path} to include launch marker "${route.signedOutMarker}".`,
+  );
+}
+
+try {
+  for (const route of CANONICAL_MVP_ROUTES) {
+    await assertSignedOutRouteBehavior(server.baseUrl, route);
+  }
+
+  for (const route of CANONICAL_MVP_ROUTES_DEFINITION.supplementalSmokeRoutes ?? []) {
+    const { response, body } = await fetchText(`${server.baseUrl}${route.path}`);
+
+    assert(response.ok, `Expected ${route.path} to return 200, received ${response.status}.`);
+    assert(
+      body.includes(route.signedOutMarker),
+      `Expected ${route.path} to include launch marker "${route.signedOutMarker}".`,
     );
   }
 
@@ -65,9 +80,14 @@ try {
 
   const cmsOverview = await fetchJson(`${server.baseUrl}/api/cms/overview`);
 
-  assert(cmsOverview.response.status === 401, `Expected /api/cms/overview to return 401 when signed out, received ${cmsOverview.response.status}.`);
+  assert(
+    cmsOverview.response.status === 401,
+    `Expected /api/cms/overview to return 401 when signed out, received ${cmsOverview.response.status}.`,
+  );
 
-  console.log("Local route smoke passed: public pages, public APIs, and signed-out protection are behaving as expected in the rehearsal runtime.");
+  console.log(
+    "Local route smoke passed: canonical MVP pages, public APIs, and signed-out protection are behaving as expected in the rehearsal runtime.",
+  );
 } finally {
   await stopServer(server.child);
 }

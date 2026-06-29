@@ -1,0 +1,143 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "label": "Homepage",
+      "access": "public",
+      "requiresAuth": false,
+      "signedOutMarker": "Unlock Potential. Build Confidence. Achieve More."
+    },
+    {
+      "path": "/dashboard",
+      "label": "Dashboard",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/subjects",
+      "label": "Subjects",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/assessments",
+      "label": "Timed assessments",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/exams",
+      "label": "Exam lobby",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/saved-progress",
+      "label": "Saved progress",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/results",
+      "label": "Results",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/recommendations",
+      "label": "Recommendations",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/progress",
+      "label": "Power Grid",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/accessibility",
+      "label": "Accessibility",
+      "access": "student",
+      "requiresAuth": true,
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/account",
+      "label": "Account",
+      "access": "public",
+      "requiresAuth": false,
+      "signedOutMarker": "Sign in to turn the preview into a personal study account.",
+      "studentShellWhenSignedIn": true,
+      "signedInMarker": "aria-label=\"Student navigation\""
+    },
+    {
+      "path": "/support",
+      "label": "Support",
+      "access": "public",
+      "requiresAuth": false,
+      "signedOutMarker": "Trusted support links for young people, including exam stress help and urgent support routes."
+    },
+    {
+      "path": "/how-it-works",
+      "label": "Website guide",
+      "access": "public",
+      "requiresAuth": false,
+      "signedOutMarker": "How The Switch works, step by step"
+    },
+    {
+      "path": "/login",
+      "label": "Login",
+      "access": "public",
+      "requiresAuth": false,
+      "signedOutMarker": "Welcome back!"
+    }
+  ],
+  "supplementalSmokeRoutes": [
+    {
+      "path": "/login/microsoft-guide",
+      "signedOutMarker": "Turn on Continue with Microsoft for students and admin."
+    }
+  ],
+  "allowedClickTargets": [
+    "/",
+    "/dashboard",
+    "/subjects",
+    "/assessments",
+    "/exams",
+    "/saved-progress",
+    "/results",
+    "/recommendations",
+    "/progress",
+    "/accessibility",
+    "/account",
+    "/support",
+    "/how-it-works",
+    "/login",
+    "/admin",
+    "/onboarding"
+  ],
+  "recoveryDefaultActions": [
+    "/saved-progress",
+    "/assessments",
+    "/dashboard",
+    "/exams"
+  ]
+}

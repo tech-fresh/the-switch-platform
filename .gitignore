@@ -1,5 +1,6 @@
 node_modules
 .next
+.next-rehearsal
 dist
 *.tsbuildinfo
 npm-debug.log*

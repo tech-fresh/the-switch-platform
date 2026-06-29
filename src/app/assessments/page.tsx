@@ -7,6 +7,7 @@ import {
 import { requireStudentAppRouteContext } from "@/lib/server/student-route";
 
 import { AssessmentExperience } from "./assessment-experience";
+import { AssessmentsRecoveryInShell } from "./assessments-recovery";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,24 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
     resolvedSearchParams?.assessmentId && attemptSeeds[resolvedSearchParams.assessmentId]
       ? resolvedSearchParams.assessmentId
       : assessments[0]?.assessmentId;
+
+  if (resolvedSearchParams?.assessmentId && !attemptSeeds[resolvedSearchParams.assessmentId]) {
+    return (
+      <AssessmentsRecoveryInShell
+        title="Timed assessment data is unavailable for the selected checkpoint."
+        description="The checkpoint id in the URL does not match a live practice session. Open the practice lobby or resume from saved progress instead of continuing with stale links."
+      />
+    );
+  }
+
+  if (assessments.length === 0) {
+    return (
+      <AssessmentsRecoveryInShell
+        title="No timed assessments are available right now."
+        description="The practice route loaded without checkpoint definitions. Open saved progress or the dashboard while assessments are unavailable."
+      />
+    );
+  }
 
   return (
     <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>

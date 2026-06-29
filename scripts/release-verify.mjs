@@ -7,7 +7,7 @@ const useNodeNpmExec = npmExecPath ? await fileExists(npmExecPath) : false;
 const npmCommand = useNodeNpmExec ? process.execPath : "npm";
 const npmArgsPrefix = useNodeNpmExec ? [npmExecPath] : [];
 
-const scriptNames = ["lint", "test", "build", "test:smoke", "test:e2e", "test:final-smoke"];
+const scriptNames = ["lint", "type-check", "build", "test", "test:smoke", "test:e2e", "test:final-smoke"];
 
 for (const scriptName of scriptNames) {
   process.stdout.write(`\n> Running ${scriptName}\n`);
@@ -33,7 +33,9 @@ const governanceRecording = await recordLocalReleaseRehearsal(
   scriptNames,
 );
 
-console.log("\nLocal release rehearsal passed: lint, tests, build, smoke checks, and end-to-end checks are all green.");
+console.log(
+  "\nLocal release rehearsal passed: lint, route type generation, build, tests, smoke checks, and end-to-end checks are all green.",
+);
 console.log("This proves the local rehearsal path. Run verify:live-readiness for the real launch environment checks.");
 if (governanceRecording) {
   console.log("Launch governance recording updated the local rehearsal evidence for this run.");

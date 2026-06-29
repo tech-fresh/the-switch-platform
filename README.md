@@ -458,6 +458,21 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-29 MVP exams and timed assessments (Area 3 — complete)
+
+- Rehearsal script: `npm run test:exam-assessment-rehearsal` — lobby, focus entry, autosave, resume hrefs, submit, results/saved-progress sync.
+- Assessment recovery: `assessments-recovery.tsx` for unknown checkpoint ids and empty catalogs.
+- Contract tests: `tests/mvp-exam-assessment.test.mjs`.
+- **Area 3: 6/6 complete.**
+
+### 2026-06-29 MVP route-to-route clickability (Area 2 — complete)
+
+- Canonical clickable route map: `src/lib/routes/canonical-mvp-routes.json` (13 core MVP routes + allowed click targets).
+- Contract tests: `tests/mvp-route-clickability.test.mjs` — homepage marketing CTAs, dashboard route cards, account quick links, saved-progress resume hrefs, shell/recovery affordances.
+- Runtime rehearsal: `npm run test:route-clickability` — signed-out redirects, signed-in shell routes, dashboard/account/saved-progress link follow-through.
+- Route smoke now sources markers from the canonical map and distinguishes public routes from auth-protected student routes.
+- **Area 2: 6/6 complete.**
+
 ### 2026-06-29 Streamlined live student UX
 
 - Applied the `/streamlined-mockup` direction to live `/` and `/dashboard` via `src/components/dashboard-home.tsx`.

@@ -6,7 +6,7 @@ export interface DashboardMetric {
   label: string;
   value: string;
   detail: string;
-  tone: "teal" | "emerald" | "amber" | "sky";
+  tone: "violet" | "teal" | "emerald" | "amber" | "sky";
 }
 
 export interface DashboardRouteCard {
@@ -15,7 +15,7 @@ export interface DashboardRouteCard {
   title: string;
   description: string;
   stat: string;
-  tone: "teal" | "emerald" | "amber" | "sky" | "rose";
+  tone: "violet" | "teal" | "emerald" | "amber" | "sky" | "rose";
 }
 
 export interface DashboardSessionCard {
@@ -38,7 +38,7 @@ export interface DashboardSessionCard {
 export interface DashboardFocusCard {
   subject: string;
   subjectId?: string;
-  tone?: "teal" | "emerald" | "amber" | "sky" | "rose";
+  tone?: "violet" | "teal" | "emerald" | "amber" | "sky" | "rose";
   level: string;
   trend: PowerGridTrend;
   readinessScore: number;

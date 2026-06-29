@@ -13,7 +13,7 @@ function getToneRingClass(tone: DashboardFocusCard["tone"]): string {
     case "rose":
       return "border-rose-200 text-rose-900";
     default:
-      return "border-teal-200 text-teal-900";
+      return "border-violet-200 text-violet-900";
   }
 }
 
@@ -28,7 +28,7 @@ function getToneBarClass(tone: DashboardFocusCard["tone"]): string {
     case "rose":
       return "bg-rose-600";
     default:
-      return "bg-teal-700";
+      return "bg-violet-700";
   }
 }
 
@@ -44,7 +44,7 @@ export function Mark32SubjectGrid({ subjects }: Mark32SubjectGridProps) {
         <p className="mt-3 text-sm leading-6 text-stone-600">
           Complete onboarding or start practice to populate subject progress cards.
         </p>
-        <Link href="/subjects" className="mt-4 inline-flex bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900">
+        <Link href="/subjects" className="mt-4 inline-flex bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-900">
           Open subjects
         </Link>
       </article>
@@ -67,7 +67,7 @@ export function Mark32SubjectGrid({ subjects }: Mark32SubjectGridProps) {
             <Link
               key={subject.subject}
               href={href}
-              className="border border-stone-200 bg-white p-5 shadow-sm transition hover:border-teal-400 hover:bg-stone-50"
+              className="border border-stone-200 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -89,7 +89,7 @@ export function Mark32SubjectGrid({ subjects }: Mark32SubjectGridProps) {
                 />
               </div>
               <p className="mt-3 text-sm leading-6 text-stone-600">{subject.recommendedFocus}</p>
-              <p className="mt-3 text-sm font-semibold text-teal-800">Continue</p>
+              <p className="mt-3 text-sm font-semibold text-violet-600">Continue</p>
             </Link>
           );
         })}

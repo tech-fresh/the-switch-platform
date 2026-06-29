@@ -5,7 +5,9 @@ import { PlannerPromptCard } from "@/components/mock-idea/planner-prompt-card";
 import { SendSupportRail } from "@/components/mock-idea/send-support-rail";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import { getStudyDaysThisWeek } from "@/components/streamlined/mark32-dashboard-utils";
+import { Mark32DevicePreview } from "@/components/streamlined/mark32-device-preview";
 import { Mark32HeroRow } from "@/components/streamlined/mark32-hero-row";
+import { MOCK_IDEA_BRAND } from "@/components/mock-idea/brand-tokens";
 import { Mark32MarketingSections } from "@/components/streamlined/mark32-marketing-sections";
 import { Mark32SubjectGrid } from "@/components/streamlined/mark32-subject-grid";
 import { Mark32WeakestTopics } from "@/components/streamlined/mark32-weakest-topics";
@@ -35,8 +37,13 @@ function getToneClasses(tone: DashboardRouteCard["tone"]): string {
     case "sky":
       return "border-sky-300 bg-sky-50 text-sky-950";
     default:
-      return "border-teal-300 bg-teal-50 text-teal-950";
+      return "border-violet-300 bg-violet-50 text-violet-950";
   }
+}
+
+function getMarketingToneClasses(tone: "violet" | "amber" | "emerald"): string {
+  if (tone === "violet") return "border-violet-300 bg-violet-50 text-violet-950";
+  return getToneClasses(tone);
 }
 
 function pickStudyRouteCards(cards: DashboardRouteCard[], limit = 3): DashboardRouteCard[] {
@@ -74,12 +81,12 @@ function StreamlinedRouteCards({ cards }: { cards: DashboardRouteCard[] }) {
         <Link
           key={card.href}
           href={card.href}
-          className="border border-stone-200 bg-white p-5 shadow-sm transition hover:border-teal-400 hover:bg-stone-50"
+          className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm transition hover:border-violet-300 hover:shadow-md"
         >
           <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-500">{card.eyebrow}</p>
           <h3 className="mt-3 text-xl font-semibold tracking-tight text-stone-950">{card.title}</h3>
           <p className="mt-2 text-sm leading-7 text-stone-600">{card.description}</p>
-          <p className="mt-4 text-sm font-semibold text-teal-800">{card.stat}</p>
+          <p className="mt-4 text-sm font-semibold text-violet-700">{card.stat}</p>
         </Link>
       ))}
     </div>
@@ -89,121 +96,66 @@ function StreamlinedRouteCards({ cards }: { cards: DashboardRouteCard[] }) {
 function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeData; isAuthenticated: boolean }) {
   return (
     <>
-      <section className="overflow-hidden border border-stone-200 bg-white shadow-sm">
-        <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(13,148,136,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(245,158,11,0.14),_transparent_30%),linear-gradient(180deg,_#fffcf7,_#f5f5f4)]">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:grid lg:grid-cols-[minmax(0,1.15fr)_22rem] lg:gap-10">
-            <div className="max-w-3xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-teal-700">
-                GCSE revision · Study Atelier
-              </p>
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
-                GCSE revision. Timed practice. Progress. Exam ready.
+      <section className="overflow-hidden rounded-3xl border border-violet-100 bg-white shadow-xl shadow-violet-100/50">
+        <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(75,63,232,0.12),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.1),_transparent_30%),linear-gradient(180deg,_#ffffff,_#f7f8ff)]">
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-center lg:gap-12">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-3">
+                <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 text-2xl text-white shadow-lg">
+                  {MOCK_IDEA_BRAND.logoGlyph}
+                </span>
+                <div>
+                  <p className="text-xs font-black tracking-[0.2em] text-violet-700">MVP · MARK 3.2</p>
+                  <p className="text-sm font-bold text-violet-950">{MOCK_IDEA_BRAND.shortName}</p>
+                </div>
+              </div>
+              <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+                {MOCK_IDEA_BRAND.subtitle}
               </h1>
-              <p className="mt-4 max-w-2xl text-base leading-8 text-stone-600">
-                The Switch Platform helps you study smarter, stay motivated, and be exam ready — one clear next
-                step at a time.
+              <p className="mt-4 max-w-xl text-base leading-8 text-slate-600">
+                {MOCK_IDEA_BRAND.tagline} Smart practice, clear progress, and inclusive learning for GCSE students.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href={isAuthenticated ? "/dashboard" : "/login?reauth=1"}
-                  className="bg-teal-800 px-5 py-3 text-sm font-semibold text-white hover:bg-teal-900"
+                  className="rounded-2xl bg-violet-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-violet-300/50 hover:bg-violet-700"
                 >
                   {isAuthenticated ? "Open dashboard" : "Get started free"}
                 </Link>
-                {!isAuthenticated ? (
-                  <Link
-                    href="#features"
-                    className="border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 hover:border-teal-400"
-                  >
-                    See how it works
-                  </Link>
-                ) : (
-                  <Link
-                    href="/how-it-works"
-                    className="border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 hover:border-teal-400"
-                  >
-                    How it works
-                  </Link>
-                )}
-              </div>
-
-              <div className="mt-10 grid gap-3 sm:grid-cols-3">
-                {[
-                  {
-                    title: "One clear promise",
-                    detail: "Practice, full papers, and planning in one study home — not five competing messages.",
-                  },
-                  {
-                    title: "Trust before decoration",
-                    detail: "Accessibility, support, and school scope stay visible without crowding the hero.",
-                  },
-                  {
-                    title: "Resume where you left off",
-                    detail: "Saved exams and checkpoints open from the dashboard with the right deep links.",
-                  },
-                ].map((item) => (
-                  <article key={item.title} className="border border-stone-200 bg-white/90 p-4 shadow-sm">
-                    <h2 className="text-base font-semibold tracking-tight text-stone-950">{item.title}</h2>
-                    <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
-                  </article>
-                ))}
-              </div>
-            </div>
-
-            <aside className="mt-8 space-y-4 lg:mt-0">
-              <div className="border border-stone-200 bg-white p-5 shadow-sm">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-500">
-                  Recommended now
-                </p>
-                <h2 className="mt-3 text-xl font-semibold tracking-tight text-stone-950">{data.recommendedAction}</h2>
-                <p className="mt-3 text-sm leading-7 text-stone-600">{data.continuityDescription}</p>
                 <Link
-                  href={data.continuityHref}
-                  className="mt-4 inline-flex bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+                  href="#features"
+                  className="rounded-2xl border border-violet-200 bg-white px-6 py-3 text-sm font-bold text-violet-800 hover:bg-violet-50"
                 >
-                  {data.continuityActionLabel}
+                  See how it works
                 </Link>
               </div>
 
-              <div className="border border-amber-200 bg-[#fff8c4] p-5 shadow-sm">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-950">
-                  Secondary school · GCSE England + iGCSE
+              <article className="mt-8 rounded-2xl border border-violet-200 bg-violet-600 p-5 text-white shadow-lg">
+                <p className="text-sm font-black">{MOCK_IDEA_BRAND.logoGlyph} Our Mission</p>
+                <p className="mt-2 text-sm leading-7 text-violet-100">
+                  Empower every student to unlock their potential through smart practice, clear progress and
+                  inclusive learning experiences.
                 </p>
-                <p className="mt-3 text-sm leading-7 text-amber-950/80">
-                  Wales and Northern Ireland qualification paths are coming later. Onboarding still builds your
-                  dashboard from your chosen subjects and support settings.
-                </p>
-              </div>
-            </aside>
+              </article>
+            </div>
+
+            <div className="mt-10 lg:mt-0">
+              <Mark32DevicePreview />
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-stone-200 bg-stone-50">
+        <div className="border-t border-violet-100 bg-violet-50/50">
           <div className="mx-auto grid max-w-7xl gap-4 px-4 py-10 sm:px-6 md:grid-cols-3">
             {[
-              {
-                eyebrow: "For students",
-                title: "Know what to do next",
-                detail: "One dashboard action, one focus block, and direct links into exams and practice.",
-                tone: "teal" as const,
-              },
-              {
-                eyebrow: "For parents",
-                title: "See a safer learning path",
-                detail: "Support and access are visible without overcrowding the interface.",
-                tone: "amber" as const,
-              },
-              {
-                eyebrow: "For schools",
-                title: "Launch with confidence",
-                detail: "Cleaner structure makes the platform easier to explain and navigate.",
-                tone: "emerald" as const,
-              },
+              { eyebrow: "For students", title: "Know what to do next", detail: "One dashboard action and direct links into exams and practice.", tone: "violet" as const },
+              { eyebrow: "For parents", title: "See a safer learning path", detail: "Support and access visible without overcrowding the interface.", tone: "amber" as const },
+              { eyebrow: "For schools", title: "Launch with confidence", detail: "Clear structure makes the platform easier to explain and navigate.", tone: "emerald" as const },
             ].map((item) => (
-              <article key={item.title} className={`border p-5 shadow-sm ${getToneClasses(item.tone)}`}>
+              <article key={item.title} className={`rounded-2xl border p-5 shadow-sm ${getMarketingToneClasses(item.tone)}`}>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.24em] opacity-80">{item.eyebrow}</p>
-                <h2 className="mt-3 text-xl font-semibold tracking-tight">{item.title}</h2>
+                <h2 className="mt-3 text-xl font-bold tracking-tight">{item.title}</h2>
                 <p className="mt-2 text-sm leading-7 opacity-85">{item.detail}</p>
               </article>
             ))}
@@ -252,19 +204,19 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href={data.continuityHref}
-            className="bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+            className="bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700"
           >
             {data.continuityActionLabel}
           </Link>
           <Link
             href="/progress"
-            className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
+            className="rounded-2xl border border-violet-200 bg-white px-4 py-2.5 text-sm font-bold text-violet-900 hover:bg-violet-50"
           >
             Open weekly plan
           </Link>
           <Link
             href="/saved-progress"
-            className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
+            className="rounded-2xl border border-violet-200 bg-white px-4 py-2.5 text-sm font-bold text-violet-900 hover:bg-violet-50"
           >
             Saved progress
           </Link>
@@ -290,7 +242,7 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
                 <Link
                   key={card.subject}
                   href={card.subjectId ? `/subjects?subjectId=${encodeURIComponent(card.subjectId)}` : "/subjects"}
-                  className="block border border-stone-200 bg-stone-50 p-4 hover:border-teal-400 hover:bg-white"
+                  className="block rounded-2xl border border-violet-100 bg-white p-4 hover:border-violet-300 hover:shadow-sm"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <h3 className="text-sm font-semibold text-stone-950">{card.subject}</h3>
@@ -310,7 +262,7 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
         <article className="border border-stone-200 bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700">Resume recent work</p>
-            <Link href="/saved-progress" className="text-sm font-semibold text-teal-800 hover:opacity-80">
+            <Link href="/saved-progress" className="text-sm font-bold text-violet-700 hover:opacity-80">
               View all
             </Link>
           </div>
@@ -320,7 +272,7 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
                 <Link
                   key={session.sessionId}
                   href={session.href}
-                  className="block border border-stone-200 bg-stone-50 p-4 hover:border-teal-400 hover:bg-white"
+                  className="block rounded-2xl border border-violet-100 bg-white p-4 hover:border-violet-300 hover:shadow-sm"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <h3 className="text-sm font-semibold text-stone-950">{session.title}</h3>
@@ -380,7 +332,7 @@ export function DashboardHome({ data, mode, isAuthenticated = false, displayName
   }
 
   return (
-    <main className="min-h-screen bg-stone-100 text-stone-950">
+    <main className="min-h-screen bg-[#f7f8ff] text-slate-950">
       <MarketingSiteHeader isAuthenticated={isAuthenticated} />
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-10 px-4 py-6 sm:px-6 lg:px-8">
         <HomeMarketingContent data={data} isAuthenticated={isAuthenticated} />

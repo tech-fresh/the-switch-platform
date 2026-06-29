@@ -18,7 +18,7 @@ function ProgressRing({ value, label }: { value: number; label: string }) {
 
   return (
     <div
-      className="relative grid size-20 place-items-center rounded-full border-[8px] border-teal-100 bg-white text-lg font-semibold text-teal-900 shadow-inner"
+      className="relative grid size-20 place-items-center rounded-full border-[8px] border-violet-100 bg-white text-lg font-semibold text-violet-900 shadow-inner"
       aria-label={`${label}: ${clamped}%`}
     >
       {clamped}%
@@ -39,20 +39,20 @@ export function Mark32HeroRow({ data }: Mark32HeroRowProps) {
   return (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Study overview">
       <article className="border border-stone-200 bg-white p-5 shadow-sm md:col-span-2 xl:col-span-1">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Continue learning</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-700">Continue learning</p>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h2 className="text-xl font-semibold tracking-tight text-stone-950">{continueLearning.title}</h2>
             <p className="mt-2 text-sm leading-6 text-stone-600">{continueLearning.subtitle}</p>
             <div className="mt-3 h-2 max-w-xs overflow-hidden rounded-full bg-stone-100">
               <div
-                className="h-full rounded-full bg-teal-700 transition-all"
+                className="h-full rounded-full bg-violet-700 transition-all"
                 style={{ width: `${continueLearning.progress}%` }}
               />
             </div>
             <Link
               href={continueLearning.href}
-              className="mt-4 inline-flex bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+              className="mt-4 inline-flex bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-900"
             >
               {continueLearning.actionLabel}
             </Link>
@@ -85,23 +85,23 @@ export function Mark32HeroRow({ data }: Mark32HeroRowProps) {
         </Link>
       </article>
 
-      <article className="border border-teal-800 bg-gradient-to-br from-teal-900 to-teal-800 p-5 text-white shadow-sm">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-100">Power Grid progress</p>
+      <article className="border border-violet-600 bg-gradient-to-br from-violet-900 to-violet-600 p-5 text-white shadow-sm">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-100">Power Grid progress</p>
         <div className="mt-4 flex items-center gap-4">
-          <span className="inline-flex size-14 items-center justify-center rounded-2xl bg-teal-700 text-2xl shadow-lg">
+          <span className="inline-flex size-14 items-center justify-center rounded-2xl bg-violet-700 text-2xl shadow-lg">
             ◆
           </span>
           <div>
             <h2 className="text-xl font-semibold tracking-tight">{data.summary.overallLevel}</h2>
-            <p className="text-sm text-teal-100">
+            <p className="text-sm text-violet-100">
               Level {levelIndex} of {POWER_GRID_LEVELS.length}
             </p>
           </div>
         </div>
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-teal-950/60">
+        <div className="mt-4 h-2 overflow-hidden rounded-full bg-violet-950/60">
           <div className="h-full rounded-full bg-amber-300" style={{ width: `${levelProgress}%` }} />
         </div>
-        <p className="mt-3 text-sm text-teal-100">
+        <p className="mt-3 text-sm text-violet-100">
           {data.summary.examReadinessScore} / 100 exam readiness
         </p>
       </article>

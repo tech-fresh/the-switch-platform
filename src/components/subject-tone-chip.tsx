@@ -18,7 +18,8 @@ export function SubjectToneChip({ label, tone }: SubjectToneChipProps) {
 
 export function subjectToneBlockClasses(tone: NavAccent): string {
   const map: Record<NavAccent, string> = {
-    teal: "border-teal-300 bg-teal-50 text-teal-950",
+    violet: "border-violet-300 bg-violet-50 text-violet-950",
+    teal: "border-violet-300 bg-violet-50 text-violet-950",
     emerald: "border-emerald-300 bg-emerald-50 text-emerald-950",
     amber: "border-amber-300 bg-amber-50 text-amber-950",
     sky: "border-sky-300 bg-sky-50 text-sky-950",

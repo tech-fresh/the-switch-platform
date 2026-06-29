@@ -21,7 +21,7 @@ export function Mark32WeakestTopics({ data }: Mark32WeakestTopicsProps) {
             <Link
               key={`${topic.subject}-${topic.focus}`}
               href={topic.href}
-              className="flex items-start gap-3 border border-stone-200 bg-stone-50 p-3 hover:border-teal-400 hover:bg-white"
+              className="flex items-start gap-3 border border-stone-200 bg-stone-50 p-3 hover:border-violet-400 hover:bg-white"
             >
               <span className="inline-flex size-7 shrink-0 items-center justify-center bg-rose-700 text-xs font-bold text-white">
                 {index + 1}
@@ -41,7 +41,7 @@ export function Mark32WeakestTopics({ data }: Mark32WeakestTopicsProps) {
         )}
       </div>
 
-      <Link href="/recommendations" className="mt-4 inline-flex text-sm font-semibold text-teal-800 hover:opacity-80">
+      <Link href="/recommendations" className="mt-4 inline-flex text-sm font-semibold text-violet-600 hover:opacity-80">
         See all recommendations
       </Link>
     </aside>

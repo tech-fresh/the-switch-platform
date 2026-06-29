@@ -26,7 +26,7 @@ function getEyebrowClass(tone: Mark32PageHeaderProps["eyebrowTone"]): string {
     case "rose":
       return "text-rose-700";
     default:
-      return "text-teal-700";
+      return "text-violet-700";
   }
 }
 

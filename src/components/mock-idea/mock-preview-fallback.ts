@@ -117,7 +117,7 @@ export function buildMockPreviewDashboardData(): DashboardHomeData {
         label: "Readiness",
         value: "68 / 100",
         detail: "A calmer overview of current exam readiness.",
-        tone: "teal",
+        tone: "violet",
       },
       {
         label: "Live sessions",
@@ -151,7 +151,7 @@ export function buildMockPreviewDashboardData(): DashboardHomeData {
         title: "Open your study home",
         description: "See one clear next step, not a packed wall of competing cards.",
         stat: "Recommended now",
-        tone: "teal",
+        tone: "violet",
       },
       {
         href: "/progress",
@@ -210,7 +210,7 @@ export function buildMockPreviewDashboardData(): DashboardHomeData {
       {
         subject: "English Language",
         subjectId: "gcse-english-language",
-        tone: "teal",
+        tone: "violet",
         level: "Voltage Rising",
         trend: "improving",
         readinessScore: 71,
@@ -241,7 +241,7 @@ export function buildMockPreviewDashboardData(): DashboardHomeData {
     strongestSubject: {
       subject: "English Language",
       subjectId: "gcse-english-language",
-      tone: "teal",
+      tone: "violet",
       level: "Voltage Rising",
       trend: "improving",
       readinessScore: 71,
@@ -280,7 +280,7 @@ export function buildMockPreviewDashboardData(): DashboardHomeData {
               kind: "recommended",
               subject: "English Language",
               subjectId: "gcse-english-language",
-              tone: "teal",
+              tone: "violet",
               title: "20-minute analysis checkpoint",
               subtitle: "Resume the most relevant active practice",
               href: "/assessments",

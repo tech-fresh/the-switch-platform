@@ -1,10 +1,17 @@
-/** Mock Idea — creative Study Atelier direction on The Switch Platform (not Seneca). */
+/** Mark 3.2 — The Switch Platform brand tokens (purple sidebar + Study Atelier accents). */
 export const MOCK_IDEA_BRAND = {
-  name: "The Switch Platform",
-  tagline: "Study Atelier · GCSE revision",
-  logoGlyph: "◆",
-  creativeNote:
-    "Bento layouts, stone/teal palette, top study rail — deliberately not a narrow icon sidebar clone.",
+  name: "THE SWITCH PLATFORM",
+  shortName: "The Switch Platform",
+  tagline: "Unlock Potential. Build Confidence. Achieve More.",
+  logoGlyph: "⚡",
+  subtitle: "GCSE Revision · Timed Practice · Progress · Exam Ready.",
+  purple: {
+    sidebar: "#12005f",
+    primary: "#4B3FE8",
+    primaryDark: "#3730C4",
+    deep: "#140062",
+    surface: "#f7f8ff",
+  },
 } as const;
 
 /** MVP accessibility colour schemes — signposting only until learner chooses in /accessibility. */
@@ -39,16 +46,26 @@ export const SEND_COLOUR_CHIPS = [
   },
 ] as const;
 
-export type NavAccent = "teal" | "emerald" | "amber" | "sky" | "rose";
+export type NavAccent = "violet" | "emerald" | "amber" | "sky" | "rose" | "teal";
 
 export const STUDENT_NAV_ITEMS = [
-  { href: "/dashboard", label: "Home", short: "H", accent: "teal" as const },
-  { href: "/assessments", label: "Practice", short: "P", accent: "emerald" as const },
-  { href: "/exams", label: "Exams", short: "E", accent: "teal" as const },
-  { href: "/progress", label: "Planner", short: "L", accent: "sky" as const },
-  { href: "/subjects", label: "Subjects", short: "S", accent: "amber" as const },
-  { href: "/accessibility", label: "Access", short: "A", accent: "rose" as const },
-  { href: "/support", label: "SEND help", short: "+", accent: "rose" as const },
+  { href: "/dashboard", label: "Home", short: "⌂", accent: "violet" as const },
+  { href: "/subjects", label: "Subjects", short: "▦", accent: "violet" as const },
+  { href: "/subjects", label: "Learn", short: "📖", accent: "sky" as const, navKey: "learn" },
+  { href: "/assessments", label: "Practice", short: "✎", accent: "emerald" as const },
+  { href: "/exams", label: "Exams", short: "◷", accent: "violet" as const },
+  { href: "/progress", label: "Progress", short: "▥", accent: "sky" as const },
+  { href: "/progress", label: "Planner", short: "📅", accent: "amber" as const, navKey: "planner" },
+  { href: "/progress", label: "Power Grid", short: "⚡", accent: "violet" as const, navKey: "power-grid" },
+  { href: "/support", label: "Support", short: "?", accent: "rose" as const },
+] as const;
+
+export const MOBILE_NAV_ITEMS = [
+  STUDENT_NAV_ITEMS[0],
+  STUDENT_NAV_ITEMS[2],
+  STUDENT_NAV_ITEMS[3],
+  STUDENT_NAV_ITEMS[4],
+  STUDENT_NAV_ITEMS[5],
 ] as const;
 
 export const MARKETING_NAV = [
@@ -58,29 +75,41 @@ export const MARKETING_NAV = [
   { href: "/admin", label: "For Schools", primary: false },
 ] as const;
 
-export function navAccentClasses(accent: NavAccent, active: boolean): string {
-  if (!active) {
-    return "border-transparent text-stone-600 hover:border-stone-200 hover:bg-white/90 hover:text-stone-900";
+export function isNavItemActive(
+  pathname: string,
+  item: (typeof STUDENT_NAV_ITEMS)[number],
+): boolean {
+  if (item.href === "/subjects" && item.label === "Learn") {
+    return pathname === "/subjects" || pathname.startsWith("/subjects/");
   }
 
-  const map: Record<NavAccent, string> = {
-    teal: "border-teal-300 bg-teal-50 text-teal-900 shadow-sm shadow-teal-100/80",
-    emerald: "border-emerald-300 bg-emerald-50 text-emerald-900 shadow-sm shadow-emerald-100/80",
-    amber: "border-amber-300 bg-amber-50 text-amber-950 shadow-sm shadow-amber-100/80",
-    sky: "border-sky-300 bg-sky-50 text-sky-900 shadow-sm shadow-sky-100/80",
-    rose: "border-rose-300 bg-rose-50 text-rose-900 shadow-sm shadow-rose-100/80",
-  };
+  if (item.href === "/progress") {
+    return pathname === "/progress" || pathname.startsWith("/progress/");
+  }
 
-  return map[accent];
+  if (item.href === "/subjects" && item.label === "Subjects") {
+    return pathname === "/subjects";
+  }
+
+  return pathname === item.href || pathname.startsWith(`${item.href}/`);
+}
+
+export function navAccentClasses(accent: NavAccent, active: boolean): string {
+  if (!active) {
+    return "text-violet-100 hover:bg-white/10 hover:text-white";
+  }
+
+  return "bg-white text-violet-700 shadow-lg";
 }
 
 export function badgeAccentClasses(accent: NavAccent): string {
   const map: Record<NavAccent, string> = {
-    teal: "bg-teal-700 text-white",
-    emerald: "bg-emerald-700 text-white",
-    amber: "bg-amber-600 text-white",
-    sky: "bg-sky-700 text-white",
-    rose: "bg-rose-700 text-white",
+    violet: "bg-violet-600 text-white",
+    teal: "bg-violet-600 text-white",
+    emerald: "bg-emerald-600 text-white",
+    amber: "bg-amber-500 text-white",
+    sky: "bg-sky-600 text-white",
+    rose: "bg-rose-600 text-white",
   };
 
   return map[accent];

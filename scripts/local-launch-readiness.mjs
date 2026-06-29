@@ -6,18 +6,6 @@ const scriptRuns = [
   { name: "type-check" },
   { name: "build" },
   { name: "test" },
-  {
-    name: "test:smoke",
-    env: {
-      SWITCH_SKIP_BUILD: "1",
-    },
-  },
-  {
-    name: "test:e2e",
-    env: {
-      SWITCH_SKIP_BUILD: "1",
-    },
-  },
 ];
 
 const npmExecPath = process.env.npm_execpath?.trim() ?? "";
@@ -47,6 +35,14 @@ for (const scriptRun of scriptRuns) {
       : process.env,
   });
 }
+
+process.stdout.write("\n> Running test:smoke\n");
+const { runRouteSmoke } = await import("./route-smoke.mjs");
+await runRouteSmoke();
+
+process.stdout.write("\n> Running test:e2e\n");
+const { runLaunchE2e } = await import("./launch-e2e.mjs");
+await runLaunchE2e();
 
 console.log(
   "\nLocal launch readiness passed: build, route type generation, tests, smoke checks, and signed-in rehearsal all completed in the fresh-checkout order.",

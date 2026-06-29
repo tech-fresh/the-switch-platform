@@ -458,6 +458,19 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-29 MVP auth, account, and role experience (Area 5 — complete)
+
+- Rehearsal script: `npm run test:auth-account-rehearsal` — student sign-in, admin sign-in, account states, admin protection, sign-out lockout.
+- Contract tests: `tests/mvp-auth-account.test.mjs`.
+- **Area 5: 5/5 complete.**
+
+### 2026-06-29 MVP saved progress continuity (Area 4 — complete)
+
+- Rehearsal script: `npm run test:continuity-rehearsal` — dashboard, saved-progress, and results continuity alignment; resume/review href validation; submitted session lock to `/results`.
+- Contract tests: `tests/mvp-continuity.test.mjs` — continuity states, href builders, cross-surface mirror, submitted status lock.
+- Empty-state guidance: `start-first-session` routes to `/exams`; results page shows continuity recovery when no submitted history exists.
+- **Area 4: 4/4 complete.**
+
 ### 2026-06-29 MVP exams and timed assessments (Area 3 — complete)
 
 - Rehearsal script: `npm run test:exam-assessment-rehearsal` — lobby, focus entry, autosave, resume hrefs, submit, results/saved-progress sync.
@@ -5552,3 +5565,34 @@ flowchart LR
     B --> C["All 22 complete"]
     C --> D["Platform: fully complete"]
 ```
+
+### 59. MVP usability Area 1 runtime rehearsal hardening (In Progress)
+
+Plain-English:
+
+- The launch-readiness follow-up now has a stronger local rehearsal path for fresh checkouts.
+- Route types, production builds, smoke checks, and signed-in rehearsal now share one stable `.next-rehearsal` output story instead of drifting between build directories.
+- Direct verification commands are green; the only remaining follow-up is re-running the new all-in-one wrapper outside the Codex sandbox because the sandbox hit a loopback permission error during the chained smoke step.
+
+What changed:
+
+| Surface | Update |
+|--------|--------|
+| `scripts/type-check.mjs` | Type generation now prepares the shared rehearsal output before `tsc --noEmit` |
+| `scripts/prepare-next-build.mjs` | Build prep now materializes Next route types cleanly before `next build` |
+| `scripts/launch-utils.mjs` | Local readiness waits for `/`, `/api/auth/providers`, `/api/account/overview`, and `/api/dashboard/home` to stop 500ing before smoke/e2e continue |
+| `scripts/route-smoke.mjs` / `scripts/launch-e2e.mjs` | Export reusable rehearsal functions so Area 1 tooling can call the same checks consistently |
+| `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` | Area 1 progress table added |
+
+What was verified:
+
+- `npm run lint`
+- `npm run type-check`
+- `npm run build`
+- `npm run test`
+- `npm run test:smoke`
+- `npm run test:e2e`
+
+What still needs confirmation:
+
+- `npm run verify:local-launch-readiness` should be re-run directly in the operator terminal once to confirm the one-command wrapper is also green outside the Codex sandbox.

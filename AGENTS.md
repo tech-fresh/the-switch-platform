@@ -124,7 +124,7 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Build history → **`README.md` → Ordered Build Record**
 - UI / active plan → **`docs/ideas/FINAL-PHASE-PLAN.md`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
 - MVP usability plan → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`**
-- Active redesign track → Areas **2**, **3**, and **9** complete (29 June 2026); next **Area 4**
+- Active redesign track → Areas **2**, **3**, and **9** complete (29 June 2026); **Area 1** runtime hardening is in final verification
 - Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
 - **UI masterplan** → **`docs/design/UI-UX-MASTERPLAN.md`**
 - **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
@@ -145,10 +145,10 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Areas 2 + 3 + 9 complete.** Next: Area 4 saved progress continuity, then Area 1 boot/rehearsal tooling. |
+| What are we doing now? | **Areas 2 + 3 + 4 + 5 + 9 complete.** Area 1 boot/rehearsal hardening is in final verification after direct build, type-check, smoke, and e2e passes. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | Mark 3.2 UI live on Fly; commit/push to GitHub; continue **Priority E** usability plan. |
+| What is next? | Re-run `verify:local-launch-readiness` outside the Codex sandbox, then continue **Priority E** usability plan with **Area 6** support and recovery UX. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 

@@ -1,149 +1,152 @@
+import process from "node:process";
+import { pathToFileURL } from "node:url";
 import { assert, ensureBuild, fetchJson, fetchText, getSessionCookie, startNextServer, stopServer } from "./launch-utils.mjs";
 
-await ensureBuild();
+export async function runLaunchE2e() {
+  await ensureBuild();
 
-const server = await startNextServer({
-  SWITCH_AUTH_MODE: "preview-cookie",
-  SWITCH_AUTH_SECRET: "launch-e2e-secret",
-});
-
-try {
-  const studentCookie = await signIn(server.baseUrl, "email-magic-link", "/account");
-  const adminCookie = await signIn(server.baseUrl, "google", "/admin");
-
-  const studentAccount = await fetchJson(`${server.baseUrl}/api/account/overview`, {
-    headers: {
-      cookie: studentCookie,
-    },
+  const server = await startNextServer({
+    SWITCH_AUTH_MODE: "preview-cookie",
+    SWITCH_AUTH_SECRET: "launch-e2e-secret",
   });
-  assert(studentAccount.response.ok, `Expected student account overview to return 200, received ${studentAccount.response.status}.`);
-  assert(studentAccount.json?.account?.isAuthenticated === true, "Expected student account overview to report an authenticated session.");
 
-  const studentResults = await fetchJson(`${server.baseUrl}/api/results/overview`, {
-    headers: {
-      cookie: studentCookie,
-    },
-  });
-  assert(studentResults.response.ok, `Expected authenticated /api/results/overview to return 200, received ${studentResults.response.status}.`);
+  try {
+    const studentCookie = await signIn(server.baseUrl, "email-magic-link", "/account");
+    const adminCookie = await signIn(server.baseUrl, "google", "/admin");
 
-  const adminAccount = await fetchJson(`${server.baseUrl}/api/account/overview`, {
-    headers: {
-      cookie: adminCookie,
-    },
-  });
-  assert(adminAccount.response.ok, `Expected admin account overview to return 200, received ${adminAccount.response.status}.`);
-  assert(
-    adminAccount.json?.account?.session?.user?.roles?.includes("admin") === true,
-    "Expected the admin session to include the admin role.",
-  );
-
-  const accountPage = await fetchText(`${server.baseUrl}/account`, {
-    headers: {
-      cookie: studentCookie,
-    },
-  });
-  assert(
-    accountPage.body.includes("Your signed-in identity and study shortcuts"),
-    "Expected signed-in account page copy to render for the student session.",
-  );
-
-  for (const route of [
-    "/dashboard",
-    "/subjects",
-    "/assessments",
-    "/exams",
-    "/saved-progress",
-    "/results",
-    "/recommendations",
-    "/progress",
-    "/accessibility",
-    "/support",
-    "/how-it-works",
-  ]) {
-    const page = await fetchText(`${server.baseUrl}${route}`, {
+    const studentAccount = await fetchJson(`${server.baseUrl}/api/account/overview`, {
       headers: {
         cookie: studentCookie,
       },
     });
+    assert(studentAccount.response.ok, `Expected student account overview to return 200, received ${studentAccount.response.status}.`);
+    assert(studentAccount.json?.account?.isAuthenticated === true, "Expected student account overview to report an authenticated session.");
 
-    assert(page.response.ok, `Expected authenticated ${route} to return 200, received ${page.response.status}.`);
+    const studentResults = await fetchJson(`${server.baseUrl}/api/results/overview`, {
+      headers: {
+        cookie: studentCookie,
+      },
+    });
+    assert(studentResults.response.ok, `Expected authenticated /api/results/overview to return 200, received ${studentResults.response.status}.`);
+
+    const adminAccount = await fetchJson(`${server.baseUrl}/api/account/overview`, {
+      headers: {
+        cookie: adminCookie,
+      },
+    });
+    assert(adminAccount.response.ok, `Expected admin account overview to return 200, received ${adminAccount.response.status}.`);
+    assert(
+      adminAccount.json?.account?.session?.user?.roles?.includes("admin") === true,
+      "Expected the admin session to include the admin role.",
+    );
+
+    const accountPage = await fetchText(`${server.baseUrl}/account`, {
+      headers: {
+        cookie: studentCookie,
+      },
+    });
+    assert(
+      accountPage.body.includes("Your signed-in identity and study shortcuts"),
+      "Expected signed-in account page copy to render for the student session.",
+    );
+
+    for (const route of [
+      "/dashboard",
+      "/subjects",
+      "/assessments",
+      "/exams",
+      "/saved-progress",
+      "/results",
+      "/recommendations",
+      "/progress",
+      "/accessibility",
+      "/support",
+      "/how-it-works",
+    ]) {
+      const page = await fetchText(`${server.baseUrl}${route}`, {
+        headers: {
+          cookie: studentCookie,
+        },
+      });
+
+      assert(page.response.ok, `Expected authenticated ${route} to return 200, received ${page.response.status}.`);
+    }
+
+    const focusedExamPage = await fetchText(
+      `${server.baseUrl}/exams?examId=aqa-maths-higher-paper-1&questionId=q1-v1`,
+      {
+        headers: {
+          cookie: studentCookie,
+        },
+      },
+    );
+    assert(
+      focusedExamPage.response.ok,
+      `Expected focused exam route to return 200, received ${focusedExamPage.response.status}.`,
+    );
+    assert(
+      focusedExamPage.body.includes("Question navigator") ||
+        focusedExamPage.body.includes("Resume full paper practice") ||
+        focusedExamPage.body.includes("Exam focus mode"),
+      "Expected focused exam route to render exam-session controls.",
+    );
+
+    const focusedAssessmentPage = await fetchText(
+      `${server.baseUrl}/assessments?assessmentId=edexcel-english-writing-craft-checkpoint&durationMinutes=30&questionId=q4`,
+      {
+        headers: {
+          cookie: studentCookie,
+        },
+      },
+    );
+    assert(
+      focusedAssessmentPage.response.ok,
+      `Expected focused assessment route to return 200, received ${focusedAssessmentPage.response.status}.`,
+    );
+    assert(
+      focusedAssessmentPage.body.includes("Checkpoint") ||
+        focusedAssessmentPage.body.includes("Question navigator") ||
+        focusedAssessmentPage.body.includes("Timed assessment"),
+      "Expected focused assessment route to render timed-practice controls.",
+    );
+
+    const adminPage = await fetchText(`${server.baseUrl}/admin`, {
+      headers: {
+        cookie: adminCookie,
+      },
+    });
+    assert(adminPage.response.ok, `Expected authenticated /admin to return 200, received ${adminPage.response.status}.`);
+    assert(adminPage.response.url.endsWith("/admin"), `Expected authenticated /admin to stay on /admin, received ${adminPage.response.url}.`);
+
+    const cmsOverview = await fetchJson(`${server.baseUrl}/api/cms/overview`, {
+      headers: {
+        cookie: adminCookie,
+      },
+    });
+    assert(cmsOverview.response.ok, `Expected authenticated /api/cms/overview to return 200, received ${cmsOverview.response.status}.`);
+    assert(cmsOverview.json?.overview, "Expected authenticated CMS overview response to include overview data.");
+
+    const signOutResponse = await fetchJson(`${server.baseUrl}/api/auth/session`, {
+      method: "DELETE",
+      headers: {
+        origin: server.baseUrl,
+        cookie: studentCookie,
+      },
+    });
+    assert(signOutResponse.response.ok, `Expected sign-out to return 200, received ${signOutResponse.response.status}.`);
+    assert(signOutResponse.json?.session?.status === "signed-out", "Expected sign-out response to report a signed-out session.");
+    assert(
+      (signOutResponse.response.headers.get("set-cookie") ?? "").includes("switch_auth_session="),
+      "Expected sign-out to clear the auth session cookie.",
+    );
+
+    const signedOutResults = await fetchJson(`${server.baseUrl}/api/results/overview`, {});
+    assert(signedOutResults.response.status === 401, `Expected signed-out /api/results/overview to return 401, received ${signedOutResults.response.status}.`);
+
+    console.log("Local end-to-end rehearsal passed: student continuity, admin access, protected APIs, and sign-out all behaved correctly in the preview-style test runtime.");
+  } finally {
+    await stopServer(server.child);
   }
-
-  const focusedExamPage = await fetchText(
-    `${server.baseUrl}/exams?examId=aqa-maths-higher-paper-1&questionId=q1-v1`,
-    {
-      headers: {
-        cookie: studentCookie,
-      },
-    },
-  );
-  assert(
-    focusedExamPage.response.ok,
-    `Expected focused exam route to return 200, received ${focusedExamPage.response.status}.`,
-  );
-  assert(
-    focusedExamPage.body.includes("Question navigator") ||
-      focusedExamPage.body.includes("Resume full paper practice") ||
-      focusedExamPage.body.includes("Exam focus mode"),
-    "Expected focused exam route to render exam-session controls.",
-  );
-
-  const focusedAssessmentPage = await fetchText(
-    `${server.baseUrl}/assessments?assessmentId=edexcel-english-writing-craft-checkpoint&durationMinutes=30&questionId=q4`,
-    {
-      headers: {
-        cookie: studentCookie,
-      },
-    },
-  );
-  assert(
-    focusedAssessmentPage.response.ok,
-    `Expected focused assessment route to return 200, received ${focusedAssessmentPage.response.status}.`,
-  );
-  assert(
-    focusedAssessmentPage.body.includes("Checkpoint") ||
-      focusedAssessmentPage.body.includes("Question navigator") ||
-      focusedAssessmentPage.body.includes("Timed assessment"),
-    "Expected focused assessment route to render timed-practice controls.",
-  );
-
-  const adminPage = await fetchText(`${server.baseUrl}/admin`, {
-    headers: {
-      cookie: adminCookie,
-    },
-  });
-  assert(adminPage.response.ok, `Expected authenticated /admin to return 200, received ${adminPage.response.status}.`);
-  assert(adminPage.response.url.endsWith("/admin"), `Expected authenticated /admin to stay on /admin, received ${adminPage.response.url}.`);
-
-  const cmsOverview = await fetchJson(`${server.baseUrl}/api/cms/overview`, {
-    headers: {
-      cookie: adminCookie,
-    },
-  });
-  assert(cmsOverview.response.ok, `Expected authenticated /api/cms/overview to return 200, received ${cmsOverview.response.status}.`);
-  assert(cmsOverview.json?.overview, "Expected authenticated CMS overview response to include overview data.");
-
-  const signOutResponse = await fetchJson(`${server.baseUrl}/api/auth/session`, {
-    method: "DELETE",
-    headers: {
-      origin: server.baseUrl,
-      cookie: studentCookie,
-    },
-  });
-  assert(signOutResponse.response.ok, `Expected sign-out to return 200, received ${signOutResponse.response.status}.`);
-  assert(signOutResponse.json?.session?.status === "signed-out", "Expected sign-out response to report a signed-out session.");
-  assert(
-    (signOutResponse.response.headers.get("set-cookie") ?? "").includes("switch_auth_session="),
-    "Expected sign-out to clear the auth session cookie.",
-  );
-
-  const signedOutResults = await fetchJson(`${server.baseUrl}/api/results/overview`, {
-  });
-  assert(signedOutResults.response.status === 401, `Expected signed-out /api/results/overview to return 401, received ${signedOutResults.response.status}.`);
-
-  console.log("Local end-to-end rehearsal passed: student continuity, admin access, protected APIs, and sign-out all behaved correctly in the preview-style test runtime.");
-} finally {
-  await stopServer(server.child);
 }
 
 async function signIn(baseUrl, provider, returnTo) {
@@ -159,4 +162,8 @@ async function signIn(baseUrl, provider, returnTo) {
   const cookies = response.headers.getSetCookie();
 
   return getSessionCookie(cookies);
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await runLaunchE2e();
 }

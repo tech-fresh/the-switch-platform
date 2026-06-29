@@ -55,6 +55,15 @@ Make the app boot reliably from a fresh checkout in both local and Fly-style pro
 - `npm run build`, `npm run type-check`, `npm run test`, `npm run test:smoke`, and `npm run test:e2e` run cleanly in the intended order
 - a fresh local production boot does not 500 on `/`, `/dashboard`, `/account`, or `/api/dashboard/home`
 
+### Progress — 29 June 2026
+
+| Step | Status | Evidence |
+|------|--------|----------|
+| Route type + rehearsal dist alignment | **Complete** | `scripts/type-check.mjs`, `scripts/prepare-next-build.mjs`, `.next-rehearsal` pipeline |
+| Stronger local server readiness probes | **Complete** | `scripts/launch-utils.mjs` probes `/`, `/api/auth/providers`, `/api/account/overview`, `/api/dashboard/home` |
+| Direct verification order | **Complete** | `npm run lint`, `npm run type-check`, `npm run build`, `npm run test`, `npm run test:smoke`, `npm run test:e2e` all passed |
+| One-command local readiness wrapper | **In progress** | `npm run verify:local-launch-readiness` added in `scripts/local-launch-readiness.mjs`; Codex sandbox still needs one operator-terminal rerun because the chained smoke step hit loopback `listen EPERM` |
+
 ## Area 2 — Route-to-Route Clickability
 
 ### Goal
@@ -155,6 +164,19 @@ Make continuity one of the strongest parts of the MVP rather than just a persist
 - continuity works for new, active, and completed states
 - every resume card leads somewhere real and appropriate
 
+### Progress
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| 4.1 Route-level continuity checks (saved-progress, results, dashboard) | **Complete** | `mvp-continuity-rehearsal.mjs` + `mvp-continuity.test.mjs` |
+| 4.2 Submitted sessions never reopen incorrectly | **Complete** | submitted href locks to `/results`; stale PATCH stays submitted |
+| 4.3 Saved progress hrefs always resolve to valid routes | **Complete** | `assertAllowedMvpClickTarget` on all session hrefs |
+| 4.4 Empty-state guidance for no-history continuity | **Complete** | `start-first-session` → `/exams`; results + saved-progress recovery |
+
+**Area 4 summary:** `4 / 4` steps complete — saved progress continuity lane closed for MVP.
+
+**Verification:** `npm run test` (140/140), `npm run test:continuity-rehearsal` after `npm run build`.
+
 ## Area 5 — Auth, Account, and Role Experience
 
 ### Goal
@@ -174,6 +196,20 @@ Make student and admin access feel intentional, obvious, and stable.
 - the account route clearly reflects auth state
 - admin access only appears when intended
 - sign-out and role boundaries are obvious and reliable
+
+### Progress
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| 5.1 Canonical student sign-in rehearsal path | **Complete** | `email-magic-link` → `/account` in `mvp-auth-account-rehearsal.mjs` |
+| 5.2 Canonical admin access rehearsal path | **Complete** | `google` → `/admin` in `mvp-auth-account-rehearsal.mjs` |
+| 5.3 `/account` signed out, student, and admin states | **Complete** | rehearsal + `mvp-auth-account.test.mjs` |
+| 5.4 `/admin` redirects when not allowlisted | **Complete** | signed-out + student redirect checks in rehearsal |
+| 5.5 Sign-out locks protected surfaces again | **Complete** | DELETE session + `/dashboard` redirect + API 401 |
+
+**Area 5 summary:** `5 / 5` steps complete — auth, account, and role experience lane closed for MVP.
+
+**Verification:** `npm run test` (140/140), `npm run test:auth-account-rehearsal` after `npm run build`.
 
 ## Area 6 — Support, Accessibility, and Recovery UX
 

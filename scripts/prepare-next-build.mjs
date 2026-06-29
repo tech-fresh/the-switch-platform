@@ -41,5 +41,6 @@ await rm(nextDistPath, { recursive: true, force: true });
 
 if (await fileExists(tempTypesPath)) {
   await mkdir(nextDistPath, { recursive: true });
+  await rm(nextTypesPath, { recursive: true, force: true });
   await cp(tempTypesPath, nextTypesPath, { recursive: true });
 }

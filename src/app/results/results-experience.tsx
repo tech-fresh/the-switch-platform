@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
+import { StudentRouteRecovery } from "@/components/student-route-recovery";
 import type { MarkingConfidence, ResultsOverview } from "@/modules/results/types";
 
 function getTrendTone(trend: "improving" | "stable" | "needs-attention"): string {
@@ -67,6 +68,19 @@ export function ResultsExperience({ results }: ResultsExperienceProps) {
           },
         ]}
       />
+
+      {results.continuityStatus === "start-first-session" ? (
+        <StudentRouteRecovery
+          eyebrow="Results continuity"
+          title="No submitted results yet"
+          description="Complete an exam paper or timed assessment and your scores, review notes, and continuity cards will appear here instead of leaving this route feeling empty."
+          actions={[
+            { href: "/exams", label: "Open exam lobby", variant: "primary" },
+            { href: "/assessments", label: "Start timed practice", variant: "secondary" },
+            { href: "/dashboard", label: "Return to dashboard", variant: "secondary" },
+          ]}
+        />
+      ) : null}
 
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="grid gap-6">

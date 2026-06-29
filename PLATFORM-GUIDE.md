@@ -26,7 +26,7 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). **Fully complete** on production — Priority A closed 26 June 2026. |
-| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). **Priority D** is complete too; only deferred Priority E scope remains. |
+| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). **Priority D** is complete too. Current in-progress product lane: **The Switch Platform v4 UI/UX Redesign** through the MVP usability plan. |
 | Onboarding | **8 steps stay** — they **create the dashboard**. Secondary school; GCSE (England) + iGCSE; Wales/NI **later**. |
 | Website polish | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
 | Priority C | **Complete — closed.** Do not reopen unless operator requests exception. |
@@ -43,7 +43,7 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | **Onboarding** | 8 steps; `/onboarding` → `/dashboard`; see `src/modules/onboarding/README.md` |
 | **Priority C** | **Complete — 24 June 2026** (shell, focus mode, planner, marketing, recovery) |
 | **Priority A** | **Complete — 26 June 2026** (A-1–A-8; canonical evidence in `release-evidence/2026-06-26-priority-a-canonical-closeout.md`) |
-| **Active work** | **Priority E** — deferred scope only; current MVP completion plan is closed |
+| **Active work** | **The Switch Platform v4 UI/UX Redesign** — in progress through the MVP usability plan; Priority E remains the deferred expansion bucket |
 | **Key routes** | `/`, `/login`, `/onboarding`, `/dashboard`, `/subjects`, `/exams`, `/assessments`, `/progress` |
 
 Full MVP spec and history → **`README.md` → Mark 3.2 Product Spec** (append only).
@@ -217,6 +217,7 @@ Active order unless explicitly overridden:
 
 ### Index
 
+- **UI masterplan:** `docs/design/UI-UX-MASTERPLAN.md` (Mark 3.2 streamlined light-mode)
 - Primary design: `src/app/globals.css`
 - Tailwind: `tailwind.config.ts`
 - Global shell: `src/app/layout.tsx`

@@ -1,9 +1,16 @@
 import { assert, ensureBuild, fetchJson, fetchText, startNextServer, stopServer } from "./launch-utils.mjs";
 
 const publicPages = [
-  ["/", "Dashboard"],
-  ["/dashboard", "Dashboard"],
+  ["/", "Revision, practice, and exam readiness in one place."],
+  ["/dashboard", "Student home"],
+  ["/progress", "Power Grid"],
   ["/subjects", "Subjects"],
+  ["/assessments", "Timed assessments"],
+  ["/exams", "Exam Engine"],
+  ["/saved-progress", "Saved progress"],
+  ["/results", "Results"],
+  ["/recommendations", "Recommendations"],
+  ["/accessibility", "Accessibility"],
   ["/login", "Welcome back!"],
   ["/login/microsoft-guide", "Microsoft Sign-In Guide"],
   ["/account", "Student Account"],
@@ -20,7 +27,7 @@ const jsonRoutes = [
 await ensureBuild();
 
 const server = await startNextServer({
-  SWITCH_AUTH_MODE: "oidc",
+  SWITCH_AUTH_MODE: "preview-cookie",
   SWITCH_AUTH_SECRET: "launch-smoke-secret",
 });
 

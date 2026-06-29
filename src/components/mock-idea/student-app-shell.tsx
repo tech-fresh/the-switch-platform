@@ -19,6 +19,8 @@ interface StudentAppShellProps {
   isAuthenticated?: boolean;
   /** Hide desktop SEND column when the page already renders SendSupportRail */
   showSendSideRail?: boolean;
+  studyDaysThisWeek?: number;
+  powerGridLevel?: string;
 }
 
 export function StudentAppShell({
@@ -26,6 +28,8 @@ export function StudentAppShell({
   displayName,
   isAuthenticated = true,
   showSendSideRail = true,
+  studyDaysThisWeek,
+  powerGridLevel,
 }: StudentAppShellProps) {
   const pathname = usePathname();
   const firstName = displayName?.trim().split(/\s+/)[0] ?? "Student";
@@ -116,15 +120,32 @@ export function StudentAppShell({
             <h1 className="text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
               {greeting}, {firstName}
             </h1>
-            <p className="text-sm text-stone-600">Your study home — saved work, next steps, and access tools.</p>
+            <p className="text-sm text-stone-600">
+              Your study home — saved work, next steps, and access tools.
+              {studyDaysThisWeek && studyDaysThisWeek > 0 ? (
+                <>
+                  {" "}
+                  <span className="font-semibold text-teal-800">
+                    {studyDaysThisWeek} study day{studyDaysThisWeek === 1 ? "" : "s"} this week.
+                  </span>
+                </>
+              ) : null}
+            </p>
           </div>
 
-          <Link
-            href="/accessibility"
-            className="border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:border-teal-400"
-          >
-            Access settings
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            {powerGridLevel ? (
+              <span className="hidden rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-[11px] font-semibold text-teal-900 sm:inline-flex">
+                ◆ {powerGridLevel}
+              </span>
+            ) : null}
+            <Link
+              href="/accessibility"
+              className="border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:border-teal-400"
+            >
+              Access settings
+            </Link>
+          </div>
         </div>
 
         <div className="mx-auto flex max-w-[1400px] gap-2 overflow-x-auto px-4 pb-3 sm:px-6 lg:hidden">

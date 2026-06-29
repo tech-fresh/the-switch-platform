@@ -67,13 +67,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-29 (Streamlined live UI shipped)
+- **Last updated:** 2026-06-29 (Mark 3.2 streamlined dashboard UI)
 
 ### Active task
 
-- **Priority item #:** E — Streamlined live student UX (launch polish)
-- **Module:** Dashboard + marketing shell
-- **Status:** Streamlined homepage and dashboard shipped to live routes; deploy to Fly when ready
+- **Priority item #:** E — Mark 3.2 UI / usability polish
+- **Module:** Dashboard + student shell
+- **Status:** Mark 3.2 dashboard zones shipped on `/dashboard`; Fly deploy for permanent production
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,10 @@ Update this section every session.
 
 ### What was just completed
 
+- **The Switch Platform v4 UI/UX Redesign added to docs (29 June 2026)** — the active usability hardening lane is now explicitly named in repo docs as **The Switch Platform v4 UI/UX Redesign**, tracked through `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` and the UI masterplan.
+- **Mark 3.2 streamlined dashboard UI (29 June 2026)** — added `docs/design/UI-UX-MASTERPLAN.md` and live Mark 3.2 zones on `/dashboard` (Continue learning, Next exam, Today's goal, Power Grid progress, subject rings, weakest topics). All existing MVP sections preserved below the fold. Study Atelier light-mode tokens; top study rail unchanged.
+- **Mark 3.2 deployed to Fly (29 June 2026)** — `fly deploy -a the-switch-platform` succeeded; permanent production at https://theswitchplatform.com
+- **MVP usability launch-readiness plan added (29 June 2026)** — created `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` as the named practical follow-on plan for making the current MVP feel fully clickable, usable, and real-world ready without reopening Priority A truth evidence.
 - **Streamlined live UI deployed to Fly (29 June 2026)** — `fly deploy -a the-switch-platform` succeeded; live at https://theswitchplatform.com with calmer homepage/dashboard, Exams in study rail, and Fly-only persistence.
 - **Fly-only persistence cleanup completed (29 June 2026)** — removed the dormant Vercel Blob adapter, deleted `.vercel` and Netlify deploy artifacts, simplified the persistence/admin/governance runtime back to the mounted-filesystem path used in Fly production, and refreshed `package-lock.json`.
 - **Streamlined website mockup added (26 June 2026)** — new route `/streamlined-mockup` shows a calmer homepage direction and a decluttered signed-in dashboard concept using the existing Study Atelier visual language. Entry link added to `/mock-idea-preview`.
@@ -125,7 +129,8 @@ Update this section every session.
 
 ### What is next
 
-- Sync GitHub `main` when remote is ready (local commit `ac33867` is deployed to Fly but push was behind remote)
+- Continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` for route clickability and rehearsal tooling
+- Commit and push Mark 3.2 UI changes to GitHub `main`
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
 ### Completion snapshot
@@ -834,6 +839,15 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-29 — Cursor — Mark 3.2 streamlined dashboard UI
+
+- Done: created `docs/design/UI-UX-MASTERPLAN.md` (Mark 3.2 layout + Study Atelier tokens + MVP preservation rules)
+- Done: shipped live Mark 3.2 dashboard zones on `/dashboard` via `src/components/streamlined/*`
+- Done: extended `StudentAppShell` with weekly study-day count and Power Grid level badge
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (109/109 passed)
+- Done: `fly deploy -a the-switch-platform` — live at https://theswitchplatform.com
+- Next: commit/push to GitHub; continue MVP usability plan
 
 ### 2026-06-26 — Cursor — Priority A onboarding proof split + fresh closeout
 

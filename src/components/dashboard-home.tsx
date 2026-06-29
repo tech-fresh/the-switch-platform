@@ -4,6 +4,10 @@ import { MarketingSiteFooter } from "@/components/mock-idea/marketing-site-foote
 import { PlannerPromptCard } from "@/components/mock-idea/planner-prompt-card";
 import { SendSupportRail } from "@/components/mock-idea/send-support-rail";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
+import { getStudyDaysThisWeek } from "@/components/streamlined/mark32-dashboard-utils";
+import { Mark32HeroRow } from "@/components/streamlined/mark32-hero-row";
+import { Mark32SubjectGrid } from "@/components/streamlined/mark32-subject-grid";
+import { Mark32WeakestTopics } from "@/components/streamlined/mark32-weakest-topics";
 import type {
   DashboardHomeData,
   DashboardRouteCard,
@@ -227,50 +231,40 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_22rem]">
-        <article className="border border-stone-200 bg-white p-6 shadow-sm sm:p-7">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Recommended now</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
-            {data.recommendedAction}
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-stone-600">{data.continuityDescription}</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href={data.continuityHref}
-              className="bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
-            >
-              {data.continuityActionLabel}
-            </Link>
-            <Link
-              href="/progress"
-              className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
-            >
-              Open weekly plan
-            </Link>
-            <Link
-              href="/saved-progress"
-              className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
-            >
-              Saved progress
-            </Link>
-          </div>
-        </article>
+      <Mark32HeroRow data={data} />
 
-        <article className="border border-stone-200 bg-white p-6 shadow-sm">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-500">Readiness snapshot</p>
-          <div className="mt-4 space-y-3">
-            {data.metrics.slice(0, 3).map((metric) => (
-              <div key={metric.label} className="border border-stone-200 bg-stone-50 px-3 py-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">
-                  {metric.label}
-                </p>
-                <p className="mt-1 text-lg font-semibold text-stone-950">{metric.value}</p>
-                <p className="text-xs leading-5 text-stone-600">{metric.detail}</p>
-              </div>
-            ))}
-          </div>
-        </article>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+        <Mark32SubjectGrid subjects={data.focusCards} />
+        <Mark32WeakestTopics data={data} />
       </div>
+
+      <article className="border border-stone-200 bg-white p-6 shadow-sm sm:p-7">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Recommended now</p>
+        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
+          {data.recommendedAction}
+        </h2>
+        <p className="mt-3 text-sm leading-7 text-stone-600">{data.continuityDescription}</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link
+            href={data.continuityHref}
+            className="bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+          >
+            {data.continuityActionLabel}
+          </Link>
+          <Link
+            href="/progress"
+            className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
+          >
+            Open weekly plan
+          </Link>
+          <Link
+            href="/saved-progress"
+            className="border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
+          >
+            Saved progress
+          </Link>
+        </div>
+      </article>
 
       <section className="space-y-4">
         <div>
@@ -363,11 +357,15 @@ export function DashboardHome({ data, mode, isAuthenticated = false, displayName
   const isHome = mode === "home";
 
   if (!isHome) {
+    const studyDaysThisWeek = getStudyDaysThisWeek(data.weeklyPlanner);
+
     return (
       <StudentAppShell
         displayName={displayName}
         supportChips={data.supportPreferenceChips}
         showSendSideRail={false}
+        studyDaysThisWeek={studyDaysThisWeek}
+        powerGridLevel={data.summary.overallLevel}
       >
         <div className="flex flex-col gap-8 pb-20 lg:pb-8">
           <DashboardStudentContent data={data} />

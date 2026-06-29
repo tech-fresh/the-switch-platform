@@ -4,6 +4,7 @@ await ensureBuild();
 
 const server = await startNextServer({
   SWITCH_AUTH_MODE: "preview-cookie",
+  SWITCH_AUTH_SECRET: "launch-e2e-secret",
 });
 
 try {
@@ -41,9 +42,23 @@ try {
       cookie: studentCookie,
     },
   });
-  assert(accountPage.body.includes("Signed-in student identity"), "Expected signed-in account page copy to render for the student session.");
+  assert(
+    accountPage.body.includes("Your signed-in identity and study shortcuts"),
+    "Expected signed-in account page copy to render for the student session.",
+  );
 
-  for (const route of ["/dashboard", "/assessments", "/exams", "/saved-progress", "/results"]) {
+  for (const route of [
+    "/dashboard",
+    "/subjects",
+    "/assessments",
+    "/exams",
+    "/saved-progress",
+    "/results",
+    "/recommendations",
+    "/progress",
+    "/accessibility",
+    "/support",
+  ]) {
     const page = await fetchText(`${server.baseUrl}${route}`, {
       headers: {
         cookie: studentCookie,
@@ -52,6 +67,44 @@ try {
 
     assert(page.response.ok, `Expected authenticated ${route} to return 200, received ${page.response.status}.`);
   }
+
+  const focusedExamPage = await fetchText(
+    `${server.baseUrl}/exams?examId=aqa-maths-higher-paper-1&questionId=q1-v1`,
+    {
+      headers: {
+        cookie: studentCookie,
+      },
+    },
+  );
+  assert(
+    focusedExamPage.response.ok,
+    `Expected focused exam route to return 200, received ${focusedExamPage.response.status}.`,
+  );
+  assert(
+    focusedExamPage.body.includes("Question navigator") ||
+      focusedExamPage.body.includes("Resume full paper practice") ||
+      focusedExamPage.body.includes("Exam focus mode"),
+    "Expected focused exam route to render exam-session controls.",
+  );
+
+  const focusedAssessmentPage = await fetchText(
+    `${server.baseUrl}/assessments?assessmentId=edexcel-english-writing-craft-checkpoint&durationMinutes=30&questionId=q4`,
+    {
+      headers: {
+        cookie: studentCookie,
+      },
+    },
+  );
+  assert(
+    focusedAssessmentPage.response.ok,
+    `Expected focused assessment route to return 200, received ${focusedAssessmentPage.response.status}.`,
+  );
+  assert(
+    focusedAssessmentPage.body.includes("Checkpoint") ||
+      focusedAssessmentPage.body.includes("Question navigator") ||
+      focusedAssessmentPage.body.includes("Timed assessment"),
+    "Expected focused assessment route to render timed-practice controls.",
+  );
 
   const adminPage = await fetchText(`${server.baseUrl}/admin`, {
     headers: {

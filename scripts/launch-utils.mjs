@@ -83,28 +83,25 @@ export async function runCommand(command, args, options = {}) {
 }
 
 export async function getAvailablePort() {
-  const basePort = 3300 + Math.floor(Math.random() * 400);
-
-  for (let offset = 0; offset < 50; offset += 1) {
-    const port = basePort + offset;
-    const available = await canBindPort(port);
-
-    if (available) {
-      return port;
-    }
-  }
-
-  throw new Error("Unable to find an available local port for launch automation.");
-}
-
-function canBindPort(port) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const netServer = createServer();
-    netServer.once("error", () => resolve(false));
-    netServer.once("listening", () => {
-      netServer.close(() => resolve(true));
+    netServer.once("error", (error) => {
+      reject(error);
     });
-    netServer.listen(port, "127.0.0.1");
+    netServer.once("listening", () => {
+      const address = netServer.address();
+      const port =
+        typeof address === "object" && address !== null ? address.port : null;
+      netServer.close(() => {
+        if (!port) {
+          reject(new Error("Unable to resolve a local port for launch automation."));
+          return;
+        }
+
+        resolve(port);
+      });
+    });
+    netServer.listen(0, "127.0.0.1");
   });
 }
 
@@ -225,16 +222,25 @@ export async function fetchJson(url, options) {
 
 async function fetchWithRetry(url, options = {}) {
   let lastError = null;
+  let lastResponse = null;
 
   for (let attempt = 1; attempt <= DEFAULT_FETCH_ATTEMPTS; attempt += 1) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), DEFAULT_FETCH_TIMEOUT_MS);
 
     try {
-      return await fetch(url, {
+      const response = await fetch(url, {
         ...options,
         signal: controller.signal,
       });
+
+      if (response.status >= 500 && attempt < DEFAULT_FETCH_ATTEMPTS) {
+        lastResponse = response;
+        await delay(750 * attempt);
+        continue;
+      }
+
+      return response;
     } catch (error) {
       lastError = error;
 
@@ -252,6 +258,10 @@ async function fetchWithRetry(url, options = {}) {
     } finally {
       clearTimeout(timeout);
     }
+  }
+
+  if (lastResponse) {
+    return lastResponse;
   }
 
   throw lastError ?? new Error(`Fetch failed for ${url}.`);

@@ -462,6 +462,20 @@ This section is the running record of what has been requested, added, and commit
 - Dashboard: one recommended-now hero, three quick routes, planner prompt, focus cards with subject deep links, two resume cards with exam/assessment hrefs, and grouped SEND support rail.
 - Student study rail now includes **Exams**; marketing header rebranded to **The Switch Platform** with corrected **How it works** link.
 
+### 2026-06-29 Mark 3.2 streamlined dashboard UI (live routes)
+
+- Added authoritative UI spec: `docs/design/UI-UX-MASTERPLAN.md` (Mark 3.2 light-mode layout mapped to Study Atelier tokens).
+- Shipped live Mark 3.2 dashboard zones on `/dashboard`: Continue learning, Next exam, Today&apos;s goal, Power Grid progress, subject progress rings, and weakest-topics panel via `src/components/streamlined/*`.
+- Preserved all existing MVP dashboard sections (quick routes, planner, focus, resume, SEND support) below the new above-the-fold layout.
+- Extended `StudentAppShell` with weekly study-day count and Power Grid level badge in the greeting rail.
+- Deployed to Fly production (`fly deploy -a the-switch-platform`) — live at https://theswitchplatform.com
+
+### 2026-06-29 MVP usability launch-readiness plan
+
+- Added `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` as the named practical plan for turning the already-live MVP into a more fully usable, route-stable, real-world-ready student product.
+- Broke the work into eight development areas: boot/runtime stability, route clickability, exams and timed assessments, continuity, auth/account, support/accessibility/recovery, verification tooling, and doc truth.
+- Marked this active lane in docs as **The Switch Platform v4 UI/UX Redesign** and set it as **in progress** until the practical usability checklist is complete.
+
 ### 2026-06-29 Fly-only deploy cleanup
 
 - Removed the dormant Vercel Blob persistence adapter and its Blob-only verification script.

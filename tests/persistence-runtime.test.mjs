@@ -111,3 +111,33 @@ test("persistence runtime treats sqlite with an explicit data directory as the i
   restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
   restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);
 });
+
+test("persistence runtime falls back from Fly volume path to workspace storage in local development", async () => {
+  const previousDriver = process.env.SWITCH_PERSISTENCE_DRIVER;
+  const previousDataDirectory = process.env.SWITCH_DATA_DIRECTORY;
+  const previousNodeEnv = process.env.NODE_ENV;
+  const previousFlyAppName = process.env.FLY_APP_NAME;
+  const previousFlyMachineId = process.env.FLY_MACHINE_ID;
+  process.env.SWITCH_PERSISTENCE_DRIVER = "sqlite";
+  process.env.SWITCH_DATA_DIRECTORY = "/data";
+  process.env.NODE_ENV = "development";
+  delete process.env.FLY_APP_NAME;
+  delete process.env.FLY_MACHINE_ID;
+
+  const { getPersistenceRuntimeConfig } = await import(
+    `../src/lib/persistence/runtime.ts?test=${Date.now()}-fly-volume-fallback`
+  );
+  const runtime = getPersistenceRuntimeConfig();
+
+  assert.equal(runtime.driver, "sqlite");
+  assert.equal(runtime.storageBackend, "filesystem");
+  assert.equal(runtime.isPrototypePersistence, true);
+  assert.equal(runtime.dataDirectory.endsWith(".codex-data/fly-volume-fallback"), true);
+  assert.equal(runtime.primaryStorePath.endsWith(".codex-data/fly-volume-fallback/switch-live.sqlite"), true);
+
+  restoreEnv("SWITCH_PERSISTENCE_DRIVER", previousDriver);
+  restoreEnv("SWITCH_DATA_DIRECTORY", previousDataDirectory);
+  restoreEnv("NODE_ENV", previousNodeEnv);
+  restoreEnv("FLY_APP_NAME", previousFlyAppName);
+  restoreEnv("FLY_MACHINE_ID", previousFlyMachineId);
+});

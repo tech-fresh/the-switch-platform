@@ -107,10 +107,6 @@ function shouldUseLocalFlyVolumeFallback(configuredDataDirectory: string | undef
     return false;
   }
 
-  if (process.env.NODE_ENV === "production") {
-    return false;
-  }
-
   if (process.env.FLY_APP_NAME?.trim() || process.env.FLY_MACHINE_ID?.trim()) {
     return false;
   }

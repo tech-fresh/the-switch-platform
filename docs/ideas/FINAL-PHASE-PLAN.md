@@ -1,11 +1,11 @@
 # Final Phase Plan — Full Completion Audit
 
-> **Status:** **CURRENT MVP COMPLETE** — this is the single completion plan for the repository; Priorities A, B, C, and D are closed; Priority E is deferred
+> **Status:** **CURRENT MVP COMPLETE** — this is the single completion plan for the repository; Priorities A, B, C, and D are closed; **The Switch Platform v4 UI/UX Redesign** is in progress as a usability layer; Priority E remains deferred expansion scope
 > **Created:** 2026-06-24
 > **Purpose:** stop partial closeout; list everything still required for an honest full-completion claim
 > **Live site:** https://theswitchplatform.com
 
-Plain English: this file now tracks the remaining cleanup and quality work after the Priority A closeout. Keep it as the one place that says what is still open, what is historical, and what is deferred.
+Plain English: this file now tracks the remaining cleanup and quality work after the Priority A closeout. Keep it as the one place that says what is still open, what is historical, what is being actively improved under **The Switch Platform v4 UI/UX Redesign**, and what is still deferred.
 
 This file replaces the older UI-only Final Phase roadmap with one full audit. It covers:
 
@@ -47,6 +47,7 @@ The repo no longer has a truthful-completion proof gap or an open active-plan bl
 
 - keep future release reruns synced with the canonical closeout evidence
 - treat Priority E as deferred scope, not current MVP incompleteness
+- treat **The Switch Platform v4 UI/UX Redesign** as the active usability/design improvement lane for the current MVP
 
 ### Completion rule
 
@@ -419,6 +420,8 @@ These items reduce hidden risk.
 ---
 
 ## Priority E — Deferred scope (list it, but do not confuse it with current blockers)
+
+**Related live lane:** the practical work to improve usability, clickability, route stability, and student-facing polish is now tracked separately as **The Switch Platform v4 UI/UX Redesign** in [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./MVP-USABILITY-LAUNCH-READINESS-PLAN.md). Priority E below remains future expansion scope, not the current in-progress redesign lane.
 
 These are still real future tasks, but they are **not** blockers to current truthful completion if the scope remains the current MVP.
 

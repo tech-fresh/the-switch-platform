@@ -43,7 +43,7 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | **Onboarding** | 8 steps; `/onboarding` → `/dashboard`; see `src/modules/onboarding/README.md` |
 | **Priority C** | **Complete — 24 June 2026** (shell, focus mode, planner, marketing, recovery) |
 | **Priority A** | **Complete — 26 June 2026** (A-1–A-8; canonical evidence in `release-evidence/2026-06-26-priority-a-canonical-closeout.md`) |
-| **Active work** | **The Switch Platform v4 UI/UX Redesign** — Area 9 **8/10** complete; see [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md) → Area 9 |
+| **Active work** | **Area 9 Mark 3.2 UI/UX redesign complete (10/10).** See [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md) for Areas 1–8. |
 | **Key routes** | `/`, `/login`, `/onboarding`, `/dashboard`, `/subjects`, `/exams`, `/assessments`, `/progress` |
 
 Full MVP spec and history → **`README.md` → Mark 3.2 Product Spec** (append only).

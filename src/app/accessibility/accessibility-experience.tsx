@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { ACCESSIBILITY_UPDATED_EVENT } from "@/components/accessibility-runtime";
 import type { ColourSchemePreference } from "@/modules/access-arrangements";
 import type { AccessibilitySnapshot } from "@/modules/accessibility/types";
@@ -156,52 +157,33 @@ export function AccessibilityExperience({
   return (
     <div className="flex flex-col gap-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
-        <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.2fr_1fr]">
-          <div className="space-y-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
-              Accessibility + access
-            </p>
-            <h1 className="max-w-2xl text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
-              Support settings, read aloud, and next-step guidance
-            </h1>
-            <p className="max-w-xl text-sm leading-6 text-stone-600">
-              Control what you need for study — colour overlays, focus modes, read aloud preview, and
-              links to access arrangements and support.
-            </p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Access profile</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">
-                {accessProfile.activeAccessArrangements.length || 0} active
-              </p>
-              <p className="mt-1 text-sm text-stone-600">
-                {accessProfile.activeAccessArrangements.length
-                  ? accessProfile.activeAccessArrangements.join(", ")
-                  : "No formal arrangements applied yet"}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Read aloud</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950 capitalize">
-                {readAloudSource}
-              </p>
-              <p className="mt-1 text-sm text-stone-600">
-                {readAloudEnabled
-                  ? "Support is available in the current profile."
-                  : "Preview is ready even before formal support is enabled."}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Preference carry-over</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">Saved</p>
-              <p className="mt-1 text-sm text-stone-600">
-                Settings are designed to travel with saved sessions and future API persistence.
-              </p>
-            </div>
-          </div>
-        </section>
+        <Mark32PageHeader
+          eyebrow="Accessibility + access"
+          eyebrowTone="emerald"
+          title="Support settings, read aloud, and next-step guidance"
+          description="Control what you need for study — colour overlays, focus modes, read aloud preview, and links to access arrangements and support."
+          stats={[
+            {
+              label: "Access profile",
+              value: `${accessProfile.activeAccessArrangements.length || 0} active`,
+              detail: accessProfile.activeAccessArrangements.length
+                ? accessProfile.activeAccessArrangements.join(", ")
+                : "No formal arrangements applied yet",
+            },
+            {
+              label: "Read aloud",
+              value: readAloudSource,
+              detail: readAloudEnabled
+                ? "Support is available in the current profile."
+                : "Preview is ready even before formal support is enabled.",
+            },
+            {
+              label: "Preference carry-over",
+              value: "Saved",
+              detail: "Settings travel with saved sessions and persist across study routes.",
+            },
+          ]}
+        />
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="grid gap-6">

@@ -1,3 +1,4 @@
+import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { PublicMarketingPage } from "@/components/public-marketing-page";
 import { getSupportHubApiData } from "@/lib/api/server";
 
@@ -8,26 +9,17 @@ export default async function SupportPage() {
 
   return (
     <PublicMarketingPage>
-        <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">
-              Support Hub
-            </p>
-            <div className="space-y-3">
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                {support.title}
-              </h1>
-              <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                {support.description}
-              </p>
+        <Mark32PageHeader
+          eyebrow="Support"
+          title={support.title}
+          description={support.description}
+          aside={
+            <div className="border border-rose-200 bg-rose-50 p-4 shadow-sm">
+              <p className="text-xs uppercase tracking-[0.2em] text-rose-700">Important</p>
+              <p className="mt-3 text-sm leading-6 text-rose-900">{support.safetyNotice}</p>
             </div>
-          </div>
-
-          <div className="border border-rose-200 bg-rose-50 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-rose-700">Important</p>
-            <p className="mt-3 text-sm leading-6 text-rose-900">{support.safetyNotice}</p>
-          </div>
-        </section>
+          }
+        />
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="grid gap-6">
@@ -81,7 +73,7 @@ export default async function SupportPage() {
 
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
                   Exam stress support
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -109,7 +101,7 @@ export default async function SupportPage() {
                         </span>
                       ))}
                     </div>
-                    <p className="mt-4 text-sm font-medium text-sky-700">{guide.organisation}</p>
+                    <p className="mt-4 text-sm font-medium text-teal-800">{guide.organisation}</p>
                   </a>
                 ))}
               </div>
@@ -146,7 +138,7 @@ export default async function SupportPage() {
                       {resource.providerType === "nhs" ? "NHS" : "Registered charity"} • young people
                     </p>
                     {resource.contactLabel ? (
-                      <p className="mt-4 text-sm font-medium text-sky-700">{resource.contactLabel}</p>
+                      <p className="mt-4 text-sm font-medium text-teal-800">{resource.contactLabel}</p>
                     ) : null}
                   </a>
                 ))}
@@ -167,7 +159,7 @@ export default async function SupportPage() {
                   <div key={guidance.routeId} className="border border-stone-200 bg-stone-50 p-4">
                     <p className="text-lg font-semibold text-stone-950">{guidance.title}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{guidance.message}</p>
-                    <p className="mt-4 text-sm font-medium text-sky-700">{guidance.actionLabel}</p>
+                    <p className="mt-4 text-sm font-medium text-teal-800">{guidance.actionLabel}</p>
                   </div>
                 ))}
               </div>

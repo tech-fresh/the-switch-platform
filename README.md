@@ -465,6 +465,13 @@ This section is the running record of what has been requested, added, and commit
 - Dashboard: one recommended-now hero, three quick routes, planner prompt, focus cards with subject deep links, two resume cards with exam/assessment hrefs, and grouped SEND support rail.
 - Student study rail now includes **Exams**; marketing header rebranded to **The Switch Platform** with corrected **How it works** link.
 
+### 2026-06-29 Mark 3.2 full-route visual audit (Area 9.9 — complete)
+
+- Aligned remaining shell routes to `Mark32PageHeader`: `/recommendations`, `/results`, `/saved-progress`, `/accessibility`, `/account`, `/support`, live-cookie guide.
+- Replaced stray sky/violet accents with Study Atelier teal on support and account surfaces.
+- **Area 9: 10/10 complete** — Mark 3.2 UI/UX redesign lane closed for MVP.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (109/109 passed).
+
 ### 2026-06-29 Mark 3.2 route-wide UI extension (Area 9.8)
 
 - Added shared Mark 3.2 components: `mark32-page-header`, `mark32-power-grid-journey`, `mark32-subject-catalog-grid`, `mark32-marketing-sections`.
@@ -490,7 +497,7 @@ This section is the running record of what has been requested, added, and commit
 ### 2026-06-29 MVP usability Area 9 progress
 
 - Added **Area 9 — The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces)** to `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` with a step-by-step progress table.
-- **Area 9 status:** `8 / 10` complete — route-wide Mark 3.2 extension shipped (step 9.8); visual audit open (9.9)
+- **Area 9 status:** `10 / 10` complete — Mark 3.2 UI/UX redesign lane closed
 - Appended matching progress summary to `docs/ideas/FINAL-PHASE-PLAN.md` and `PLATFORM-GUIDE.md` (additive only).
 
 ### 2026-06-29 MVP usability launch-readiness plan

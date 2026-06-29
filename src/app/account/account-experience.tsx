@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AccountAuthControls } from "@/components/account-auth-controls";
 import { AuthAccessPathPanel } from "@/components/auth-access-path-panel";
+import { Mark32PageHeader, Mark32StatCard } from "@/components/streamlined/mark32-page-header";
 import type { AccountOverview } from "@/modules/auth/types";
 
 function getAuthReadinessClasses(
@@ -67,76 +68,71 @@ export function AccountExperience({ account, authErrorMessage }: AccountExperien
         </section>
       ) : null}
 
-      <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="space-y-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Account</p>
-          <h1 className="max-w-2xl text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
-            {account.isAuthenticated
-              ? "Your signed-in identity and study shortcuts"
-              : account.signedOutTitle}
-          </h1>
-          <p className="max-w-xl text-sm leading-6 text-stone-600">
-            {account.isAuthenticated
-              ? "Session details, quick links back into study routes, and support carry-over from your profile."
-              : account.signedOutDescription}
-          </p>
-        </div>
-
-        <div className="space-y-3 border border-stone-200 bg-white p-4 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Current session</p>
-          {authenticatedSession ? (
-            <>
-              <p className="text-lg font-semibold text-stone-950">{authenticatedSession.user.displayName}</p>
-              <p className="text-sm text-stone-600">{authenticatedSession.user.email}</p>
-              <p className="text-sm text-stone-600">
-                Signed in via {authenticatedSession.provider} at{" "}
-                {formatSignedInAt(authenticatedSession.signedInAt)}
-              </p>
-              <p className="text-sm text-stone-600">Roles: {authenticatedSession.user.roles.join(", ")}</p>
-              <p className="text-sm text-stone-600">
-                Session expires at {formatSessionExpiry(authenticatedSession.expiresAt)}
-              </p>
-              {canOpenAdmin ? (
-                <div className="pt-2">
-                  <Link
-                    href="/admin"
-                    className="inline-flex border border-sky-300 bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-900 transition hover:bg-white"
-                  >
-                    Open admin dashboard
-                  </Link>
-                </div>
-              ) : null}
-            </>
-          ) : (
-            <>
-              <p className="text-lg font-semibold text-stone-950">Signed out</p>
-              <p className="text-sm text-stone-600">
-                Sign in to keep progress, support settings, and resume links tied to one student account.
-              </p>
-              <Link
-                href="/login?reauth=1"
-                className="mt-3 inline-flex bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
-              >
-                Log in
-              </Link>
-            </>
-          )}
-          <div className="pt-2">
-            <AccountAuthControls
-              isAuthenticated={account.isAuthenticated}
-              signInOptions={account.signInOptions}
-            />
+      <Mark32PageHeader
+        eyebrow="Account"
+        title={
+          account.isAuthenticated
+            ? "Your signed-in identity and study shortcuts"
+            : account.signedOutTitle
+        }
+        description={
+          account.isAuthenticated
+            ? "Session details, quick links back into study routes, and support carry-over from your profile."
+            : account.signedOutDescription
+        }
+        aside={
+          <div className="space-y-3 border border-stone-200 bg-white p-4 shadow-sm">
+            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Current session</p>
+            {authenticatedSession ? (
+              <>
+                <p className="text-lg font-semibold text-stone-950">{authenticatedSession.user.displayName}</p>
+                <p className="text-sm text-stone-600">{authenticatedSession.user.email}</p>
+                <p className="text-sm text-stone-600">
+                  Signed in via {authenticatedSession.provider} at{" "}
+                  {formatSignedInAt(authenticatedSession.signedInAt)}
+                </p>
+                <p className="text-sm text-stone-600">Roles: {authenticatedSession.user.roles.join(", ")}</p>
+                <p className="text-sm text-stone-600">
+                  Session expires at {formatSessionExpiry(authenticatedSession.expiresAt)}
+                </p>
+                {canOpenAdmin ? (
+                  <div className="pt-2">
+                    <Link
+                      href="/admin"
+                      className="inline-flex border border-teal-300 bg-teal-50 px-3 py-2 text-sm font-semibold text-teal-900 transition hover:bg-white"
+                    >
+                      Open admin dashboard
+                    </Link>
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              <>
+                <p className="text-lg font-semibold text-stone-950">Signed out</p>
+                <p className="text-sm text-stone-600">
+                  Sign in to keep progress, support settings, and resume links tied to one student account.
+                </p>
+                <Link
+                  href="/login?reauth=1"
+                  className="mt-3 inline-flex bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+                >
+                  Log in
+                </Link>
+              </>
+            )}
+            <div className="pt-2">
+              <AccountAuthControls
+                isAuthenticated={account.isAuthenticated}
+                signInOptions={account.signInOptions}
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        }
+      />
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {account.metrics.map((metric) => (
-          <article key={metric.label} className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{metric.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-stone-950">{metric.value}</p>
-            <p className="mt-2 text-sm leading-6 text-stone-600">{metric.detail}</p>
-          </article>
+          <Mark32StatCard key={metric.label} label={metric.label} value={metric.value} detail={metric.detail} />
         ))}
       </section>
 
@@ -200,7 +196,7 @@ export function AccountExperience({ account, authErrorMessage }: AccountExperien
               {canOpenAdmin ? (
                 <Link
                   href="/admin"
-                  className="mt-4 inline-flex border border-sky-300 bg-white px-3 py-2 text-sm font-semibold text-sky-900 transition hover:bg-sky-50"
+                  className="mt-4 inline-flex border border-teal-300 bg-white px-3 py-2 text-sm font-semibold text-teal-900 transition hover:bg-teal-50"
                 >
                   Go to admin metrics
                 </Link>

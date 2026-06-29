@@ -39,6 +39,12 @@ Plain English: Mark 3.2 is a **calmer light-mode** study experience. One clear n
 | `/progress` | `Mark32PowerGridJourney`, `Mark32PageHeader` |
 | `/assessments` | `Mark32PageHeader` |
 | `/exams` (lobby) | `Mark32PageHeader` |
+| `/recommendations` | `Mark32PageHeader`, `Mark32StatCard` |
+| `/results` | `Mark32PageHeader` |
+| `/saved-progress` | `Mark32PageHeader` |
+| `/accessibility` | `Mark32PageHeader` |
+| `/account` | `Mark32PageHeader`, `Mark32StatCard` |
+| `/support` | `Mark32PageHeader` (public marketing chrome) |
 
 ### Signed-in dashboard `/dashboard`
 

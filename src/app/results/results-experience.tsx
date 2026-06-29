@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import type { MarkingConfidence, ResultsOverview } from "@/modules/results/types";
 
 function getTrendTone(trend: "improving" | "stable" | "needs-attention"): string {
@@ -39,44 +40,33 @@ interface ResultsExperienceProps {
 export function ResultsExperience({ results }: ResultsExperienceProps) {
   return (
     <div className="flex flex-col gap-8">
-      <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.2fr_1fr]">
-        <div className="space-y-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Results</p>
-          <h1 className="max-w-2xl text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
-            Scores, strengths, and what to review next
-          </h1>
-          <p className="max-w-xl text-sm leading-6 text-stone-600">
-            Exam and timed assessment outcomes from your saved sessions — pick up where you left off.
-          </p>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Overall score</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{results.overallScorePercentage}%</p>
-            <p className={`mt-1 text-sm capitalize ${getTrendTone(results.overallTrend)}`}>
-              {results.overallTrend}
-            </p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Exam average</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{results.averageExamScore}%</p>
-            <p className="mt-1 text-sm text-stone-600">{results.examResults.length} exam views</p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Assessment average</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{results.averageAssessmentScore}%</p>
-            <p className="mt-1 text-sm text-stone-600">
-              {results.assessmentResults.length} checkpoint views
-            </p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Ready for review</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{results.readyForReviewCount}</p>
-            <p className="mt-1 text-sm text-stone-600">{results.submittedCount} submitted</p>
-          </div>
-        </div>
-      </section>
+      <Mark32PageHeader
+        eyebrow="Results"
+        title="Scores, strengths, and what to review next"
+        description="Exam and timed assessment outcomes from your saved sessions — pick up where you left off."
+        stats={[
+          {
+            label: "Overall score",
+            value: `${results.overallScorePercentage}%`,
+            detail: results.overallTrend,
+          },
+          {
+            label: "Exam average",
+            value: `${results.averageExamScore}%`,
+            detail: `${results.examResults.length} exam views`,
+          },
+          {
+            label: "Assessment average",
+            value: `${results.averageAssessmentScore}%`,
+            detail: `${results.assessmentResults.length} checkpoint views`,
+          },
+          {
+            label: "Ready for review",
+            value: String(results.readyForReviewCount),
+            detail: `${results.submittedCount} submitted`,
+          },
+        ]}
+      />
 
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="grid gap-6">

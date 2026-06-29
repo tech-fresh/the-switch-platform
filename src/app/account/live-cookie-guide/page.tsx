@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
+
 export const dynamic = "force-dynamic";
 
 const browserSteps = [
@@ -25,36 +27,26 @@ export default function LiveCookieGuidePage() {
   return (
     <main className="min-h-screen bg-stone-100 text-stone-950">
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
-        <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">
-              Live Auth Guide
-            </p>
-            <div className="space-y-3">
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Copy the two live auth cookies needed for the final launch walkthrough.
-              </h1>
-              <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                Use this page when you need the exact `switch_auth_session` cookie for one student
-                account and one admin account from the deployed platform.
+        <Mark32PageHeader
+          eyebrow="Live auth guide"
+          title="Copy the two live auth cookies needed for the final launch walkthrough."
+          description="Use this page when you need the exact switch_auth_session cookie for one student account and one admin account from the deployed platform."
+          aside={
+            <div className="border border-amber-200 bg-amber-50 p-4 shadow-sm">
+              <p className="text-xs uppercase tracking-[0.2em] text-amber-800">Important</p>
+              <p className="mt-3 text-sm leading-6 text-amber-950">
+                Use your deployed site for this process, not localhost. Copy only the cookie name and value.
+                Do not copy Path, Expires, HttpOnly, or other cookie metadata.
               </p>
             </div>
-          </div>
-
-          <div className="border border-amber-200 bg-amber-50 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-amber-800">Important</p>
-            <p className="mt-3 text-sm leading-6 text-amber-950">
-              Use your deployed site for this process, not `localhost`. Copy only the cookie name
-              and value. Do not copy `Path`, `Expires`, `HttpOnly`, or other cookie metadata.
-            </p>
-          </div>
-        </section>
+          }
+        />
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
           <div className="grid gap-6">
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
                   Step by step
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">

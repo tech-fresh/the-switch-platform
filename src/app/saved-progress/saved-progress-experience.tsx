@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { SavedProgressStatusControls } from "@/components/saved-progress-status-controls";
 import { StudentRouteRecovery } from "@/components/student-route-recovery";
 import type { SavedProgressOverview, SavedProgressStatus } from "@/modules/saved-progress/types";
@@ -19,7 +20,7 @@ function formatLastActivity(timestamp?: string): string {
 
 function getStatusClasses(status: SavedProgressStatus): string {
   if (status === "submitted") {
-    return "border-sky-300 bg-sky-50 text-sky-900";
+    return "border-emerald-300 bg-emerald-50 text-emerald-900";
   }
 
   if (status === "paused") {
@@ -51,47 +52,33 @@ export function SavedProgressExperience({ overview }: SavedProgressExperiencePro
 
   return (
     <div className="flex flex-col gap-8">
-      <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.2fr_1fr]">
-        <div className="space-y-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
-            Saved progress
-          </p>
-          <h1 className="max-w-2xl text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
-            Resume exams and timed assessments from your autosave records
-          </h1>
-          <p className="max-w-xl text-sm leading-6 text-stone-600">
-            See what is in progress, where each session resumes, and which access snapshots travel with
-            your saved state.
-          </p>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Saved sessions</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{overview.sessionCount}</p>
-            <p className="mt-1 text-sm text-stone-600">
-              {overview.recoveryReadyCount} resume-ready
-            </p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Access snapshots</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{overview.accessSnapshotCount}</p>
-            <p className="mt-1 text-sm text-stone-600">Support settings on saved records</p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Submitted</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{overview.reviewReadyCount}</p>
-            <p className="mt-1 text-sm text-stone-600">Review-ready completions</p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Latest activity</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">
-              {formatLastActivity(overview.latestActivityAt)}
-            </p>
-            <p className="mt-1 text-sm text-stone-600">Most recent autosave</p>
-          </div>
-        </div>
-      </section>
+      <Mark32PageHeader
+        eyebrow="Saved progress"
+        title="Resume exams and timed assessments from your autosave records"
+        description="See what is in progress, where each session resumes, and which access snapshots travel with your saved state."
+        stats={[
+          {
+            label: "Saved sessions",
+            value: String(overview.sessionCount),
+            detail: `${overview.recoveryReadyCount} resume-ready`,
+          },
+          {
+            label: "Access snapshots",
+            value: String(overview.accessSnapshotCount),
+            detail: "Support settings on saved records",
+          },
+          {
+            label: "Submitted",
+            value: String(overview.reviewReadyCount),
+            detail: "Review-ready completions",
+          },
+          {
+            label: "Latest activity",
+            value: formatLastActivity(overview.latestActivityAt),
+            detail: "Most recent autosave",
+          },
+        ]}
+      />
 
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-5">

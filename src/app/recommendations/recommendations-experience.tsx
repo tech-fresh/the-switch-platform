@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Mark32PageHeader, Mark32StatCard } from "@/components/streamlined/mark32-page-header";
 import type { RecommendationsPageData } from "@/modules/recommendations/types";
 import type { SupportHubData } from "@/modules/support/types";
 
@@ -23,34 +24,29 @@ interface RecommendationsExperienceProps {
 export function RecommendationsExperience({ data, support }: RecommendationsExperienceProps) {
   return (
     <div className="flex flex-col gap-8">
-      <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="space-y-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
-            Recommendations
-          </p>
-          <h1 className="max-w-2xl text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
-            {data.title}
-          </h1>
-          <p className="max-w-xl text-sm leading-6 text-stone-600">{data.description}</p>
-        </div>
-
-        <div className="border border-stone-200 bg-white p-4 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Next best action</p>
-          <p className="mt-2 text-lg font-semibold text-stone-950">{data.nextBestAction}</p>
-          <p className="mt-2 text-sm leading-6 text-stone-600">{data.routeSummary}</p>
-        </div>
-      </section>
+      <Mark32PageHeader
+        eyebrow="Recommendations"
+        title={data.title}
+        description={data.description}
+        aside={
+          <div className="border border-stone-200 bg-white p-4 shadow-sm">
+            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Next best action</p>
+            <p className="mt-2 text-lg font-semibold text-stone-950">{data.nextBestAction}</p>
+            <p className="mt-2 text-sm leading-6 text-stone-600">{data.routeSummary}</p>
+          </div>
+        }
+      />
 
       <section className="grid gap-4 md:grid-cols-3">
         {data.insights.map((insight) => (
-          <article key={insight.label} className="border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{insight.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-stone-950">{insight.value}</p>
-            <p className="mt-2 text-sm leading-6 text-stone-600">{insight.detail}</p>
-            {insight.supportSummary ? (
-              <p className="mt-2 text-sm leading-6 text-stone-700">{insight.supportSummary}</p>
-            ) : null}
-          </article>
+          <Mark32StatCard
+            key={insight.label}
+            label={insight.label}
+            value={insight.value}
+            detail={
+              [insight.detail, insight.supportSummary].filter(Boolean).join(" · ") || undefined
+            }
+          />
         ))}
       </section>
 

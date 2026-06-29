@@ -235,9 +235,9 @@ Ship a streamlined light-mode student experience on live routes without removing
 | 9.7 Docs sync for redesign lane | **Complete** | `HANDOFF.md`, `AGENTS.md`, `README.md`, `PLATFORM-GUIDE.md`, `FINAL-PHASE-PLAN.md` |
 | 9.7b Mark 3.2 Cursor Agent build handoff ingested | **Complete** | `docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md` — vision + live-repo reconciliation |
 | 9.8 Extend Mark 3.2 to other student routes | **Complete** | `/`, `/progress`, `/subjects`, `/assessments`, `/exams` lobby — shared `Mark32*` components |
-| 9.9 Full-route visual consistency audit | **Not started** | Pending final pass across shell routes |
+| 9.9 Full-route visual consistency audit | **Complete** | Shell routes aligned to `Mark32PageHeader` + Study Atelier teal accents |
 
-**Area 9 summary:** `8 / 10` steps complete — route-wide Mark 3.2 extension shipped; visual audit still open.
+**Area 9 summary:** `10 / 10` steps complete — Mark 3.2 UI/UX redesign lane closed for MVP.
 
 **Verification (29 June 2026):** `npm run lint`, `npm run type-check`, `npm run test` (109/109 passed).
 
@@ -251,7 +251,7 @@ Ship a streamlined light-mode student experience on live routes without removing
 6. Auth, account, and role experience
 7. Support, accessibility, and recovery UX
 8. Docs and operator truth
-9. The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces) — **in progress (8/10 steps complete — 29 June 2026)**
+9. The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces) — **complete (10/10 — 29 June 2026)**
 
 ## Definition of "usable and launch ready" for this plan
 

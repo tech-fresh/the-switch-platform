@@ -63,9 +63,9 @@ Tracked in [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./MVP-USABILITY-LAUNCH-REA
 | Docs sync (HANDOFF, AGENTS, README, PLATFORM-GUIDE, FINAL-PHASE-PLAN) | **Complete** |
 | Mark 3.2 Cursor Agent build handoff ingested | **Complete** — `docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md` |
 | Extend Mark 3.2 to other student routes | **Complete** — `/`, `/progress`, `/subjects`, `/assessments`, `/exams` |
-| Full-route visual consistency audit | **Not started** |
+| Full-route visual consistency audit | **Complete** — recommendations, results, saved-progress, accessibility, account, support |
 
-**Area 9 summary:** `8 / 10` steps complete — route-wide Mark 3.2 extension shipped; visual audit still open.
+**Area 9 summary:** `10 / 10` steps complete — Mark 3.2 UI/UX redesign lane closed for MVP.
 
 ### Completion rule
 

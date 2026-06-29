@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { AuthAccessPathSummary } from "@/modules/auth/types";
+import { mark32Ui } from "@/components/streamlined/mark32-ui";
 
 function formatTimestamp(value?: string): string {
   if (!value) {
@@ -18,14 +19,14 @@ function formatTimestamp(value?: string): string {
 
 function roleBadgeClasses(role: "admin" | "editor" | "student"): string {
   if (role === "admin") {
-    return "border-sky-300 bg-sky-50 text-sky-950";
+    return "border-violet-300 bg-violet-50 text-violet-950";
   }
 
   if (role === "editor") {
     return "border-emerald-300 bg-emerald-50 text-emerald-950";
   }
 
-  return "border-stone-300 bg-stone-100 text-stone-800";
+  return "border-violet-100 bg-violet-50/50 text-slate-800";
 }
 
 interface AuthAccessPathPanelProps {
@@ -38,50 +39,46 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
   const isAdmin = variant === "admin";
 
   return (
-    <article
-      className={`border border-stone-200 bg-white shadow-sm ${
-        isLogin ? "rounded-2xl p-5 sm:p-6" : "p-5 sm:p-6"
-      }`}
-    >
+    <article className={isLogin ? mark32Ui.card : mark32Ui.card}>
       <div className="space-y-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">
+          <p className={mark32Ui.eyebrowSm}>
             {isLogin ? "Admin sign-in path" : "Sign-in and allowlist"}
           </p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950 sm:text-2xl">
+          <h2 className="mt-2 text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
             {accessPath.title}
           </h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">{accessPath.description}</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{accessPath.description}</p>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="border border-stone-200 bg-stone-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">Student path</p>
-            <p className="mt-2 text-sm leading-6 text-stone-700">{accessPath.studentPathLabel}</p>
+          <div className="rounded-2xl border border-violet-100 bg-violet-50/40 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Student path</p>
+            <p className="mt-2 text-sm leading-6 text-slate-700">{accessPath.studentPathLabel}</p>
           </div>
-          <div className="border border-sky-200 bg-sky-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Admin path</p>
-            <p className="mt-2 text-sm leading-6 text-sky-950">{accessPath.adminPathLabel}</p>
+          <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700">Admin path</p>
+            <p className="mt-2 text-sm leading-6 text-violet-950">{accessPath.adminPathLabel}</p>
           </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="border border-stone-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Admin allowlist</p>
-            <p className="mt-2 text-2xl font-semibold text-stone-950">{accessPath.adminAllowlistCount}</p>
-            <p className="mt-1 text-sm text-stone-600">emails in SWITCH_AUTH_ADMIN_EMAILS</p>
+          <div className={mark32Ui.statCard}>
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Admin allowlist</p>
+            <p className="mt-2 text-2xl font-bold text-slate-950">{accessPath.adminAllowlistCount}</p>
+            <p className="mt-1 text-sm text-slate-600">emails in SWITCH_AUTH_ADMIN_EMAILS</p>
           </div>
-          <div className="border border-stone-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Editor allowlist</p>
-            <p className="mt-2 text-2xl font-semibold text-stone-950">{accessPath.editorAllowlistCount}</p>
-            <p className="mt-1 text-sm text-stone-600">emails in SWITCH_AUTH_EDITOR_EMAILS</p>
+          <div className={mark32Ui.statCard}>
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Editor allowlist</p>
+            <p className="mt-2 text-2xl font-bold text-slate-950">{accessPath.editorAllowlistCount}</p>
+            <p className="mt-1 text-sm text-slate-600">emails in SWITCH_AUTH_EDITOR_EMAILS</p>
           </div>
-          <div className="border border-stone-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Your access</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">
+          <div className={mark32Ui.statCard}>
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Your access</p>
+            <p className="mt-2 text-lg font-bold text-slate-950">
               {accessPath.canOpenAdmin ? "Admin-capable" : "Student"}
             </p>
-            <p className="mt-1 text-sm text-stone-600">
+            <p className="mt-1 text-sm text-slate-600">
               {accessPath.currentUserRoles.length
                 ? accessPath.currentUserRoles.join(", ")
                 : "Sign in to resolve roles"}
@@ -90,24 +87,24 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
         </div>
 
         {accessPath.currentUserEmail ? (
-          <div className="border border-dashed border-stone-300 bg-stone-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+          <div className="rounded-2xl border border-dashed border-violet-200 bg-violet-50/30 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               Website sign-in record
             </p>
-            <div className="mt-3 grid gap-2 text-sm text-stone-700 sm:grid-cols-2">
+            <div className="mt-3 grid gap-2 text-sm text-slate-700 sm:grid-cols-2">
               <p>
-                <span className="font-medium text-stone-900">Email:</span> {accessPath.currentUserEmail}
+                <span className="font-medium text-slate-900">Email:</span> {accessPath.currentUserEmail}
               </p>
               <p>
-                <span className="font-medium text-stone-900">Provider:</span>{" "}
+                <span className="font-medium text-slate-900">Provider:</span>{" "}
                 {accessPath.signInProvider ?? "unknown"}
               </p>
               <p>
-                <span className="font-medium text-stone-900">Signed in:</span>{" "}
+                <span className="font-medium text-slate-900">Signed in:</span>{" "}
                 {formatTimestamp(accessPath.signedInAt)}
               </p>
               <p>
-                <span className="font-medium text-stone-900">Session expires:</span>{" "}
+                <span className="font-medium text-slate-900">Session expires:</span>{" "}
                 {formatTimestamp(accessPath.sessionExpiresAt)}
               </p>
             </div>
@@ -121,7 +118,7 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
                 </span>
               ))}
               {accessPath.mappedRolesFromAllowlist.length === 0 ? (
-                <span className="border border-stone-300 bg-white px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-700">
+                <span className="border border-violet-200 bg-white px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
                   not on admin/editor allowlist
                 </span>
               ) : null}
@@ -131,16 +128,18 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
 
         {accessPath.allowlistEntries.length ? (
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-slate-700">
               Configured allowlist (masked)
             </p>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {accessPath.allowlistEntries.map((entry) => (
                 <div
                   key={`${entry.role}-${entry.maskedEmail}`}
-                  className={`border px-3 py-2 text-sm ${entry.isCurrentUser ? "border-sky-300 bg-sky-50" : "border-stone-200 bg-stone-50"}`}
+                  className={`rounded-xl border px-3 py-2 text-sm ${entry.isCurrentUser ? "border-violet-300 bg-violet-50" : "border-violet-100 bg-violet-50/40"}`}
                 >
-                  <span className={`mr-2 border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${roleBadgeClasses(entry.role)}`}>
+                  <span
+                    className={`mr-2 border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${roleBadgeClasses(entry.role)}`}
+                  >
                     {entry.role}
                   </span>
                   {entry.maskedEmail}
@@ -151,28 +150,22 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
           </div>
         ) : null}
 
-        <p className="text-sm leading-6 text-stone-600">{accessPath.configurationHint}</p>
+        <p className="text-sm leading-6 text-slate-600">{accessPath.configurationHint}</p>
 
         <div className="flex flex-wrap gap-3">
           {accessPath.canOpenAdmin ? (
-            <Link
-              href="/admin"
-              className="inline-flex border border-sky-700 bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-800"
-            >
+            <Link href="/admin" className={mark32Ui.primaryBtn}>
               Open admin dashboard
             </Link>
           ) : isLogin || isAdmin ? (
             <Link
               href="/login?intent=admin&returnTo=/admin"
-              className="inline-flex border border-sky-300 bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-900 hover:bg-white"
+              className={mark32Ui.secondaryBtn}
             >
               Sign in for admin access
             </Link>
           ) : null}
-          <Link
-            href="/account/live-cookie-guide"
-            className="inline-flex border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
-          >
+          <Link href="/account/live-cookie-guide" className={mark32Ui.secondaryBtn}>
             Live cookie guide
           </Link>
         </div>

@@ -195,8 +195,8 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
         <Mark32WeakestTopics data={data} />
       </div>
 
-      <article className="border border-stone-200 bg-white p-6 shadow-sm sm:p-7">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Recommended now</p>
+      <article className="rounded-3xl border border-violet-100 bg-white p-6 shadow-sm sm:p-7">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-700">Recommended now</p>
         <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
           {data.recommendedAction}
         </h2>
@@ -234,8 +234,8 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <PlannerPromptCard initialDismissed={data.plannerPromptDismissed} />
 
-        <article className="border border-stone-200 bg-white p-6 shadow-sm">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-700">Focus right now</p>
+        <article className="rounded-3xl border border-violet-100 bg-white p-6 shadow-sm">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-700">Focus right now</p>
           <div className="mt-4 space-y-3">
             {topFocus.length ? (
               topFocus.map((card) => (
@@ -259,7 +259,7 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <article className="border border-stone-200 bg-white p-6 shadow-sm">
+        <article className="rounded-3xl border border-violet-100 bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700">Resume recent work</p>
             <Link href="/saved-progress" className="text-sm font-bold text-violet-700 hover:opacity-80">
@@ -279,7 +279,7 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
                     <span className="text-xs font-semibold text-stone-500">{session.completionPercentage}%</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-stone-600">{session.subtitle}</p>
-                  <p className="mt-2 text-sm font-semibold text-teal-800">{session.actionLabel}</p>
+                  <p className="mt-2 text-sm font-semibold text-violet-700">{session.actionLabel}</p>
                 </Link>
               ))
             ) : (
@@ -288,13 +288,13 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
                 <div className="flex flex-wrap gap-2">
                   <Link
                     href="/assessments"
-                    className="bg-teal-800 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-900"
+                    className="rounded-2xl bg-violet-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:bg-violet-700"
                   >
                     Start practice
                   </Link>
                   <Link
                     href="/exams"
-                    className="border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:border-teal-400"
+                    className="border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:border-violet-300"
                   >
                     Open exams
                   </Link>

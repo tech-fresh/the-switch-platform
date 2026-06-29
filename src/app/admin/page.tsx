@@ -94,11 +94,11 @@ export default async function AdminPage() {
   const accessPath = buildAuthAccessPathSummary(session);
 
   return (
-    <main className="min-h-screen bg-stone-100 text-stone-950">
+    <main className="min-h-screen bg-[#f7f8ff] text-slate-950">
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
         <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-violet-700">
               Admin + Content Architecture
             </p>
             <div className="space-y-3">
@@ -224,7 +224,7 @@ export default async function AdminPage() {
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <article className="border border-stone-200 bg-white p-5 sm:p-6">
             <div className="border-b border-stone-200 pb-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
                 Recommended operator focus
               </p>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -268,7 +268,7 @@ export default async function AdminPage() {
           <div className="grid gap-6">
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
                   Operations view
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -373,7 +373,7 @@ export default async function AdminPage() {
 
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
                   Launch governance
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -651,7 +651,7 @@ export default async function AdminPage() {
 
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
                   MVP release checklist
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -691,7 +691,7 @@ export default async function AdminPage() {
 
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
                   Editorial workflow
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -716,7 +716,7 @@ export default async function AdminPage() {
                   <p className="mt-2 text-lg font-semibold text-rose-950">{cms.editorialWorkflowSummary.blockedCount}</p>
                 </div>
                 <div className="border border-sky-200 bg-sky-50 p-4 sm:col-span-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-sky-700">Rollbacks logged</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-violet-700">Rollbacks logged</p>
                   <p className="mt-2 text-lg font-semibold text-sky-950">{cms.editorialWorkflowSummary.rollbackCount}</p>
                 </div>
               </div>
@@ -779,7 +779,7 @@ export default async function AdminPage() {
 
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
                   Content update architecture
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -808,7 +808,7 @@ export default async function AdminPage() {
 
             <article className="border border-stone-200 bg-white p-5 sm:p-6">
               <div className="border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
                   Editorial gate
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -835,7 +835,7 @@ export default async function AdminPage() {
                   </p>
                 </div>
                 <div className="border border-sky-200 bg-sky-50 p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-sky-700">Trusted sources</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-violet-700">Trusted sources</p>
                   <p className="mt-2 text-lg font-semibold text-sky-950">
                     {cms.editorialAudit.sourceAttributionCompleteCount}
                   </p>

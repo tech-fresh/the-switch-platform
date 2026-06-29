@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { mark32Ui } from "@/components/streamlined/mark32-ui";
+
 interface StudentRouteRecoveryAction {
   href: string;
   label: string;
@@ -28,17 +30,18 @@ export function StudentRouteRecovery({
   warnings = [],
 }: StudentRouteRecoveryProps) {
   return (
-    <section className="border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">{eyebrow}</p>
-      <h1 className="mt-4 max-w-3xl text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
-        {title}
-      </h1>
-      <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600 sm:text-base">{description}</p>
+    <section className={mark32Ui.card}>
+      <p className={`${mark32Ui.eyebrow} text-amber-700`}>{eyebrow}</p>
+      <h1 className={`mt-4 max-w-3xl ${mark32Ui.heading}`}>{title}</h1>
+      <p className={`mt-4 max-w-3xl ${mark32Ui.body}`}>{description}</p>
 
       {warnings.length ? (
         <div className="mt-6 grid gap-3">
           {warnings.map((warning) => (
-            <div key={warning} className="border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+            <div
+              key={warning}
+              className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950"
+            >
               {warning}
             </div>
           ))}
@@ -50,11 +53,7 @@ export function StudentRouteRecovery({
           <Link
             key={`${action.href}-${action.label}`}
             href={action.href}
-            className={
-              action.variant === "primary"
-                ? "inline-flex items-center justify-center bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
-                : "inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
-            }
+            className={action.variant === "primary" ? mark32Ui.primaryBtn : mark32Ui.secondaryBtn}
           >
             {action.label}
           </Link>

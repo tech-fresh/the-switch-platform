@@ -49,7 +49,7 @@ function ProgressMainContent({
 
       <Mark32PageHeader
         eyebrow="Progress & planner"
-        eyebrowTone="teal"
+        eyebrowTone="violet"
         title="Readiness, trend, and next-step signals from your active sessions."
         description="Your study planner — built from exam and timed assessment activity through the Power Grid module."
         stats={[

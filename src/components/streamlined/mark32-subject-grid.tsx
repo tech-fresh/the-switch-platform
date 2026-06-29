@@ -39,7 +39,7 @@ interface Mark32SubjectGridProps {
 export function Mark32SubjectGrid({ subjects }: Mark32SubjectGridProps) {
   if (!subjects.length) {
     return (
-      <article className="border border-stone-200 bg-white p-6 shadow-sm">
+      <article className="rounded-3xl border border-violet-100 bg-white p-6 shadow-sm">
         <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">Your subjects</p>
         <p className="mt-3 text-sm leading-6 text-stone-600">
           Complete onboarding or start practice to populate subject progress cards.
@@ -67,7 +67,7 @@ export function Mark32SubjectGrid({ subjects }: Mark32SubjectGridProps) {
             <Link
               key={subject.subject}
               href={href}
-              className="border border-stone-200 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
+              className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { SubjectToneChip, subjectToneBlockClasses } from "@/components/subject-tone-chip";
+import { mark32Ui } from "@/components/streamlined/mark32-ui";
 import type { WeeklyPlannerSummary } from "@/modules/weekly-planner/types";
 
 interface WeeklyPlannerGridProps {
@@ -10,29 +11,29 @@ interface WeeklyPlannerGridProps {
 
 export function WeeklyPlannerGrid({ planner, compact = false }: WeeklyPlannerGridProps) {
   return (
-    <section className="border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
+    <section className={mark32Ui.card}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">Weekly planner</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">{planner.weekLabel}</h2>
+          <p className={mark32Ui.eyebrowSm}>Weekly planner</p>
+          <h2 className="mt-2 text-xl font-bold tracking-tight text-slate-950">{planner.weekLabel}</h2>
         </div>
-        <p className="text-xs uppercase tracking-[0.18em] text-stone-500">{planner.dataSourceSummary}</p>
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{planner.dataSourceSummary}</p>
       </div>
 
       <div className={`mt-5 grid gap-2 ${compact ? "grid-cols-7" : "grid-cols-2 sm:grid-cols-4 lg:grid-cols-7"}`}>
         {planner.days.map((day) => (
           <div
             key={day.dayKey}
-            className={`min-h-[7.5rem] border p-2 ${
-              day.isToday ? "border-teal-400 bg-teal-50/40" : "border-stone-200 bg-stone-50"
+            className={`min-h-[7.5rem] rounded-xl border p-2 ${
+              day.isToday ? "border-violet-400 bg-violet-50/40" : "border-violet-100 bg-violet-50/20"
             }`}
           >
             <div className="flex items-center justify-between gap-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-600">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">
                 {day.weekdayLabel}
               </p>
               {day.isToday ? (
-                <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-teal-700">Today</span>
+                <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-violet-700">Today</span>
               ) : null}
             </div>
 
@@ -42,7 +43,7 @@ export function WeeklyPlannerGrid({ planner, compact = false }: WeeklyPlannerGri
                   <Link
                     key={item.itemId}
                     href={item.href}
-                    className={`block border p-2 transition hover:shadow-sm ${subjectToneBlockClasses(item.tone)}`}
+                    className={`block rounded-lg border p-2 transition hover:shadow-sm ${subjectToneBlockClasses(item.tone)}`}
                   >
                     <SubjectToneChip label={item.subject} tone={item.tone} />
                     <p className="mt-2 line-clamp-2 text-[11px] font-semibold leading-4">{item.title}</p>
@@ -50,7 +51,7 @@ export function WeeklyPlannerGrid({ planner, compact = false }: WeeklyPlannerGri
                   </Link>
                 ))
               ) : (
-                <p className="text-[10px] leading-4 text-stone-500">No items yet</p>
+                <p className="text-[10px] leading-4 text-slate-500">No items yet</p>
               )}
             </div>
           </div>
@@ -58,7 +59,7 @@ export function WeeklyPlannerGrid({ planner, compact = false }: WeeklyPlannerGri
       </div>
 
       {planner.emptyStateMessage ? (
-        <p className="mt-4 text-sm leading-6 text-stone-600">{planner.emptyStateMessage}</p>
+        <p className="mt-4 text-sm leading-6 text-slate-600">{planner.emptyStateMessage}</p>
       ) : null}
     </section>
   );

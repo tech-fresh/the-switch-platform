@@ -1,4 +1,5 @@
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
+import { mark32Ui } from "@/components/streamlined/mark32-ui";
 import { getAccountOverviewApiData } from "@/lib/api/server";
 import { requireStudentAppRouteContext } from "@/lib/server/student-route";
 
@@ -22,8 +23,8 @@ export default async function AccountPage({
 
   if (!account.isAuthenticated) {
     return (
-      <main className="min-h-screen bg-stone-100 text-stone-950">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{experience}</div>
+      <main className={mark32Ui.publicMain}>
+        <div className={mark32Ui.contentWrap}>{experience}</div>
       </main>
     );
   }

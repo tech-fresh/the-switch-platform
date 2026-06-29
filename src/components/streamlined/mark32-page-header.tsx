@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { mark32Ui } from "@/components/streamlined/mark32-ui";
+
 interface Mark32StatItem {
   label: string;
   value: string;
@@ -8,7 +10,7 @@ interface Mark32StatItem {
 
 interface Mark32PageHeaderProps {
   eyebrow: string;
-  eyebrowTone?: "teal" | "sky" | "emerald" | "amber" | "rose";
+  eyebrowTone?: "violet" | "sky" | "emerald" | "amber" | "rose";
   title: string;
   description?: string;
   stats?: Mark32StatItem[];
@@ -32,7 +34,7 @@ function getEyebrowClass(tone: Mark32PageHeaderProps["eyebrowTone"]): string {
 
 export function Mark32StatCard({ label, value, detail }: Mark32StatItem) {
   return (
-    <div className="border border-stone-200 bg-white p-4 shadow-sm">
+    <div className={mark32Ui.statCard}>
       <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{label}</p>
       <p className="mt-2 text-lg font-semibold text-stone-950">{value}</p>
       {detail ? <p className="mt-1 text-sm text-stone-600">{detail}</p> : null}
@@ -42,14 +44,14 @@ export function Mark32StatCard({ label, value, detail }: Mark32StatItem) {
 
 export function Mark32PageHeader({
   eyebrow,
-  eyebrowTone = "teal",
+  eyebrowTone = "violet",
   title,
   description,
   stats,
   aside,
 }: Mark32PageHeaderProps) {
   return (
-    <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
+    <section className={`grid gap-5 lg:grid-cols-[1.4fr_0.9fr] ${mark32Ui.divider}`}>
       <div className="space-y-4">
         <p className={`text-[11px] font-semibold uppercase tracking-[0.24em] ${getEyebrowClass(eyebrowTone)}`}>
           {eyebrow}

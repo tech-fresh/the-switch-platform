@@ -31,7 +31,7 @@ export function SubjectExperience({
     return (
       <div className="flex flex-col gap-6">
         <section className="border border-stone-200 bg-white p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-violet-700">
               Subjects
             </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
@@ -124,7 +124,7 @@ export function SubjectExperience({
                       }}
                       className={`flex w-full flex-col gap-2 px-4 py-4 text-left transition ${
                         isSelected
-                          ? "bg-teal-800 text-white"
+                          ? "bg-violet-700 text-white"
                           : "bg-white text-stone-900 hover:bg-stone-50"
                       }`}
                     >
@@ -133,14 +133,14 @@ export function SubjectExperience({
                         {isOnboardingSubject ? (
                           <span
                             className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
-                              isSelected ? "bg-teal-700 text-teal-50" : "bg-teal-50 text-teal-800"
+                              isSelected ? "bg-violet-600 text-violet-50" : "bg-violet-50 text-violet-800"
                             }`}
                           >
                             Your subject
                           </span>
                         ) : null}
                       </span>
-                      <p className={`text-sm ${isSelected ? "text-teal-50" : "text-stone-600"}`}>
+                      <p className={`text-sm ${isSelected ? "text-violet-50" : "text-stone-600"}`}>
                         {subject.description}
                       </p>
                     </button>
@@ -153,7 +153,7 @@ export function SubjectExperience({
           <section className="space-y-5">
             <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
               <div className="space-y-2 border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
                   Topic selection
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -167,7 +167,7 @@ export function SubjectExperience({
                         onClick={() => setSelectedTopicId(topic.topicId)}
                         className={`border px-3 py-2 text-sm font-medium transition ${
                           isSelected
-                            ? "border-teal-800 bg-teal-800 text-white"
+                            ? "border-violet-700 bg-violet-700 text-white"
                             : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >

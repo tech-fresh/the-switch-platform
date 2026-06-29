@@ -49,7 +49,7 @@ export function Mark32MarketingSections({
             <Link
               key={item.title}
               href={item.href}
-              className="border border-stone-200 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
+              className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
             >
               <h3 className="text-base font-semibold text-stone-950">{item.title}</h3>
               <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
@@ -68,7 +68,7 @@ export function Mark32MarketingSections({
             <Link
               key={item.title}
               href={item.href}
-              className="border border-stone-200 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
+              className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
             >
               <h3 className="text-lg font-semibold text-stone-950">{item.title}</h3>
               <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
@@ -122,7 +122,7 @@ export function Mark32MarketingSections({
         </div>
 
         <aside className="space-y-4">
-          <article className="border border-stone-200 bg-white p-5 shadow-sm">
+          <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">Roadmap</p>
             <h3 className="mt-3 text-lg font-semibold text-stone-950">MVP (Mark 3.2)</h3>
             <ul className="mt-3 space-y-2 text-sm text-stone-600">
@@ -133,7 +133,7 @@ export function Mark32MarketingSections({
               ))}
             </ul>
           </article>
-          <article className="border border-stone-200 bg-white p-5 shadow-sm">
+          <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm">
             <h3 className="text-lg font-semibold text-stone-950">Next (v4.0)</h3>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-600">
               <li>AI tutor & smart recommendations</li>

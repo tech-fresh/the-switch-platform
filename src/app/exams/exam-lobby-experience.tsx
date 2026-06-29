@@ -59,14 +59,14 @@ export function ExamLobbyExperience({ papers, sessionSeeds }: ExamLobbyExperienc
         title="Full papers with timing, autosave, and access support"
         description="Pick a paper to open focus mode — no study navigation during the attempt. Resume in-progress sessions from here or saved progress."
         aside={
-          <div className="border border-stone-200 bg-white p-4 shadow-sm">
+          <div className="rounded-2xl border border-violet-100 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Focus mode</p>
             <p className="mt-2 text-sm leading-6 text-stone-700">
               Active papers hide the study rail so you can concentrate. Exit anytime to return to this lobby.
             </p>
             <Link
               href="/saved-progress"
-              className="mt-4 inline-flex border border-stone-300 px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
+              className="mt-4 inline-flex border border-stone-300 px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-violet-300"
             >
               Open saved progress
             </Link>
@@ -85,7 +85,7 @@ export function ExamLobbyExperience({ papers, sessionSeeds }: ExamLobbyExperienc
           return (
             <article
               key={paper.examId}
-              className="flex flex-col justify-between gap-4 border border-stone-200 bg-white p-5 shadow-sm"
+              className="flex flex-col justify-between gap-4 rounded-3xl border border-violet-100 bg-white p-5 shadow-sm"
             >
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
@@ -109,7 +109,7 @@ export function ExamLobbyExperience({ papers, sessionSeeds }: ExamLobbyExperienc
                 <button
                   type="button"
                   onClick={() => router.push(buildExamFocusHref(paper.examId, action.questionId))}
-                  className="bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+                  className="rounded-2xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-md hover:bg-violet-700"
                 >
                   {action.label}
                 </button>

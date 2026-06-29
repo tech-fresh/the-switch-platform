@@ -99,7 +99,7 @@ function ProviderIcon({ provider }: { provider: AuthProvider }) {
 
 function providerButtonClass(provider: AuthProvider): string {
   if (provider === "email-magic-link") {
-    return "border-teal-600 bg-teal-600 text-white hover:bg-teal-700";
+    return "border-violet-600 bg-violet-600 text-white hover:bg-violet-700";
   }
 
   return "border-sky-300 bg-white text-sky-900 hover:bg-sky-50";
@@ -127,7 +127,7 @@ export function UnifiedSignInCard({
   const emailOption = orderedOptions.find((option) => option.provider === "email-magic-link");
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-stone-200 bg-white px-6 py-8 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:px-8">
+    <div className="w-full max-w-md rounded-3xl border border-violet-100 bg-white px-6 py-8 shadow-[0_18px_50px_rgba(91,33,182,0.08)] sm:px-8">
       <div className="space-y-6 text-center">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold tracking-tight text-stone-950">
@@ -143,7 +143,7 @@ export function UnifiedSignInCard({
         <SignInStudyIllustration />
 
         {showReauthNotice && signedInAs ? (
-          <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-left text-sm leading-6 text-sky-950">
+          <div className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-left text-sm leading-6 text-violet-950">
             You are already signed in as <strong>{signedInAs}</strong>. Choose a provider below to
             sign in again, or{" "}
             <Link href="/account" className="font-semibold underline underline-offset-2">
@@ -201,7 +201,7 @@ export function UnifiedSignInCard({
 
         <p className="text-sm text-stone-600">
           New to The Switch?{" "}
-          <Link href="/how-it-works" className="font-semibold text-teal-700 underline underline-offset-2">
+          <Link href="/how-it-works" className="font-semibold text-violet-700 underline underline-offset-2">
             Learn how the platform works
           </Link>
         </p>
@@ -210,7 +210,7 @@ export function UnifiedSignInCard({
           Need admin access?{" "}
           <Link
             href="/login?intent=admin&returnTo=/admin"
-            className="font-medium text-sky-700 underline underline-offset-2"
+            className="font-medium text-violet-700 underline underline-offset-2"
           >
             Open the admin sign-in path
           </Link>

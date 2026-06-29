@@ -11,7 +11,7 @@ export function Mark32WeakestTopics({ data }: Mark32WeakestTopicsProps) {
   const topics = pickWeakestTopics(data);
 
   return (
-    <aside className="border border-stone-200 bg-white p-5 shadow-sm" aria-label="Weakest topics">
+    <aside className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm" aria-label="Weakest topics">
       <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-rose-700">Weakest topics</p>
       <h2 className="mt-2 text-lg font-semibold tracking-tight text-stone-950">Focus here next</h2>
 

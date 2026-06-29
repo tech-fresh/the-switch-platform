@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { mark32Ui } from "@/components/streamlined/mark32-ui";
+
 interface PlannerPromptCardProps {
   initialDismissed?: boolean;
 }
@@ -33,52 +35,46 @@ export function PlannerPromptCard({ initialDismissed = false }: PlannerPromptCar
   };
 
   return (
-    <article className="overflow-hidden border border-stone-200 bg-white shadow-lg shadow-stone-200/60">
+    <article className="overflow-hidden rounded-3xl border border-violet-100 bg-white shadow-lg shadow-violet-100/60">
       <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
-        <div className="relative border-b border-stone-200 bg-gradient-to-br from-teal-800 via-teal-700 to-emerald-800 p-6 text-white md:border-b-0 md:border-r">
+        <div className="relative border-b border-violet-200 bg-gradient-to-br from-violet-900 via-violet-800 to-violet-700 p-6 text-white md:border-b-0 md:border-r">
           <button
             type="button"
             onClick={handleDismiss}
             disabled={saving}
-            className="absolute right-3 top-3 border border-white/30 px-2 py-0.5 text-[10px] text-white/90 hover:bg-white/10 disabled:opacity-60"
+            className="absolute right-3 top-3 rounded-lg border border-white/30 px-2 py-0.5 text-[10px] text-white/90 hover:bg-white/10 disabled:opacity-60"
             aria-label="Dismiss planner prompt"
           >
             Close
           </button>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-teal-200">Planner</p>
-          <h2 className="mt-2 text-2xl font-semibold leading-tight">Your study plan, built around you</h2>
-          <p className="mt-3 text-sm leading-6 text-teal-100">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-violet-200">Planner</p>
+          <h2 className="mt-2 text-2xl font-bold leading-tight">Your study plan, built around you</h2>
+          <p className="mt-3 text-sm leading-6 text-violet-100">
             Links planner, progress, exams, and access settings in one panel.
           </p>
           <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[10px] font-semibold">
-            <div className="border border-white/20 bg-white/10 p-2">Subjects</div>
-            <div className="border border-white/20 bg-white/10 p-2">Practice</div>
-            <div className="border border-white/20 bg-white/10 p-2">Exams</div>
+            <div className="rounded-lg border border-white/20 bg-white/10 p-2">Subjects</div>
+            <div className="rounded-lg border border-white/20 bg-white/10 p-2">Practice</div>
+            <div className="rounded-lg border border-white/20 bg-white/10 p-2">Exams</div>
           </div>
         </div>
 
         <div className="space-y-4 p-6 sm:p-7">
-          <p className="text-sm leading-7 text-stone-600">
+          <p className="text-sm leading-7 text-slate-600">
             Your plan pulls from onboarding subjects, saved sessions, and accessibility choices — all through
             the API layer, not hard-coded UI rules.
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
-            <Link
-              href="/progress"
-              className="bg-teal-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
-            >
+            <Link href="/progress" className={mark32Ui.primaryBtn}>
               Create my plan
             </Link>
             <Link
               href="/accessibility"
-              className="border border-amber-300 bg-[#fff8c4] px-5 py-2.5 text-sm font-semibold text-amber-950"
+              className="rounded-2xl border border-amber-300 bg-[#fff8c4] px-5 py-2.5 text-sm font-bold text-amber-950"
             >
               SEND colour options
             </Link>
-            <Link
-              href="/support"
-              className="border border-stone-300 px-5 py-2.5 text-sm font-semibold text-stone-800 hover:border-teal-400"
-            >
+            <Link href="/support" className={mark32Ui.secondaryBtn}>
               Support hub
             </Link>
           </div>

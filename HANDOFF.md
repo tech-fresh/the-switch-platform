@@ -99,7 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
-- **Mark 3.2 full-route visual audit (29 June 2026)** — Area 9.9: aligned `/recommendations`, `/results`, `/saved-progress`, `/accessibility`, `/account`, `/support`, and live-cookie guide to `Mark32PageHeader` + Study Atelier teal. Area 9 **10/10 complete**.
+- **Mark 3.2 full-route visual audit (29 June 2026)** — Area 9.9: aligned `/recommendations`, `/results`, `/saved-progress`, `/accessibility`, `/account`, `/support`, and live-cookie guide to `Mark32PageHeader` + Study Atelier teal. Area 9 **10/10 complete**. **Fly deploy succeeded** — https://theswitchplatform.com
 - **MVP usability Area 9 progress recorded (29 June 2026)** — added Area 9 to `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` with step table (`6/9` complete: masterplan, live dashboard, shell, Fly deploy, docs sync done; route-wide extension open). Synced in `FINAL-PHASE-PLAN.md`, `PLATFORM-GUIDE.md`, and README build record.
 - **The Switch Platform v4 UI/UX Redesign added to docs (29 June 2026)** — the active usability hardening lane is now explicitly named in repo docs as **The Switch Platform v4 UI/UX Redesign**, tracked through `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` and the UI masterplan.
 - **Mark 3.2 streamlined dashboard UI (29 June 2026)** — added `docs/design/UI-UX-MASTERPLAN.md` and live Mark 3.2 zones on `/dashboard` (Continue learning, Next exam, Today's goal, Power Grid progress, subject rings, weakest topics). All existing MVP sections preserved below the fold. Study Atelier light-mode tokens; top study rail unchanged.
@@ -845,7 +845,7 @@ Add a new entry here at the end of every session. Do not delete older entries.
 ### 2026-06-29 — Cursor — Mark 3.2 full-route visual audit (Area 9.9 complete)
 
 - Done: Mark32PageHeader on recommendations, results, saved-progress, accessibility, account, support, live-cookie guide
-- Done: Area 9 **10/10** — redesign lane closed; tests 109/109
+- Done: Area 9 **10/10** — redesign lane closed; tests 109/109; Fly deploy succeeded
 - Next: MVP usability Areas 1–8 as operator prioritises
 
 ### 2026-06-29 — Cursor — Mark 3.2 route-wide UI extension (Area 9.8)

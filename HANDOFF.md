@@ -137,6 +137,7 @@ Update this section every session.
 
 ### What is next
 
+- **Publish Areas 4 + 5 to production:** `fly auth login` → `npm run deploy:fly`
 - Re-run `npm run verify:local-launch-readiness` in the operator terminal outside the Codex sandbox to confirm the wrapper now passes end to end
 - If the wrapper passes outside the sandbox, mark Area 1 complete in the plan/docs and continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` — **Area 6** support, accessibility, and recovery UX
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
@@ -151,6 +152,7 @@ Update this section every session.
 
 ### Blockers
 
+- **Fly deploy (29 June 2026):** `0eaf697` is on GitHub but production may still be pre-Areas-4/5. Depot builder timeouts (`authentication handshake failed: EOF`) are bypassed with `npm run deploy:fly` (uses `fly deploy --depot=false`; no local Docker). If deploy fails with `401 Unauthorized` or `Not authorized to access this firecrackerapp`, run `fly auth login` in the operator terminal, confirm `fly status -a the-switch-platform`, then `npm run deploy:fly` again.
 - None for the current MVP closeout
 - Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
 - `npm run verify:local-launch-readiness` still needs one non-sandbox confirmation because the Codex wrapper run hit `listen EPERM 127.0.0.1` during the chained smoke step even though direct `npm run test:smoke` and `npm run test:e2e` both passed

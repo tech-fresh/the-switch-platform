@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { buildAccessibilityPreferenceChips, formatColourSchemeLabel } from "@/modules/accessibility/presentation";
 import type { ReadAloudSession } from "@/modules/read-aloud/types";
 import type {
@@ -546,54 +547,36 @@ export function AssessmentExperience({
 
   return (
     <div className="flex flex-col gap-8">
-        <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-700">
-              Timed Assessment
-            </p>
-            <div className="space-y-3">
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Manual timed checkpoint with live countdown, autosave, resume, and read-aloud support.
-              </h1>
-              <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                This route now behaves like a real checkpoint session. Students can move question by
-                question, save notes, bookmark review items, and submit from the same timed flow.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Assessment</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">{assessment.title}</p>
-              <p className="mt-1 text-sm text-stone-600">
-                {assessment.subject} • {assessment.examBoard}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Autosave</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">
-                Saved {formatSavedAt(seed.attempt.lastSavedAt)}
-              </p>
-              <p className="mt-1 text-sm text-stone-600">
-                {autosaveState === "saving"
+        <Mark32PageHeader
+          eyebrow="Practice"
+          eyebrowTone="emerald"
+          title="Timed checkpoint with live countdown, autosave, resume, and read-aloud support."
+          description="Move question by question, save notes, bookmark review items, and submit from the same timed flow."
+          stats={[
+            {
+              label: "Assessment",
+              value: assessment.title,
+              detail: `${assessment.subject} • ${assessment.examBoard}`,
+            },
+            {
+              label: "Autosave",
+              value: `Saved ${formatSavedAt(seed.attempt.lastSavedAt)}`,
+              detail:
+                autosaveState === "saving"
                   ? "Saving latest checkpoint work now."
                   : autosaveState === "error"
                     ? "Autosave is temporarily stuck. Keep working and try again shortly."
                     : autosaveState === "saved"
                       ? "Latest answers, notes, and timer state are saved."
-                      : "Checkpoint state is ready for resume."}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Completion</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">{completion}% complete</p>
-              <p className="mt-1 text-sm text-stone-600">
-                {answeredCount} of {seed.questions.length} checkpoint answers drafted
-              </p>
-            </div>
-          </div>
-        </section>
+                      : "Checkpoint state is ready for resume.",
+            },
+            {
+              label: "Completion",
+              value: `${completion}% complete`,
+              detail: `${answeredCount} of ${seed.questions.length} checkpoint answers drafted`,
+            },
+          ]}
+        />
 
         <section className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)_18rem]">
           <aside className="space-y-6">

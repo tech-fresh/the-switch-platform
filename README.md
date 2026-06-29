@@ -212,6 +212,8 @@ website has been verified with a successful production build.
 
 ## Mark 3.2 MVP
 
+**Agent build handoff (full vision + live-repo mapping):** [`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`](./docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md) · **Implementation constraints:** [`docs/design/UI-UX-MASTERPLAN.md`](./docs/design/UI-UX-MASTERPLAN.md)
+
 This README is now meant to be cumulative.
 
 New product work, requested additions, previews, mockups, routes, modules, and architecture notes should be added to this file without removing the earlier record unless something is genuinely obsolete or incorrect.
@@ -230,7 +232,8 @@ This project is built with **Cursor Agent** and **Codex** on the same repo. **Fu
 | Document | Purpose |
 |----------|---------|
 | `HANDOFF.md` | Live state + plain-English story + **dual-agent map** + **MVP at a glance** (read first) |
-| `AGENTS.md` | Agent entry — synced with HANDOFF |
+| `AGENTS.md` | Agent entry — synced with HANDOFF; Mark 3.2 handoff in read order |
+| `docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md` | Mark 3.2 product vision + route mapping to live Fly stack |
 | `PLATFORM-GUIDE.md` | Rules, modules, 22-item launch list, MVP modules |
 | `README.md` | Product rules + **MVP at a glance** + Ordered Build Record (this file) |
 | `docs/ideas/` | Plans — streamline website, onboarding stays |
@@ -345,7 +348,7 @@ This keeps Cursor/Codex context small, avoids wasted tokens, and stops agents re
 
 ## Mark 3.2 Product Spec
 
-This repository follows the current The Switch Platform Mark 3.2 product spec.
+This repository follows the current The Switch Platform Mark 3.2 product spec. Full Cursor Agent build handoff → [`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`](./docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md).
 
 ### Architecture direction
 
@@ -462,6 +465,20 @@ This section is the running record of what has been requested, added, and commit
 - Dashboard: one recommended-now hero, three quick routes, planner prompt, focus cards with subject deep links, two resume cards with exam/assessment hrefs, and grouped SEND support rail.
 - Student study rail now includes **Exams**; marketing header rebranded to **The Switch Platform** with corrected **How it works** link.
 
+### 2026-06-29 Mark 3.2 route-wide UI extension (Area 9.8)
+
+- Added shared Mark 3.2 components: `mark32-page-header`, `mark32-power-grid-journey`, `mark32-subject-catalog-grid`, `mark32-marketing-sections`.
+- Extended Mark 3.2 UI to `/` (marketing features + Power Grid), `/progress`, `/subjects`, `/assessments`, `/exams` lobby.
+- Subjects route aligned to Study Atelier teal (replaced violet accents).
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (109/109 passed).
+
+### 2026-06-29 Mark 3.2 Cursor Agent build handoff
+
+- Ingested the full **Cursor Agent Prompt — Mark 3.2 Full-Stack Build Handoff** into `docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`.
+- Added reconciliation layer: prompt vision vs live Fly/OIDC/SQLite/module stack; route mapping; quality checklist mapped to live verification commands.
+- Agent rule: **extend** existing MVP — do not greenfield-replace with Supabase/Prisma/Vercel/Clerk unless operator reopens architecture.
+- Linked from `AGENTS.md`, `HANDOFF.md`, `UI-UX-MASTERPLAN.md`, and this build record.
+
 ### 2026-06-29 Mark 3.2 streamlined dashboard UI (live routes)
 
 - Added authoritative UI spec: `docs/design/UI-UX-MASTERPLAN.md` (Mark 3.2 light-mode layout mapped to Study Atelier tokens).
@@ -470,10 +487,16 @@ This section is the running record of what has been requested, added, and commit
 - Extended `StudentAppShell` with weekly study-day count and Power Grid level badge in the greeting rail.
 - Deployed to Fly production (`fly deploy -a the-switch-platform`) — live at https://theswitchplatform.com
 
+### 2026-06-29 MVP usability Area 9 progress
+
+- Added **Area 9 — The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces)** to `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` with a step-by-step progress table.
+- **Area 9 status:** `8 / 10` complete — route-wide Mark 3.2 extension shipped (step 9.8); visual audit open (9.9)
+- Appended matching progress summary to `docs/ideas/FINAL-PHASE-PLAN.md` and `PLATFORM-GUIDE.md` (additive only).
+
 ### 2026-06-29 MVP usability launch-readiness plan
 
 - Added `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` as the named practical plan for turning the already-live MVP into a more fully usable, route-stable, real-world-ready student product.
-- Broke the work into eight development areas: boot/runtime stability, route clickability, exams and timed assessments, continuity, auth/account, support/accessibility/recovery, verification tooling, and doc truth.
+- Broke the work into nine development areas (Areas 1–8 plus Area 9 v4 UI/UX Redesign); Area 9 progress table added 29 June 2026 (`6/9` complete).
 - Marked this active lane in docs as **The Switch Platform v4 UI/UX Redesign** and set it as **in progress** until the practical usability checklist is complete.
 
 ### 2026-06-29 Fly-only deploy cleanup

@@ -6,6 +6,7 @@ import { SendSupportRail } from "@/components/mock-idea/send-support-rail";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import { getStudyDaysThisWeek } from "@/components/streamlined/mark32-dashboard-utils";
 import { Mark32HeroRow } from "@/components/streamlined/mark32-hero-row";
+import { Mark32MarketingSections } from "@/components/streamlined/mark32-marketing-sections";
 import { Mark32SubjectGrid } from "@/components/streamlined/mark32-subject-grid";
 import { Mark32WeakestTopics } from "@/components/streamlined/mark32-weakest-topics";
 import type {
@@ -86,9 +87,6 @@ function StreamlinedRouteCards({ cards }: { cards: DashboardRouteCard[] }) {
 }
 
 function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeData; isAuthenticated: boolean }) {
-  const primaryHref = isAuthenticated ? "/dashboard" : "/login?reauth=1";
-  const primaryLabel = isAuthenticated ? "Open dashboard" : "Start your setup";
-
   return (
     <>
       <section className="overflow-hidden border border-stone-200 bg-white shadow-sm">
@@ -99,26 +97,26 @@ function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeDa
                 GCSE revision · Study Atelier
               </p>
               <h1 className="mt-4 text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
-                Revision, practice, and exam readiness — one clear next step at a time.
+                GCSE revision. Timed practice. Progress. Exam ready.
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-8 text-stone-600">
-                Sign in to open your study home, resume saved work, and follow a calmer path through practice,
-                full papers, and weekly planning.
+                The Switch Platform helps you study smarter, stay motivated, and be exam ready — one clear next
+                step at a time.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href={primaryHref}
+                  href={isAuthenticated ? "/dashboard" : "/login?reauth=1"}
                   className="bg-teal-800 px-5 py-3 text-sm font-semibold text-white hover:bg-teal-900"
                 >
-                  {primaryLabel}
+                  {isAuthenticated ? "Open dashboard" : "Get started free"}
                 </Link>
                 {!isAuthenticated ? (
                   <Link
-                    href="/login?reauth=1"
+                    href="#features"
                     className="border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 hover:border-teal-400"
                   >
-                    Log in
+                    See how it works
                   </Link>
                 ) : (
                   <Link
@@ -211,6 +209,13 @@ function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeDa
             ))}
           </div>
         </div>
+      </section>
+
+      <section id="features" className="space-y-10">
+        <Mark32MarketingSections
+          powerGridLevel={data.summary.overallLevel}
+          readinessScore={data.summary.examReadinessScore}
+        />
       </section>
 
       <section className="space-y-4">

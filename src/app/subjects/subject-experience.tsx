@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
+import { Mark32SubjectCatalogGrid } from "@/components/streamlined/mark32-subject-catalog-grid";
 import type { QuizQuestion } from "@/modules/quiz/types";
 import type { RevisionContent } from "@/modules/revision/types";
 import type { Subject } from "@/modules/subjects/types";
@@ -29,7 +31,7 @@ export function SubjectExperience({
     return (
       <div className="flex flex-col gap-6">
         <section className="border border-stone-200 bg-white p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-violet-700">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
               Subjects
             </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
@@ -65,66 +67,39 @@ export function SubjectExperience({
 
   return (
     <div className="flex flex-col gap-8">
-        <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-violet-700">
-              Subjects
-            </p>
-            <div className="space-y-3">
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-                Subject entry, revision guidance, and GCSE-preparation practice in one route.
-              </h1>
-              <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-                This is the start of the learn-practise flow. A student can pick a subject, open a
-                topic, see how it supports Year 10 end-of-year exams, read the key revision
-                guidance, and step into GCSE-style practice without dropping into a dead end.
-              </p>
-            </div>
-          </div>
+        <Mark32SubjectCatalogGrid
+          subjects={subjects}
+          selectedSubjectId={selectedSubject.subjectId}
+          onboardingSubjectIds={onboardingSubjectIds}
+        />
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Subject</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">{selectedSubject.name}</p>
-              <p className="mt-1 text-sm text-stone-600">
-                {selectedSubject.qualificationType} • {selectedSubject.examBoards.join(", ")}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Readiness</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">
-                {selectedSubject.examReadinessScore} / 100
-              </p>
-              <p className="mt-1 text-sm text-stone-600">
-                Next topic: {selectedSubject.nextTopicToRevise}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Year group</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">
-                {selectedTopic.studentContext.yearGroupLabel}
-              </p>
-              <p className="mt-1 text-sm text-stone-600">
-                {selectedSubject.endOfYearExamContext}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">GCSE bridge</p>
-              <p className="mt-2 text-lg font-semibold text-stone-950">
-                {selectedSubject.revisionResourceCount} resources
-              </p>
-              <p className="mt-1 text-sm text-stone-600">
-                {selectedSubject.gcsePreparationGoal}
-              </p>
-            </div>
-            <div className="border border-stone-200 bg-white p-4 sm:col-span-2 lg:col-span-1 xl:col-span-2">
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Board coverage</p>
-              <p className="mt-2 text-sm leading-6 text-stone-700">
-                {selectedSubject.boardCoverageNote}
-              </p>
-            </div>
-          </div>
-        </section>
+        <Mark32PageHeader
+          eyebrow="Learn"
+          title={`${selectedSubject.name} — revision guidance and GCSE-preparation practice.`}
+          description="Pick a topic, read the key revision guidance, and step into GCSE-style practice without dropping into a dead end."
+          stats={[
+            {
+              label: "Subject",
+              value: selectedSubject.name,
+              detail: `${selectedSubject.qualificationType} • ${selectedSubject.examBoards.join(", ")}`,
+            },
+            {
+              label: "Readiness",
+              value: `${selectedSubject.examReadinessScore} / 100`,
+              detail: `Next topic: ${selectedSubject.nextTopicToRevise}`,
+            },
+            {
+              label: "Year group",
+              value: selectedTopic.studentContext.yearGroupLabel,
+              detail: selectedSubject.endOfYearExamContext,
+            },
+            {
+              label: "GCSE bridge",
+              value: `${selectedSubject.revisionResourceCount} resources`,
+              detail: selectedSubject.gcsePreparationGoal,
+            },
+          ]}
+        />
 
         <section className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)_18rem]">
           <aside className="space-y-6">
@@ -149,7 +124,7 @@ export function SubjectExperience({
                       }}
                       className={`flex w-full flex-col gap-2 px-4 py-4 text-left transition ${
                         isSelected
-                          ? "bg-violet-700 text-white"
+                          ? "bg-teal-800 text-white"
                           : "bg-white text-stone-900 hover:bg-stone-50"
                       }`}
                     >
@@ -158,14 +133,14 @@ export function SubjectExperience({
                         {isOnboardingSubject ? (
                           <span
                             className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
-                              isSelected ? "bg-violet-600 text-violet-50" : "bg-teal-50 text-teal-800"
+                              isSelected ? "bg-teal-700 text-teal-50" : "bg-teal-50 text-teal-800"
                             }`}
                           >
                             Your subject
                           </span>
                         ) : null}
                       </span>
-                      <p className={`text-sm ${isSelected ? "text-violet-50" : "text-stone-600"}`}>
+                      <p className={`text-sm ${isSelected ? "text-teal-50" : "text-stone-600"}`}>
                         {subject.description}
                       </p>
                     </button>
@@ -178,7 +153,7 @@ export function SubjectExperience({
           <section className="space-y-5">
             <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
               <div className="space-y-2 border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
                   Topic selection
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -192,7 +167,7 @@ export function SubjectExperience({
                         onClick={() => setSelectedTopicId(topic.topicId)}
                         className={`border px-3 py-2 text-sm font-medium transition ${
                           isSelected
-                            ? "border-violet-700 bg-violet-700 text-white"
+                            ? "border-teal-800 bg-teal-800 text-white"
                             : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >

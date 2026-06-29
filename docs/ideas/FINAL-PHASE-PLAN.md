@@ -49,6 +49,24 @@ The repo no longer has a truthful-completion proof gap or an open active-plan bl
 - treat Priority E as deferred scope, not current MVP incompleteness
 - treat **The Switch Platform v4 UI/UX Redesign** as the active usability/design improvement lane for the current MVP
 
+### MVP usability plan — Area 9 progress (appended 29 June 2026)
+
+Tracked in [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./MVP-USABILITY-LAUNCH-READINESS-PLAN.md) → **Area 9 — The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces)**.
+
+| Step | Status |
+|------|--------|
+| UI masterplan (`docs/design/UI-UX-MASTERPLAN.md`) | **Complete** |
+| Mark 3.2 `/dashboard` hero + subject + weakest-topics zones | **Complete** |
+| Below-fold MVP dashboard sections preserved | **Complete** |
+| `StudentAppShell` greeting rail (study days + Power Grid badge) | **Complete** |
+| Fly production deploy | **Complete** |
+| Docs sync (HANDOFF, AGENTS, README, PLATFORM-GUIDE, FINAL-PHASE-PLAN) | **Complete** |
+| Mark 3.2 Cursor Agent build handoff ingested | **Complete** — `docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md` |
+| Extend Mark 3.2 to other student routes | **Complete** — `/`, `/progress`, `/subjects`, `/assessments`, `/exams` |
+| Full-route visual consistency audit | **Not started** |
+
+**Area 9 summary:** `8 / 10` steps complete — route-wide Mark 3.2 extension shipped; visual audit still open.
+
 ### Completion rule
 
 Do **not** reopen a truthful-completion blocker unless new evidence breaks the 26 June 2026 closeout. Keep docs and evidence synced when re-running closeout for new releases.

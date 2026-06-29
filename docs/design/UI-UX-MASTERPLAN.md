@@ -25,9 +25,20 @@ Plain English: Mark 3.2 is a **calmer light-mode** study experience. One clear n
 
 | Zone | Purpose | Implementation |
 |------|---------|----------------|
-| Hero | One promise + primary CTA | `DashboardHome` mode `home` → `HomeMarketingContent` |
+| Hero | Mark 3.2 headline + CTAs | `HomeMarketingContent` — "Get started free" / "See how it works" |
 | Trust trio | Students / parents / schools | Three tone cards below hero |
+| Features | Why Switch + key features + Power Grid + mission + accessibility + roadmap | `Mark32MarketingSections` |
 | Study routes | Jump into practice | Top 3 study route cards |
+
+### Signed-in routes (Mark 3.2 shared components)
+
+| Route | Mark 3.2 components |
+|-------|---------------------|
+| `/dashboard` | `Mark32HeroRow`, `Mark32SubjectGrid`, `Mark32WeakestTopics` |
+| `/subjects` | `Mark32SubjectCatalogGrid`, `Mark32PageHeader` |
+| `/progress` | `Mark32PowerGridJourney`, `Mark32PageHeader` |
+| `/assessments` | `Mark32PageHeader` |
+| `/exams` (lobby) | `Mark32PageHeader` |
 
 ### Signed-in dashboard `/dashboard`
 
@@ -92,5 +103,6 @@ Evidence: append README Ordered Build Record; sync `HANDOFF.md` and `AGENTS.md`.
 
 - [`HANDOFF.md`](../../HANDOFF.md) — live session state  
 - [`PLATFORM-GUIDE.md`](../../PLATFORM-GUIDE.md) → Design system  
+- [`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`](./MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md) — full Mark 3.2 product vision + live-repo mapping  
 - [`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](../ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md)  
 - Preview mockups: `/streamlined-mockup`, `/mockups/vibrant-dashboard` (layout reference only)

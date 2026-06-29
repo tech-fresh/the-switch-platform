@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
+import { Mark32PowerGridJourney } from "@/components/streamlined/mark32-power-grid-journey";
+import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { StudentRouteRecovery } from "@/components/student-route-recovery";
 import { SubjectToneChip, subjectToneBlockClasses } from "@/components/subject-tone-chip";
 import { WeeklyPlannerGrid } from "@/components/weekly-planner-grid";
@@ -43,53 +45,36 @@ function ProgressMainContent({
 }) {
   return (
     <>
-      <section className="grid gap-5 border-b border-stone-200 pb-6 lg:grid-cols-[1.4fr_0.9fr]">
-        <div className="space-y-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">
-            Power Grid Progress
-          </p>
-          <div className="space-y-3">
-            <h2 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
-              Readiness, trend, and next-step signals from your active sessions.
-            </h2>
-            <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-              Your study planner — built from exam and timed assessment activity through the Power
-              Grid module.
-            </p>
-          </div>
-        </div>
+      <Mark32PowerGridJourney currentLevel={summary.overallLevel} readinessScore={summary.examReadinessScore} />
 
-        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-          <div className="border border-stone-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Overall level</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{summary.overallLevel}</p>
-            <p className={`mt-1 text-sm font-medium capitalize ${getTrendTone(summary.overallTrend)}`}>
-              {summary.overallTrend}
-            </p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Readiness score</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">
-              {summary.examReadinessScore} / 100
-            </p>
-            <p className="mt-1 text-sm text-stone-600">Built from active revision signals.</p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Sessions live</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{summary.activeSessionCount}</p>
-            <p className="mt-1 text-sm text-stone-600">
-              {summary.completedSessionCount} completed, the rest still in motion
-            </p>
-          </div>
-          <div className="border border-stone-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Access snapshots</p>
-            <p className="mt-2 text-lg font-semibold text-stone-950">{summary.accessSnapshotCoverage}%</p>
-            <p className="mt-1 text-sm text-stone-600">
-              Saved progress carries support settings across study routes
-            </p>
-          </div>
-        </div>
-      </section>
+      <Mark32PageHeader
+        eyebrow="Progress & planner"
+        eyebrowTone="teal"
+        title="Readiness, trend, and next-step signals from your active sessions."
+        description="Your study planner — built from exam and timed assessment activity through the Power Grid module."
+        stats={[
+          {
+            label: "Overall level",
+            value: summary.overallLevel,
+            detail: summary.overallTrend,
+          },
+          {
+            label: "Readiness score",
+            value: `${summary.examReadinessScore} / 100`,
+            detail: "Built from active revision signals.",
+          },
+          {
+            label: "Sessions live",
+            value: String(summary.activeSessionCount),
+            detail: `${summary.completedSessionCount} completed, the rest still in motion`,
+          },
+          {
+            label: "Access snapshots",
+            value: `${summary.accessSnapshotCoverage}%`,
+            detail: "Saved progress carries support settings across study routes",
+          },
+        ]}
+      />
 
       <WeeklyPlannerGrid planner={planner} />
 

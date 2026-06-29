@@ -73,7 +73,7 @@ Update this section every session.
 
 - **Priority item #:** E — Mark 3.2 UI / usability polish
 - **Module:** Dashboard + student shell
-- **Status:** Mark 3.2 dashboard zones shipped on `/dashboard`; Fly deploy for permanent production
+- **Status:** Area 9 **8/10** complete — Mark 3.2 extended to homepage, progress, subjects, assessments, exams; visual audit next
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,8 @@ Update this section every session.
 
 ### What was just completed
 
+- **Mark 3.2 route-wide UI extension (29 June 2026)** — shared `Mark32PageHeader`, `Mark32PowerGridJourney`, `Mark32SubjectCatalogGrid`, `Mark32MarketingSections` on `/`, `/progress`, `/subjects`, `/assessments`, `/exams` lobby. Subjects route teal-aligned. Tests 109/109. **Fly deploy succeeded** — live at https://theswitchplatform.com
+- **MVP usability Area 9 progress recorded (29 June 2026)** — added Area 9 to `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` with step table (`6/9` complete: masterplan, live dashboard, shell, Fly deploy, docs sync done; route-wide extension open). Synced in `FINAL-PHASE-PLAN.md`, `PLATFORM-GUIDE.md`, and README build record.
 - **The Switch Platform v4 UI/UX Redesign added to docs (29 June 2026)** — the active usability hardening lane is now explicitly named in repo docs as **The Switch Platform v4 UI/UX Redesign**, tracked through `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` and the UI masterplan.
 - **Mark 3.2 streamlined dashboard UI (29 June 2026)** — added `docs/design/UI-UX-MASTERPLAN.md` and live Mark 3.2 zones on `/dashboard` (Continue learning, Next exam, Today's goal, Power Grid progress, subject rings, weakest topics). All existing MVP sections preserved below the fold. Study Atelier light-mode tokens; top study rail unchanged.
 - **Mark 3.2 deployed to Fly (29 June 2026)** — `fly deploy -a the-switch-platform` succeeded; permanent production at https://theswitchplatform.com
@@ -839,6 +841,24 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-06-29 — Cursor — Mark 3.2 route-wide UI extension (Area 9.8)
+
+- Done: shared Mark32 components + live routes `/`, `/progress`, `/subjects`, `/assessments`, `/exams`
+- Done: lint, type-check, test (109/109)
+- Next: Area 9 step 9.9 — full-route visual consistency audit; Fly deploy
+
+### 2026-06-29 — Cursor — Mark 3.2 Cursor Agent build handoff ingested
+
+- Done: saved full Mark 3.2 build handoff to `docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md` with Fly/OIDC/SQLite reconciliation
+- Done: linked from AGENTS, HANDOFF, README, UI-UX-MASTERPLAN, MVP Area 9 (step 9.7b)
+- Next: Area 9 steps 9.8–9.9 — extend Mark 3.2 UI to remaining routes per handoff mapping
+
+### 2026-06-29 — Cursor — MVP usability Area 9 progress recorded
+
+- Done: added Area 9 to `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` with step table and `6/9` summary
+- Done: appended Area 9 progress to `FINAL-PHASE-PLAN.md`, `PLATFORM-GUIDE.md`, `README.md`, `AGENTS.md`, and `HANDOFF.md` (additive only)
+- Next: Area 9 steps 9.8–9.9 — extend Mark 3.2 to other student routes; full-route visual audit
 
 ### 2026-06-29 — Cursor — Mark 3.2 streamlined dashboard UI
 

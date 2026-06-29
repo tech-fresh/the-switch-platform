@@ -200,6 +200,47 @@ Make sure the docs explain the product as it actually behaves now.
 
 - a new operator can read the docs and understand both what is already complete and what still needs practical hardening
 
+## Area 9 — The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces)
+
+### Goal
+
+Ship a streamlined light-mode student experience on live routes without removing any MVP capability — clearer above-the-fold dashboard decisions, Study Atelier tokens, and permanent Fly production delivery.
+
+### Development work
+
+1. Author the UI masterplan and map Mark 3.2 layout zones to existing module data.
+2. Ship Mark 3.2 dashboard zones on `/dashboard` using real continuity, planner, exam, Power Grid, and focus data.
+3. Preserve all existing MVP sections below the fold (quick routes, planner, focus, resume, SEND support).
+4. Extend the student shell greeting rail with weekly study-day count and Power Grid level badge.
+5. Deploy the redesign to Fly production at https://theswitchplatform.com.
+6. Extend the same light-mode patterns to remaining high-traffic student routes without breaking architecture gates.
+
+### Done when
+
+- `docs/design/UI-UX-MASTERPLAN.md` is the authoritative UI spec for live work
+- `/dashboard` shows Continue learning, Next exam, Today's goal, Power Grid progress, subject rings, and weakest topics from live data
+- production on Fly matches the checked-in Mark 3.2 dashboard and shell changes
+- remaining student routes feel equally clickable and polished without losing modules or routes
+
+### Progress — 29 June 2026
+
+| Step | Status | Evidence |
+|------|--------|----------|
+| 9.1 UI masterplan authored | **Complete** | `docs/design/UI-UX-MASTERPLAN.md` |
+| 9.2 Mark 3.2 hero row on `/dashboard` | **Complete** | `src/components/streamlined/mark32-hero-row.tsx` — Continue learning, Next exam, Today's goal, Power Grid progress |
+| 9.3 Subject progress + weakest topics | **Complete** | `mark32-subject-grid.tsx`, `mark32-weakest-topics.tsx`, `mark32-dashboard-utils.ts` |
+| 9.4 Below-fold MVP sections preserved | **Complete** | `src/components/dashboard-home.tsx` — quick routes, planner, focus, resume, SEND support unchanged |
+| 9.5 Student shell greeting rail | **Complete** | `StudentAppShell` — weekly study-day count + Power Grid level badge |
+| 9.6 Fly production deploy | **Complete** | `fly deploy -a the-switch-platform` — live at https://theswitchplatform.com |
+| 9.7 Docs sync for redesign lane | **Complete** | `HANDOFF.md`, `AGENTS.md`, `README.md`, `PLATFORM-GUIDE.md`, `FINAL-PHASE-PLAN.md` |
+| 9.7b Mark 3.2 Cursor Agent build handoff ingested | **Complete** | `docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md` — vision + live-repo reconciliation |
+| 9.8 Extend Mark 3.2 to other student routes | **Complete** | `/`, `/progress`, `/subjects`, `/assessments`, `/exams` lobby — shared `Mark32*` components |
+| 9.9 Full-route visual consistency audit | **Not started** | Pending final pass across shell routes |
+
+**Area 9 summary:** `8 / 10` steps complete — route-wide Mark 3.2 extension shipped; visual audit still open.
+
+**Verification (29 June 2026):** `npm run lint`, `npm run type-check`, `npm run test` (109/109 passed).
+
 ## Recommended execution order
 
 1. Boot and runtime stability
@@ -210,6 +251,7 @@ Make sure the docs explain the product as it actually behaves now.
 6. Auth, account, and role experience
 7. Support, accessibility, and recovery UX
 8. Docs and operator truth
+9. The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces) — **in progress (8/10 steps complete — 29 June 2026)**
 
 ## Definition of "usable and launch ready" for this plan
 

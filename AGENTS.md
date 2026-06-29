@@ -10,6 +10,7 @@ Before doing ANY work in this repository:
 3. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 4. Read **`PROJECT_RECOVERY.md`** and **`RESTORED_CHATS.md`** if folder or history context is unclear
 5. For module work, open the matching section in **`PLATFORM-GUIDE.md` → Module reference**
+6. For Mark 3.2 UI/product vision work, read **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** after **`UI-UX-MASTERPLAN.md`** — extend the live Fly stack; do not greenfield-replace with Supabase/Vercel unless the operator reopens architecture
 
 Never switch between Cursor and Codex without updating **`HANDOFF.md`**, **`AGENTS.md`**, and pushing committed work first.
 
@@ -19,6 +20,7 @@ Never switch between Cursor and Codex without updating **`HANDOFF.md`**, **`AGEN
 
 ```text
 Read HANDOFF.md first.
+Then read docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md for Mark 3.2 vision (extend live repo — do not greenfield Supabase/Vercel).
 ```
 
 Then read **`PLATFORM-GUIDE.md`** before making changes.
@@ -51,7 +53,8 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`docs/ideas/`** | Plan index — prior plans historical |
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
-| **`.cursor/rules/`** | Cursor enforcement |
+| **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** | Mark 3.2 full product vision + route mapping to live repo |
+| **`docs/design/UI-UX-MASTERPLAN.md`** | Live UI implementation constraints (Study Atelier) |
 
 **Dual-agent handoff:** `HANDOFF.md` → **Dual-agent document system** — never switch tools without updating it.
 
@@ -121,9 +124,10 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Build history → **`README.md` → Ordered Build Record**
 - UI / active plan → **`docs/ideas/FINAL-PHASE-PLAN.md`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
 - MVP usability plan → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`**
-- Active redesign track → **The Switch Platform v4 UI/UX Redesign** (**in progress**)
+- Active redesign track → **The Switch Platform v4 UI/UX Redesign** — Area 9 **8/10** complete (29 June 2026)
 - Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
 - **UI masterplan** → **`docs/design/UI-UX-MASTERPLAN.md`**
+- **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
 - External prompt pack → **`docs/CHATGPT-PROMPTS-README.md`**
 
 **Current deployment note:** production is Fly-only. Treat `.vercel`, Netlify deploy config, and Vercel Blob persistence as retired unless the operator explicitly asks to restore a historical migration path.
@@ -141,7 +145,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C complete** (24 June 2026). **Priority D** is complete too. Current in-progress product lane: **The Switch Platform v4 UI/UX Redesign** through the MVP usability plan. |
+| What are we doing now? | **Priority A–D complete.** **v4 UI/UX Redesign** Area 9 **8/10** — full-route visual audit next. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
 | What is next? | Mark 3.2 UI live on Fly; commit/push to GitHub; continue **Priority E** usability plan. |

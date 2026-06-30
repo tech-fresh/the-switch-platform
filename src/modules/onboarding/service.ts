@@ -91,8 +91,13 @@ export const DEFERRED_ONBOARDING_QUALIFICATION_PATHS = [
   },
 ];
 
-/** School step nation picker during MVP — England only until Wales / NI routes ship. */
-export const MVP_ONBOARDING_SCHOOL_NATIONS: SchoolNation[] = ["england"];
+/** School lookup remains UK-wide even while qualification routes stay narrower during MVP. */
+export const MVP_ONBOARDING_SCHOOL_NATIONS: SchoolNation[] = [
+  "england",
+  "scotland",
+  "wales",
+  "northern-ireland",
+];
 
 /** MVP launch subjects come from the student-visible content catalog only. */
 export function qualificationPathToCatalogType(

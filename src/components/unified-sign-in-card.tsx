@@ -99,10 +99,10 @@ function ProviderIcon({ provider }: { provider: AuthProvider }) {
 
 function providerButtonClass(provider: AuthProvider): string {
   if (provider === "email-magic-link") {
-    return "border-violet-600 bg-violet-600 text-white hover:bg-violet-700";
+    return "border-teal-800 bg-teal-800 text-white hover:bg-teal-900";
   }
 
-  return "border-sky-300 bg-white text-sky-900 hover:bg-sky-50";
+  return "border-stone-300 bg-white text-stone-900 hover:border-sky-300 hover:bg-sky-50";
 }
 
 function buildSignInHref(provider: AuthProvider, returnTo: string): string {
@@ -125,112 +125,203 @@ export function UnifiedSignInCard({
 
   const socialOptions = orderedOptions.filter((option) => option.provider !== "email-magic-link");
   const emailOption = orderedOptions.find((option) => option.provider === "email-magic-link");
+  const hasMicrosoftOption = orderedOptions.some((option) => option.provider === "microsoft");
 
   return (
-    <div className="w-full max-w-md rounded-3xl border border-violet-100 bg-white px-6 py-8 shadow-[0_18px_50px_rgba(91,33,182,0.08)] sm:px-8">
-      <div className="space-y-6 text-center">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-stone-950">
-            {signInIntent === "admin" ? "Operator sign-in" : "Welcome back!"}
-          </h1>
-          <p className="text-sm leading-6 text-stone-600">
-            {signInIntent === "admin"
-              ? "Use the same Google or Microsoft sign-in as learners. Admin tools unlock when your email is on the server allowlist."
-              : "One sign-in for students and admin. The same Google or Microsoft account opens your study routes; admin tools appear automatically when your email is allowlisted."}
-          </p>
-        </div>
-
-        <SignInStudyIllustration />
-
-        {showReauthNotice && signedInAs ? (
-          <div className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-left text-sm leading-6 text-violet-950">
-            You are already signed in as <strong>{signedInAs}</strong>. Choose a provider below to
-            sign in again, or{" "}
-            <Link href="/account" className="font-semibold underline underline-offset-2">
-              open your account page to sign out
-            </Link>
-            .
+    <div className="w-full max-w-5xl rounded-[2rem] border border-stone-200 bg-white px-6 py-8 shadow-sm sm:px-8 lg:px-10">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start">
+        <section className="space-y-6 text-left">
+          <div className="space-y-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
+              {signInIntent === "admin" ? "Admin access" : "Welcome back"}
+            </p>
+            <h1 className="text-3xl font-semibold tracking-tight text-stone-950">
+              {signInIntent === "admin" ? "Operator sign-in" : "Pick up your study flow in one sign-in"}
+            </h1>
+            <p className="max-w-xl text-sm leading-7 text-stone-600">
+              {signInIntent === "admin"
+                ? "Use the same Google or Microsoft sign-in as learners. Admin tools unlock automatically when your email is on the server allowlist."
+                : "Google or Microsoft sign-in takes you straight back into your dashboard, saved progress, and support settings without extra setup."}
+            </p>
           </div>
-        ) : null}
 
-        {authErrorMessage ? (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-left text-sm leading-6 text-rose-900">
-            {authErrorMessage}
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                title: "One sign-in",
+                detail: signInIntent === "admin" ? "Shared auth path with role-based access." : "One account for dashboard, revision, and progress.",
+              },
+              {
+                title: "Dashboard ready",
+                detail: signInIntent === "admin" ? "Return to the right admin destination." : "Continue where you left off without re-learning the product.",
+              },
+              {
+                title: "Support carries over",
+                detail: "Accessibility and support preferences stay connected to your account.",
+              },
+            ].map((item) => (
+              <article key={item.title} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                <h2 className="text-sm font-semibold text-stone-950">{item.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
+              </article>
+            ))}
           </div>
-        ) : null}
 
-        <div className="space-y-3 text-left">
-          {socialOptions.map((option) => (
-            <a
-              key={option.provider}
-              href={buildSignInHref(option.provider, returnTo)}
-              className={`flex w-full items-center justify-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold transition ${providerButtonClass(option.provider)}`}
-            >
-              <ProviderIcon provider={option.provider} />
-              <span>{`Continue with ${providerLabel(option.provider)}`}</span>
-            </a>
-          ))}
+          <div className="rounded-3xl border border-stone-200 bg-stone-50 p-5">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="max-w-md">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">After sign-in</p>
+                <h2 className="mt-2 text-lg font-semibold tracking-tight text-stone-950">
+                  {signInIntent === "admin" ? "Open the right management path" : "Open one clear next step"}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-stone-600">
+                  {signInIntent === "admin"
+                    ? "You will land on the right protected route for content or operations work."
+                    : "You will return to your dashboard, continue a subject, or reopen saved work without extra friction."}
+                </p>
+              </div>
+              <SignInStudyIllustration />
+            </div>
+          </div>
+        </section>
 
-          {emailOption && socialOptions.length > 0 ? (
-            <div className="flex items-center gap-3 py-1">
-              <div className="h-px flex-1 bg-stone-200" />
-              <span className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
-                OR
-              </span>
-              <div className="h-px flex-1 bg-stone-200" />
+        <section className="space-y-6 text-center">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
+              {signInIntent === "admin" ? "Operator sign-in" : "Welcome back!"}
+            </h2>
+            <p className="text-sm leading-6 text-stone-600">
+              {signInIntent === "admin"
+                ? "Choose the provider linked to your allowlisted account."
+                : "Choose the provider you use for The Switch."}
+            </p>
+            {signInIntent !== "admin" ? (
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+                One sign-in for students and admin
+              </p>
+            ) : null}
+            <p className="text-xs leading-6 text-stone-500">
+              {signInIntent === "admin"
+                ? "Your admin tools appear after sign-in when your email is allowlisted."
+                : "Google and Microsoft both support the normal student login path."}
+            </p>
+          </div>
+
+          {showReauthNotice && signedInAs ? (
+            <div className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-left text-sm leading-6 text-teal-950">
+              You are already signed in as <strong>{signedInAs}</strong>. Choose a provider below to
+              sign in again, or{" "}
+              <Link href="/account" className="font-semibold underline underline-offset-2">
+                open your account page to sign out
+              </Link>
+              .
             </div>
           ) : null}
 
-          {emailOption ? (
-            <a
-              href={buildSignInHref(emailOption.provider, returnTo)}
-              className={`flex w-full items-center justify-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold transition ${providerButtonClass(emailOption.provider)}`}
-            >
-              <ProviderIcon provider={emailOption.provider} />
-              <span>Continue with email</span>
-            </a>
+          {authErrorMessage ? (
+            <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-left text-sm leading-6 text-rose-900">
+              {authErrorMessage}
+            </div>
           ) : null}
 
-          {orderedOptions.length === 0 ? (
-            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">
-              Production sign-in is enabled, but no live providers are configured in this runtime yet.
-              Add the OIDC provider environment values, redeploy, then return here.
+          <div className="space-y-3 text-left">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">
+              Choose a provider
             </p>
-          ) : null}
-        </div>
+            {socialOptions.map((option) => (
+              <a
+                key={option.provider}
+                href={buildSignInHref(option.provider, returnTo)}
+                className={`flex w-full items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold transition ${providerButtonClass(option.provider)}`}
+              >
+                <ProviderIcon provider={option.provider} />
+                <span>{`Continue with ${providerLabel(option.provider)}`}</span>
+              </a>
+            ))}
 
-        <p className="text-sm text-stone-600">
-          New to The Switch?{" "}
-          <Link href="/how-it-works" className="font-semibold text-violet-700 underline underline-offset-2">
-            Learn how the platform works
-          </Link>
-        </p>
+            {!hasMicrosoftOption ? (
+              <Link
+                href="/login/microsoft-guide"
+                className="flex w-full items-center justify-center gap-3 rounded-2xl border border-stone-300 bg-stone-50 px-4 py-3 text-sm font-semibold text-stone-900 transition hover:border-sky-300 hover:bg-sky-50"
+              >
+                <MicrosoftIcon />
+                <span>Continue with Microsoft</span>
+                <span className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-stone-500">
+                  Guide
+                </span>
+              </Link>
+            ) : null}
 
-        <p className="text-xs leading-5 text-stone-500">
-          Need admin access?{" "}
-          <Link
-            href="/login?intent=admin&returnTo=/admin"
-            className="font-medium text-violet-700 underline underline-offset-2"
-          >
-            Open the admin sign-in path
-          </Link>
-        </p>
+            {emailOption && socialOptions.length > 0 ? (
+              <div className="flex items-center gap-3 py-1">
+                <div className="h-px flex-1 bg-stone-200" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
+                  OR
+                </span>
+                <div className="h-px flex-1 bg-stone-200" />
+              </div>
+            ) : null}
 
-        <p className="text-xs leading-5 text-stone-500">
-          <Link
-            href="/login/microsoft-guide"
-            className="font-medium text-stone-700 underline underline-offset-2"
-          >
-            Open the Microsoft sign-in guide
-          </Link>
-        </p>
+            {emailOption ? (
+              <a
+                href={buildSignInHref(emailOption.provider, returnTo)}
+                className={`flex w-full items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold transition ${providerButtonClass(emailOption.provider)}`}
+              >
+                <ProviderIcon provider={emailOption.provider} />
+                <span>Continue with email</span>
+              </a>
+            ) : null}
 
-        <p className="text-xs leading-5 text-stone-500">
-          Already signed in elsewhere?{" "}
-          <Link href="/account" className="font-medium text-stone-700 underline underline-offset-2">
-            Open your account page
-          </Link>
-        </p>
+            {orderedOptions.length === 0 ? (
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">
+                Production sign-in is enabled, but no live providers are configured in this runtime yet.
+                Add the OIDC provider environment values, redeploy, then return here.
+              </p>
+            ) : null}
+
+            {!hasMicrosoftOption ? (
+              <p className="rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm leading-6 text-sky-950">
+                Microsoft sign-in is still part of the login path. If this preview runtime is missing the
+                provider setup, open the Microsoft guide and finish the configuration there.
+              </p>
+            ) : null}
+          </div>
+
+          <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-4 text-left">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Need help?</p>
+            <div className="mt-3 space-y-3 text-sm text-stone-600">
+              <p>
+                New to The Switch?{" "}
+                <Link href="/how-it-works" className="font-semibold text-teal-800 underline underline-offset-2">
+                  Learn how the platform works
+                </Link>
+              </p>
+              <p>
+                Need admin access?{" "}
+                <Link
+                  href="/login?intent=admin&returnTo=/admin"
+                  className="font-medium text-teal-800 underline underline-offset-2"
+                >
+                  Open the admin sign-in path
+                </Link>
+              </p>
+              <p>
+                <Link
+                  href="/login/microsoft-guide"
+                  className="font-medium text-stone-700 underline underline-offset-2"
+                >
+                  Open the Microsoft sign-in guide
+                </Link>
+              </p>
+              <p>
+                Already signed in elsewhere?{" "}
+                <Link href="/account" className="font-medium text-stone-700 underline underline-offset-2">
+                  Open your account page
+                </Link>
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

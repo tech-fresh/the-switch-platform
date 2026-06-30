@@ -13,6 +13,7 @@ test("login route exposes the unified sign-in shell", () => {
   assert.match(loginPage, /UnifiedSignInCard/);
   assert.match(signInCard, /Welcome back!/);
   assert.match(signInCard, /Continue with \$\{providerLabel/);
+  assert.match(signInCard, /Continue with Microsoft/);
   assert.match(signInCard, /Continue with email/);
   assert.match(signInCard, /One sign-in for students and admin/);
 });

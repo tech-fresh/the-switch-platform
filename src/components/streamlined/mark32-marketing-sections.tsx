@@ -49,7 +49,7 @@ export function Mark32MarketingSections({
             <Link
               key={item.title}
               href={item.href}
-              className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
+              className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:bg-stone-50"
             >
               <h3 className="text-base font-semibold text-stone-950">{item.title}</h3>
               <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
@@ -68,11 +68,11 @@ export function Mark32MarketingSections({
             <Link
               key={item.title}
               href={item.href}
-              className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50"
+              className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:bg-stone-50"
             >
               <h3 className="text-lg font-semibold text-stone-950">{item.title}</h3>
               <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
-              <p className="mt-3 text-sm font-semibold text-violet-600">Explore</p>
+              <p className="mt-3 text-sm font-semibold text-teal-800">Explore</p>
             </Link>
           ))}
         </div>
@@ -80,8 +80,8 @@ export function Mark32MarketingSections({
 
       <Mark32PowerGridJourney currentLevel={powerGridLevel} readinessScore={readinessScore} compact />
 
-      <section className="border border-violet-600 bg-gradient-to-br from-violet-900 to-violet-600 p-6 text-white shadow-sm sm:p-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-100">Mission</p>
+      <section className="rounded-3xl border border-teal-800 bg-gradient-to-br from-teal-900 to-teal-700 p-6 text-white shadow-sm sm:p-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-50/90">Mission</p>
         <p className="mt-4 max-w-3xl text-xl font-semibold leading-8 tracking-tight sm:text-2xl">
           Empower every student to unlock their potential through smart practice, clear progress, and inclusive
           learning experiences.
@@ -91,7 +91,7 @@ export function Mark32MarketingSections({
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-4">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-700">Accessibility</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Accessibility</p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
               Inclusive learning built in
             </h2>
@@ -106,7 +106,7 @@ export function Mark32MarketingSections({
                 key={feature}
                 className="flex items-start gap-2 border border-stone-200 bg-white px-4 py-3 text-sm text-stone-700 shadow-sm"
               >
-                <span className="mt-0.5 text-violet-700" aria-hidden>
+                <span className="mt-0.5 text-teal-800" aria-hidden>
                   ✓
                 </span>
                 {feature}
@@ -115,14 +115,14 @@ export function Mark32MarketingSections({
           </ul>
           <Link
             href="/accessibility"
-            className="inline-flex bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-900"
+            className="inline-flex rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
           >
             Open accessibility settings
           </Link>
         </div>
 
         <aside className="space-y-4">
-          <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm">
+          <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">Roadmap</p>
             <h3 className="mt-3 text-lg font-semibold text-stone-950">MVP (Mark 3.2)</h3>
             <ul className="mt-3 space-y-2 text-sm text-stone-600">
@@ -133,14 +133,14 @@ export function Mark32MarketingSections({
               ))}
             </ul>
           </article>
-          <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm">
+          <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
             <h3 className="text-lg font-semibold text-stone-950">Next (v4.0)</h3>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-600">
               <li>AI tutor & smart recommendations</li>
               <li>Performance insights & leaderboards</li>
             </ul>
           </article>
-          <article className="border border-stone-200 bg-stone-50 p-5">
+          <article className="rounded-3xl border border-stone-200 bg-stone-50 p-5">
             <h3 className="text-lg font-semibold text-stone-950">Future</h3>
             <p className="mt-2 text-sm leading-6 text-stone-600">
               More subjects, mobile app, live classes, and parent/teacher dashboards.

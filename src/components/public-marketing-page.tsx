@@ -9,7 +9,7 @@ interface PublicMarketingPageProps {
   isAuthenticated?: boolean;
 }
 
-/** Public routes — Mark 3.2 purple marketing chrome. */
+/** Public routes — shared marketing chrome aligned to the current light-mode product shell. */
 export function PublicMarketingPage({ children, isAuthenticated = false }: PublicMarketingPageProps) {
   return (
     <main className={mark32Ui.publicMain}>

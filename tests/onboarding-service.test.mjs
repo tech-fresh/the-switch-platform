@@ -19,7 +19,12 @@ test("onboarding options include school sources and MVP catalog subjects", () =>
   assert.equal(options.qualificationPaths.length, 2);
   assert.ok(options.deferredQualificationPaths.some((path) => path.id === "gcse-wales"));
   assert.ok(options.deferredQualificationPaths.some((path) => path.id === "gcse-northern-ireland"));
-  assert.deepEqual(options.mvpSchoolNations, ["england"]);
+  assert.deepEqual(options.mvpSchoolNations, [
+    "england",
+    "scotland",
+    "wales",
+    "northern-ireland",
+  ]);
   assert.equal(options.schoolSources.length, 4);
   assert.equal(options.subjects.length, 4);
 

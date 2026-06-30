@@ -19,6 +19,13 @@ interface SubjectExperienceProps {
   onboardingSubjectIds?: string[];
 }
 
+function getRevisionSectionBody(
+  revision: RevisionContent,
+  titles: RevisionContent["sections"][number]["title"][],
+): string[] {
+  return revision.sections.filter((section) => titles.includes(section.title)).map((section) => section.body);
+}
+
 export function SubjectExperience({
   subjects,
   topicsBySubject,
@@ -65,6 +72,14 @@ export function SubjectExperience({
     topics.find((topic) => topic.topicId === selectedTopicId) ?? topics[0];
   const revision = revisionByTopic[selectedTopic.topicId];
   const quiz = quizByTopic[selectedTopic.topicId];
+  const learnSections = getRevisionSectionBody(revision, [
+    "Explain Simply",
+    "Standard Explanation",
+    "Detailed Explanation",
+  ]);
+  const workedExampleSections = getRevisionSectionBody(revision, ["Worked Examples", "Common Mistakes"]);
+  const practiceSections = getRevisionSectionBody(revision, ["Practice Questions", "Timed Assessment"]);
+  const examSections = getRevisionSectionBody(revision, ["Past Paper Questions", "Mark Scheme", "Exam Technique"]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -76,29 +91,30 @@ export function SubjectExperience({
 
         <Mark32PageHeader
           eyebrow="Subjects"
-          title={`${selectedSubject.name} — revision guidance and GCSE-preparation practice.`}
-          description="Pick a topic, read the key revision guidance, and step into GCSE-style practice without dropping into a dead end."
+          title={`${selectedSubject.name} is your revision home.`}
+          description="Continue the right topic, see your progress, move into practice, and step into mock-exam preparation without learning a new interface."
           aside={
             <div className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Next step</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Continue learning</p>
               <h2 className="mt-2 text-lg font-semibold tracking-tight text-stone-950">
-                Practice starts from your subject page
+                {selectedTopic.name}
               </h2>
               <p className="mt-3 text-sm leading-6 text-stone-600">
-                Review the topic, then jump into a timed checkpoint without leaving the subject flow.
+                {selectedTopic.summary}
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
-                <Link
-                  href="/assessments"
+                <button
+                  type="button"
+                  onClick={() => setSelectedTopicId(selectedTopic.topicId)}
                   className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
                 >
-                  Start practice
-                </Link>
+                  Open this topic
+                </button>
                 <Link
-                  href="/exams"
+                  href="/assessments"
                   className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
                 >
-                  Open exams
+                  Start timed practice
                 </Link>
               </div>
             </div>
@@ -127,6 +143,68 @@ export function SubjectExperience({
           ]}
         />
 
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Continue learning</p>
+            <h2 className="mt-3 text-lg font-semibold tracking-tight text-stone-950">{selectedTopic.name}</h2>
+            <p className="mt-2 text-sm leading-6 text-stone-600">{selectedTopic.summary}</p>
+            <button
+              type="button"
+              onClick={() => setSelectedTopicId(selectedTopic.topicId)}
+              className="mt-4 inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+            >
+              Continue topic
+            </button>
+          </article>
+
+          <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-700">Progress</p>
+            <h2 className="mt-3 text-lg font-semibold tracking-tight text-stone-950">
+              {selectedSubject.examReadinessScore} / 100 readiness
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-stone-600">
+              Next topic: {selectedSubject.nextTopicToRevise}
+            </p>
+            <Link
+              href="/progress"
+              className="mt-4 inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
+            >
+              Open progress
+            </Link>
+          </article>
+
+          <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-700">Topics</p>
+            <h2 className="mt-3 text-lg font-semibold tracking-tight text-stone-950">{topics.length} topics available</h2>
+            <p className="mt-2 text-sm leading-6 text-stone-600">
+              Learn through one familiar structure across every topic in this subject.
+            </p>
+            <p className="mt-4 text-sm font-semibold text-sky-900">Pick a topic below</p>
+          </article>
+
+          <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-rose-700">Mock exam</p>
+            <h2 className="mt-3 text-lg font-semibold tracking-tight text-stone-950">Step into exam mode when ready</h2>
+            <p className="mt-2 text-sm leading-6 text-stone-600">
+              Practice in topic flow first, then move into timed assessments and full papers with the same subject context.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link
+                href="/assessments"
+                className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+              >
+                Practice
+              </Link>
+              <Link
+                href="/exams"
+                className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
+              >
+                Mock exam
+              </Link>
+            </div>
+          </article>
+        </section>
+
         <section className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)_18rem]">
           <aside className="space-y-6">
             <section className="border border-stone-200 bg-white">
@@ -150,7 +228,7 @@ export function SubjectExperience({
                       }}
                       className={`flex w-full flex-col gap-2 px-4 py-4 text-left transition ${
                         isSelected
-                          ? "bg-violet-700 text-white"
+                          ? "bg-teal-800 text-white"
                           : "bg-white text-stone-900 hover:bg-stone-50"
                       }`}
                     >
@@ -159,14 +237,14 @@ export function SubjectExperience({
                         {isOnboardingSubject ? (
                           <span
                             className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
-                              isSelected ? "bg-violet-600 text-violet-50" : "bg-violet-50 text-violet-800"
+                              isSelected ? "bg-teal-700 text-teal-50" : "bg-teal-50 text-teal-800"
                             }`}
                           >
                             Your subject
                           </span>
                         ) : null}
                       </span>
-                      <p className={`text-sm ${isSelected ? "text-violet-50" : "text-stone-600"}`}>
+                      <p className={`text-sm ${isSelected ? "text-teal-50" : "text-stone-600"}`}>
                         {subject.description}
                       </p>
                     </button>
@@ -179,8 +257,12 @@ export function SubjectExperience({
           <section className="space-y-5">
             <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
               <div className="space-y-2 border-b border-stone-200 pb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">
                   Topic selection
+                </p>
+                <h2 className="text-2xl font-semibold tracking-tight text-stone-950">{selectedTopic.name}</h2>
+                <p className="text-sm leading-6 text-stone-600">
+                  One structure each time: learn the idea, look at a worked example, practise, then move into exam-style questions.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {topics.map((topic) => {
@@ -191,9 +273,9 @@ export function SubjectExperience({
                         key={topic.topicId}
                         type="button"
                         onClick={() => setSelectedTopicId(topic.topicId)}
-                        className={`border px-3 py-2 text-sm font-medium transition ${
+                        className={`rounded-2xl border px-3 py-2 text-sm font-medium transition ${
                           isSelected
-                            ? "border-violet-700 bg-violet-700 text-white"
+                            ? "border-teal-800 bg-teal-800 text-white"
                             : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >
@@ -204,13 +286,7 @@ export function SubjectExperience({
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
-                    {selectedTopic.name}
-                  </h2>
-                  <p className="text-sm leading-6 text-stone-600">{selectedTopic.summary}</p>
-                </div>
+                <div className="space-y-4">
 
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="border border-stone-200 bg-stone-50 p-4">
@@ -303,15 +379,66 @@ export function SubjectExperience({
                   </div>
                 </div>
 
-                <div className="grid gap-4 lg:grid-cols-2">
-                  {revision.sections.map((section) => (
-                    <div key={section.title} className="border border-stone-200 bg-white p-4">
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                        {section.title}
-                      </p>
-                      <p className="mt-3 text-sm leading-6 text-stone-600">{section.body}</p>
+                <div className="grid gap-4 xl:grid-cols-2">
+                  <div className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">1. Learn</p>
+                    <div className="mt-3 space-y-3">
+                      {learnSections.map((body, index) => (
+                        <p key={`learn-${index}`} className="text-sm leading-6 text-stone-600">
+                          {body}
+                        </p>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-700">2. Worked example</p>
+                    <div className="mt-3 space-y-3">
+                      {workedExampleSections.map((body, index) => (
+                        <p key={`worked-${index}`} className="text-sm leading-6 text-stone-600">
+                          {body}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-700">3. Practice</p>
+                    <div className="mt-3 space-y-3">
+                      {practiceSections.map((body, index) => (
+                        <p key={`practice-${index}`} className="text-sm leading-6 text-stone-600">
+                          {body}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <Link
+                        href="/assessments"
+                        className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+                      >
+                        Start practice
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-rose-700">4. Exam questions</p>
+                    <div className="mt-3 space-y-3">
+                      {examSections.map((body, index) => (
+                        <p key={`exam-${index}`} className="text-sm leading-6 text-stone-600">
+                          {body}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <Link
+                        href="/exams"
+                        className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
+                      >
+                        Open exams
+                      </Link>
+                    </div>
+                  </div>
                 </div>
 
               </div>
@@ -321,7 +448,7 @@ export function SubjectExperience({
           <aside className="space-y-6">
             <section className="space-y-3 border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                Quick practice
+                Quick check
               </h2>
               <p className="text-sm leading-6 text-stone-700">{quiz.prompt}</p>
               <div className="space-y-2">
@@ -353,12 +480,12 @@ export function SubjectExperience({
 
             <section className="space-y-3 border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                What this route proves
+                Next after this topic
               </h2>
               <ul className="space-y-2 text-sm leading-6 text-stone-600">
-                <li>Subjects can drive Year 10 and GCSE-preparation context through module services.</li>
-                <li>Revision structure is now visible in-product instead of only in docs.</li>
-                <li>Quick practice and planned visuals can sit beside revision without mixing separate content rules into the page.</li>
+                <li>Return to this topic if you need another pass through the explanation.</li>
+                <li>Use timed practice to check how well the idea is sticking.</li>
+                <li>Move into exam mode when you are ready to answer under pressure.</li>
               </ul>
             </section>
           </aside>

@@ -124,7 +124,7 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Build history → **`README.md` → Ordered Build Record**
 - UI / active plan → **`docs/ideas/FINAL-PHASE-PLAN.md`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
 - MVP usability plan → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`** · **`docs/LOCAL-LAUNCH-REHEARSAL.md`** · **`docs/MVP-OPERATOR-TRUTH.md`**
-- Active redesign track → Areas **1–9 complete** (30 June 2026); latest local Mark 3.2 mission-control + route-consistency refinement is verified and awaiting Fly deploy
+- Active redesign track → Areas **1–9 complete** (30 June 2026); operator-requested Mark 4 planning, route audit, Microsoft OIDC runtime restoration, and the current implementation passes on `/dashboard`, `/subjects`, `/`, and `/login` are now documented in `docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md` and `docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`
 - Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
 - **UI masterplan** → **`docs/design/UI-UX-MASTERPLAN.md`**
 - **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
@@ -145,10 +145,10 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Latest local pass refines Mission Control dashboard, five-item nav, subject-led practice entry, and route-wide stone/teal consistency; deploy pending. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 first build batch complete locally on dashboard, subjects, homepage, login, progress, and exams; onboarding includes UK-wide clickable school-finder links; merge and deploy pending. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | Merge `cursor/mark32-route-consistency` into `main`, then deploy (`npm run deploy:fly`); re-run `verify:local-launch-readiness` after meaningful changes. |
+| What is next? | Merge `cursor/mark32-route-consistency` into `main`, deploy (`npm run deploy:fly`), then continue Mark 4 Phase 6 onboarding dashboard-creation refinement. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 

@@ -89,6 +89,7 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
   const options = initialOverview.options;
   const selectedSubjectIds = profile.selectedSubjectIds ?? [];
   const learnerFirstName = firstName(displayName);
+  const activeSchoolNation = profile.schoolNation ?? "england";
 
   const qualificationLabel = useMemo(() => {
     const match = options.qualificationPaths.find((path) => path.id === profile.qualificationPath);
@@ -288,6 +289,9 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
       const activeSchoolSources = options.schoolSources.filter((source) =>
         (options.mvpSchoolNations ?? ["england"]).includes(source.nation),
       );
+      const selectedSchoolSource =
+        activeSchoolSources.find((source) => source.nation === activeSchoolNation) ??
+        activeSchoolSources[0];
 
       return (
         <div className="mx-auto max-w-xl space-y-4 rounded-2xl bg-white p-6 shadow-sm">
@@ -297,6 +301,39 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
               The Switch MVP is built for secondary learners studying GCSE or iGCSE. Primary and
               other school phases are planned for later.
             </p>
+          </div>
+          <div className="space-y-2">
+            <span className="block text-sm font-medium text-slate-700">Where is your school?</span>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {(options.mvpSchoolNations ?? ["england"]).map((nation) => {
+                const selected = activeSchoolNation === nation;
+                return (
+                  <button
+                    key={nation}
+                    type="button"
+                    onClick={() =>
+                      setProfile({
+                        ...profile,
+                        schoolPhase: "secondary",
+                        schoolNation: nation as LearnerOnboardingProfile["schoolNation"],
+                      })
+                    }
+                    className={`rounded-2xl border px-4 py-3 text-left transition ${
+                      selected
+                        ? "border-sky-400 bg-sky-50 ring-2 ring-sky-100"
+                        : "border-slate-200 bg-white hover:border-slate-300"
+                    }`}
+                  >
+                    <span className="block text-sm font-semibold text-slate-800">
+                      {SCHOOL_NATION_LABELS[nation] ?? nation}
+                    </span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">
+                      Use the official school finder for this nation.
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
           <label className="block space-y-2 text-sm">
             <span className="font-medium text-slate-700">Secondary school name</span>
@@ -313,41 +350,54 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
               placeholder="e.g. Riverside Secondary School"
             />
           </label>
-          <label className="block space-y-2 text-sm">
-            <span className="font-medium text-slate-700">Nation</span>
-            <select
-              className="w-full rounded-xl border border-slate-200 px-4 py-3"
-              value={profile.schoolNation ?? "england"}
-              onChange={(event) =>
-                setProfile({
-                  ...profile,
-                  schoolPhase: "secondary",
-                  schoolNation: event.target.value as LearnerOnboardingProfile["schoolNation"],
-                })
-              }
-            >
-              {(options.mvpSchoolNations ?? ["england"]).map((nation) => (
-                <option key={nation} value={nation}>
-                  {SCHOOL_NATION_LABELS[nation] ?? nation}
-                </option>
-              ))}
-            </select>
-          </label>
           <p className="text-xs leading-5 text-slate-500">
-            GCSE routes for Wales and Northern Ireland are coming later. MVP onboarding uses GCSE
-            (England) and iGCSE only.
+            School lookup now works across the UK. Qualification routes remain locked to GCSE
+            (England) and iGCSE during the current MVP.
           </p>
-          <div className="rounded-xl bg-sky-50 p-4 text-sm text-sky-950">
-            <p className="font-medium">Find your secondary school using official UK sources</p>
-            <ul className="mt-2 space-y-1">
-              {activeSchoolSources.map((source) => (
-                <li key={source.nation}>
-                  <a className="underline" href={source.href} target="_blank" rel="noreferrer">
-                    {source.label}
+          <div className="space-y-3 rounded-xl bg-sky-50 p-4 text-sm text-sky-950">
+            <p className="font-medium">Find and click your school using official UK sources</p>
+            {selectedSchoolSource ? (
+              <a
+                className="flex items-center justify-between rounded-2xl border border-sky-200 bg-white px-4 py-3 font-medium text-sky-900 shadow-sm transition hover:border-sky-300 hover:bg-sky-50"
+                href={selectedSchoolSource.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>
+                  Open {SCHOOL_NATION_LABELS[selectedSchoolSource.nation]} school finder
+                </span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            ) : null}
+            <div className="grid gap-2 sm:grid-cols-2">
+              {activeSchoolSources.map((source) => {
+                const selected = source.nation === activeSchoolNation;
+                return (
+                  <a
+                    key={source.nation}
+                    className={`rounded-2xl border px-4 py-3 transition ${
+                      selected
+                        ? "border-sky-300 bg-white shadow-sm"
+                        : "border-sky-100 bg-sky-50/60 hover:border-sky-200 hover:bg-white"
+                    }`}
+                    href={source.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span className="block text-sm font-semibold text-slate-800">
+                      {SCHOOL_NATION_LABELS[source.nation]}
+                    </span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">
+                      {source.label}
+                    </span>
                   </a>
-                </li>
-              ))}
-            </ul>
+                );
+              })}
+            </div>
+            <p className="text-xs leading-5 text-sky-900/80">
+              Search on the official school finder, click your school there, then return here and
+              enter the exact school name.
+            </p>
           </div>
         </div>
       );
@@ -476,7 +526,8 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
     },
     3: {
       title: "Which secondary school do you go to?",
-      subtitle: "Enter your secondary school and use the official England school lookup link if you need it.",
+      subtitle:
+        "Choose your UK nation, open the official school finder, click your school there, then enter the school name here.",
     },
     4: {
       title: (

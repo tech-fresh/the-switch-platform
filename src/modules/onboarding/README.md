@@ -32,11 +32,15 @@ Constants: `MVP_ONBOARDING_QUALIFICATION_PATHS`, `DEFERRED_ONBOARDING_QUALIFICAT
 ### School capture — secondary only
 
 - Step 3 asks for **secondary school name** (`schoolPhase: "secondary"` on profile).
-- **Nation picker (MVP):** England only — `MVP_ONBOARDING_SCHOOL_NATIONS`.
-- Official lookup: [Get Information about Schools](https://www.get-information-schools.service.gov.uk/) (England).
-- Wales and Northern Ireland school/qualification routes ship in a **later release** — UI shows a “Coming later” note; do not re-enable without updating this README and `HANDOFF.md`.
+- **Nation picker (MVP):** UK-wide — `England`, `Scotland`, `Wales`, `Northern Ireland`.
+- Official lookup links are clickable inside onboarding:
+  [Get Information about Schools](https://www.get-information-schools.service.gov.uk/),
+  [Find a school (Scotland)](https://education.gov.scot/parentzone/find-a-school/),
+  [My Local School (Wales)](https://mylocalschool.gov.wales/),
+  [EA school finder](https://www.eani.org.uk/).
+- Wales and Northern Ireland qualification routes still ship in a **later release** — do not re-enable those qualification choices without updating this README and `HANDOFF.md`.
 
-Scotland, Wales, and Northern Ireland **school source links** remain in `SCHOOL_SOURCES` for future use; only England is active in the MVP school step.
+School lookup is now UK-wide, but onboarding still relies on maintained official source-entry points rather than an unmanaged internal school database.
 
 ---
 
@@ -47,7 +51,7 @@ Scotland, Wales, and Northern Ireland **school source links** remain in `SCHOOL_
 | 0 | `account-type` | Student / parent / teacher |
 | 1 | `qualification` | GCSE (England) or iGCSE — Wales/NI deferred |
 | 2 | `profile` | Year group persona |
-| 3 | `school` | **Secondary school** name + England nation |
+| 3 | `school` | **Secondary school** name + UK nation picker + official finder links |
 | 4 | `subjects` | MVP catalog subjects for chosen route |
 | 5 | `support` | Accessibility, access arrangements, SEND signposting |
 | 6 | `guardian` | Optional guardian email |
@@ -70,6 +74,48 @@ Incomplete learners hitting `/dashboard` are redirected to `/onboarding`.
 
 Dashboard module reads onboarding via `getOnboardingOverview()` — **do not re-ask** the same setup on the dashboard UI.
 
+## Mark 4 planned refinement
+
+The operator has now asked that onboarding be treated more explicitly as the point where the learner creates their dashboard, similar to the setup framing used by Seneca-style revision products.
+
+This is now planned into the Mark 4 lane with the following dashboard-creation inputs:
+
+- School
+- Year Group
+- Qualification
+- Exam Board
+- Subjects
+- Accessibility
+- Goals
+- Dashboard Ready handoff
+
+Implementation constraints:
+
+1. Keep the onboarding flow at 8 steps.
+2. Map these inputs into the existing live onboarding architecture rather than creating a separate signup product.
+3. `Exam Board` is planned scope, but is **not yet** a fully active locked MVP onboarding field; it must only be introduced where it truthfully fits the current qualification, subject, and exam architecture.
+4. The final onboarding state should more clearly communicate that the student's dashboard is now ready.
+
+Current exam-board truth for this planned field:
+
+- Platform exam-board type supports:
+  `AQA`, `Edexcel`, `OCR`, `Eduqas`, `WJEC`, `CCEA`, `Cambridge IGCSE`, `Edexcel International GCSE`, `OxfordAQA International GCSE`
+- Current seeded exam content in the repo uses:
+  `AQA`, `Edexcel`, `Cambridge IGCSE`
+- Planned first-class onboarding board menu should be:
+  `AQA`, `Pearson Edexcel`, `OCR`, and `Eduqas` for GCSE;
+  `Edexcel International GCSE` and `Cambridge IGCSE` for iGCSE
+- `WJEC`, `CCEA`, and `OxfordAQA International GCSE` may remain modelled in types, but should stay out of the first-class onboarding menu until matching content pathways are intentionally live
+- Access-arrangements planning must keep the governance split explicit:
+  JCQ wording for national GCSE boards; Cambridge International wording for Cambridge IGCSE pathways
+
+Planned behavior:
+
+- the learner chooses an exam board during onboarding
+- that board choice helps determine which exam content and paper pathways they receive
+- that board choice also determines which access-arrangements guidance copy and support signposting they see
+- implementation must remain truthful to the exam content that actually exists in the live repo
+
 ---
 
 ## Agent rules
@@ -77,7 +123,7 @@ Dashboard module reads onboarding via `getOnboardingOverview()` — **do not re-
 1. Read `HANDOFF.md` first, then this README.
 2. Do not remove Wales/NI from types — they are **deferred**, not deleted.
 3. Do not add Wales/NI as selectable routes without operator sign-off and README/HANDOFF update.
-4. School step must keep **secondary school** wording and England-only nation picker during MVP.
+4. School step must keep **secondary school** wording and UK official school-finder links during MVP.
 5. Business logic stays in `service.ts`; `/onboarding` UI stays thin.
 
 ---

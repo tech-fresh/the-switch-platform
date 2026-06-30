@@ -12,11 +12,11 @@
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Priority A–D closed; Priority E deferred only. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 implementation is now live locally on `/dashboard`, `/subjects`, `/`, and `/login`, Microsoft OIDC is configured again in the active runtime, and onboarding now includes UK-wide clickable school-finder links; Priority A–D remain closed and Priority E is deferred only. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Deploy latest usability work to Fly; re-run `verify:local-launch-readiness` after meaningful changes. Priority **E** deferred only. |
+| What is next? | Merge `cursor/mark32-route-consistency` into `main`, deploy latest Mark 4 work to Fly, then continue Phase 6 onboarding dashboard-creation refinement. Priority **E** deferred only. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 
@@ -404,7 +404,7 @@ This repository follows the current The Switch Platform Mark 3.2 product spec. F
 - Guardian invite and age-or-consent checks must remain part of the onboarding architecture for school-age learners.
 - Guided sign-up should explicitly ask whether the learner wants accessibility support or access help as part of first-time setup.
 - Qualification and subject setup must cover both GCSE and iGCSE routes where supported by the platform.
-- **Onboarding MVP (2026-06-24):** selectable qualification routes are **GCSE (England)** and **iGCSE** only; **GCSE (Wales)** and **GCSE (Northern Ireland)** are deferred and signposted as coming later. School step captures **secondary school** name with **England-only** nation picker until those routes ship.
+- **Onboarding MVP (2026-06-24):** selectable qualification routes are **GCSE (England)** and **iGCSE** only; **GCSE (Wales)** and **GCSE (Northern Ireland)** are deferred and signposted as coming later. School step captures **secondary school** name with a **UK-wide nation picker** and official school-finder links, while qualification routing remains narrower than school lookup during MVP.
 - SEND-related support should flow through accessibility, access arrangements, and support content without forcing a complex SEND UI during MVP.
 - School selection should be driven by maintained UK school-source links rather than an unmanaged static list.
 - Onboarding choices must feed dashboard, planner, saved progress, and recommendation setup through shared API and module boundaries.
@@ -458,6 +458,86 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-30 Mark 4 progress and exams visual pass
+
+- `/progress`: added `Mark32ProgressAtAGlance` readiness summary, compressed subject cards via `Mark32SubjectProgressCard`, and clearer planner/subject hierarchy with visual progress bars instead of dense explanatory panels.
+- `/exams`: grouped papers by subject, added selection-path guidance (`Subject → Board → Tier → Duration → Start`), and introduced `Mark32ExamPaperCard` with distinct not-started, in-progress, and submitted states.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`167/167` passed). Added `tests/mark32-progress-exams.test.mjs`.
+
+### 2026-06-30 Mark 4 homepage and login implementation pass
+
+- Refreshed the signed-out product surfaces on `/` and `/login` to a calmer stone/teal visual system with cleaner hierarchy, tighter CTA styling, and more premium product framing.
+- Homepage hero and supporting sections now feel more intentional and less mixed with the older violet-heavy language while keeping the current MVP routes and marketing architecture intact.
+- `UnifiedSignInCard` now uses a stronger two-column layout with clearer post-sign-in expectations, calmer student/admin messaging, and polished provider actions while preserving the existing unified-auth route contract.
+- Local preview login now keeps Microsoft visibly present on `/login` even when the current runtime is missing Microsoft provider configuration, while the standard working provider login path remains active.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`164/164` passed).
+
+### 2026-06-30 Microsoft OIDC runtime configuration restored
+
+- Ran `scripts/provision-microsoft-oauth-live.sh` to restore the full `SWITCH_OIDC_MICROSOFT_*` block into `.env.local` and push matching secrets to Fly.
+- Microsoft live verification passed with `npm run verify:microsoft-oauth-live`.
+- Local `/login` now exposes a real `Continue with Microsoft` auth-start route instead of the guide-only fallback.
+
+### 2026-06-30 Mark 4 homepage and login second polish pass
+
+- Tightened the homepage into a more unified public product story by adding a real-data proof strip, refreshing the lower value cards into the stone/teal system, and adding a stronger final CTA section.
+- Clarified `/login` as the normal student entry route for both Google and Microsoft while keeping admin access present but secondary in the presentation.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`164/164` passed).
+
+### 2026-06-30 Onboarding exam-board planning added to source-of-truth docs
+
+- Added explicit README and onboarding-planning language that students should choose an exam board during onboarding and that this should define the exam content they receive.
+- Recorded the current board truth clearly:
+  platform exam-board type supports `AQA`, `Edexcel`, `OCR`, `Eduqas`, `WJEC`, `CCEA`, `Cambridge IGCSE`, `Edexcel International GCSE`, and `OxfordAQA International GCSE`.
+- Recorded the current seeded exam-content truth clearly:
+  repo exam content currently uses `AQA`, `Edexcel`, and `Cambridge IGCSE`.
+
+### 2026-06-30 Exam-board planning refined for onboarding and access arrangements
+
+- Clarified the planned first-class onboarding board groups:
+  `AQA`, `Pearson Edexcel`, `OCR`, and `Eduqas` for GCSE;
+  `Edexcel International GCSE` and `Cambridge IGCSE` for iGCSE.
+- Kept the broader architecture truth intact:
+  the platform type system can still model `WJEC`, `CCEA`, and `OxfordAQA International GCSE`, but those should not be presented as first-class onboarding choices until matching content pathways are intentionally shipped.
+- Added planning guidance that access-arrangements messaging should follow the correct governance split:
+  JCQ-aligned rules for the national GCSE boards and separate Cambridge International rules for Cambridge IGCSE pathways.
+
+### 2026-07-01 Onboarding school lookup made clickable across the UK
+
+- Updated the live onboarding school step so learners can choose `England`, `Scotland`, `Wales`, or `Northern Ireland` and open the official school finder for that nation directly inside setup.
+- Kept the onboarding architecture truthful:
+  school lookup is now UK-wide, but the selectable qualification paths remain `GCSE (England)` and `iGCSE` during the current MVP.
+- Replaced the older England-only school-step wording in the source-of-truth docs so product behavior and repo guidance match again.
+
+### 2026-06-30 Mark 4 progress and exams visual pass
+
+- Reworked `/progress` with `Mark32ProgressAtAGlance`, a tighter `Mark32SubjectProgressCard` grid, and clearer planner/readiness hierarchy.
+- Reworked the `/exams` lobby with subject grouping, explicit `Subject → Board → Tier → Duration → Start` guidance, and `Mark32ExamPaperCard` states for `Not started`, `In progress`, and `Submitted`.
+- Added `tests/mark32-progress-exams.test.mjs` to lock the new progress/exams route contract in place.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`167/167` passed).
+
+### 2026-06-30 Mark 4 UI/UX implementation plan
+
+- Added `docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md` to translate the attached Mark 4.0 UI/UX master guide into a repo-safe execution plan for the live website.
+- Reconciled conflicts with the current app: keep Fly deployment, OIDC auth, SQLite persistence, the top study rail, and the locked 8-step onboarding flow.
+- Converted the request into phased work: route audit, shared design-system hardening, dashboard pass, subject/topic flow, exams/progress refinement, marketing refinement, and accessibility/QA hardening.
+- Expanded the plan into a full implementation action document with architecture flow, route/file ownership, code workstreams, component system order, data/content requirements, and verification sequence.
+
+### 2026-06-30 Mark 4 route UX audit
+
+- Added `docs/ideas/MARK-4-ROUTE-UX-AUDIT.md` as the first execution artifact from the Mark 4 plan.
+- Audited `/dashboard`, `/subjects`, `/exams`, `/progress`, `/`, and `/login` against the Mark 4 goals: one clear purpose, one primary action, lower cognitive load, calmer hierarchy, and accessibility-minded flow.
+- Recorded ranked issues, first implementation moves, and the primary code files to touch for each route.
+- Ranked the first build batch: dashboard, subjects, homepage, login, progress, then exams.
+
+### 2026-06-30 Mark 4 dashboard and subjects first pass
+
+- Updated `src/components/dashboard-home.tsx` to reduce lower-page decision overload: the route now emphasizes one stronger secondary route path, groups alternative study routes more clearly, and makes recent saved work feel like support for momentum rather than a competing primary surface.
+- Updated `src/app/subjects/subject-experience.tsx` to turn subjects into a clearer revision home with four top-level lanes: `Continue learning`, `Progress`, `Topics`, and `Mock exam`.
+- Reframed topic study into a more consistent learning sequence: `Learn`, `Worked example`, `Practice`, and `Exam questions`, while keeping the existing subject/topic data and route behavior intact.
+- Removed internal-feeling product/dev copy (`What this route proves`) and replaced it with student-facing next-step guidance.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`164/164` passed).
 
 ### 2026-06-30 Mark 3.2 mission control dashboard and streamlined nav
 
@@ -1481,7 +1561,16 @@ flowchart LR
 
 **Onboarding alignment (23 June 2026 — appended):** Guided setup uses the **student-visible content catalog** as the source of truth. Learners currently select from **GCSE Mathematics**, **GCSE English Language**, **GCSE Combined Science** (biology, chemistry, and physics in one route), and **iGCSE Mathematics**. Separate Biology, Chemistry, and Physics subjects remain a later catalog expansion — Combined Science covers those sciences in the current MVP.
 
-**Onboarding MVP scope (24 June 2026 — appended):** Step 1 offers **GCSE (England)** and **iGCSE** only. **GCSE (Wales)** and **GCSE (Northern Ireland)** appear as **Coming later** — not selectable until a later release. Step 3 captures **secondary school name** with **England-only** nation picker and link to Get Information about Schools. Wales and Northern Ireland qualification and school flows are documented in `src/modules/onboarding/README.md`. Onboarding still feeds dashboard creation — do not shorten the 8-step flow.
+**Onboarding MVP scope (24 June 2026 — appended):** Step 1 offers **GCSE (England)** and **iGCSE** only. **GCSE (Wales)** and **GCSE (Northern Ireland)** appear as **Coming later** — not selectable until a later release. Step 3 captures **secondary school name** with a **UK-wide nation picker** and clickable official school-finder links for England, Scotland, Wales, and Northern Ireland. Qualification routes for Wales and Northern Ireland remain deferred; the school lookup expansion does not unlock those study paths. Onboarding still feeds dashboard creation — do not shorten the 8-step flow.
+
+**Onboarding exam-board planning (30 June 2026 — appended):** Students should choose their **exam board** as part of onboarding, and that choice should define the exam content they receive on their dashboard and exam routes. Repo truth today:
+
+- **Supported exam-board type in the platform architecture:** `AQA`, `Edexcel`, `OCR`, `Eduqas`, `WJEC`, `CCEA`, `Cambridge IGCSE`, `Edexcel International GCSE`, `OxfordAQA International GCSE`
+- **Current seeded exam-content coverage in the repo:** `AQA`, `Edexcel`, `Cambridge IGCSE`
+- **Planned first-class onboarding board menu:** `AQA`, `Pearson Edexcel`, `OCR`, and `Eduqas` for GCSE routes; `Edexcel International GCSE` and `Cambridge IGCSE` for iGCSE routes
+- **Access-arrangements planning rule:** national GCSE board flows should follow the JCQ-managed access-arrangements model; Cambridge IGCSE flows should be treated as Cambridge International guidance rather than silently merged into JCQ-only wording
+
+This means exam-board choice is now part of the planned onboarding/dashboard-creation direction, but implementation must stay truthful to the exam content that actually exists in the current live architecture.
 
 **Accessibility, Access Arrangements, and SEND (23 June 2026 — appended):** Step 5 of onboarding maps to MVP modules **Accessibility** (#7), **Access Arrangements foundation** (#9), and **Support Hub** signposting. Completing onboarding with these flags seeds the student access profile (focus/reduced distraction, read-aloud path) and shows dashboard support chips — no complex SEND UI during MVP.
 

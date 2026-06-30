@@ -67,13 +67,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `cursor/mark32-route-consistency`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-30 (doc sync — route consistency branch pushed to GitHub)
+- **Last updated:** 2026-06-30 (Mark 4 progress + exams visual pass)
 
 ### Active task
 
-- **Priority item #:** Mark 3.2 UI/UX refinement on live MVP surfaces
-- **Module:** Dashboard, shell navigation, motivation, subjects
-- **Status:** Mission-control and route-consistency refinements committed on `cursor/mark32-route-consistency`; merge to `main` and Fly deploy pending
+- **Priority item #:** Mark 4 UI/UX planning lane on top of the live Mark 3.2 MVP
+- **Module:** Cross-route product UX planning
+- **Status:** Mark 4 first build batch complete locally on `/dashboard`, `/subjects`, `/`, `/login`, `/progress`, and `/exams`; onboarding UK school lookup clickable; merge to `main` and Fly deploy pending
 - **Branch:** `cursor/mark32-route-consistency`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,17 @@ Update this section every session.
 
 ### What was just completed
 
+- **Mark 4 progress + exams visual pass (30 June 2026)** — reworked `/progress` with `Mark32ProgressAtAGlance`, compressed `Mark32SubjectProgressCard` grid, and clearer planner/subject hierarchy; reworked `/exams` lobby with subject grouping, selection-path guidance, and `Mark32ExamPaperCard` status badges (not started / in progress / submitted). Added `tests/mark32-progress-exams.test.mjs`. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`167/167`).
+- **Onboarding UK school lookup clickability pass (1 July 2026)** — upgraded step 3 of `/onboarding` from an England-only school-source note into a UK-wide clickable school-finder step. Learners can now choose `England`, `Scotland`, `Wales`, or `Northern Ireland`, open the official school finder for that nation directly from the onboarding UI, and then enter their school name. Qualification choices remain locked to `GCSE (England)` and `iGCSE` during the MVP. Added matching onboarding service coverage in `tests/onboarding-service.test.mjs`.
+- **Microsoft OIDC provider configured in runtime (30 June 2026)** — ran `scripts/provision-microsoft-oauth-live.sh`, updated the existing Azure app registration redirect/support settings, wrote real `SWITCH_OIDC_MICROSOFT_*` values into `.env.local`, pushed the same secrets to Fly, and passed `npm run verify:microsoft-oauth-live`. Verified that local `/login` now exposes a real `/api/auth/start?provider=microsoft` path instead of the guide-only fallback.
+- **Mark 4 onboarding dashboard-creation planning recorded (30 June 2026)** — added onboarding explicitly to the Mark 4 implementation plan and route audit. Planned the first-sign-up dashboard-creation setup around `School`, `Year Group`, `Qualification`, `Exam Board`, `Subjects`, `Accessibility`, `Goals`, and a clearer `Dashboard Ready` handoff, while keeping the live onboarding flow locked at 8 steps. Recorded the same constraint in `src/modules/onboarding/README.md`: `Exam Board` is planned scope, but not yet a fully active MVP onboarding field.
+- **Onboarding exam-board source-of-truth docs updated (30 June 2026)** — added explicit README and onboarding module wording that students should choose an exam board during onboarding and that this should define the exam content they receive. Recorded the current truth clearly: platform exam-board type supports `AQA`, `Edexcel`, `OCR`, `Eduqas`, `WJEC`, `CCEA`, `Cambridge IGCSE`, `Edexcel International GCSE`, and `OxfordAQA International GCSE`, while current seeded exam content in the repo uses `AQA`, `Edexcel`, and `Cambridge IGCSE`.
+- **Exam-board planning refined for onboarding + access arrangements (30 June 2026)** — tightened the source-of-truth docs so they now distinguish the broader architecture type from the planned first-class onboarding board menu. Recorded the intended learner-facing board set as `AQA`, `Pearson Edexcel`, `OCR`, and `Eduqas` for GCSE plus `Edexcel International GCSE` and `Cambridge IGCSE` for iGCSE, while keeping `WJEC`, `CCEA`, and `OxfordAQA International GCSE` as type-level architecture only until matching content pathways exist. Also recorded the access-arrangements planning split: JCQ wording for national GCSE boards and Cambridge International wording for Cambridge IGCSE pathways.
+- **Mark 4 homepage + login second polish pass (30 June 2026)** — unified more of the homepage below-the-fold story into the stone/teal system, added a compact proof strip tied to real progress data, tightened the lower public-value cards, and added a stronger final homepage CTA section. On `/login`, clarified that Google and Microsoft are both part of the normal student sign-in path and made the provider-choice section more explicit without changing the auth flow. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`164/164`).
+- **Mark 4 homepage + login implementation pass (30 June 2026)** — upgraded the signed-out product surfaces to feel calmer and more premium without changing MVP scope. The homepage now uses a cleaner stone/teal visual system, tighter hero hierarchy, clearer trust/value cards, and more intentional CTA styling. The login route now uses a stronger two-column sign-in shell with calmer copy, clearer post-sign-in expectations, and polished provider actions while preserving the existing unified auth flow, signed-out route markers, and explicit Microsoft sign-in visibility even when the local preview runtime is missing Microsoft provider config. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`164/164`).
+- **Mark 4 dashboard + subjects first implementation pass (30 June 2026)** — reduced dashboard decision overload by consolidating the lower-page routes into a clearer secondary-action area, softened the recent-work / support grouping, and reworked `/subjects` into a stronger revision-home structure with four top-level lanes (`Continue learning`, `Progress`, `Topics`, `Mock exam`) plus a clearer topic sequence (`Learn`, `Worked example`, `Practice`, `Exam questions`). Removed the old internal-feeling “What this route proves” section and replaced it with student-facing next-step guidance. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`164/164`).
+- **Mark 4 route UX audit created (30 June 2026)** — completed the first execution step from the Mark 4 plan in `docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`. Audited `/dashboard`, `/subjects`, `/exams`, `/progress`, `/`, and `/login`; recorded route purpose, primary action, UX issues, first implementation moves, and the exact files each route pass should touch. Ranked first build batch: dashboard, subjects, homepage, login, progress, then exams.
+- **Mark 4 implementation plan created (30 June 2026)** — translated the attached `The Switch Platform UI/UX Master Guide (MVP) — Mark 4.0` into a repo-safe execution plan in `docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`. Reconciled conflicts with the live app: keep Fly/OIDC/SQLite, keep the top study rail, keep 8-step onboarding, and treat `Sign Up`, email-password auth, and non-MVP public pages as adapted or deferred rather than silently implementing them. Expanded the plan with architecture flow, route/file ownership, code workstreams, component hardening order, data/content needs, and verification cadence.
 - **Mark 3.2 route consistency pass (30 June 2026)** — moved shared Mark 3.2 tokens fully onto the Study Atelier stone/teal system, cleaned remaining violet-heavy student-route surfaces on `/progress`, `/saved-progress`, `/recommendations`, `/results`, `/account`, `/exams`, and `/accessibility`, and aligned supporting components such as the weekly planner, Power Grid journey, planner prompt, SEND rail, and subject catalog cards. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`164/164`).
 - **Mark 3.2 mission control dashboard + streamlined navigation (30 June 2026)** — reshaped `StudentAppShell` into a light top-rail shell with the five-item MVP nav (`Dashboard`, `Subjects`, `Exams`, `Progress`, `Profile`), upgraded dashboard motivation into a curated attributed quote card, shifted dashboard emphasis to Mission Control / one-next-step guidance, and moved the practice entry point into `/subjects`. Added `tests/mark32-navigation.test.mjs`; full `npm run lint`, `npm run type-check`, and `npm run test` green (`164/164`).
 - **MVP usability Area 8 docs and operator truth (30 June 2026)** — added `docs/MVP-OPERATOR-TRUTH.md` (three-lane map: Priority A–D truth, usability Areas 1–9, deferred Priority E), `tests/mvp-operator-truth.test.mjs`, synced HANDOFF/AGENTS/README/PLATFORM-GUIDE/FINAL-PHASE-PLAN/ideas index; fixed Area 2 header in usability plan. Area 8 **4/4 complete**. **Full usability plan closed.**
@@ -142,8 +153,9 @@ Update this section every session.
 
 ### What is next
 
-- **Deploy the latest Mark 3.2 mission-control pass to production:** `fly auth login` → `npm run deploy:fly`
-- Re-run `npm run verify:local-launch-readiness` before or after deploy if the operator wants a fresh full-chain rehearsal on this UI pass
+- **Merge `cursor/mark32-route-consistency` into `main` and deploy:** `npm run deploy:fly`
+- **Continue Mark 4 Phase 6** — onboarding dashboard-creation refinement (`/onboarding` copy and exam-board planning)
+- Re-run `npm run verify:local-launch-readiness` before or after deploy
 - Priority **E** deferred scope only — operator gate required to reopen
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
@@ -163,7 +175,13 @@ Update this section every session.
 
 ### Verification last run
 
-Fresh rerun on 30 June 2026 (route consistency pass):
+Fresh rerun on 30 June 2026 (Mark 4 progress + exams pass):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (167 tests)
+
+Earlier rerun on 1 July 2026 (onboarding UK school lookup pass):
 
 - [x] `npm run lint`
 - [x] `npm run type-check`
@@ -259,7 +277,7 @@ flowchart TD
 | Step | Learner sees | MVP rule |
 |------|--------------|----------|
 | 1 Qualification | GCSE (England) or iGCSE | Wales + Northern Ireland = **coming later** (visible, not selectable) |
-| 3 School | Secondary school name | **England only** nation picker + official England school link |
+| 3 School | Secondary school name | **UK-wide** nation picker + official school-finder links |
 | 8 Consent | Open my dashboard | Incomplete users cannot reach `/dashboard` until finished |
 
 Full detail: `src/modules/onboarding/README.md` · **Active plan:** `docs/ideas/FINAL-PHASE-PLAN.md`
@@ -860,6 +878,34 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-07-01 — Codex — Onboarding UK school lookup clickability pass
+
+- Done: upgraded onboarding step 3 from an England-only school note to a UK-wide clickable school-finder step with nation cards and official links for England, Scotland, Wales, and Northern Ireland
+- Done: kept qualification routing truthful — the selectable study paths remain GCSE (England) and iGCSE even though school lookup is now UK-wide
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (164/164 passed)
+- Next: continue Mark 4 ranked batch on `/progress` and `/exams`, then deploy to Fly
+
+### 2026-06-30 — Codex — Mark 4 homepage + login implementation pass
+
+- Done: refreshed `/` and `/login` to a calmer stone/teal product surface with stronger hierarchy, cleaner CTAs, and a more premium unified sign-in shell
+- Done: preserved the signed-out login route contract while upgrading the layout, including the unified auth markers used by tests and a visible Microsoft sign-in path on local preview
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (164/164 passed)
+- Next: continue Mark 4 ranked batch on `/progress` and `/exams`, then deploy to Fly
+
+### 2026-06-30 — Codex — Microsoft provider env configured
+
+- Done: ran `scripts/provision-microsoft-oauth-live.sh`
+- Done: updated `.env.local` with the Microsoft OIDC block and pushed matching secrets to Fly
+- Done: `npm run verify:microsoft-oauth-live` passed; localhost `/login` now exposes a real Microsoft auth-start link
+- Next: continue Mark 4 ranked batch on `/progress` and `/exams`, then deploy to Fly
+
+### 2026-06-30 — Codex — Mark 4 homepage + login second polish pass
+
+- Done: added a real-data proof strip and stronger closing CTA to `/`, and removed more of the mixed legacy tone language below the hero
+- Done: clarified `/login` as a normal Google/Microsoft student entry path while keeping admin access secondary and auth logic unchanged
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (164/164 passed)
+- Next: continue Mark 4 ranked batch on `/progress` and `/exams`, then deploy to Fly
 
 ### 2026-06-29 — Cursor — Mark 3.2 full-route visual audit (Area 9.9 complete)
 

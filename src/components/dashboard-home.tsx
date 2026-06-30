@@ -42,8 +42,9 @@ function getToneClasses(tone: DashboardRouteCard["tone"]): string {
 }
 
 function getMarketingToneClasses(tone: "violet" | "amber" | "emerald"): string {
-  if (tone === "violet") return "border-violet-300 bg-violet-50 text-violet-950";
-  return getToneClasses(tone);
+  if (tone === "violet") return "border-teal-200 bg-teal-50 text-teal-950";
+  if (tone === "amber") return "border-amber-200 bg-amber-50 text-amber-950";
+  return "border-emerald-200 bg-emerald-50 text-emerald-950";
 }
 
 function pickStudyRouteCards(cards: DashboardRouteCard[], limit = 3): DashboardRouteCard[] {
@@ -93,51 +94,114 @@ function StreamlinedRouteCards({ cards }: { cards: DashboardRouteCard[] }) {
   );
 }
 
+function CompactRecentSessions({ sessions }: { sessions: DashboardSessionCard[] }) {
+  if (!sessions.length) {
+    return (
+      <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+        <p className="text-sm leading-6 text-stone-600">No saved sessions yet.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link
+            href="/assessments"
+            className="rounded-2xl bg-teal-800 px-4 py-2 text-sm font-bold text-white hover:bg-teal-900"
+          >
+            Start practice
+          </Link>
+          <Link
+            href="/exams"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:border-sky-300 hover:bg-sky-50"
+          >
+            Open exams
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {sessions.map((session) => (
+        <Link
+          key={session.sessionId}
+          href={session.href}
+          className="block rounded-2xl border border-stone-200 bg-white p-4 hover:border-teal-300 hover:shadow-sm"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-sm font-semibold text-stone-950">{session.title}</h3>
+            <span className="text-xs font-semibold text-stone-500">{session.completionPercentage}%</span>
+          </div>
+          <p className="mt-2 text-sm leading-6 text-stone-600">{session.subtitle}</p>
+          <p className="mt-2 text-sm font-semibold text-teal-900">{session.actionLabel}</p>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeData; isAuthenticated: boolean }) {
+  const studyDaysThisWeek = getStudyDaysThisWeek(data.weeklyPlanner);
+
   return (
     <>
-      <section className="overflow-hidden rounded-3xl border border-violet-100 bg-white shadow-xl shadow-violet-100/50">
-        <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(75,63,232,0.12),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.1),_transparent_30%),linear-gradient(180deg,_#ffffff,_#f7f8ff)]">
+      <section className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-sm">
+        <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(13,148,136,0.12),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.1),_transparent_30%),linear-gradient(180deg,_#ffffff,_#f5f5f4)]">
           <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-center lg:gap-12">
             <div className="max-w-2xl">
               <div className="flex items-center gap-3">
-                <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 text-2xl text-white shadow-lg">
+                <span className="grid size-12 place-items-center rounded-2xl bg-teal-800 text-2xl text-white shadow-sm">
                   {MOCK_IDEA_BRAND.logoGlyph}
                 </span>
                 <div>
-                  <p className="text-xs font-black tracking-[0.2em] text-violet-700">MVP · MARK 3.2</p>
-                  <p className="text-sm font-bold text-violet-950">{MOCK_IDEA_BRAND.shortName}</p>
+                  <p className="text-xs font-black tracking-[0.2em] text-teal-700">MARK 4 DIRECTION</p>
+                  <p className="text-sm font-bold text-stone-950">{MOCK_IDEA_BRAND.shortName}</p>
                 </div>
               </div>
               <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-                {MOCK_IDEA_BRAND.subtitle}
+                GCSE revision with a clearer next step on every screen.
               </h1>
               <p className="mt-4 max-w-xl text-base leading-8 text-slate-600">
-                {MOCK_IDEA_BRAND.tagline} Smart practice, clear progress, and inclusive learning for GCSE students.
+                Smart practice, clear progress, and inclusive learning for GCSE students who need the interface to feel calm, focused, and easy to trust.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href={isAuthenticated ? "/dashboard" : "/login?reauth=1"}
-                  className="rounded-2xl bg-violet-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-violet-300/50 hover:bg-violet-700"
+                  className="rounded-2xl bg-teal-800 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-teal-900"
                 >
                   {isAuthenticated ? "Open dashboard" : "Get started free"}
                 </Link>
                 <Link
                   href="#features"
-                  className="rounded-2xl border border-violet-200 bg-white px-6 py-3 text-sm font-bold text-violet-800 hover:bg-violet-50"
+                  className="rounded-2xl border border-stone-300 bg-white px-6 py-3 text-sm font-bold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
                 >
                   See how it works
                 </Link>
               </div>
 
-              <article className="mt-8 rounded-2xl border border-violet-200 bg-violet-600 p-5 text-white shadow-lg">
-                <p className="text-sm font-black">{MOCK_IDEA_BRAND.logoGlyph} Our Mission</p>
-                <p className="mt-2 text-sm leading-7 text-violet-100">
-                  Empower every student to unlock their potential through smart practice, clear progress and
-                  inclusive learning experiences.
-                </p>
-              </article>
+              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                {[
+                  { label: "Study streak", value: `${studyDaysThisWeek} study day${studyDaysThisWeek === 1 ? "" : "s"} this week` },
+                  { label: "Exam readiness", value: `${data.summary.examReadinessScore}% current readiness` },
+                  { label: "Progress system", value: `Power Grid level ${data.summary.overallLevel}` },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-2xl border border-stone-200 bg-stone-50/90 px-4 py-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-500">{item.label}</p>
+                    <p className="mt-2 text-sm font-semibold text-stone-950">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                {[
+                  { title: "Know what to do next", detail: "One clear action instead of a crowded dashboard." },
+                  { title: "Build confidence steadily", detail: "Revision, practice, and exams stay connected." },
+                  { title: "Study with support built in", detail: "Accessibility and SEND choices stay visible when needed." },
+                ].map((item) => (
+                  <article key={item.title} className="rounded-2xl border border-stone-200 bg-white/80 p-4 shadow-sm">
+                    <h2 className="text-sm font-semibold text-stone-950">{item.title}</h2>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
+                  </article>
+                ))}
+              </div>
             </div>
 
             <div className="mt-10 lg:mt-0">
@@ -146,12 +210,12 @@ function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeDa
           </div>
         </div>
 
-        <div className="border-t border-violet-100 bg-violet-50/50">
+        <div className="border-t border-stone-200 bg-stone-50/80">
           <div className="mx-auto grid max-w-7xl gap-4 px-4 py-10 sm:px-6 md:grid-cols-3">
             {[
-              { eyebrow: "For students", title: "Know what to do next", detail: "One dashboard action and direct links into exams and practice.", tone: "violet" as const },
-              { eyebrow: "For parents", title: "See a safer learning path", detail: "Support and access visible without overcrowding the interface.", tone: "amber" as const },
-              { eyebrow: "For schools", title: "Launch with confidence", detail: "Clear structure makes the platform easier to explain and navigate.", tone: "emerald" as const },
+              { eyebrow: "For students", title: "One calm revision home", detail: "Learning, practice, and full exams now feel connected instead of scattered.", tone: "violet" as const },
+              { eyebrow: "For parents", title: "Support stays visible", detail: "Accessibility and SEND-aware routes are easier to find without adding clutter.", tone: "amber" as const },
+              { eyebrow: "For schools", title: "A clearer product story", detail: "The platform is easier to explain, demo, and trust from the first screen.", tone: "emerald" as const },
             ].map((item) => (
               <article key={item.title} className={`rounded-2xl border p-5 shadow-sm ${getMarketingToneClasses(item.tone)}`}>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.24em] opacity-80">{item.eyebrow}</p>
@@ -174,8 +238,39 @@ function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeDa
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Core study routes</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Jump straight into study</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-600">
+            Start with the route that matches your next task, then let the platform keep progress, planning, and support connected behind the scenes.
+          </p>
         </div>
         <StreamlinedRouteCards cards={pickStudyRouteCards(data.routeCards)} />
+      </section>
+
+      <section className="rounded-[2rem] border border-stone-200 bg-white px-6 py-8 shadow-sm sm:px-8">
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Ready to start</p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">
+              Start with one sign-in and go straight to the next useful screen.
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-stone-600">
+              The Switch keeps revision, exams, support, and progress in one calmer flow so students do not need to work out the product before they can start learning.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href={isAuthenticated ? "/dashboard" : "/login?reauth=1"}
+              className="rounded-2xl bg-teal-800 px-5 py-3 text-sm font-bold text-white hover:bg-teal-900"
+            >
+              {isAuthenticated ? "Open dashboard" : "Start learning free"}
+            </Link>
+            <Link
+              href="/how-it-works"
+              className="rounded-2xl border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
+            >
+              Explore the platform
+            </Link>
+          </div>
+        </div>
       </section>
     </>
   );
@@ -185,6 +280,8 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
   const topRoutes = pickStudyRouteCards(data.routeCards);
   const topFocus = data.focusCards.slice(0, 3);
   const recentSessions = pickRecentSessions(data);
+  const primaryRoute = topRoutes[0];
+  const supportRoutes = topRoutes.slice(1);
 
   return (
     <div className="space-y-8">
@@ -231,14 +328,6 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
         </div>
       </article>
 
-      <section className="space-y-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Quick routes</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">Open subjects, exams, or planning</h2>
-        </div>
-        <StreamlinedRouteCards cards={topRoutes} />
-      </section>
-
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <PlannerPromptCard initialDismissed={data.plannerPromptDismissed} />
 
@@ -267,54 +356,55 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
         </article>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <article className="rounded-3xl border border-violet-100 bg-white p-6 shadow-sm">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700">Resume recent work</p>
-            <Link href="/saved-progress" className="text-sm font-bold text-violet-700 hover:opacity-80">
-              View all
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <article className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">If you need something else</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-950">Keep the next move simple</h2>
+          <p className="mt-3 text-sm leading-7 text-stone-600">
+            Use one route for your main study step, then come back here if you need planning, saved work, or a different study mode.
+          </p>
+          {primaryRoute ? (
+            <Link
+              href={primaryRoute.href}
+              className="mt-5 block rounded-3xl border border-teal-200 bg-teal-50 p-5 hover:border-teal-300 hover:bg-teal-100/70"
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-teal-700">{primaryRoute.eyebrow}</p>
+              <h3 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">{primaryRoute.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-stone-700">{primaryRoute.description}</p>
+              <p className="mt-3 text-sm font-semibold text-teal-900">{primaryRoute.stat}</p>
             </Link>
-          </div>
-          <div className="mt-4 space-y-3">
-            {recentSessions.length ? (
-              recentSessions.map((session) => (
-                <Link
-                  key={session.sessionId}
-                  href={session.href}
-                  className="block rounded-2xl border border-violet-100 bg-white p-4 hover:border-violet-300 hover:shadow-sm"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="text-sm font-semibold text-stone-950">{session.title}</h3>
-                    <span className="text-xs font-semibold text-stone-500">{session.completionPercentage}%</span>
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-stone-600">{session.subtitle}</p>
-                  <p className="mt-2 text-sm font-semibold text-violet-700">{session.actionLabel}</p>
-                </Link>
-              ))
-            ) : (
-              <div className="space-y-3">
-                <p className="text-sm leading-6 text-stone-600">No saved sessions yet.</p>
-                <div className="flex flex-wrap gap-2">
-                  <Link
-                    href="/assessments"
-                    className="rounded-2xl bg-violet-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:bg-violet-700"
-                  >
-                    Start practice
-                  </Link>
-                  <Link
-                    href="/exams"
-                    className="border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:border-violet-300"
-                  >
-                    Open exams
-                  </Link>
-                </div>
+          ) : null}
+          {supportRoutes.length ? (
+            <div className="mt-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">Other routes</p>
+              <div className="mt-3">
+                <StreamlinedRouteCards cards={supportRoutes} />
               </div>
-            )}
-          </div>
+            </div>
+          ) : null}
         </article>
 
-        <SendSupportRail summary={data.supportSnapshotSummary} chips={data.supportPreferenceChips} />
-      </div>
+        <div className="space-y-6">
+          <article className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700">Resume recent work</p>
+                <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">Return without losing momentum</h2>
+              </div>
+              <Link href="/saved-progress" className="text-sm font-semibold text-teal-800 hover:opacity-80">
+                View all
+              </Link>
+            </div>
+            <div className="mt-4">
+              <CompactRecentSessions sessions={recentSessions} />
+            </div>
+          </article>
+
+          <div>
+            <SendSupportRail summary={data.supportSnapshotSummary} chips={data.supportPreferenceChips} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -341,7 +431,7 @@ export function DashboardHome({ data, mode, isAuthenticated = false, displayName
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f8ff] text-slate-950">
+    <main className="min-h-screen bg-stone-100 text-slate-950">
       <MarketingSiteHeader isAuthenticated={isAuthenticated} />
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-10 px-4 py-6 sm:px-6 lg:px-8">
         <HomeMarketingContent data={data} isAuthenticated={isAuthenticated} />

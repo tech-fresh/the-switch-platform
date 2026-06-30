@@ -140,9 +140,14 @@ export function buildMockPreviewDashboardData(): DashboardHomeData {
     ],
     dailyMotivation: {
       quote: "One focused step today can make tomorrow feel much lighter.",
+      speaker: "Marie Curie",
+      region: "Poland and France · Europe",
+      occupation: "Physicist and chemist",
+      theme: "Understanding",
       reflection: "The streamlined version should make the next study step feel obvious.",
       focusLabel: "Lower tomorrow's pressure",
       colour: "teal",
+      learnMoreHref: "/subjects",
     },
     routeCards: [
       {

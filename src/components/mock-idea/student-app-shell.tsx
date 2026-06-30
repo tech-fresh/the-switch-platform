@@ -42,96 +42,67 @@ export function StudentAppShell({
   const levelProgress = Math.max(8, Math.min(100, Math.round((levelIndex / POWER_GRID_LEVELS.length) * 100)));
 
   return (
-    <div className="min-h-screen bg-[#f7f8ff] text-slate-950">
-      <div className="grid min-h-screen lg:grid-cols-[18rem_minmax(0,1fr)]">
-        <aside className="relative hidden overflow-hidden bg-[#12005f] text-white lg:flex lg:flex-col">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(124,58,237,0.55),transparent_30%),radial-gradient(circle_at_80%_80%,rgba(236,72,153,0.45),transparent_32%)]" />
-          <div className="relative z-10 flex h-full flex-col p-5">
-            <Link href="/dashboard" className="flex items-center gap-3">
-              <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 text-2xl shadow-xl">
-                {MOCK_IDEA_BRAND.logoGlyph}
-              </span>
-              <span>
-                <span className="block text-sm font-black tracking-tight">THE SWITCH</span>
-                <span className="block text-[10px] font-semibold tracking-[0.32em] text-violet-100">PLATFORM</span>
-              </span>
-            </Link>
-
-            <nav className="mt-8 space-y-1" aria-label="Student navigation">
-              {STUDENT_NAV_ITEMS.map((item) => {
-                const active = isNavItemActive(pathname, item);
-                const key = "navKey" in item ? item.navKey : `${item.href}-${item.label}`;
-
-                return (
-                  <Link
-                    key={key}
-                    href={item.href}
-                    className={`flex items-center gap-3 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${navAccentClasses(item.accent, active)}`}
-                  >
-                    <span className="text-base">{item.short}</span>
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            <section className="mt-auto rounded-3xl border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur">
-              <div className="flex items-center gap-3">
-                <Link
-                  href="/account"
-                  className="grid size-12 place-items-center rounded-full bg-violet-500 text-lg font-bold text-white"
-                  aria-label={`${firstName} account`}
-                >
-                  {firstName.slice(0, 1).toUpperCase()}
+    <div className="min-h-screen bg-stone-100 text-slate-950">
+      <div className="min-h-screen">
+        <header className="sticky top-0 z-20 border-b border-stone-200 bg-stone-100/95 backdrop-blur">
+          <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <Link href="/dashboard" className="flex items-center gap-3">
+                  <span className="grid size-12 place-items-center rounded-2xl bg-teal-800 text-2xl text-white shadow-sm">
+                    {MOCK_IDEA_BRAND.logoGlyph}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-black tracking-tight text-stone-950">THE SWITCH</span>
+                    <span className="block text-[10px] font-semibold tracking-[0.32em] text-stone-500">
+                      PLATFORM
+                    </span>
+                  </span>
                 </Link>
-                <div>
-                  <p className="font-black">{firstName}</p>
-                  <p className="text-xs text-violet-100">
-                    {MOCK_IDEA_BRAND.logoGlyph} {powerGridLevel}
+                <div className="hidden h-10 w-px bg-stone-300 lg:block" />
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
+                    Mission Control
+                  </p>
+                  <h1 className="truncate text-xl font-semibold tracking-tight text-stone-950 sm:text-2xl">
+                    {greeting}, {firstName}
+                  </h1>
+                  <p className="mt-1 text-sm text-stone-600">
+                    {studyDaysThisWeek && studyDaysThisWeek > 0 ? (
+                      <>
+                        {studyDaysThisWeek} study day{studyDaysThisWeek === 1 ? "" : "s"} this week. Keep the next
+                        step simple.
+                      </>
+                    ) : (
+                      "One clear next step, your saved work, and your support tools in one place."
+                    )}
                   </p>
                 </div>
               </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/20">
-                <div className="h-full rounded-full bg-yellow-300" style={{ width: `${levelProgress}%` }} />
-              </div>
-              <p className="mt-2 text-xs text-violet-100">
-                Level {levelIndex} of {POWER_GRID_LEVELS.length}
-                {studyDaysThisWeek && studyDaysThisWeek > 0 ? ` · ${studyDaysThisWeek} study days` : ""}
-              </p>
-            </section>
-          </div>
-        </aside>
 
-        <div className="flex min-w-0 flex-col">
-          <header className="sticky top-0 z-20 border-b border-violet-100 bg-white/90 px-4 py-4 backdrop-blur sm:px-6 lg:static lg:border-none lg:bg-transparent lg:px-8 lg:pt-6 lg:backdrop-blur-none">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-violet-600 lg:hidden">{MOCK_IDEA_BRAND.logoGlyph} The Switch Platform</p>
-                <h1 className="text-2xl font-black tracking-tight sm:text-3xl">
-                  {greeting}, {firstName}! {MOCK_IDEA_BRAND.logoGlyph}
-                </h1>
-                <p className="mt-1 text-sm text-slate-600">
-                  {studyDaysThisWeek && studyDaysThisWeek > 0 ? (
-                    <>
-                      You&apos;re on a <strong className="text-violet-700">{studyDaysThisWeek} day study streak</strong>.
-                      Keep going!
-                    </>
-                  ) : (
-                    "Your study home — saved work, next steps, and access tools."
-                  )}
-                </p>
-              </div>
               <div className="flex items-center gap-2">
                 <Link
+                  href="/support"
+                  className="hidden rounded-2xl border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-700 hover:border-sky-300 hover:text-sky-900 sm:inline-flex"
+                >
+                  Support
+                </Link>
+                <Link
                   href="/accessibility"
-                  className="hidden rounded-2xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-800 sm:inline-flex"
+                  className="hidden rounded-2xl border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-700 hover:border-teal-300 hover:text-teal-900 sm:inline-flex"
                 >
                   Access settings
                 </Link>
+                <div className="hidden rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-right sm:block">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-800">Power Grid</p>
+                  <p className="text-sm font-semibold text-stone-950">
+                    Level {levelIndex} of {POWER_GRID_LEVELS.length}
+                  </p>
+                </div>
                 {isAuthenticated ? (
                   <Link
                     href="/account"
-                    className="inline-flex size-10 items-center justify-center rounded-2xl bg-violet-600 text-sm font-bold text-white shadow-lg"
+                    className="inline-flex size-10 items-center justify-center rounded-2xl bg-teal-800 text-sm font-bold text-white shadow-sm"
                     aria-label={`${firstName} account`}
                   >
                     {firstName.slice(0, 1).toUpperCase()}
@@ -139,39 +110,73 @@ export function StudentAppShell({
                 ) : (
                   <Link
                     href="/login?reauth=1"
-                    className="rounded-2xl bg-violet-600 px-4 py-2 text-sm font-bold text-white shadow-lg hover:bg-violet-700"
+                    className="rounded-2xl bg-teal-800 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-teal-900"
                   >
                     Sign in
                   </Link>
                 )}
               </div>
             </div>
-          </header>
 
-          <main className="min-w-0 flex-1 px-4 pb-24 pt-4 sm:px-6 lg:px-8 lg:pb-8">{children}</main>
-        </div>
+            <div className="hidden items-center justify-between gap-4 lg:flex">
+              <nav className="flex flex-wrap items-center gap-2" aria-label="Student navigation">
+                {STUDENT_NAV_ITEMS.map((item) => {
+                  const active = isNavItemActive(pathname, item);
+                  const key = `${item.href}-${item.label}`;
+
+                  return (
+                    <Link
+                      key={key}
+                      href={item.href}
+                      className={`inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold transition ${navAccentClasses(item.accent, active)}`}
+                    >
+                      <span className="text-base" aria-hidden="true">
+                        {item.short}
+                      </span>
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-2 shadow-sm">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    Current level
+                  </p>
+                  <p className="truncate text-sm font-semibold text-stone-950">{powerGridLevel}</p>
+                </div>
+                <div className="h-2 w-28 overflow-hidden rounded-full bg-stone-200">
+                  <div className="h-full rounded-full bg-amber-400" style={{ width: `${levelProgress}%` }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="mx-auto min-w-0 max-w-7xl px-4 pb-24 pt-6 sm:px-6 lg:px-8 lg:pb-10">{children}</main>
       </div>
 
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-violet-200 bg-white/95 px-2 py-2 backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-stone-200 bg-white/95 px-2 py-2 backdrop-blur lg:hidden"
         aria-label="Mobile study dock"
       >
         <div className="mx-auto flex max-w-lg justify-between gap-1">
           {MOBILE_NAV_ITEMS.map((item) => {
             const active = isNavItemActive(pathname, item);
-            const key = "navKey" in item ? item.navKey : `${item.href}-${item.label}`;
+            const key = `${item.href}-${item.label}`;
 
             return (
               <Link
                 key={key}
                 href={item.href}
                 className={`flex flex-1 flex-col items-center gap-0.5 px-1 py-1 text-[9px] font-bold ${
-                  active ? "text-violet-700" : "text-slate-500"
+                  active ? "text-teal-900" : "text-slate-500"
                 }`}
               >
                 <span
                   className={`inline-flex size-8 items-center justify-center rounded-xl text-sm ${
-                    active ? badgeAccentClasses(item.accent) : "bg-violet-50 text-violet-600"
+                    active ? badgeAccentClasses(item.accent) : "bg-stone-100 text-stone-700"
                   }`}
                 >
                   {item.short}

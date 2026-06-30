@@ -65,16 +65,16 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** `cursor/area-7-launch-rehearsal-tooling`
-- **Last updated by:** Cursor
-- **Last updated:** 2026-06-30 (MVP usability Area 8 docs and operator truth)
+- **Current branch:** `main`
+- **Last updated by:** Codex
+- **Last updated:** 2026-06-30 (Mark 3.2 mission control dashboard + streamlined nav pass)
 
 ### Active task
 
-- **Priority item #:** MVP Usability Launch Readiness Plan — **complete**
-- **Module:** Docs and operator truth (Area 8)
-- **Status:** All Areas 1–9 **closed** — operator truth doc, entry-point sync, contract tests green
-- **Branch:** `cursor/area-7-launch-rehearsal-tooling`
+- **Priority item #:** Mark 3.2 UI/UX refinement on live MVP surfaces
+- **Module:** Dashboard, shell navigation, motivation, subjects
+- **Status:** Local mission-control refinement implemented and verified; deploy pending
+- **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
 
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Mark 3.2 mission control dashboard + streamlined navigation (30 June 2026)** — reshaped `StudentAppShell` into a light top-rail shell with the five-item MVP nav (`Dashboard`, `Subjects`, `Exams`, `Progress`, `Profile`), upgraded dashboard motivation into a curated attributed quote card, shifted dashboard emphasis to Mission Control / one-next-step guidance, and moved the practice entry point into `/subjects`. Added `tests/mark32-navigation.test.mjs`; full `npm run lint`, `npm run type-check`, and `npm run test` green (`164/164`).
 - **MVP usability Area 8 docs and operator truth (30 June 2026)** — added `docs/MVP-OPERATOR-TRUTH.md` (three-lane map: Priority A–D truth, usability Areas 1–9, deferred Priority E), `tests/mvp-operator-truth.test.mjs`, synced HANDOFF/AGENTS/README/PLATFORM-GUIDE/FINAL-PHASE-PLAN/ideas index; fixed Area 2 header in usability plan. Area 8 **4/4 complete**. **Full usability plan closed.**
 - **MVP usability Area 7 verification and rehearsal tooling (30 June 2026)** — stabilized `launch-utils.mjs` (loopback bind, shared readiness probes), refactored smoke/e2e, added `local-launch-rehearsal-order.mjs`, `tests/mvp-launch-tooling.test.mjs`, `docs/LOCAL-LAUNCH-REHEARSAL.md`; `npm run verify:local-launch-readiness` passed end to end. Area 7 **5/5 complete**. Area 1 one-command wrapper also **complete**.
 - **MVP usability Area 6 support, accessibility, and recovery UX (29 June 2026)** — added `/support` to account quick links, support hub link on `/accessibility`, support action on assessment recovery, `mvp-support-recovery-rehearsal.mjs`, `tests/mvp-support-recovery.test.mjs`, `npm run test:support-recovery-rehearsal`. Area 6 **5/5 complete**.
@@ -140,8 +141,8 @@ Update this section every session.
 
 ### What is next
 
-- **Deploy usability Areas 4–8 to production:** `fly auth login` → `npm run deploy:fly`
-- Re-run `npm run verify:local-launch-readiness` after deploy or meaningful product changes
+- **Deploy the latest Mark 3.2 mission-control pass to production:** `fly auth login` → `npm run deploy:fly`
+- Re-run `npm run verify:local-launch-readiness` before or after deploy if the operator wants a fresh full-chain rehearsal on this UI pass
 - Priority **E** deferred scope only — operator gate required to reopen
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
@@ -165,8 +166,11 @@ Fresh rerun on 30 June 2026:
 
 - [x] `npm run lint`
 - [x] `npm run type-check`
+- [x] `npm run test` (164 tests)
+
+Earlier 30 June 2026 rehearsal baseline:
+
 - [x] `npm run build`
-- [x] `npm run test` (162 tests)
 - [x] `npm run test:support-recovery-rehearsal`
 - [x] `npm run verify:local-launch-readiness` — full core chain green (30 June 2026)
 

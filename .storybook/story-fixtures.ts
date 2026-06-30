@@ -106,10 +106,15 @@ export const baseDashboardHomeData: DashboardHomeData = {
   ],
   dailyMotivation: {
     quote: "Small progress still counts, especially on the days that feel slow.",
+    speaker: "Nelson Mandela",
+    region: "South Africa · Africa",
+    occupation: "Anti-apartheid leader and former President",
+    theme: "Perseverance",
     reflection:
       "One calmer revision block, one reviewed mistake, or one restarted session still moves the learner forward.",
     focusLabel: "Keep the streak gentle",
     colour: "teal",
+    learnMoreHref: "/support",
   },
   routeCards: [
     {

@@ -11,7 +11,7 @@ export function Mark32WeakestTopics({ data }: Mark32WeakestTopicsProps) {
   const topics = pickWeakestTopics(data);
 
   return (
-    <aside className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm" aria-label="Weakest topics">
+    <aside className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm" aria-label="Weakest topics">
       <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-rose-700">Weakest topics</p>
       <h2 className="mt-2 text-lg font-semibold tracking-tight text-stone-950">Focus here next</h2>
 
@@ -21,9 +21,9 @@ export function Mark32WeakestTopics({ data }: Mark32WeakestTopicsProps) {
             <Link
               key={`${topic.subject}-${topic.focus}`}
               href={topic.href}
-              className="flex items-start gap-3 border border-stone-200 bg-stone-50 p-3 hover:border-violet-400 hover:bg-white"
+              className="flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50 p-3 hover:border-rose-300 hover:bg-white"
             >
-              <span className="inline-flex size-7 shrink-0 items-center justify-center bg-rose-700 text-xs font-bold text-white">
+              <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-rose-700 text-xs font-bold text-white">
                 {index + 1}
               </span>
               <div className="min-w-0">
@@ -41,7 +41,7 @@ export function Mark32WeakestTopics({ data }: Mark32WeakestTopicsProps) {
         )}
       </div>
 
-      <Link href="/recommendations" className="mt-4 inline-flex text-sm font-semibold text-violet-600 hover:opacity-80">
+      <Link href="/recommendations" className="mt-4 inline-flex text-sm font-semibold text-rose-800 hover:opacity-80">
         See all recommendations
       </Link>
     </aside>

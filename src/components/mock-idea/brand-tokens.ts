@@ -1,4 +1,4 @@
-/** Mark 3.2 — The Switch Platform brand tokens (purple sidebar + Study Atelier accents). */
+/** Mark 3.2 — The Switch Platform brand tokens (Study Atelier light-mode accents). */
 export const MOCK_IDEA_BRAND = {
   name: "THE SWITCH PLATFORM",
   shortName: "The Switch Platform",
@@ -49,23 +49,19 @@ export const SEND_COLOUR_CHIPS = [
 export type NavAccent = "violet" | "emerald" | "amber" | "sky" | "rose" | "teal";
 
 export const STUDENT_NAV_ITEMS = [
-  { href: "/dashboard", label: "Home", short: "⌂", accent: "violet" as const },
+  { href: "/dashboard", label: "Dashboard", short: "⌂", accent: "teal" as const },
   { href: "/subjects", label: "Subjects", short: "▦", accent: "violet" as const },
-  { href: "/subjects", label: "Learn", short: "📖", accent: "sky" as const, navKey: "learn" },
-  { href: "/assessments", label: "Practice", short: "✎", accent: "emerald" as const },
   { href: "/exams", label: "Exams", short: "◷", accent: "violet" as const },
   { href: "/progress", label: "Progress", short: "▥", accent: "sky" as const },
-  { href: "/progress", label: "Planner", short: "📅", accent: "amber" as const, navKey: "planner" },
-  { href: "/progress", label: "Power Grid", short: "⚡", accent: "violet" as const, navKey: "power-grid" },
-  { href: "/support", label: "Support", short: "?", accent: "rose" as const },
+  { href: "/account", label: "Profile", short: "◌", accent: "amber" as const },
 ] as const;
 
 export const MOBILE_NAV_ITEMS = [
   STUDENT_NAV_ITEMS[0],
+  STUDENT_NAV_ITEMS[1],
   STUDENT_NAV_ITEMS[2],
   STUDENT_NAV_ITEMS[3],
   STUDENT_NAV_ITEMS[4],
-  STUDENT_NAV_ITEMS[5],
 ] as const;
 
 export const MARKETING_NAV = [
@@ -79,16 +75,16 @@ export function isNavItemActive(
   pathname: string,
   item: (typeof STUDENT_NAV_ITEMS)[number],
 ): boolean {
-  if (item.href === "/subjects" && item.label === "Learn") {
-    return pathname === "/subjects" || pathname.startsWith("/subjects/");
-  }
-
   if (item.href === "/progress") {
     return pathname === "/progress" || pathname.startsWith("/progress/");
   }
 
-  if (item.href === "/subjects" && item.label === "Subjects") {
+  if (item.href === "/subjects") {
     return pathname === "/subjects";
+  }
+
+  if (item.href === "/account") {
+    return pathname === "/account" || pathname.startsWith("/account/");
   }
 
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -96,16 +92,25 @@ export function isNavItemActive(
 
 export function navAccentClasses(accent: NavAccent, active: boolean): string {
   if (!active) {
-    return "text-violet-100 hover:bg-white/10 hover:text-white";
+    return "border border-transparent text-stone-600 hover:border-stone-300 hover:bg-white hover:text-stone-950";
   }
 
-  return "bg-white text-violet-700 shadow-lg";
+  const activeMap: Record<NavAccent, string> = {
+    violet: "border-violet-200 bg-violet-50 text-violet-900 shadow-sm",
+    teal: "border-teal-200 bg-teal-50 text-teal-900 shadow-sm",
+    emerald: "border-emerald-200 bg-emerald-50 text-emerald-900 shadow-sm",
+    amber: "border-amber-200 bg-amber-50 text-amber-900 shadow-sm",
+    sky: "border-sky-200 bg-sky-50 text-sky-900 shadow-sm",
+    rose: "border-rose-200 bg-rose-50 text-rose-900 shadow-sm",
+  };
+
+  return activeMap[accent];
 }
 
 export function badgeAccentClasses(accent: NavAccent): string {
   const map: Record<NavAccent, string> = {
     violet: "bg-violet-600 text-white",
-    teal: "bg-violet-600 text-white",
+    teal: "bg-teal-800 text-white",
     emerald: "bg-emerald-600 text-white",
     amber: "bg-amber-500 text-white",
     sky: "bg-sky-600 text-white",

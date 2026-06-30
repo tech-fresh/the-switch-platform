@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { Mark32SubjectCatalogGrid } from "@/components/streamlined/mark32-subject-catalog-grid";
@@ -74,9 +75,34 @@ export function SubjectExperience({
         />
 
         <Mark32PageHeader
-          eyebrow="Learn"
+          eyebrow="Subjects"
           title={`${selectedSubject.name} — revision guidance and GCSE-preparation practice.`}
           description="Pick a topic, read the key revision guidance, and step into GCSE-style practice without dropping into a dead end."
+          aside={
+            <div className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Next step</p>
+              <h2 className="mt-2 text-lg font-semibold tracking-tight text-stone-950">
+                Practice starts from your subject page
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-stone-600">
+                Review the topic, then jump into a timed checkpoint without leaving the subject flow.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="/assessments"
+                  className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+                >
+                  Start practice
+                </Link>
+                <Link
+                  href="/exams"
+                  className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
+                >
+                  Open exams
+                </Link>
+              </div>
+            </div>
+          }
           stats={[
             {
               label: "Subject",

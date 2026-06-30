@@ -459,6 +459,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-30 Mark 3.2 mission control dashboard and streamlined nav
+
+- Student shell: replaced the old left-rail feel with a lighter top-rail shell and locked primary nav to five MVP destinations — `Dashboard`, `Subjects`, `Exams`, `Progress`, `Profile`.
+- Dashboard: added a Mission Control intro, promoted one clear next-step flow, and upgraded daily motivation into a curated attributed quote card with speaker, region, occupation, theme, and optional learn-more link.
+- Information architecture: removed `Practice` as a top-level nav item and moved the main practice entry point into `/subjects` so revision and timed practice start from the same subject flow.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`164/164` passed). Added `tests/mark32-navigation.test.mjs`.
+
 ### 2026-06-30 MVP docs and operator truth (Area 8 — complete)
 
 - Operator truth map: `docs/MVP-OPERATOR-TRUTH.md` — separates Priority A–D launch proof, usability Areas 1–9, and deferred Priority E.

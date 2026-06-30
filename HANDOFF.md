@@ -73,7 +73,7 @@ Update this section every session.
 
 - **Priority item #:** Mark 4 UI/UX planning lane on top of the live Mark 3.2 MVP
 - **Module:** Cross-route product UX planning
-- **Status:** Mark 4 first build batch complete locally on `/dashboard`, `/subjects`, `/`, `/login`, `/progress`, and `/exams`; onboarding UK school lookup clickable; merge to `main` and Fly deploy pending
+- **Status:** Mark 4 Phase 6 complete locally — onboarding dashboard-creation pass with exam board, study goals, and exam paper filtering; merge to `main` and Fly deploy pending
 - **Branch:** `cursor/mark32-route-consistency`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Mark 4 Phase 6 onboarding dashboard-creation pass (30 June 2026)** — reframed `/onboarding` as dashboard creation with labelled steps, study-goal capture, exam-board selection (seeded boards only: AQA/Edexcel for GCSE, Cambridge IGCSE for iGCSE), and a dashboard-ready confirmation step. Added `examBoard` + `studyGoal` to onboarding profile types/service, `src/modules/onboarding/exam-availability.ts` to filter `/api/exams/papers` by onboarding setup, and teal Mark 4 shell styling. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`172/172`).
 - **Mark 4 progress + exams visual pass (30 June 2026)** — reworked `/progress` with `Mark32ProgressAtAGlance`, compressed `Mark32SubjectProgressCard` grid, and clearer planner/subject hierarchy; reworked `/exams` lobby with subject grouping, selection-path guidance, and `Mark32ExamPaperCard` status badges (not started / in progress / submitted). Added `tests/mark32-progress-exams.test.mjs`. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`167/167`).
 - **Onboarding UK school lookup clickability pass (1 July 2026)** — upgraded step 3 of `/onboarding` from an England-only school-source note into a UK-wide clickable school-finder step. Learners can now choose `England`, `Scotland`, `Wales`, or `Northern Ireland`, open the official school finder for that nation directly from the onboarding UI, and then enter their school name. Qualification choices remain locked to `GCSE (England)` and `iGCSE` during the MVP. Added matching onboarding service coverage in `tests/onboarding-service.test.mjs`.
 - **Microsoft OIDC provider configured in runtime (30 June 2026)** — ran `scripts/provision-microsoft-oauth-live.sh`, updated the existing Azure app registration redirect/support settings, wrote real `SWITCH_OIDC_MICROSOFT_*` values into `.env.local`, pushed the same secrets to Fly, and passed `npm run verify:microsoft-oauth-live`. Verified that local `/login` now exposes a real `/api/auth/start?provider=microsoft` path instead of the guide-only fallback.
@@ -154,7 +155,7 @@ Update this section every session.
 ### What is next
 
 - **Merge `cursor/mark32-route-consistency` into `main` and deploy:** `npm run deploy:fly`
-- **Continue Mark 4 Phase 6** — onboarding dashboard-creation refinement (`/onboarding` copy and exam-board planning)
+- **Mark 4 Phase 7** — public marketing refinement (homepage/how-it-works/support polish if still needed)
 - Re-run `npm run verify:local-launch-readiness` before or after deploy
 - Priority **E** deferred scope only — operator gate required to reopen
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
@@ -175,7 +176,13 @@ Update this section every session.
 
 ### Verification last run
 
-Fresh rerun on 30 June 2026 (Mark 4 progress + exams pass):
+Fresh rerun on 30 June 2026 (Mark 4 Phase 6 onboarding + exam availability):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (172 tests)
+
+Earlier rerun on 30 June 2026 (Mark 4 progress + exams pass):
 
 - [x] `npm run lint`
 - [x] `npm run type-check`

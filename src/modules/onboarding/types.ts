@@ -8,11 +8,15 @@ export type SchoolNation =
   | "wales"
   | "northern-ireland";
 
+import type { ExamBoard } from "@/modules/access-arrangements";
+
 export type QualificationPath =
   | "gcse-england"
   | "gcse-wales"
   | "gcse-northern-ireland"
   | "igcse";
+
+export type StudyGoal = "exam-readiness" | "build-confidence" | "steady-progress";
 
 export interface SchoolSourceLink {
   nation: SchoolNation;
@@ -29,6 +33,10 @@ export interface LearnerOnboardingProfile {
   schoolNation: SchoolNation;
   yearGroup: string;
   qualificationPath: QualificationPath;
+  /** Drives which seeded full papers appear on `/exams`. */
+  examBoard: ExamBoard;
+  /** Personalises dashboard messaging — collected during setup. */
+  studyGoal: StudyGoal;
   selectedSubjectIds: string[];
   wantsAccessibilitySupport: boolean;
   wantsAccessArrangementHelp: boolean;
@@ -49,8 +57,15 @@ export interface DeferredOnboardingQualificationOption extends OnboardingQualifi
   statusNote: string;
 }
 
+export interface OnboardingStudyGoalOption {
+  id: StudyGoal;
+  label: string;
+  description: string;
+}
+
 export interface OnboardingOptions {
   learnerRoles: Array<{ id: LearnerRole; label: string; description: string }>;
+  studyGoals: OnboardingStudyGoalOption[];
   yearGroups: string[];
   /** Active MVP routes — shown as selectable in onboarding step 1. */
   qualificationPaths: OnboardingQualificationOption[];
@@ -66,6 +81,7 @@ export interface OnboardingOptions {
   }>;
   schoolSources: SchoolSourceLink[];
   steps: string[];
+  dashboardCreationStepLabels: string[];
   supportChoices: OnboardingSupportChoice[];
 }
 

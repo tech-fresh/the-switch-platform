@@ -74,11 +74,17 @@ Incomplete learners hitting `/dashboard` are redirected to `/onboarding`.
 
 Dashboard module reads onboarding via `getOnboardingOverview()` — **do not re-ask** the same setup on the dashboard UI.
 
-## Mark 4 planned refinement
+## Mark 4 planned refinement — Phase 6 complete (30 June 2026)
 
-The operator has now asked that onboarding be treated more explicitly as the point where the learner creates their dashboard, similar to the setup framing used by Seneca-style revision products.
+Phase 6 shipped locally:
 
-This is now planned into the Mark 4 lane with the following dashboard-creation inputs:
+- Dashboard-creation framing across all 8 onboarding steps
+- `studyGoal` capture on the year-group step
+- `examBoard` capture on the board-and-subjects step (seeded boards only)
+- Dashboard-ready confirmation on the final step
+- `/api/exams/papers` filtered by onboarding profile so Exams stays usable after setup
+
+Implementation constraints that still hold:
 
 - School
 - Year Group

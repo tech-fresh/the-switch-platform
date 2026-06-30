@@ -8,6 +8,7 @@ import { mark32Ui } from "@/components/streamlined/mark32-ui";
 interface OnboardingShellProps {
   stepIndex: number;
   totalSteps: number;
+  stepLabels?: string[];
   title: ReactNode;
   subtitle?: ReactNode;
   error?: string | null;
@@ -18,6 +19,7 @@ interface OnboardingShellProps {
 export function OnboardingShell({
   stepIndex,
   totalSteps,
+  stepLabels,
   title,
   subtitle,
   error,
@@ -28,37 +30,40 @@ export function OnboardingShell({
 
   return (
     <main className={mark32Ui.publicMain}>
-      <div className="border-b border-violet-200 bg-violet-950 px-4 py-3 text-center sm:px-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-200">
-          {MOCK_IDEA_BRAND.name} guided setup · The Switch Platform
+      <div className="border-b border-teal-900 bg-teal-950 px-4 py-3 text-center sm:px-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-100">
+          {MOCK_IDEA_BRAND.name} dashboard creation · The Switch Platform
         </p>
       </div>
 
-      <div className="mx-auto grid w-full max-w-5xl gap-8 px-4 py-8 sm:px-8 lg:grid-cols-[10rem_minmax(0,1fr)]">
+      <div className="mx-auto grid w-full max-w-5xl gap-8 px-4 py-8 sm:px-8 lg:grid-cols-[11rem_minmax(0,1fr)]">
         <aside className="hidden lg:block">
           <ol className="sticky top-8 space-y-2">
             {Array.from({ length: totalSteps }, (_, index) => {
               const done = index < stepIndex;
               const current = index === stepIndex;
+              const label = stepLabels?.[index] ?? `Step ${index + 1}`;
               return (
                 <li
                   key={index}
-                  className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold ${
+                  className={`rounded-xl border px-3 py-2 text-xs font-semibold ${
                     current
-                      ? "border-violet-400 bg-violet-50 text-violet-900"
+                      ? "border-teal-400 bg-teal-50 text-teal-900"
                       : done
                         ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-                        : "border-violet-100 bg-white text-slate-500"
+                        : "border-stone-200 bg-white text-stone-500"
                   }`}
                 >
-                  <span
-                    className={`inline-flex size-6 items-center justify-center rounded-lg text-[10px] ${
-                      current ? "bg-violet-700 text-white" : done ? "bg-emerald-700 text-white" : "bg-slate-200"
-                    }`}
-                  >
-                    {index + 1}
+                  <span className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex size-6 shrink-0 items-center justify-center rounded-lg text-[10px] ${
+                        current ? "bg-teal-800 text-white" : done ? "bg-emerald-700 text-white" : "bg-stone-200"
+                      }`}
+                    >
+                      {index + 1}
+                    </span>
+                    <span className="leading-tight">{label}</span>
                   </span>
-                  Step {index + 1}
                 </li>
               );
             })}
@@ -67,23 +72,24 @@ export function OnboardingShell({
 
         <div className="flex flex-col">
           <div className="mb-6">
-            <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-600">
+            <div className="mb-2 flex items-center justify-between text-xs font-semibold text-stone-600">
               <span>
-                Step {stepIndex + 1} of {totalSteps}
+                Dashboard setup · {stepLabels?.[stepIndex] ?? `Step ${stepIndex + 1}`} ({stepIndex + 1} of{" "}
+                {totalSteps})
               </span>
               <span>{progress}%</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-violet-100">
+            <div className="h-2 overflow-hidden rounded-full bg-stone-200">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-violet-600 to-violet-400 transition-all"
+                className="h-full rounded-full bg-gradient-to-r from-teal-800 to-teal-500 transition-all"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
 
           <header className="mb-8 space-y-2">
-            <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{title}</h1>
-            {subtitle ? <p className="text-sm leading-7 text-slate-600 sm:text-base">{subtitle}</p> : null}
+            <h1 className="text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">{title}</h1>
+            {subtitle ? <p className="text-sm leading-7 text-stone-600 sm:text-base">{subtitle}</p> : null}
           </header>
 
           {error ? (
@@ -96,8 +102,8 @@ export function OnboardingShell({
         </div>
       </div>
 
-      <footer className="sticky bottom-0 border-t border-violet-100 bg-white/95 px-4 py-4 backdrop-blur sm:px-8">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 lg:pl-[calc(10rem+2rem)]">
+      <footer className="sticky bottom-0 border-t border-stone-200 bg-white/95 px-4 py-4 backdrop-blur sm:px-8">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 lg:pl-[calc(11rem+2rem)]">
           {footer}
         </div>
       </footer>
@@ -117,7 +123,7 @@ export function OnboardingBackButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="rounded-2xl border-2 border-violet-700 bg-white px-6 py-2.5 text-sm font-bold text-violet-800 transition hover:bg-violet-50 disabled:opacity-50"
+      className={mark32Ui.secondaryBtn}
     >
       Back
     </button>
@@ -138,7 +144,7 @@ export function OnboardingContinueButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="rounded-2xl bg-violet-600 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-violet-200/50 transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:bg-violet-400"
+      className={`${mark32Ui.primaryBtn} disabled:cursor-not-allowed disabled:opacity-60`}
     >
       {label}
     </button>

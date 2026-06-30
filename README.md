@@ -12,11 +12,11 @@
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 implementation is now live locally on `/dashboard`, `/subjects`, `/`, and `/login`, Microsoft OIDC is configured again in the active runtime, and onboarding now includes UK-wide clickable school-finder links; Priority A–D remain closed and Priority E is deferred only. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 Phases 1–6 complete locally including onboarding dashboard-creation and exam filtering; Priority A–D remain closed and Priority E is deferred only. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Merge `cursor/mark32-route-consistency` into `main`, deploy latest Mark 4 work to Fly, then continue Phase 6 onboarding dashboard-creation refinement. Priority **E** deferred only. |
+| What is next? | Merge `cursor/mark32-route-consistency` into `main`, deploy latest Mark 4 work to Fly, then continue Mark 4 Phase 7 public marketing refinement. Priority **E** deferred only. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 
@@ -458,6 +458,13 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-30 Mark 4 Phase 6 onboarding dashboard-creation pass
+
+- Reframed `/onboarding` as a dashboard-creation journey with labelled steps, study-goal capture, exam-board selection, and a dashboard-ready confirmation screen.
+- Added `examBoard` and `studyGoal` to onboarding profile types/service; seeded boards only (AQA/Edexcel for GCSE, Cambridge IGCSE for iGCSE).
+- Added `src/modules/onboarding/exam-availability.ts` so `/api/exams/papers` returns papers matched to the learner's qualification, board, and subjects — with safe fallbacks so Exams stays usable.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`172/172` passed). Added `tests/onboarding-exam-availability.test.mjs` and `tests/mark32-onboarding-phase6.test.mjs`.
 
 ### 2026-06-30 Mark 4 progress and exams visual pass
 

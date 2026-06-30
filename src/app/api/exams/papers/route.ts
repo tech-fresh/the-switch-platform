@@ -1,10 +1,21 @@
 import { NextResponse } from "next/server";
+
+import { getSwitchRequestContext } from "@/lib/server/request-context";
 import { getMockExamPapers } from "@/modules/exam-engine/service";
+import { filterExamPapersForOnboardingProfile } from "@/modules/onboarding/exam-availability";
+import { getOnboardingProfileByUserId } from "@/modules/onboarding/repository";
 
 export async function GET() {
   const papers = getMockExamPapers();
+  const requestContext = await getSwitchRequestContext();
+  const profile = await getOnboardingProfileByUserId(requestContext.userId);
+
+  const visiblePapers =
+    profile && profile.completedAt
+      ? filterExamPapersForOnboardingProfile(papers, profile)
+      : papers;
 
   return NextResponse.json({
-    papers,
+    papers: visiblePapers,
   });
 }

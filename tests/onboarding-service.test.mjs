@@ -37,6 +37,8 @@ test("onboarding options include school sources and MVP catalog subjects", () =>
   ]);
   assert.equal(options.supportChoices.length, 3);
   assert.ok(options.supportChoices.some((choice) => choice.key === "wantsAccessArrangementHelp"));
+  assert.equal(options.studyGoals.length, 3);
+  assert.equal(options.dashboardCreationStepLabels.length, 8);
 });
 
 test("onboarding subjects filter by qualification path", () => {
@@ -60,6 +62,8 @@ test("onboarding completion requires consent and valid MVP subject selection", (
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "gcse-england",
+    examBoard: "AQA",
+    studyGoal: "exam-readiness",
     selectedSubjectIds: [],
     wantsAccessibilitySupport: false,
     wantsAccessArrangementHelp: false,
@@ -78,6 +82,8 @@ test("onboarding completion requires consent and valid MVP subject selection", (
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "igcse",
+    examBoard: "Cambridge IGCSE",
+    studyGoal: "exam-readiness",
     selectedSubjectIds: ["gcse-maths"],
     wantsAccessibilitySupport: false,
     wantsAccessArrangementHelp: false,
@@ -96,6 +102,8 @@ test("onboarding completion requires consent and valid MVP subject selection", (
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "gcse-england",
+    examBoard: "AQA",
+    studyGoal: "exam-readiness",
     selectedSubjectIds: ["gcse-maths", "gcse-combined-science"],
     wantsAccessibilitySupport: true,
     wantsAccessArrangementHelp: false,
@@ -118,6 +126,8 @@ test("onboarding support summary surfaces MVP accessibility and SEND signposting
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "gcse-england",
+    examBoard: "AQA",
+    studyGoal: "exam-readiness",
     selectedSubjectIds: ["gcse-maths"],
     wantsAccessibilitySupport: true,
     wantsAccessArrangementHelp: true,
@@ -142,6 +152,8 @@ test("onboarding completion provisions accessibility foundation into access prof
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "gcse-england",
+    examBoard: "AQA",
+    studyGoal: "exam-readiness",
     selectedSubjectIds: ["gcse-maths"],
     wantsAccessibilitySupport: true,
     wantsAccessArrangementHelp: true,

@@ -4,6 +4,11 @@ import {
   updateStudentAccessProfile,
 } from "@/modules/access-arrangements/service";
 
+import {
+  getDefaultExamBoard,
+  listOnboardingExamBoardOptions,
+  resolveExamBoardForProfile,
+} from "./exam-availability";
 import { getOnboardingProfileByUserId, saveOnboardingProfile } from "./repository";
 import type {
   LearnerOnboardingProfile,
@@ -14,6 +19,7 @@ import type {
   QualificationPath,
   SchoolNation,
   SchoolPhase,
+  StudyGoal,
 } from "./types";
 
 const YEAR_GROUPS = [
@@ -48,6 +54,35 @@ const SCHOOL_SOURCES = [
     label: "Northern Ireland — EA school finder",
     href: "https://www.eani.org.uk/",
   },
+];
+
+const STUDY_GOAL_OPTIONS = [
+  {
+    id: "exam-readiness" as const,
+    label: "Get exam ready",
+    description: "Build full-paper timing, confidence, and mock-exam fluency.",
+  },
+  {
+    id: "build-confidence" as const,
+    label: "Build confidence",
+    description: "Strengthen topic understanding before pushing into harder papers.",
+  },
+  {
+    id: "steady-progress" as const,
+    label: "Keep steady progress",
+    description: "Stay consistent with revision, practice, and saved-session continuity.",
+  },
+];
+
+const DASHBOARD_CREATION_STEP_LABELS = [
+  "Account",
+  "Qualification",
+  "Year & goal",
+  "School",
+  "Board & subjects",
+  "Accessibility",
+  "Guardian",
+  "Dashboard ready",
 ];
 
 const ONBOARDING_STEPS = [
@@ -100,6 +135,12 @@ export const MVP_ONBOARDING_SCHOOL_NATIONS: SchoolNation[] = [
 ];
 
 /** MVP launch subjects come from the student-visible content catalog only. */
+export function getDashboardCreationStepLabels(): string[] {
+  return [...DASHBOARD_CREATION_STEP_LABELS];
+}
+
+export { listOnboardingExamBoardOptions, getDefaultExamBoard } from "./exam-availability";
+
 export function qualificationPathToCatalogType(
   qualificationPath: QualificationPath,
 ): "GCSE" | "IGCSE" {
@@ -236,6 +277,8 @@ function createDefaultProfile(userId: string): LearnerOnboardingProfile {
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath: "gcse-england",
+    examBoard: "AQA",
+    studyGoal: "exam-readiness",
     selectedSubjectIds: [],
     wantsAccessibilitySupport: false,
     wantsAccessArrangementHelp: false,
@@ -257,6 +300,8 @@ function createLaunchWalkthroughProfile(userId: string): LearnerOnboardingProfil
     schoolNation: "england",
     yearGroup: "Year 11",
     qualificationPath,
+    examBoard: "AQA",
+    studyGoal: "exam-readiness",
     selectedSubjectIds: subjects.map((subject) => subject.subjectId),
     wantsAccessibilitySupport: false,
     wantsAccessArrangementHelp: false,
@@ -286,6 +331,7 @@ export function getOnboardingOptions(): OnboardingOptions {
         description: "I am supporting learners with revision and practice.",
       },
     ],
+    studyGoals: STUDY_GOAL_OPTIONS,
     yearGroups: YEAR_GROUPS,
     qualificationPaths: MVP_ONBOARDING_QUALIFICATION_PATHS,
     deferredQualificationPaths: DEFERRED_ONBOARDING_QUALIFICATION_PATHS,
@@ -293,6 +339,7 @@ export function getOnboardingOptions(): OnboardingOptions {
     subjects: mapCatalogSubjectsToOnboardingOptions(),
     schoolSources: SCHOOL_SOURCES,
     steps: ONBOARDING_STEPS,
+    dashboardCreationStepLabels: DASHBOARD_CREATION_STEP_LABELS,
     supportChoices: MVP_SUPPORT_CHOICES,
   };
 }
@@ -306,6 +353,8 @@ export function isOnboardingProfileComplete(profile: LearnerOnboardingProfile | 
     profile.learnerRole.length > 0 &&
     profile.schoolName.trim().length > 0 &&
     profile.yearGroup.trim().length > 0 &&
+    profile.studyGoal.length > 0 &&
+    listOnboardingExamBoardOptions(profile.qualificationPath).includes(profile.examBoard) &&
     profile.selectedSubjectIds.length > 0 &&
     profile.ageOrConsentConfirmed
   );
@@ -347,8 +396,20 @@ function resolveNextStepIndex(profile: LearnerOnboardingProfile | null): number 
   return 7;
 }
 
+function backfillOnboardingProfile(profile: LearnerOnboardingProfile): LearnerOnboardingProfile {
+  return {
+    ...profile,
+    examBoard: resolveExamBoardForProfile(profile),
+    studyGoal: profile.studyGoal ?? "exam-readiness",
+  };
+}
+
 export async function getOnboardingOverview(userId: string): Promise<OnboardingOverview> {
   let profile = await getOnboardingProfileByUserId(userId);
+
+  if (profile) {
+    profile = backfillOnboardingProfile(profile);
+  }
 
   if (!profile && isLaunchWalkthroughUser(userId)) {
     profile = await saveOnboardingProfile(createLaunchWalkthroughProfile(userId));
@@ -380,6 +441,11 @@ function normalizeProfileUpdate(
     schoolPhase: (update.schoolPhase ?? base.schoolPhase ?? "secondary") as SchoolPhase,
     schoolNation: (update.schoolNation ?? base.schoolNation) as SchoolNation,
     qualificationPath: (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
+    examBoard: resolveExamBoardForProfile({
+      qualificationPath: (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
+      examBoard: update.examBoard ?? base.examBoard,
+    }),
+    studyGoal: (update.studyGoal ?? base.studyGoal ?? "exam-readiness") as StudyGoal,
     selectedSubjectIds: filterOnboardingSubjectIds(
       update.selectedSubjectIds ?? base.selectedSubjectIds,
       (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
@@ -407,8 +473,17 @@ export function validateOnboardingProfile(profile: LearnerOnboardingProfile): st
     return "Choose your year group.";
   }
 
+  if (!profile.studyGoal) {
+    return "Choose your study goal for this dashboard.";
+  }
+
   if (!profile.qualificationPath) {
     return "Choose your qualification path.";
+  }
+
+  const allowedBoards = listOnboardingExamBoardOptions(profile.qualificationPath);
+  if (!allowedBoards.includes(profile.examBoard)) {
+    return "Choose an exam board that matches your qualification route.";
   }
 
   if (profile.selectedSubjectIds.length === 0) {
@@ -487,8 +562,35 @@ export function buildDashboardSetupSummary(profile: LearnerOnboardingProfile | n
   return {
     qualificationLabel: qualification,
     subjectFilterIds: profile.selectedSubjectIds,
-    setupSummary: `${profile.yearGroup} • ${qualification} • ${profile.selectedSubjectIds.length} subject${
+    setupSummary: `${profile.yearGroup} • ${qualification} • ${profile.examBoard} • ${profile.selectedSubjectIds.length} subject${
       profile.selectedSubjectIds.length === 1 ? "" : "s"
     } selected`,
+  };
+}
+
+export function buildDashboardCreationPreview(profile: LearnerOnboardingProfile | null): {
+  headline: string;
+  items: Array<{ label: string; value: string }>;
+} {
+  if (!profile) {
+    return {
+      headline: "Complete setup to unlock your Mission Control dashboard.",
+      items: [],
+    };
+  }
+
+  const goalLabel =
+    STUDY_GOAL_OPTIONS.find((goal) => goal.id === profile.studyGoal)?.label ?? profile.studyGoal;
+
+  return {
+    headline: "Your dashboard is ready to build.",
+    items: [
+      { label: "Year group", value: profile.yearGroup },
+      { label: "Qualification", value: buildDashboardSetupSummary(profile).qualificationLabel },
+      { label: "Exam board", value: profile.examBoard },
+      { label: "Subjects", value: `${profile.selectedSubjectIds.length} selected` },
+      { label: "Study goal", value: goalLabel },
+      { label: "School", value: profile.schoolName || "Not added yet" },
+    ],
   };
 }

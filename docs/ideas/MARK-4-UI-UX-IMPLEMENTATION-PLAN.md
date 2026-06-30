@@ -632,11 +632,11 @@ A page is only complete when:
 
 ## 13. Immediate Next Step
 
-**Recommended next execution task:** continue **Phase 6 — onboarding dashboard-creation refinement** on `/onboarding`, then merge the Mark 4 first build batch and deploy.
+**Recommended next execution task:** continue **Phase 7 — public marketing refinement**, then merge the Mark 4 batch and deploy.
 
 **First build batch status (30 June 2026):**
 
-| Route | Status |
+| Route / phase | Status |
 |-------|--------|
 | `/dashboard` | Complete |
 | `/subjects` | Complete |
@@ -644,6 +644,6 @@ A page is only complete when:
 | `/login` | Complete |
 | `/progress` | Complete |
 | `/exams` | Complete |
-| `/onboarding` | Next — dashboard-creation copy and exam-board planning |
+| Phase 6 `/onboarding` | Complete — dashboard creation, exam board, study goals, exam filtering |
 
-Verification for the progress + exams pass: `npm run lint`, `npm run type-check`, `npm run test` (`167/167`).
+Verification for Phase 6: `npm run lint`, `npm run type-check`, `npm run test` (`172/172`).

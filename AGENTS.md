@@ -145,10 +145,10 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 first build batch complete locally on dashboard, subjects, homepage, login, progress, and exams; onboarding includes UK-wide clickable school-finder links; merge and deploy pending. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 Phases 1–6 complete locally including onboarding dashboard-creation and exam paper filtering; merge and deploy pending. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | Merge `cursor/mark32-route-consistency` into `main`, deploy (`npm run deploy:fly`), then continue Mark 4 Phase 6 onboarding dashboard-creation refinement. |
+| What is next? | Merge `cursor/mark32-route-consistency` into `main`, deploy (`npm run deploy:fly`), then continue Mark 4 Phase 7 public marketing refinement. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 

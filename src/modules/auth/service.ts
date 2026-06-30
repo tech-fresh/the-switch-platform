@@ -276,6 +276,7 @@ export async function getAccountOverview(
     buildAccountLink("/saved-progress", routeCopy["/saved-progress"].label, routeCopy["/saved-progress"].description),
     buildAccountLink("/recommendations", routeCopy["/recommendations"].label, routeCopy["/recommendations"].description),
     buildAccountLink("/accessibility", routeCopy["/accessibility"].label, routeCopy["/accessibility"].description),
+    buildAccountLink("/support", routeCopy["/support"].label, routeCopy["/support"].description),
   ];
 
   if (

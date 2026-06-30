@@ -20,7 +20,7 @@ Use that name when referring to the ongoing work to:
 - tighten the dashboard, homepage, and study flows
 - remove clutter while keeping the core MVP architecture intact
 
-Status: **in progress** until boot/runtime stability (Area 1), rehearsal tooling (Area 7), and remaining practical usability areas below are complete. **Area 2 (route clickability) and Area 9 (Mark 3.2 UI) are complete.**
+Status: **in progress** until boot/runtime stability (Area 1), rehearsal tooling (Area 7), and remaining practical usability areas below are complete. **Areas 2, 6, and 9 (Mark 3.2 UI) are complete.**
 
 ## Plan name
 
@@ -229,6 +229,20 @@ Make the platform feel safe and understandable when students need help, support 
 
 - no MVP route strands the learner without a useful next step
 - support and accessibility feel like part of the product, not bolt-ons
+
+### Progress — 29 June 2026
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| 6.1 `/support` stable public route with signposting | **Complete** | `PublicMarketingPage` on `/support`; rehearsal checks urgent help + route guidance |
+| 6.2 `/accessibility` reachable from dashboard/account | **Complete** | dashboard route cards, account quick links, accessibility support hub link |
+| 6.3 Empty states audited (exams, saved progress, results, recommendations) | **Complete** | `mvp-support-recovery.test.mjs` — `StudentRouteRecovery` on blocked routes |
+| 6.4 Each empty/blocked state offers a useful next click | **Complete** | recovery action hrefs validated against canonical MVP click targets |
+| 6.5 Student recovery language and route fallback pass | **Complete** | `mvp-support-recovery-rehearsal.mjs` — support hub, invalid assessment recovery |
+
+**Area 6 summary:** `5 / 5` steps complete — support, accessibility, and recovery UX lane closed for MVP.
+
+**Verification:** `npm run test` (148/148), `npm run test:support-recovery-rehearsal` after `npm run build`.
 
 ## Area 7 — Verification and Rehearsal Tooling
 

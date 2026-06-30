@@ -458,6 +458,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-29 MVP support, accessibility, and recovery UX (Area 6 — complete)
+
+- Rehearsal script: `npm run test:support-recovery-rehearsal` — public `/support` hub, accessibility signposting from dashboard/account, invalid assessment recovery, support API route guidance.
+- Contract tests: `tests/mvp-support-recovery.test.mjs` — empty/blocked route recovery actions, account quick links, dashboard route cards, support route guidance.
+- Product wiring: `/support` added to account quick links; support hub link on `/accessibility`; support action on assessment recovery.
+- **Area 6: 5/5 complete.**
+
 ### 2026-06-29 MVP auth, account, and role experience (Area 5 — complete)
 
 - Rehearsal script: `npm run test:auth-account-rehearsal` — student sign-in, admin sign-in, account states, admin protection, sign-out lockout.

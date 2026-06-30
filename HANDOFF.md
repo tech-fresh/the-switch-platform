@@ -71,9 +71,9 @@ Update this section every session.
 
 ### Active task
 
-- **Priority item #:** MVP Usability Launch Readiness Plan — Area 1
-- **Module:** Local rehearsal runtime + launch scripts
-- **Status:** Area 1 hardening in progress — direct build, type-check, test, smoke, and e2e runs are green; wrapper command still needs one final non-sandbox confirmation
+- **Priority item #:** MVP Usability Launch Readiness Plan — Area 6
+- **Module:** Support, accessibility, and recovery UX
+- **Status:** Area 6 **5/5 complete** — support hub, accessibility signposting, empty-state recovery, rehearsal + contract tests green
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **MVP usability Area 6 support, accessibility, and recovery UX (29 June 2026)** — added `/support` to account quick links, support hub link on `/accessibility`, support action on assessment recovery, `mvp-support-recovery-rehearsal.mjs`, `tests/mvp-support-recovery.test.mjs`, `npm run test:support-recovery-rehearsal`. Area 6 **5/5 complete**.
 - **MVP usability Area 1 runtime rehearsal hardening (29 June 2026)** — aligned the rehearsal pipeline on `.next-rehearsal`, added `prepare-next-build.mjs`, strengthened startup readiness probes for `/`, `/api/auth/providers`, `/api/account/overview`, and `/api/dashboard/home`, and refactored `route-smoke` / `launch-e2e` into reusable functions for scripted launch checks.
 - **Area 1 direct verification green (29 June 2026)** — `npm run lint`, `npm run type-check`, `npm run build`, `npm run test`, `npm run test:smoke`, and `npm run test:e2e` all passed after the runtime hardening pass. The new `verify:local-launch-readiness` wrapper exists but still needs one final operator-terminal rerun because the Codex sandbox hit loopback `listen EPERM` during the chained smoke phase.
 - **MVP usability Area 5 auth and account (29 June 2026)** — `mvp-auth-account-rehearsal.mjs`, `tests/mvp-auth-account.test.mjs`. Area 5 **5/5 complete**.
@@ -137,9 +138,9 @@ Update this section every session.
 
 ### What is next
 
-- **Publish Areas 4 + 5 to production:** `fly auth login` → `npm run deploy:fly`
+- **Publish Areas 4 + 5 + 6 to production:** `fly auth login` → `npm run deploy:fly`
 - Re-run `npm run verify:local-launch-readiness` in the operator terminal outside the Codex sandbox to confirm the wrapper now passes end to end
-- If the wrapper passes outside the sandbox, mark Area 1 complete in the plan/docs and continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` — **Area 6** support, accessibility, and recovery UX
+- If the wrapper passes outside the sandbox, mark Area 1 complete in the plan/docs and continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` — **Area 7** verification and rehearsal tooling
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
 ### Completion snapshot
@@ -164,7 +165,8 @@ Fresh rerun on 29 June 2026:
 - [x] `npm run lint`
 - [x] `npm run type-check`
 - [x] `npm run build`
-- [x] `npm run test` (119 tests)
+- [x] `npm run test` (148 tests)
+- [x] `npm run test:support-recovery-rehearsal`
 - [x] `npm run test:smoke`
 - [x] `npm run test:e2e`
 - [ ] `npm run verify:local-launch-readiness` — wrapper still needs an operator-terminal rerun outside the Codex sandbox

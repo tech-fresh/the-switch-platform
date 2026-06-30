@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { ACCESSIBILITY_UPDATED_EVENT } from "@/components/accessibility-runtime";
@@ -201,6 +202,12 @@ export function AccessibilityExperience({
                 <p className="mt-3 text-sm leading-6 text-stone-700">
                   {support.safetyReview.escalationGuidance}
                 </p>
+                <Link
+                  href="/support"
+                  className="mt-4 inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:border-violet-300"
+                >
+                  Open support hub
+                </Link>
               </div>
             </article>
 

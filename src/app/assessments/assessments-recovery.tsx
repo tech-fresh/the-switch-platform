@@ -17,6 +17,7 @@ export function AssessmentsRecoveryContent({ title, description }: AssessmentsRe
         { href: "/assessments", label: "Open practice lobby", variant: "primary" },
         { href: "/saved-progress", label: "Open saved progress", variant: "secondary" },
         { href: "/dashboard", label: "Return to dashboard", variant: "secondary" },
+        { href: "/support", label: "Support hub", variant: "secondary" },
       ]}
     />
   );

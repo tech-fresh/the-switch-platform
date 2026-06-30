@@ -18,6 +18,7 @@
     "test:exam-assessment-rehearsal": "node scripts/mvp-exam-assessment-rehearsal.mjs",
     "test:continuity-rehearsal": "node scripts/mvp-continuity-rehearsal.mjs",
     "test:auth-account-rehearsal": "node scripts/mvp-auth-account-rehearsal.mjs",
+    "test:support-recovery-rehearsal": "node scripts/mvp-support-recovery-rehearsal.mjs",
     "test:e2e": "node scripts/launch-e2e.mjs",
     "test:final-smoke": "node scripts/final-live-smoke.mjs",
     "verify:local-launch-readiness": "node scripts/local-launch-readiness.mjs",

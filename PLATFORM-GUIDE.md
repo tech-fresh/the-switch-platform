@@ -26,9 +26,10 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). **Fully complete** on production — Priority A closed 26 June 2026. |
-| What are we doing now? | **Priority A–D complete.** **v4 UI/UX Redesign** Area 9 **6/9** — extend Mark 3.2 to remaining student routes. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Priority A–D closed; Priority E deferred only. |
 | Onboarding | **8 steps stay** — they **create the dashboard**. Secondary school; GCSE (England) + iGCSE; Wales/NI **later**. |
 | Website polish | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
+| Usability hardening | **Complete — 30 June 2026** — see [`MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
 | Priority C | **Complete — closed.** Do not reopen unless operator requests exception. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
@@ -43,7 +44,7 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | **Onboarding** | 8 steps; `/onboarding` → `/dashboard`; see `src/modules/onboarding/README.md` |
 | **Priority C** | **Complete — 24 June 2026** (shell, focus mode, planner, marketing, recovery) |
 | **Priority A** | **Complete — 26 June 2026** (A-1–A-8; canonical evidence in `release-evidence/2026-06-26-priority-a-canonical-closeout.md`) |
-| **Active work** | **Area 9 Mark 3.2 UI/UX redesign complete (10/10).** See [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md) for Areas 1–8. |
+| **Active work** | **MVP usability plan complete (Areas 1–9).** Plan: [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md). Operator truth: [`MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). Rehearsal: [`LOCAL-LAUNCH-REHEARSAL.md`](./docs/LOCAL-LAUNCH-REHEARSAL.md). |
 | **Key routes** | `/`, `/login`, `/onboarding`, `/dashboard`, `/subjects`, `/exams`, `/assessments`, `/progress` |
 
 Full MVP spec and history → **`README.md` → Mark 3.2 Product Spec** (append only).

@@ -1,6 +1,6 @@
 # MVP Usability Launch Readiness Plan
 
-**Linked initiative:** **The Switch Platform v4 UI/UX Redesign** — **in progress**
+**Linked initiative:** **The Switch Platform v4 UI/UX Redesign** — **complete**
 
 > **Status:** operator-requested execution plan
 > **Created:** 2026-06-29
@@ -20,7 +20,7 @@ Use that name when referring to the ongoing work to:
 - tighten the dashboard, homepage, and study flows
 - remove clutter while keeping the core MVP architecture intact
 
-Status: **in progress** until docs/operator truth (Area 8) is complete. **Areas 1, 2, 6, and 9 (Mark 3.2 UI) are complete.**
+Status: **complete — 30 June 2026.** All Areas 1–9 closed. Operator truth: [`docs/MVP-OPERATOR-TRUTH.md`](../MVP-OPERATOR-TRUTH.md).
 
 ## Plan name
 
@@ -68,9 +68,9 @@ Make the app boot reliably from a fresh checkout in both local and Fly-style pro
 
 **Verification:** `npm run verify:local-launch-readiness` after a fresh checkout or rehearsal reset.
 
-### Goal
+## Area 2 — Route-to-Route Clickability
 
-Ensure the student can move through the full MVP without broken links, route traps, or misleading route cards.
+### Goal
 
 ### Development work
 
@@ -296,6 +296,19 @@ Make sure the docs explain the product as it actually behaves now.
 
 - a new operator can read the docs and understand both what is already complete and what still needs practical hardening
 
+### Progress — 30 June 2026
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| 8.1 Usability plan linked from handoff surfaces | **Complete** | `HANDOFF.md`, `AGENTS.md`, `PLATFORM-GUIDE.md`, `docs/ideas/README.md` |
+| 8.2 Launch-readiness fixes in README build history | **Complete** | Ordered Build Record — Areas 1–8 entries |
+| 8.3 Three lanes separated in operator truth | **Complete** | `docs/MVP-OPERATOR-TRUTH.md` — A–D truth, usability Areas 1–9, Priority E deferred |
+| 8.4 Entry-point docs aligned | **Complete** | `tests/mvp-operator-truth.test.mjs` — HANDOFF, AGENTS, README, PLATFORM-GUIDE, FINAL-PHASE-PLAN |
+
+**Area 8 summary:** `4 / 4` steps complete — docs and operator truth lane closed for MVP.
+
+**Verification:** `npm run test` — `mvp-operator-truth.test.mjs` contract checks.
+
 ## Area 9 — The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces)
 
 ### Goal
@@ -339,15 +352,17 @@ Ship a streamlined light-mode student experience on live routes without removing
 
 ## Recommended execution order
 
-1. Boot and runtime stability
-2. Verification and rehearsal tooling
+1. Boot and runtime stability — **complete (5/5 — 30 June 2026)**
+2. Verification and rehearsal tooling — **complete (5/5 — 30 June 2026)**
 3. Route-to-route clickability — **complete (6/6 — 29 June 2026)**
 4. Exams and timed assessments — **complete (6/6 — 29 June 2026)**
-5. Saved progress, results, and continuity
-6. Auth, account, and role experience
-7. Support, accessibility, and recovery UX
-8. Docs and operator truth
+5. Saved progress, results, and continuity — **complete (4/4 — 29 June 2026)**
+6. Auth, account, and role experience — **complete (5/5 — 29 June 2026)**
+7. Support, accessibility, and recovery UX — **complete (5/5 — 29 June 2026)**
+8. Docs and operator truth — **complete (4/4 — 30 June 2026)**
 9. The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces) — **complete (10/10 — 29 June 2026)**
+
+**Plan summary:** all nine usability areas closed. See [`docs/MVP-OPERATOR-TRUTH.md`](../MVP-OPERATOR-TRUTH.md) for how this relates to Priority A–D closeout and deferred Priority E.
 
 ## Definition of "usable and launch ready" for this plan
 

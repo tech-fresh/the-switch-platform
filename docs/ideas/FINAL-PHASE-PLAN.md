@@ -1,6 +1,6 @@
 # Final Phase Plan — Full Completion Audit
 
-> **Status:** **CURRENT MVP COMPLETE** — this is the single completion plan for the repository; Priorities A, B, C, and D are closed; **The Switch Platform v4 UI/UX Redesign** is in progress as a usability layer; Priority E remains deferred expansion scope
+> **Status:** **CURRENT MVP COMPLETE** — this is the single completion plan for the repository; Priorities A, B, C, and D are closed; **MVP usability hardening (Areas 1–9) is complete**; Priority E remains deferred expansion scope
 > **Created:** 2026-06-24
 > **Purpose:** stop partial closeout; list everything still required for an honest full-completion claim
 > **Live site:** https://theswitchplatform.com
@@ -43,13 +43,32 @@ Read order every session:
 
 ### What remains open now
 
-The repo no longer has a truthful-completion proof gap or an open active-plan blocker. What remains is operational discipline:
+The repo no longer has a truthful-completion proof gap, an open active-plan blocker, or open usability-hardening areas. What remains is operational discipline:
 
 - keep future release reruns synced with the canonical closeout evidence
 - treat Priority E as deferred scope, not current MVP incompleteness
-- treat **The Switch Platform v4 UI/UX Redesign** as the active usability/design improvement lane for the current MVP
+- deploy latest usability work to Fly when ready (`npm run deploy:fly`)
+- re-run `npm run verify:local-launch-readiness` after meaningful product changes
 
-### MVP usability plan — Area 9 progress (appended 29 June 2026)
+### MVP usability plan — complete (appended 30 June 2026)
+
+Tracked in [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./MVP-USABILITY-LAUNCH-READINESS-PLAN.md) and [`MVP-OPERATOR-TRUTH.md`](../MVP-OPERATOR-TRUTH.md).
+
+| Area | Status |
+|------|--------|
+| 1 Boot and runtime stability | **5/5 complete** |
+| 2 Route clickability | **6/6 complete** |
+| 3 Exams and assessments | **6/6 complete** |
+| 4 Saved progress continuity | **4/4 complete** |
+| 5 Auth and account | **5/5 complete** |
+| 6 Support and recovery | **5/5 complete** |
+| 7 Rehearsal tooling | **5/5 complete** |
+| 8 Docs and operator truth | **4/4 complete** |
+| 9 Mark 3.2 UI/UX redesign | **10/10 complete** |
+
+**Usability plan summary:** all nine areas closed — 30 June 2026.
+
+### MVP usability plan — Area 9 detail (appended 29 June 2026)
 
 Tracked in [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./MVP-USABILITY-LAUNCH-READINESS-PLAN.md) → **Area 9 — The Switch Platform v4 UI/UX Redesign (Mark 3.2 live surfaces)**.
 

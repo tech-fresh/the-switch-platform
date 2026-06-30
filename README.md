@@ -12,10 +12,11 @@
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
-| What are we doing now? | **Priority A complete** (26 June 2026). **Priority C** (website polish) **finished** (24 June 2026). **Priority D** is now complete too; only deferred Priority E scope remains. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Priority A–D closed; Priority E deferred only. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
-| What is next? | **Priority E** deferred scope review only if the operator wants to expand beyond the current MVP. |
+| Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
+| What is next? | Deploy latest usability work to Fly; re-run `verify:local-launch-readiness` after meaningful changes. Priority **E** deferred only. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 
@@ -159,7 +160,7 @@ Checklist and evidence → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL
 | **What it is** | GCSE / iGCSE revision platform — practice, timed tests, full exams, progress |
 | **Live** | https://theswitchplatform.com |
 | **Launch** | Live on Fly; Final Path Mark 2 and Priority A **complete** (26 June 2026) |
-| **Now** | **Active MVP plan complete** · **Priority A complete** (26 June) · **Priority C complete** (24 June) · **Priority D complete** (26 June) |
+| **Now** | **MVP usability plan complete (Areas 1–9)** · **Priority A complete** (26 June) · **Priority C complete** (24 June) · **Priority D complete** (26 June) |
 
 ### Core MVP modules (priority order)
 
@@ -457,6 +458,13 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-30 MVP docs and operator truth (Area 8 — complete)
+
+- Operator truth map: `docs/MVP-OPERATOR-TRUTH.md` — separates Priority A–D launch proof, usability Areas 1–9, and deferred Priority E.
+- Contract tests: `tests/mvp-operator-truth.test.mjs` — entry-point doc alignment across HANDOFF, AGENTS, README, PLATFORM-GUIDE, FINAL-PHASE-PLAN.
+- Synced ideas index, usability plan status (all areas closed), fixed Area 2 header in usability plan.
+- **Area 8: 4/4 complete.** **Full MVP usability plan closed.**
 
 ### 2026-06-30 MVP verification and rehearsal tooling (Area 7 — complete)
 

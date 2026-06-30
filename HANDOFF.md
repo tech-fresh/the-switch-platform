@@ -42,7 +42,7 @@ Commit and push when the action produced repo changes, unless a task explicitly 
 
 | Step | Action |
 |------|--------|
-| Before each task | Read `HANDOFF.md` → **`docs/ideas/FINAL-PHASE-PLAN.md`** → `PLATFORM-GUIDE.md` → README **sections only** (when needed) |
+| Before each task | Read `HANDOFF.md` → **`docs/MVP-OPERATOR-TRUTH.md`** → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`** → `PLATFORM-GUIDE.md` → README **sections only** (when needed) |
 | During task | One module, one priority, match architecture gate |
 | After each task | Update **HANDOFF** Live session state + **AGENTS** operator sync (non-negotiable) |
 | End of session | Verification, commit, push, session log, README build record if behavior changed |
@@ -65,16 +65,16 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** `main`
-- **Last updated by:** Codex
-- **Last updated:** 2026-06-29 (MVP usability Area 1 runtime rehearsal hardening)
+- **Current branch:** `cursor/area-7-launch-rehearsal-tooling`
+- **Last updated by:** Cursor
+- **Last updated:** 2026-06-30 (MVP usability Area 8 docs and operator truth)
 
 ### Active task
 
-- **Priority item #:** MVP Usability Launch Readiness Plan — Area 7
-- **Module:** Verification and rehearsal tooling
-- **Status:** Area 7 **5/5 complete** — launch-utils stabilized, smoke/e2e tightened, CTA contracts, documented core order; `verify:local-launch-readiness` green end to end
-- **Branch:** `main`
+- **Priority item #:** MVP Usability Launch Readiness Plan — **complete**
+- **Module:** Docs and operator truth (Area 8)
+- **Status:** All Areas 1–9 **closed** — operator truth doc, entry-point sync, contract tests green
+- **Branch:** `cursor/area-7-launch-rehearsal-tooling`
 
 ### Priority C — COMPLETE (24 June 2026)
 
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **MVP usability Area 8 docs and operator truth (30 June 2026)** — added `docs/MVP-OPERATOR-TRUTH.md` (three-lane map: Priority A–D truth, usability Areas 1–9, deferred Priority E), `tests/mvp-operator-truth.test.mjs`, synced HANDOFF/AGENTS/README/PLATFORM-GUIDE/FINAL-PHASE-PLAN/ideas index; fixed Area 2 header in usability plan. Area 8 **4/4 complete**. **Full usability plan closed.**
 - **MVP usability Area 7 verification and rehearsal tooling (30 June 2026)** — stabilized `launch-utils.mjs` (loopback bind, shared readiness probes), refactored smoke/e2e, added `local-launch-rehearsal-order.mjs`, `tests/mvp-launch-tooling.test.mjs`, `docs/LOCAL-LAUNCH-REHEARSAL.md`; `npm run verify:local-launch-readiness` passed end to end. Area 7 **5/5 complete**. Area 1 one-command wrapper also **complete**.
 - **MVP usability Area 6 support, accessibility, and recovery UX (29 June 2026)** — added `/support` to account quick links, support hub link on `/accessibility`, support action on assessment recovery, `mvp-support-recovery-rehearsal.mjs`, `tests/mvp-support-recovery.test.mjs`, `npm run test:support-recovery-rehearsal`. Area 6 **5/5 complete**.
 - **MVP usability Area 1 runtime rehearsal hardening (29 June 2026)** — aligned the rehearsal pipeline on `.next-rehearsal`, added `prepare-next-build.mjs`, strengthened startup readiness probes for `/`, `/api/auth/providers`, `/api/account/overview`, and `/api/dashboard/home`, and refactored `route-smoke` / `launch-e2e` into reusable functions for scripted launch checks.
@@ -139,8 +140,9 @@ Update this section every session.
 
 ### What is next
 
-- **Publish Areas 4 + 5 + 6 + 7 to production:** `fly auth login` → `npm run deploy:fly`
-- Continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` — **Area 8** docs and operator truth
+- **Deploy usability Areas 4–8 to production:** `fly auth login` → `npm run deploy:fly`
+- Re-run `npm run verify:local-launch-readiness` after deploy or meaningful product changes
+- Priority **E** deferred scope only — operator gate required to reopen
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
 ### Completion snapshot
@@ -164,7 +166,7 @@ Fresh rerun on 30 June 2026:
 - [x] `npm run lint`
 - [x] `npm run type-check`
 - [x] `npm run build`
-- [x] `npm run test` (156 tests)
+- [x] `npm run test` (162 tests)
 - [x] `npm run test:support-recovery-rehearsal`
 - [x] `npm run verify:local-launch-readiness` — full core chain green (30 June 2026)
 

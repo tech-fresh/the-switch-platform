@@ -7,11 +7,14 @@ Plain English: this folder holds **plans** — not live session state. Read `HAN
 
 ---
 
-## Active plan (consult this)
+## Active references (consult these)
 
 | Plan | What it covers |
 |------|----------------|
 | **[`FINAL-PHASE-PLAN.md`](./FINAL-PHASE-PLAN.md)** | **Current completion record** — MVP closeout complete; Priority **E** is deferred scope only |
+| **[`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](./MVP-USABILITY-LAUNCH-READINESS-PLAN.md)** | **Usability hardening — complete (Areas 1–9)** — route clickability, rehearsal tooling, Mark 3.2 UI |
+| **[`../MVP-OPERATOR-TRUTH.md`](../MVP-OPERATOR-TRUTH.md)** | **Three-lane operator map** — Priority A–D truth vs usability vs deferred Priority E |
+| **[`../LOCAL-LAUNCH-REHEARSAL.md`](../LOCAL-LAUNCH-REHEARSAL.md)** | **Local verification order** — `npm run verify:local-launch-readiness` |
 
 ---
 

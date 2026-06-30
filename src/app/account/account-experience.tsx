@@ -29,7 +29,7 @@ function getRoleClasses(role: "student" | "editor" | "admin"): string {
     return "border-emerald-300 bg-emerald-50 text-emerald-950";
   }
 
-  return "border-violet-200 bg-violet-50/50 text-slate-800";
+  return "border-teal-200 bg-teal-50/60 text-slate-800";
 }
 
 function formatSignedInAt(timestamp: string): string {
@@ -82,7 +82,7 @@ export function AccountExperience({ account, authErrorMessage }: AccountExperien
             : account.signedOutDescription
         }
         aside={
-          <div className="space-y-3 rounded-2xl border border-violet-100 bg-white p-4 shadow-sm">
+          <div className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Current session</p>
             {authenticatedSession ? (
               <>
@@ -115,7 +115,7 @@ export function AccountExperience({ account, authErrorMessage }: AccountExperien
                 </p>
                 <Link
                   href="/login?reauth=1"
-                  className="mt-3 inline-flex rounded-2xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-md hover:bg-violet-700"
+                  className="mt-3 inline-flex rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-teal-900"
                 >
                   Log in
                 </Link>
@@ -141,7 +141,7 @@ export function AccountExperience({ account, authErrorMessage }: AccountExperien
         <div className="grid gap-6">
           <AuthAccessPathPanel accessPath={account.accessPath} variant="account" />
 
-          <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm sm:p-6">
+          <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
             <div className="border-b border-stone-200 pb-5">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 Account-linked study actions
@@ -166,7 +166,7 @@ export function AccountExperience({ account, authErrorMessage }: AccountExperien
             </div>
           </article>
 
-          <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm sm:p-6">
+          <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
             <div className={`border p-4 ${getAuthReadinessClasses(account.authReadiness.status)}`}>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] opacity-75">
                 Live sign-in readiness
@@ -226,7 +226,7 @@ export function AccountExperience({ account, authErrorMessage }: AccountExperien
                 </div>
                 <Link
                   href="/account/live-cookie-guide"
-                  className="mt-4 inline-flex border border-stone-300 px-3 py-2 text-sm font-medium text-stone-800 transition hover:border-violet-300"
+                  className="mt-4 inline-flex border border-stone-300 px-3 py-2 text-sm font-medium text-stone-800 transition hover:border-teal-300"
                 >
                   Open live cookie guide
                 </Link>

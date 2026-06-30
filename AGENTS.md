@@ -124,7 +124,7 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Build history → **`README.md` → Ordered Build Record**
 - UI / active plan → **`docs/ideas/FINAL-PHASE-PLAN.md`** · **`docs/MOCK-IDEA-BUILD-REFERENCE.md`**
 - MVP usability plan → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`** · **`docs/LOCAL-LAUNCH-REHEARSAL.md`** · **`docs/MVP-OPERATOR-TRUTH.md`**
-- Active redesign track → Areas **1–9 complete** (30 June 2026); latest local Mark 3.2 mission-control/nav refinement is verified and awaiting Fly deploy
+- Active redesign track → Areas **1–9 complete** (30 June 2026); latest local Mark 3.2 mission-control + route-consistency refinement is verified and awaiting Fly deploy
 - Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
 - **UI masterplan** → **`docs/design/UI-UX-MASTERPLAN.md`**
 - **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
@@ -145,7 +145,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Latest local pass refines Mission Control dashboard, five-item nav, and subject-led practice entry; deploy pending. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Latest local pass refines Mission Control dashboard, five-item nav, subject-led practice entry, and route-wide stone/teal consistency; deploy pending. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
 | What is next? | Deploy latest Mark 3.2 mission-control/nav work to Fly (`npm run deploy:fly`); re-run `verify:local-launch-readiness` after meaningful changes. |

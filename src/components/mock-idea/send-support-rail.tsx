@@ -10,7 +10,7 @@ interface SendSupportRailProps {
 export function SendSupportRail({ summary, chips = [] }: SendSupportRailProps) {
   return (
     <section className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-      <div className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm sm:p-6">
+      <div className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
         <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-rose-700">
           Access &amp; SEND signposting
         </p>
@@ -24,7 +24,7 @@ export function SendSupportRail({ summary, chips = [] }: SendSupportRailProps) {
             {chips.map((chip) => (
               <span
                 key={chip}
-                className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-900"
+                className="rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-900"
               >
                 {chip}
               </span>
@@ -40,13 +40,13 @@ export function SendSupportRail({ summary, chips = [] }: SendSupportRailProps) {
           </Link>
           <Link
             href="/how-it-works"
-            className="border border-stone-300 px-4 py-2 text-xs font-semibold text-stone-800 hover:border-violet-300"
+            className="border border-stone-300 px-4 py-2 text-xs font-semibold text-stone-800 hover:border-sky-300"
           >
             Access arrangements
           </Link>
           <Link
             href="/support"
-            className="border border-stone-300 px-4 py-2 text-xs font-semibold text-stone-800 hover:border-violet-300"
+            className="border border-stone-300 px-4 py-2 text-xs font-semibold text-stone-800 hover:border-sky-300"
           >
             Support hub
           </Link>
@@ -58,14 +58,14 @@ export function SendSupportRail({ summary, chips = [] }: SendSupportRailProps) {
           <Link
             key={chip.id}
             href={chip.href}
-            className="group flex flex-col border border-stone-200 bg-white p-3 shadow-sm transition hover:border-violet-300 hover:shadow-md"
+            className="group flex flex-col border border-stone-200 bg-white p-3 shadow-sm transition hover:border-teal-300 hover:shadow-md"
           >
             <span
               className="mb-2 h-14 w-full border border-stone-200 shadow-inner"
               style={{ backgroundColor: chip.swatch }}
               aria-hidden
             />
-            <span className="text-xs font-semibold text-stone-800 group-hover:text-violet-700">{chip.label}</span>
+            <span className="text-xs font-semibold text-stone-800 group-hover:text-teal-800">{chip.label}</span>
             <span className="mt-1 text-[10px] text-stone-500">Tap to open settings</span>
           </Link>
         ))}

@@ -10,7 +10,7 @@ interface Mark32StatItem {
 
 interface Mark32PageHeaderProps {
   eyebrow: string;
-  eyebrowTone?: "violet" | "sky" | "emerald" | "amber" | "rose";
+  eyebrowTone?: "teal" | "violet" | "sky" | "emerald" | "amber" | "rose";
   title: string;
   description?: string;
   stats?: Mark32StatItem[];
@@ -19,6 +19,8 @@ interface Mark32PageHeaderProps {
 
 function getEyebrowClass(tone: Mark32PageHeaderProps["eyebrowTone"]): string {
   switch (tone) {
+    case "teal":
+      return "text-teal-700";
     case "sky":
       return "text-sky-700";
     case "emerald":
@@ -27,8 +29,10 @@ function getEyebrowClass(tone: Mark32PageHeaderProps["eyebrowTone"]): string {
       return "text-amber-700";
     case "rose":
       return "text-rose-700";
+    case "violet":
+      return "text-teal-700";
     default:
-      return "text-violet-700";
+      return "text-teal-700";
   }
 }
 
@@ -44,7 +48,7 @@ export function Mark32StatCard({ label, value, detail }: Mark32StatItem) {
 
 export function Mark32PageHeader({
   eyebrow,
-  eyebrowTone = "violet",
+  eyebrowTone = "teal",
   title,
   description,
   stats,

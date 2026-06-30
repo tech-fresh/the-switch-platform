@@ -27,7 +27,7 @@ export function Mark32PowerGridJourney({
     >
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-700">Power Grid</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Power Grid</p>
           <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950 sm:text-2xl">
             Level up as you learn
           </h2>
@@ -39,7 +39,7 @@ export function Mark32PowerGridJourney({
           ) : null}
         </div>
         {!compact ? (
-          <Link href="/progress" className="text-sm font-semibold text-violet-600 hover:opacity-80">
+          <Link href="/progress" className="text-sm font-semibold text-teal-800 hover:opacity-80">
             Open full progress
           </Link>
         ) : null}
@@ -57,7 +57,7 @@ export function Mark32PowerGridJourney({
                 <span
                   className={`grid size-10 shrink-0 place-items-center rounded-full text-xs font-bold transition ${
                     isCurrent
-                      ? "size-12 bg-violet-600 text-white shadow-lg ring-4 ring-violet-200"
+                      ? "size-12 bg-teal-800 text-white shadow-lg ring-4 ring-teal-100"
                       : isComplete
                         ? "bg-amber-400 text-teal-950"
                         : "border border-stone-200 bg-stone-50 text-stone-500"
@@ -68,7 +68,7 @@ export function Mark32PowerGridJourney({
                 </span>
                 <span
                   className={`text-[10px] font-semibold uppercase leading-tight tracking-[0.12em] ${
-                    isCurrent ? "text-violet-600" : isComplete ? "text-stone-700" : "text-stone-400"
+                    isCurrent ? "text-teal-800" : isComplete ? "text-stone-700" : "text-stone-400"
                   }`}
                 >
                   {level}
@@ -79,24 +79,24 @@ export function Mark32PowerGridJourney({
         </ol>
       </div>
 
-      <div className="mt-6 border border-violet-600 bg-gradient-to-br from-violet-900 to-violet-600 p-4 text-white sm:p-5">
+      <div className="mt-6 rounded-3xl border border-teal-800 bg-gradient-to-br from-teal-900 to-teal-700 p-4 text-white sm:p-5">
         <div className="flex flex-wrap items-center gap-4">
-          <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-violet-700 text-xl shadow-lg">
+          <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-teal-800 text-xl shadow-lg">
             ◆
           </span>
           <div>
-            <p className="text-sm font-semibold text-violet-100">Current level</p>
+            <p className="text-sm font-semibold text-teal-50/90">Current level</p>
             <p className="text-xl font-semibold tracking-tight">{currentLevel}</p>
-            <p className="text-sm text-violet-100">
+            <p className="text-sm text-teal-50/90">
               Level {currentIndex} of {POWER_GRID_LEVELS.length}
               {readinessScore !== undefined ? ` · ${readinessScore}/100 readiness` : ""}
             </p>
           </div>
         </div>
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-violet-950/60">
+        <div className="mt-4 h-2 overflow-hidden rounded-full bg-teal-950/50">
           <div className="h-full rounded-full bg-amber-300 transition-all" style={{ width: `${levelProgress}%` }} />
         </div>
-        <p className="mt-3 text-sm text-violet-100">Keep answering to level up!</p>
+        <p className="mt-3 text-sm text-teal-50/90">Keep answering to level up!</p>
       </div>
     </section>
   );

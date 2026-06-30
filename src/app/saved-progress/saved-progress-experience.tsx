@@ -85,7 +85,7 @@ export function SavedProgressExperience({ overview }: SavedProgressExperiencePro
           {overview.sessions.map((session) => (
             <article
               key={session.progressId}
-              className="grid gap-5 rounded-3xl border border-violet-100 bg-white p-5 shadow-sm sm:p-6 lg:grid-cols-[1.2fr_0.8fr]"
+              className="grid gap-5 rounded-3xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6 lg:grid-cols-[1.2fr_0.8fr]"
             >
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
@@ -140,7 +140,7 @@ export function SavedProgressExperience({ overview }: SavedProgressExperiencePro
 
                 <Link
                   href={session.href}
-                  className="inline-flex items-center justify-center rounded-2xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-md hover:bg-violet-700"
+                  className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-teal-900"
                 >
                   {session.actionLabel}
                 </Link>
@@ -156,14 +156,14 @@ export function SavedProgressExperience({ overview }: SavedProgressExperiencePro
         </div>
 
         <aside className="space-y-6">
-          <section className="space-y-3 rounded-2xl border border-violet-100 bg-white p-4 shadow-sm">
+          <section className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
             <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
               Next best action
             </h2>
             <p className="text-sm leading-6 text-stone-700">{overview.recommendedAction}</p>
             <Link
               href={overview.recommendedActionHref}
-              className="inline-flex items-center justify-center rounded-2xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-md hover:bg-violet-700"
+              className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-teal-900"
             >
               Open next saved step
             </Link>

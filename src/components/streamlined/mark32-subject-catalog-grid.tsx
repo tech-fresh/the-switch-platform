@@ -14,7 +14,7 @@ function getToneRingClass(tone: ReturnType<typeof resolveSubjectToneById>): stri
     case "rose":
       return "border-rose-200 text-rose-900";
     default:
-      return "border-violet-200 text-violet-900";
+      return "border-teal-200 text-teal-900";
   }
 }
 
@@ -29,7 +29,7 @@ function getToneBarClass(tone: ReturnType<typeof resolveSubjectToneById>): strin
     case "rose":
       return "bg-rose-600";
     default:
-      return "bg-violet-700";
+      return "bg-teal-800";
   }
 }
 
@@ -69,8 +69,8 @@ export function Mark32SubjectCatalogGrid({
             <Link
               key={subject.subjectId}
               href={href}
-              className={`border bg-white p-5 shadow-sm transition hover:border-violet-400 hover:bg-stone-50 ${
-                isSelected ? "border-violet-600 ring-2 ring-violet-100" : "border-stone-200"
+              className={`rounded-3xl border bg-white p-5 shadow-sm transition hover:border-teal-300 hover:bg-stone-50 ${
+                isSelected ? "border-teal-700 ring-2 ring-teal-100" : "border-stone-200"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -80,7 +80,7 @@ export function Mark32SubjectCatalogGrid({
                     {subject.qualificationType} · {subject.topicCount} topics
                   </p>
                   {isOnboarding ? (
-                    <span className="mt-2 inline-flex bg-violet-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-violet-600">
+                    <span className="mt-2 inline-flex rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-teal-700">
                       Your subject
                     </span>
                   ) : null}
@@ -98,7 +98,7 @@ export function Mark32SubjectCatalogGrid({
                 />
               </div>
               <p className="mt-3 text-sm leading-6 text-stone-600">Next: {subject.nextTopicToRevise}</p>
-              <p className="mt-3 text-sm font-semibold text-violet-600">Study</p>
+              <p className="mt-3 text-sm font-semibold text-teal-800">Study</p>
             </Link>
           );
         })}

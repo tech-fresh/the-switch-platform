@@ -35,9 +35,9 @@ export function PlannerPromptCard({ initialDismissed = false }: PlannerPromptCar
   };
 
   return (
-    <article className="overflow-hidden rounded-3xl border border-violet-100 bg-white shadow-lg shadow-violet-100/60">
+    <article className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm">
       <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
-        <div className="relative border-b border-violet-200 bg-gradient-to-br from-violet-900 via-violet-800 to-violet-700 p-6 text-white md:border-b-0 md:border-r">
+        <div className="relative border-b border-stone-200 bg-gradient-to-br from-teal-900 via-teal-800 to-teal-700 p-6 text-white md:border-b-0 md:border-r">
           <button
             type="button"
             onClick={handleDismiss}
@@ -47,9 +47,9 @@ export function PlannerPromptCard({ initialDismissed = false }: PlannerPromptCar
           >
             Close
           </button>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-violet-200">Planner</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-teal-100">Planner</p>
           <h2 className="mt-2 text-2xl font-bold leading-tight">Your study plan, built around you</h2>
-          <p className="mt-3 text-sm leading-6 text-violet-100">
+          <p className="mt-3 text-sm leading-6 text-teal-50/90">
             Links planner, progress, exams, and access settings in one panel.
           </p>
           <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[10px] font-semibold">

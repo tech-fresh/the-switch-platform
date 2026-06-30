@@ -25,7 +25,7 @@ export function WeeklyPlannerGrid({ planner, compact = false }: WeeklyPlannerGri
           <div
             key={day.dayKey}
             className={`min-h-[7.5rem] rounded-xl border p-2 ${
-              day.isToday ? "border-violet-400 bg-violet-50/40" : "border-violet-100 bg-violet-50/20"
+              day.isToday ? "border-teal-300 bg-teal-50/70" : "border-stone-200 bg-stone-50/80"
             }`}
           >
             <div className="flex items-center justify-between gap-1">
@@ -33,7 +33,7 @@ export function WeeklyPlannerGrid({ planner, compact = false }: WeeklyPlannerGri
                 {day.weekdayLabel}
               </p>
               {day.isToday ? (
-                <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-violet-700">Today</span>
+                <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-teal-700">Today</span>
               ) : null}
             </div>
 

@@ -67,13 +67,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Codex
-- **Last updated:** 2026-06-30 (Mark 3.2 mission control dashboard + streamlined nav pass)
+- **Last updated:** 2026-06-30 (Mark 3.2 route consistency pass + shared tone-system cleanup)
 
 ### Active task
 
 - **Priority item #:** Mark 3.2 UI/UX refinement on live MVP surfaces
 - **Module:** Dashboard, shell navigation, motivation, subjects
-- **Status:** Local mission-control refinement implemented and verified; deploy pending
+- **Status:** Local mission-control and route-consistency refinements implemented and verified; deploy pending
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Mark 3.2 route consistency pass (30 June 2026)** — moved shared Mark 3.2 tokens fully onto the Study Atelier stone/teal system, cleaned remaining violet-heavy student-route surfaces on `/progress`, `/saved-progress`, `/recommendations`, `/results`, `/account`, `/exams`, and `/accessibility`, and aligned supporting components such as the weekly planner, Power Grid journey, planner prompt, SEND rail, and subject catalog cards. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`164/164`).
 - **Mark 3.2 mission control dashboard + streamlined navigation (30 June 2026)** — reshaped `StudentAppShell` into a light top-rail shell with the five-item MVP nav (`Dashboard`, `Subjects`, `Exams`, `Progress`, `Profile`), upgraded dashboard motivation into a curated attributed quote card, shifted dashboard emphasis to Mission Control / one-next-step guidance, and moved the practice entry point into `/subjects`. Added `tests/mark32-navigation.test.mjs`; full `npm run lint`, `npm run type-check`, and `npm run test` green (`164/164`).
 - **MVP usability Area 8 docs and operator truth (30 June 2026)** — added `docs/MVP-OPERATOR-TRUTH.md` (three-lane map: Priority A–D truth, usability Areas 1–9, deferred Priority E), `tests/mvp-operator-truth.test.mjs`, synced HANDOFF/AGENTS/README/PLATFORM-GUIDE/FINAL-PHASE-PLAN/ideas index; fixed Area 2 header in usability plan. Area 8 **4/4 complete**. **Full usability plan closed.**
 - **MVP usability Area 7 verification and rehearsal tooling (30 June 2026)** — stabilized `launch-utils.mjs` (loopback bind, shared readiness probes), refactored smoke/e2e, added `local-launch-rehearsal-order.mjs`, `tests/mvp-launch-tooling.test.mjs`, `docs/LOCAL-LAUNCH-REHEARSAL.md`; `npm run verify:local-launch-readiness` passed end to end. Area 7 **5/5 complete**. Area 1 one-command wrapper also **complete**.
@@ -162,7 +163,7 @@ Update this section every session.
 
 ### Verification last run
 
-Fresh rerun on 30 June 2026:
+Fresh rerun on 30 June 2026 (route consistency pass):
 
 - [x] `npm run lint`
 - [x] `npm run type-check`

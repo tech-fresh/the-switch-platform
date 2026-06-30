@@ -466,6 +466,13 @@ This section is the running record of what has been requested, added, and commit
 - Information architecture: removed `Practice` as a top-level nav item and moved the main practice entry point into `/subjects` so revision and timed practice start from the same subject flow.
 - Verification: `npm run lint`, `npm run type-check`, `npm run test` (`164/164` passed). Added `tests/mark32-navigation.test.mjs`.
 
+### 2026-06-30 Mark 3.2 route consistency pass
+
+- Shared design system: moved `mark32Ui` and `Mark32PageHeader` defaults onto the authoritative Study Atelier stone/teal palette so live student routes inherit the same light-mode system.
+- Student routes: cleaned remaining violet-heavy cards and CTAs on `/progress`, `/saved-progress`, `/recommendations`, `/results`, `/account`, `/exams`, and `/accessibility` without changing route behavior or product logic.
+- Supporting components: aligned `WeeklyPlannerGrid`, `Mark32PowerGridJourney`, `Mark32SubjectCatalogGrid`, `PlannerPromptCard`, and `SendSupportRail` to the same tone system; fixed teal subject-tone blocks so planner cards and subject chips render correctly.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`164/164` passed).
+
 ### 2026-06-30 MVP docs and operator truth (Area 8 — complete)
 
 - Operator truth map: `docs/MVP-OPERATOR-TRUTH.md` — separates Priority A–D launch proof, usability Areas 1–9, and deferred Priority E.

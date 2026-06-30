@@ -49,7 +49,7 @@ function ProgressMainContent({
 
       <Mark32PageHeader
         eyebrow="Progress & planner"
-        eyebrowTone="violet"
+        eyebrowTone="teal"
         title="Readiness, trend, and next-step signals from your active sessions."
         description="Your study planner — built from exam and timed assessment activity through the Power Grid module."
         stats={[
@@ -125,21 +125,21 @@ function ProgressMainContent({
                 <div className="flex flex-wrap gap-3 pt-1">
                   <Link
                     href={subject.subjectHref ?? "/subjects"}
-                    className="inline-flex items-center justify-center border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-800"
+                    className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-900"
                   >
                     Open subject route
                   </Link>
                   {subject.resumeHref ? (
                     <Link
                       href={subject.resumeHref}
-                      className="inline-flex items-center justify-center border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
+                      className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:border-emerald-300 hover:bg-emerald-50"
                     >
                       Resume saved work
                     </Link>
                   ) : null}
                   <Link
                     href="/assessments"
-                    className="inline-flex items-center justify-center border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+                    className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:border-sky-300 hover:bg-sky-50"
                   >
                     Start timed practice
                   </Link>
@@ -186,7 +186,7 @@ function ProgressMainContent({
             <p className="text-sm leading-6 text-stone-700">{summary.nextBestAction}</p>
             <Link
               href={summary.nextBestActionHref ?? "/subjects"}
-              className="inline-flex items-center justify-center border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-800"
+              className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-900"
             >
               Open next step
             </Link>
@@ -204,7 +204,7 @@ function ProgressMainContent({
             {summary.resumeHref ? (
               <Link
                 href={summary.resumeHref}
-                className="inline-flex items-center justify-center border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
+                className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:border-emerald-300 hover:bg-emerald-50"
               >
                 Resume most recent session
               </Link>

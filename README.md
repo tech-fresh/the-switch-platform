@@ -12,11 +12,13 @@
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 Phases 1–6 complete locally including onboarding dashboard-creation and exam filtering; Priority A–D remain closed and Priority E is deferred only. |
-| Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard**. Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
+| GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** (`0ee64b2`) |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 Phases 1–6 are on **`main`** at GitHub (dashboard, subjects, homepage, login, progress, exams, Phase 6 onboarding + exam filtering); Fly deploy pending. Priority A–D remain closed; Priority **E** deferred only. |
+| Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
+| Mark 4 UI lane | **Phases 1–6 on `main`** — see [`docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](./docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) and [`docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`](./docs/ideas/MARK-4-ROUTE-UX-AUDIT.md). |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Merge `cursor/mark32-route-consistency` into `main`, deploy latest Mark 4 work to Fly, then continue Mark 4 Phase 7 public marketing refinement. Priority **E** deferred only. |
+| What is next? | Deploy latest **`main`** to Fly (`npm run deploy:fly`), then continue Mark 4 Phase 7 public marketing refinement. Priority **E** deferred only. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 
@@ -30,7 +32,7 @@
 
 ### In one sentence
 
-**The Switch** is a live GCSE revision website at https://theswitchplatform.com. The student website polish work is **done**, the Priority A proof closeout is **complete**, and the active MVP completion plan is now closed in full.
+**The Switch** is a live GCSE revision website at https://theswitchplatform.com. Priority A proof closeout is **complete**, the MVP usability plan is **closed**, and Mark 4 Phases 1–6 are now on GitHub **`main`** — Fly production deploy is the remaining step to match live.
 
 ### Where we are (simple view)
 
@@ -39,13 +41,14 @@
 | **Live website** | Students can use the real site on Fly.io | **Running** |
 | **Website polish (Priority C)** | Shared study layout, planner, public pages, recovery screens | **Done — 24 June 2026** |
 | **Proof audit (Priority A)** | Written notes, admin screen, and live site must all tell the same story | **Complete — 26 June 2026** |
+| **Mark 4 UI (Phases 1–6)** | Dashboard, subjects, homepage, login, progress, exams, onboarding dashboard-creation | **On GitHub `main` — deploy to Fly pending** |
 | **Wales / NI GCSE** | Extra qualification routes | **Later — not in MVP yet** |
 
 ### Two lanes — do not mix them up
 
 | Lane | Plain English | Status |
 |------|---------------|--------|
-| **A — Onboarding** | New learners answer 8 setup questions; that builds their personal dashboard (subjects, support, access choices) | **Locked — keep all 8 steps** |
+| **A — Onboarding** | New learners answer 8 setup questions; that builds their personal dashboard (qualification, year/goal, school, exam board, subjects, support) and unlocks matched full papers on Exams | **Locked — keep all 8 steps** |
 | **B — Website look and feel** | Public homepage plus a consistent signed-in study experience | **Done** |
 
 ```mermaid
@@ -458,6 +461,13 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-06-30 Mark 4 batch merged to GitHub main
+
+- Fast-forward merged `cursor/mark32-route-consistency` into **`main`** at `a7a4e97` and pushed to https://github.com/tech-fresh/the-switch-platform.
+- Default branch **`main`** now includes the full Mark 4 batch: route consistency, dashboard/subjects/homepage/login passes, progress + exams visual pass, Phase 6 onboarding dashboard-creation, and exam paper filtering via `src/modules/onboarding/exam-availability.ts`.
+- Canonical push target: `origin` → `https://github.com/tech-fresh/the-switch-platform.git` on branch **`main`**.
+- Follow-up doc sync commit: `0ee64b2`.
 
 ### 2026-06-30 Mark 4 Phase 6 onboarding dashboard-creation pass
 

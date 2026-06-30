@@ -148,7 +148,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | What are we doing now? | **MVP usability plan complete (Areas 1–9).** Latest local pass refines Mission Control dashboard, five-item nav, subject-led practice entry, and route-wide stone/teal consistency; deploy pending. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | Deploy latest Mark 3.2 mission-control/nav work to Fly (`npm run deploy:fly`); re-run `verify:local-launch-readiness` after meaningful changes. |
+| What is next? | Merge `cursor/mark32-route-consistency` into `main`, then deploy (`npm run deploy:fly`); re-run `verify:local-launch-readiness` after meaningful changes. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 

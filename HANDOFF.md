@@ -65,16 +65,16 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** `main`
-- **Last updated by:** Codex
-- **Last updated:** 2026-06-30 (Mark 3.2 route consistency pass + shared tone-system cleanup)
+- **Current branch:** `cursor/mark32-route-consistency`
+- **Last updated by:** Cursor
+- **Last updated:** 2026-06-30 (doc sync — route consistency branch pushed to GitHub)
 
 ### Active task
 
 - **Priority item #:** Mark 3.2 UI/UX refinement on live MVP surfaces
 - **Module:** Dashboard, shell navigation, motivation, subjects
-- **Status:** Local mission-control and route-consistency refinements implemented and verified; deploy pending
-- **Branch:** `main`
+- **Status:** Mission-control and route-consistency refinements committed on `cursor/mark32-route-consistency`; merge to `main` and Fly deploy pending
+- **Branch:** `cursor/mark32-route-consistency`
 
 ### Priority C — COMPLETE (24 June 2026)
 

@@ -71,9 +71,9 @@ Update this section every session.
 
 ### Active task
 
-- **Priority item #:** MVP Usability Launch Readiness Plan — Area 6
-- **Module:** Support, accessibility, and recovery UX
-- **Status:** Area 6 **5/5 complete** — support hub, accessibility signposting, empty-state recovery, rehearsal + contract tests green
+- **Priority item #:** MVP Usability Launch Readiness Plan — Area 7
+- **Module:** Verification and rehearsal tooling
+- **Status:** Area 7 **5/5 complete** — launch-utils stabilized, smoke/e2e tightened, CTA contracts, documented core order; `verify:local-launch-readiness` green end to end
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **MVP usability Area 7 verification and rehearsal tooling (30 June 2026)** — stabilized `launch-utils.mjs` (loopback bind, shared readiness probes), refactored smoke/e2e, added `local-launch-rehearsal-order.mjs`, `tests/mvp-launch-tooling.test.mjs`, `docs/LOCAL-LAUNCH-REHEARSAL.md`; `npm run verify:local-launch-readiness` passed end to end. Area 7 **5/5 complete**. Area 1 one-command wrapper also **complete**.
 - **MVP usability Area 6 support, accessibility, and recovery UX (29 June 2026)** — added `/support` to account quick links, support hub link on `/accessibility`, support action on assessment recovery, `mvp-support-recovery-rehearsal.mjs`, `tests/mvp-support-recovery.test.mjs`, `npm run test:support-recovery-rehearsal`. Area 6 **5/5 complete**.
 - **MVP usability Area 1 runtime rehearsal hardening (29 June 2026)** — aligned the rehearsal pipeline on `.next-rehearsal`, added `prepare-next-build.mjs`, strengthened startup readiness probes for `/`, `/api/auth/providers`, `/api/account/overview`, and `/api/dashboard/home`, and refactored `route-smoke` / `launch-e2e` into reusable functions for scripted launch checks.
 - **Area 1 direct verification green (29 June 2026)** — `npm run lint`, `npm run type-check`, `npm run build`, `npm run test`, `npm run test:smoke`, and `npm run test:e2e` all passed after the runtime hardening pass. The new `verify:local-launch-readiness` wrapper exists but still needs one final operator-terminal rerun because the Codex sandbox hit loopback `listen EPERM` during the chained smoke phase.
@@ -138,9 +139,8 @@ Update this section every session.
 
 ### What is next
 
-- **Publish Areas 4 + 5 + 6 to production:** `fly auth login` → `npm run deploy:fly`
-- Re-run `npm run verify:local-launch-readiness` in the operator terminal outside the Codex sandbox to confirm the wrapper now passes end to end
-- If the wrapper passes outside the sandbox, mark Area 1 complete in the plan/docs and continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` — **Area 7** verification and rehearsal tooling
+- **Publish Areas 4 + 5 + 6 + 7 to production:** `fly auth login` → `npm run deploy:fly`
+- Continue `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md` — **Area 8** docs and operator truth
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
 ### Completion snapshot
@@ -156,20 +156,17 @@ Update this section every session.
 - **Fly deploy (29 June 2026):** `0eaf697` is on GitHub but production may still be pre-Areas-4/5. Depot builder timeouts (`authentication handshake failed: EOF`) are bypassed with `npm run deploy:fly` (uses `fly deploy --depot=false`; no local Docker). If deploy fails with `401 Unauthorized` or `Not authorized to access this firecrackerapp`, run `fly auth login` in the operator terminal, confirm `fly status -a the-switch-platform`, then `npm run deploy:fly` again.
 - None for the current MVP closeout
 - Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
-- `npm run verify:local-launch-readiness` still needs one non-sandbox confirmation because the Codex wrapper run hit `listen EPERM 127.0.0.1` during the chained smoke step even though direct `npm run test:smoke` and `npm run test:e2e` both passed
 
 ### Verification last run
 
-Fresh rerun on 29 June 2026:
+Fresh rerun on 30 June 2026:
 
 - [x] `npm run lint`
 - [x] `npm run type-check`
 - [x] `npm run build`
-- [x] `npm run test` (148 tests)
+- [x] `npm run test` (156 tests)
 - [x] `npm run test:support-recovery-rehearsal`
-- [x] `npm run test:smoke`
-- [x] `npm run test:e2e`
-- [ ] `npm run verify:local-launch-readiness` — wrapper still needs an operator-terminal rerun outside the Codex sandbox
+- [x] `npm run verify:local-launch-readiness` — full core chain green (30 June 2026)
 
 Most recent Priority A closeout rerun on 26 June 2026:
 

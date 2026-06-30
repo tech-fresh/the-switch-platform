@@ -1,12 +1,11 @@
-import { getPersistenceRuntimeConfig } from "../src/lib/persistence/runtime.ts";
 import { fileURLToPath } from "node:url";
-import { fileExists, runCommand } from "./launch-utils.mjs";
 
-const scriptRuns = [
-  { name: "type-check" },
-  { name: "build" },
-  { name: "test" },
-];
+import { getPersistenceRuntimeConfig } from "../src/lib/persistence/runtime.ts";
+import {
+  formatLocalLaunchReadinessSummary,
+  LOCAL_LAUNCH_REHEARSAL_CORE_STEPS,
+} from "./local-launch-rehearsal-order.mjs";
+import { fileExists, runCommand } from "./launch-utils.mjs";
 
 const npmExecPath = process.env.npm_execpath?.trim() ?? "";
 const useNodeNpmExec = npmExecPath ? await fileExists(npmExecPath) : false;
@@ -16,36 +15,43 @@ const cleanNextBuildArtifactsScriptPath = fileURLToPath(
   new URL("./clean-next-build-artifacts.mjs", import.meta.url),
 );
 
-logPersistenceRuntimeNote();
-process.stdout.write("\n> Resetting Next build artifacts\n");
-await runCommand(process.execPath, [cleanNextBuildArtifactsScriptPath], {
-  label: "reset Next build artifacts",
-  env: process.env,
-});
+console.log(formatLocalLaunchReadinessSummary());
+console.log("");
 
-for (const scriptRun of scriptRuns) {
-  process.stdout.write(`\n> Running ${scriptRun.name}\n`);
-  await runCommand(npmCommand, [...npmArgsPrefix, "run", scriptRun.name], {
-    label: `npm run ${scriptRun.name}`,
-    env: scriptRun.env
-      ? {
-          ...process.env,
-          ...scriptRun.env,
-        }
-      : process.env,
+logPersistenceRuntimeNote();
+
+for (const step of LOCAL_LAUNCH_REHEARSAL_CORE_STEPS) {
+  if (step.resetNextArtifacts) {
+    process.stdout.write(`\n> [${step.id}] Resetting Next build artifacts\n`);
+    await runCommand(process.execPath, [cleanNextBuildArtifactsScriptPath], {
+      label: "reset Next build artifacts",
+      env: process.env,
+    });
+  }
+
+  process.stdout.write(`\n> [${step.id}] ${step.label}\n`);
+  process.stdout.write(`    ${step.story}\n`);
+
+  if (step.runner === "route-smoke") {
+    const { runRouteSmoke } = await import("./route-smoke.mjs");
+    await runRouteSmoke();
+    continue;
+  }
+
+  if (step.runner === "launch-e2e") {
+    const { runLaunchE2e } = await import("./launch-e2e.mjs");
+    await runLaunchE2e();
+    continue;
+  }
+
+  await runCommand(npmCommand, [...npmArgsPrefix, "run", step.npmScript], {
+    label: `npm run ${step.npmScript}`,
+    env: process.env,
   });
 }
 
-process.stdout.write("\n> Running test:smoke\n");
-const { runRouteSmoke } = await import("./route-smoke.mjs");
-await runRouteSmoke();
-
-process.stdout.write("\n> Running test:e2e\n");
-const { runLaunchE2e } = await import("./launch-e2e.mjs");
-await runLaunchE2e();
-
 console.log(
-  "\nLocal launch readiness passed: build, route type generation, tests, smoke checks, and signed-in rehearsal all completed in the fresh-checkout order.",
+  "\nLocal launch readiness passed: lint, type-check, build, contract tests, signed-out smoke, and signed-in rehearsal all completed in the documented core order.",
 );
 
 function logPersistenceRuntimeNote() {

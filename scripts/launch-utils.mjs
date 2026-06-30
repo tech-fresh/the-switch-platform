@@ -6,12 +6,16 @@ import process from "node:process";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 
+import { LOCAL_READINESS_PROBE_ROUTES } from "./local-launch-rehearsal-order.mjs";
+
 const repoRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const DEFAULT_REHEARSAL_DIST_DIR = ".next-rehearsal";
 
 export function getRepoRoot() {
   return repoRoot;
 }
+
+export { LOCAL_READINESS_PROBE_ROUTES };
 
 export function assert(condition, message) {
   if (!condition) {
@@ -122,7 +126,7 @@ export async function startNextServer(env = {}) {
   const port = await getAvailablePort();
   const child = spawn(
     process.execPath,
-    [path.join(repoRoot, "node_modules", "next", "dist", "bin", "next"), "start", "-p", String(port)],
+    [path.join(repoRoot, "node_modules", "next", "dist", "bin", "next"), "start", "-H", "127.0.0.1", "-p", String(port)],
     {
       cwd: repoRoot,
       env: {
@@ -155,12 +159,6 @@ export async function startNextServer(env = {}) {
 
 async function waitForServer(baseUrl, child, getLogs) {
   const deadline = Date.now() + 30000;
-  const readinessRoutes = [
-    "/",
-    "/api/auth/providers",
-    "/api/account/overview",
-    "/api/dashboard/home",
-  ];
 
   while (Date.now() < deadline) {
     if (child.exitCode !== null) {
@@ -169,7 +167,7 @@ async function waitForServer(baseUrl, child, getLogs) {
 
     try {
       const responses = await Promise.all(
-        readinessRoutes.map((route) =>
+        LOCAL_READINESS_PROBE_ROUTES.map((route) =>
           fetch(`${baseUrl}${route}`, {
             redirect: "manual",
           }),

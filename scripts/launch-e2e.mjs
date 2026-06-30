@@ -1,6 +1,11 @@
 import process from "node:process";
 import { pathToFileURL } from "node:url";
+
+import { STUDENT_SHELL_ROUTE_PATHS } from "./canonical-mvp-routes.mjs";
+import { ensureWalkthroughStudentOnboardingComplete, jsonHeaders } from "./live-onboarding-utils.mjs";
 import { assert, ensureBuild, fetchJson, fetchText, getSessionCookie, startNextServer, stopServer } from "./launch-utils.mjs";
+
+const EXAM_ID = "aqa-maths-higher-paper-1";
 
 export async function runLaunchE2e() {
   await ensureBuild();
@@ -13,19 +18,18 @@ export async function runLaunchE2e() {
   try {
     const studentCookie = await signIn(server.baseUrl, "email-magic-link", "/account");
     const adminCookie = await signIn(server.baseUrl, "google", "/admin");
+    const studentHeaders = jsonHeaders({ cookie: studentCookie });
+
+    await ensureWalkthroughStudentOnboardingComplete(server.baseUrl, studentHeaders);
 
     const studentAccount = await fetchJson(`${server.baseUrl}/api/account/overview`, {
-      headers: {
-        cookie: studentCookie,
-      },
+      headers: studentHeaders,
     });
     assert(studentAccount.response.ok, `Expected student account overview to return 200, received ${studentAccount.response.status}.`);
     assert(studentAccount.json?.account?.isAuthenticated === true, "Expected student account overview to report an authenticated session.");
 
     const studentResults = await fetchJson(`${server.baseUrl}/api/results/overview`, {
-      headers: {
-        cookie: studentCookie,
-      },
+      headers: studentHeaders,
     });
     assert(studentResults.response.ok, `Expected authenticated /api/results/overview to return 200, received ${studentResults.response.status}.`);
 
@@ -41,43 +45,29 @@ export async function runLaunchE2e() {
     );
 
     const accountPage = await fetchText(`${server.baseUrl}/account`, {
-      headers: {
-        cookie: studentCookie,
-      },
+      headers: studentHeaders,
     });
     assert(
       accountPage.body.includes("Your signed-in identity and study shortcuts"),
       "Expected signed-in account page copy to render for the student session.",
     );
 
-    for (const route of [
-      "/dashboard",
-      "/subjects",
-      "/assessments",
-      "/exams",
-      "/saved-progress",
-      "/results",
-      "/recommendations",
-      "/progress",
-      "/accessibility",
-      "/support",
-      "/how-it-works",
-    ]) {
+    for (const route of [...STUDENT_SHELL_ROUTE_PATHS, "/support", "/how-it-works"]) {
       const page = await fetchText(`${server.baseUrl}${route}`, {
-        headers: {
-          cookie: studentCookie,
-        },
+        headers: studentHeaders,
       });
 
       assert(page.response.ok, `Expected authenticated ${route} to return 200, received ${page.response.status}.`);
+      assert(
+        page.body.includes('aria-label="Student navigation"') || route === "/support" || route === "/how-it-works",
+        `Expected authenticated ${route} to render the student shell or public marketing surface.`,
+      );
     }
 
     const focusedExamPage = await fetchText(
-      `${server.baseUrl}/exams?examId=aqa-maths-higher-paper-1&questionId=q1-v1`,
+      `${server.baseUrl}/exams?examId=${EXAM_ID}&questionId=q1-v1`,
       {
-        headers: {
-          cookie: studentCookie,
-        },
+        headers: studentHeaders,
       },
     );
     assert(
@@ -94,9 +84,7 @@ export async function runLaunchE2e() {
     const focusedAssessmentPage = await fetchText(
       `${server.baseUrl}/assessments?assessmentId=edexcel-english-writing-craft-checkpoint&durationMinutes=30&questionId=q4`,
       {
-        headers: {
-          cookie: studentCookie,
-        },
+        headers: studentHeaders,
       },
     );
     assert(
@@ -108,6 +96,49 @@ export async function runLaunchE2e() {
         focusedAssessmentPage.body.includes("Question navigator") ||
         focusedAssessmentPage.body.includes("Timed assessment"),
       "Expected focused assessment route to render timed-practice controls.",
+    );
+
+    const examSessionResponse = await fetchJson(`${server.baseUrl}/api/exams/session/${EXAM_ID}`, {
+      headers: studentHeaders,
+    });
+    assert(examSessionResponse.response.ok, `Expected exam session API to return 200, received ${examSessionResponse.response.status}.`);
+
+    const examSession = examSessionResponse.json?.session;
+    assert(examSession?.examSessionId, "Expected exam session payload for save/resume rehearsal.");
+
+    const answeredResponses = examSession.questionResponses.map((response, index) =>
+      index === 0
+        ? { ...response, status: "answered", selectedOptionId: response.selectedOptionId ?? "a" }
+        : response,
+    );
+
+    const examSave = await fetchJson(`${server.baseUrl}/api/exams/session/${EXAM_ID}`, {
+      method: "PATCH",
+      headers: studentHeaders,
+      body: JSON.stringify({
+        examSessionId: examSession.examSessionId,
+        currentQuestionId: examSession.questions[0].questionId,
+        questionResponses: answeredResponses,
+        timeRemainingMinutes: 42,
+      }),
+    });
+    assert(examSave.response.ok, `Expected exam autosave to return 200, received ${examSave.response.status}.`);
+
+    const savedProgressAfterSave = await fetchJson(`${server.baseUrl}/api/saved-progress/overview`, {
+      headers: studentHeaders,
+    });
+    assert(savedProgressAfterSave.response.ok, "Expected saved-progress overview after exam save.");
+    const examSavedSession = savedProgressAfterSave.json?.overview?.sessions?.find(
+      (entry) => entry.entityType === "exam-session" && entry.entityId === examSession.examSessionId,
+    );
+    assert(examSavedSession?.href, "Expected saved exam session to expose a resume href.");
+
+    const examResumePage = await fetchText(`${server.baseUrl}${examSavedSession.href}`, {
+      headers: studentHeaders,
+    });
+    assert(
+      examResumePage.response.ok,
+      `Expected exam resume href ${examSavedSession.href} to return 200.`,
     );
 
     const adminPage = await fetchText(`${server.baseUrl}/admin`, {
@@ -143,7 +174,9 @@ export async function runLaunchE2e() {
     const signedOutResults = await fetchJson(`${server.baseUrl}/api/results/overview`, {});
     assert(signedOutResults.response.status === 401, `Expected signed-out /api/results/overview to return 401, received ${signedOutResults.response.status}.`);
 
-    console.log("Local end-to-end rehearsal passed: student continuity, admin access, protected APIs, and sign-out all behaved correctly in the preview-style test runtime.");
+    console.log(
+      "Local end-to-end rehearsal passed: student routes, exam autosave/resume, admin access, protected APIs, and sign-out all behaved correctly in the preview-style test runtime.",
+    );
   } finally {
     await stopServer(server.child);
   }

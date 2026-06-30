@@ -20,7 +20,7 @@ Use that name when referring to the ongoing work to:
 - tighten the dashboard, homepage, and study flows
 - remove clutter while keeping the core MVP architecture intact
 
-Status: **in progress** until boot/runtime stability (Area 1), rehearsal tooling (Area 7), and remaining practical usability areas below are complete. **Areas 2, 6, and 9 (Mark 3.2 UI) are complete.**
+Status: **in progress** until docs/operator truth (Area 8) is complete. **Areas 1, 2, 6, and 9 (Mark 3.2 UI) are complete.**
 
 ## Plan name
 
@@ -62,9 +62,11 @@ Make the app boot reliably from a fresh checkout in both local and Fly-style pro
 | Route type + rehearsal dist alignment | **Complete** | `scripts/type-check.mjs`, `scripts/prepare-next-build.mjs`, `.next-rehearsal` pipeline |
 | Stronger local server readiness probes | **Complete** | `scripts/launch-utils.mjs` probes `/`, `/api/auth/providers`, `/api/account/overview`, `/api/dashboard/home` |
 | Direct verification order | **Complete** | `npm run lint`, `npm run type-check`, `npm run build`, `npm run test`, `npm run test:smoke`, `npm run test:e2e` all passed |
-| One-command local readiness wrapper | **In progress** | `npm run verify:local-launch-readiness` added in `scripts/local-launch-readiness.mjs`; Codex sandbox still needs one operator-terminal rerun because the chained smoke step hit loopback `listen EPERM` |
+| One-command local readiness wrapper | **Complete** | `npm run verify:local-launch-readiness` — core order passes end to end (30 June 2026) |
 
-## Area 2 — Route-to-Route Clickability
+**Area 1 summary:** `5 / 5` steps complete — boot and runtime stability lane closed for MVP.
+
+**Verification:** `npm run verify:local-launch-readiness` after a fresh checkout or rehearsal reset.
 
 ### Goal
 
@@ -262,6 +264,20 @@ Make the launch-readiness proof repeatable by script, not only by memory or manu
 
 - the rehearsal scripts pass consistently without ad hoc environment tweaking
 - the output tells a clear story about MVP readiness
+
+### Progress — 30 June 2026
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| 7.1 Stabilize `scripts/launch-utils.mjs` | **Complete** | loopback bind `-H 127.0.0.1`, shared `LOCAL_READINESS_PROBE_ROUTES` |
+| 7.2 Keep `test:smoke` focused on route availability | **Complete** | `route-smoke.mjs` uses canonical signed-out route behavior |
+| 7.3 Keep `test:e2e` focused on signed-in rehearsal + save/resume | **Complete** | `launch-e2e.mjs` — onboarding, shell routes, exam PATCH, resume href |
+| 7.4 Contract checks for primary CTA links | **Complete** | `tests/mvp-launch-tooling.test.mjs` — homepage + dashboard CTAs |
+| 7.5 Documented verification order | **Complete** | `docs/LOCAL-LAUNCH-REHEARSAL.md`, `local-launch-rehearsal-order.mjs`, `verify:local-launch-readiness` |
+
+**Area 7 summary:** `5 / 5` steps complete — verification and rehearsal tooling lane closed for MVP.
+
+**Verification:** `npm run verify:local-launch-readiness` (30 June 2026 — full core chain green).
 
 ## Area 8 — Docs and Operator Truth
 

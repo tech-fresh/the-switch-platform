@@ -458,6 +458,14 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-30 MVP verification and rehearsal tooling (Area 7 — complete)
+
+- Core order: `npm run verify:local-launch-readiness` — lint → type-check → build → test → smoke → e2e (green end to end).
+- Shared order module: `scripts/local-launch-rehearsal-order.mjs`; operator doc: `docs/LOCAL-LAUNCH-REHEARSAL.md`.
+- Launch utils: loopback bind (`-H 127.0.0.1`), shared readiness probes; smoke uses canonical signed-out behavior; e2e adds exam autosave/resume.
+- Contract tests: `tests/mvp-launch-tooling.test.mjs` — verification order, primary CTA links, rehearsal runner exports.
+- **Area 7: 5/5 complete.** Area 1 one-command wrapper also closed.
+
 ### 2026-06-29 MVP support, accessibility, and recovery UX (Area 6 — complete)
 
 - Rehearsal script: `npm run test:support-recovery-rehearsal` — public `/support` hub, accessibility signposting from dashboard/account, invalid assessment recovery, support API route guidance.

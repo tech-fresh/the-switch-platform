@@ -1,6 +1,11 @@
 import process from "node:process";
 import { pathToFileURL } from "node:url";
-import { CANONICAL_MVP_ROUTES, CANONICAL_MVP_ROUTES_DEFINITION } from "./canonical-mvp-routes.mjs";
+
+import {
+  assertSignedOutRouteBehavior,
+  CANONICAL_MVP_ROUTES,
+  CANONICAL_MVP_ROUTES_DEFINITION,
+} from "./canonical-mvp-routes.mjs";
 import { assert, ensureBuild, fetchJson, fetchText, startNextServer, stopServer } from "./launch-utils.mjs";
 
 const jsonRoutes = [
@@ -8,34 +13,6 @@ const jsonRoutes = [
   ["/api/account/overview", "account"],
   ["/api/dashboard/home", "dashboard"],
 ];
-
-async function assertSignedOutRouteBehavior(baseUrl, route) {
-  const response = await fetch(`${baseUrl}${route.path}`, {
-    redirect: "manual",
-  });
-
-  if (route.requiresAuth) {
-    const location = response.headers.get("location") ?? "";
-
-    assert(
-      response.status >= 300 && response.status < 400,
-      `Expected signed-out ${route.path} to redirect, received ${response.status}.`,
-    );
-    assert(
-      location.includes("/login"),
-      `Expected signed-out ${route.path} to redirect to /login, received ${location}.`,
-    );
-    return;
-  }
-
-  const body = await response.text();
-
-  assert(response.ok, `Expected ${route.path} to return 200 when signed out, received ${response.status}.`);
-  assert(
-    body.includes(route.signedOutMarker),
-    `Expected ${route.path} to include launch marker "${route.signedOutMarker}".`,
-  );
-}
 
 export async function runRouteSmoke() {
   await ensureBuild();

@@ -65,16 +65,16 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** `cursor/mark32-route-consistency`
+- **Current branch:** `main`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-30 (Mark 4 progress + exams visual pass)
+- **Last updated:** 2026-06-30 (merged Mark 4 batch into main and pushed to GitHub)
 
 ### Active task
 
 - **Priority item #:** Mark 4 UI/UX planning lane on top of the live Mark 3.2 MVP
 - **Module:** Cross-route product UX planning
-- **Status:** Mark 4 Phase 6 complete locally — onboarding dashboard-creation pass with exam board, study goals, and exam paper filtering; merge to `main` and Fly deploy pending
-- **Branch:** `cursor/mark32-route-consistency`
+- **Status:** Mark 4 Phases 1–6 merged to `main` and pushed to https://github.com/tech-fresh/the-switch-platform — Fly deploy pending
+- **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
 
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Merge Mark 4 batch to `main` and push (30 June 2026)** — fast-forward merged `cursor/mark32-route-consistency` into `main` at `a7a4e97`; pushed to https://github.com/tech-fresh/the-switch-platform. Default branch `main` now includes Mark 4 dashboard, subjects, homepage, login, progress, exams, and Phase 6 onboarding.
 - **Mark 4 Phase 6 onboarding dashboard-creation pass (30 June 2026)** — reframed `/onboarding` as dashboard creation with labelled steps, study-goal capture, exam-board selection (seeded boards only: AQA/Edexcel for GCSE, Cambridge IGCSE for iGCSE), and a dashboard-ready confirmation step. Added `examBoard` + `studyGoal` to onboarding profile types/service, `src/modules/onboarding/exam-availability.ts` to filter `/api/exams/papers` by onboarding setup, and teal Mark 4 shell styling. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`172/172`).
 - **Mark 4 progress + exams visual pass (30 June 2026)** — reworked `/progress` with `Mark32ProgressAtAGlance`, compressed `Mark32SubjectProgressCard` grid, and clearer planner/subject hierarchy; reworked `/exams` lobby with subject grouping, selection-path guidance, and `Mark32ExamPaperCard` status badges (not started / in progress / submitted). Added `tests/mark32-progress-exams.test.mjs`. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`167/167`).
 - **Onboarding UK school lookup clickability pass (1 July 2026)** — upgraded step 3 of `/onboarding` from an England-only school-source note into a UK-wide clickable school-finder step. Learners can now choose `England`, `Scotland`, `Wales`, or `Northern Ireland`, open the official school finder for that nation directly from the onboarding UI, and then enter their school name. Qualification choices remain locked to `GCSE (England)` and `iGCSE` during the MVP. Added matching onboarding service coverage in `tests/onboarding-service.test.mjs`.
@@ -154,8 +155,7 @@ Update this section every session.
 
 ### What is next
 
-- **Merge `cursor/mark32-route-consistency` into `main` and deploy:** `npm run deploy:fly`
-- **Mark 4 Phase 7** — public marketing refinement (homepage/how-it-works/support polish if still needed)
+- **Deploy from `main` to production:** `npm run deploy:fly`
 - Re-run `npm run verify:local-launch-readiness` before or after deploy
 - Priority **E** deferred scope only — operator gate required to reopen
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`

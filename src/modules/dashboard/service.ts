@@ -1,10 +1,16 @@
 import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
 import { getDailyMotivation } from "@/modules/motivation/service";
 import {
-  buildDashboardSetupSummary,
   buildOnboardingSupportSummary,
+  buildDashboardSetupSummary,
   getOnboardingOverview,
 } from "@/modules/onboarding/service";
+import {
+  buildOnboardingPersonalizationContext,
+  filterAssessmentsForOnboardingProfile,
+  filterExamPapersForOnboardingProfile,
+  isOnboardingPersonalizationActive,
+} from "@/modules/onboarding/personalization";
 import { getMockSubjects } from "@/modules/subjects/service";
 import {
   buildAccessibilityPreferenceChips,
@@ -28,19 +34,37 @@ import type {
 } from "./types";
 
 export async function getDashboardHomeData(userId = "guest-preview"): Promise<DashboardHomeData> {
-  const [summary, savedProgress, onboardingOverview, uiPreferences, weeklyPlanner] = await Promise.all([
-    getMockPowerGridSummary({ userId }),
+  const onboardingOverview =
+    userId === "guest-preview" ? null : await getOnboardingOverview(userId);
+
+  const [summary, savedProgress, uiPreferences, weeklyPlanner] = await Promise.all([
+    getMockPowerGridSummary({
+      userId,
+      onboardingProfile: onboardingOverview?.profile ?? null,
+    }),
     getSavedProgressOverview({ userId }),
-    userId === "guest-preview" ? Promise.resolve(null) : getOnboardingOverview(userId),
     userId === "guest-preview"
       ? Promise.resolve({ plannerPromptDismissed: false })
       : getDashboardUiPreferences(userId),
     getWeeklyPlannerSummary({ userId }),
   ]);
   const setup = buildDashboardSetupSummary(onboardingOverview?.profile ?? null);
+  const onboardingPersonalization = buildOnboardingPersonalizationContext(
+    onboardingOverview?.profile ?? null,
+    getMockExamPapers(),
+  );
   const onboardingSupport = buildOnboardingSupportSummary(onboardingOverview?.profile ?? null);
-  const papers = getMockExamPapers();
-  const assessments = getMockTimedAssessments();
+  const profile = onboardingOverview?.profile ?? null;
+  const allPapers = getMockExamPapers();
+  const allAssessments = getMockTimedAssessments();
+  const papers =
+    profile && isOnboardingPersonalizationActive(profile)
+      ? filterExamPapersForOnboardingProfile(allPapers, profile)
+      : allPapers;
+  const assessments =
+    profile && isOnboardingPersonalizationActive(profile)
+      ? filterAssessmentsForOnboardingProfile(allAssessments, profile)
+      : allAssessments;
 
   const examSessions = await Promise.all(
     papers.map(async (paper) => ({
@@ -329,9 +353,11 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     strongestSubject,
     weakestSubject,
     recommendedAction:
-      setup.subjectFilterIds.length > 0
-        ? `${setup.setupSummary} • ${savedProgress.continuity.primaryAction.title}`
-        : savedProgress.continuity.primaryAction.title,
+      onboardingPersonalization.isActive
+        ? `${onboardingPersonalization.studyGoalMessage} • ${savedProgress.continuity.primaryAction.title}`
+        : setup.subjectFilterIds.length > 0
+          ? `${setup.setupSummary} • ${savedProgress.continuity.primaryAction.title}`
+          : savedProgress.continuity.primaryAction.title,
     continuityStatus: savedProgress.continuity.status,
     continuityDescription: savedProgress.continuity.primaryAction.description,
     continuityHref: savedProgress.continuity.primaryAction.href,
@@ -344,6 +370,7 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     supportPreferenceChips: [...onboardingSupport.chips, ...latestSupportSnapshot],
     plannerPromptDismissed: uiPreferences.plannerPromptDismissed,
     weeklyPlanner,
+    onboardingPersonalization,
   };
 }
 

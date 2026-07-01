@@ -1,6 +1,7 @@
 import type { PowerGridSummary, PowerGridTrend } from "@/modules/power-grid/types";
 import type { DailyMotivation } from "@/modules/motivation/service";
 import type { WeeklyPlannerSummary } from "@/modules/weekly-planner/types";
+import type { OnboardingPersonalizationContext } from "@/modules/onboarding/personalization";
 
 export interface DashboardMetric {
   label: string;
@@ -65,4 +66,5 @@ export interface DashboardHomeData {
   supportPreferenceChips: string[];
   plannerPromptDismissed: boolean;
   weeklyPlanner: WeeklyPlannerSummary;
+  onboardingPersonalization: OnboardingPersonalizationContext;
 }

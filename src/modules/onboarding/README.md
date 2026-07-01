@@ -67,10 +67,13 @@ Incomplete learners hitting `/dashboard` are redirected to `/onboarding`.
 
 | Onboarding field | Consumed by |
 |------------------|-------------|
+| `qualificationPath`, `yearGroup`, `examBoard`, `selectedSubjectIds`, `studyGoal` | `personalization.ts` → dashboard, exams, assessments, subjects, progress |
 | `qualificationPath`, `yearGroup`, `selectedSubjectIds` | `buildDashboardSetupSummary()` |
 | Support flags (step 5) | `buildOnboardingSupportSummary()` → dashboard chips + `SendSupportRail` |
 | `schoolName`, `schoolPhase`, `schoolNation` | Profile context; future planner/school features |
 | Complete profile | Dashboard gate + personalised home |
+
+**Watertight rule (30 June 2026):** when `completedAt` is set, every student study surface reads the same onboarding profile through `src/modules/onboarding/personalization.ts` — do not filter onboarding subjects in one route only.
 
 Dashboard module reads onboarding via `getOnboardingOverview()` — **do not re-ask** the same setup on the dashboard UI.
 
@@ -83,6 +86,7 @@ Phase 6 shipped locally:
 - `examBoard` capture on the board-and-subjects step (seeded boards only)
 - Dashboard-ready confirmation on the final step
 - `/api/exams/papers` filtered by onboarding profile so Exams stays usable after setup
+- Dashboard, subjects, assessments, and progress filtered through `personalization.ts` when onboarding is complete
 
 Implementation constraints that still hold:
 

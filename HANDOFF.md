@@ -67,13 +67,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-30 (merged Mark 4 batch into main and pushed to GitHub)
+- **Last updated:** 2026-06-30 (onboarding → dashboard → exams watertight personalization pass)
 
 ### Active task
 
 - **Priority item #:** Mark 4 UI/UX planning lane on top of the live Mark 3.2 MVP
 - **Module:** Cross-route product UX planning
-- **Status:** Mark 4 Phases 1–6 merged to `main` and pushed to https://github.com/tech-fresh/the-switch-platform — Fly deploy pending
+- **Status:** Mark 4 Phases 1–6 merged to `main`; onboarding personalization watertight pass complete locally — Fly deploy pending
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Onboarding → dashboard → exams watertight pass (30 June 2026)** — added `src/modules/onboarding/personalization.ts` as the single source of truth for onboarding-driven content filtering. Dashboard exam/assessment sessions, Power Grid summary, `/api/subjects/experience`, and `/api/assessments/definitions` now all respect completed onboarding profiles (qualification, exam board, selected subjects, study goal). Mission Control shows setup summary, study-goal messaging, exam availability, and a primary-subject CTA. Added `tests/onboarding-personalization-watertight.test.mjs`. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`176/176`).
 - **Merge Mark 4 batch to `main` and push (30 June 2026)** — fast-forward merged `cursor/mark32-route-consistency` into `main` at `a7a4e97`; pushed to https://github.com/tech-fresh/the-switch-platform. Default branch `main` now includes Mark 4 dashboard, subjects, homepage, login, progress, exams, and Phase 6 onboarding.
 - **Mark 4 Phase 6 onboarding dashboard-creation pass (30 June 2026)** — reframed `/onboarding` as dashboard creation with labelled steps, study-goal capture, exam-board selection (seeded boards only: AQA/Edexcel for GCSE, Cambridge IGCSE for iGCSE), and a dashboard-ready confirmation step. Added `examBoard` + `studyGoal` to onboarding profile types/service, `src/modules/onboarding/exam-availability.ts` to filter `/api/exams/papers` by onboarding setup, and teal Mark 4 shell styling. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`172/172`).
 - **Mark 4 progress + exams visual pass (30 June 2026)** — reworked `/progress` with `Mark32ProgressAtAGlance`, compressed `Mark32SubjectProgressCard` grid, and clearer planner/subject hierarchy; reworked `/exams` lobby with subject grouping, selection-path guidance, and `Mark32ExamPaperCard` status badges (not started / in progress / submitted). Added `tests/mark32-progress-exams.test.mjs`. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`167/167`).
@@ -175,6 +176,12 @@ Update this section every session.
 - Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
 
 ### Verification last run
+
+Fresh rerun on 30 June 2026 (onboarding personalization watertight pass):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (176 tests)
 
 Fresh rerun on 30 June 2026 (Mark 4 Phase 6 onboarding + exam availability):
 

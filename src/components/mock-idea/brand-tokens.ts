@@ -3,6 +3,8 @@ export const MOCK_IDEA_BRAND = {
   name: "THE SWITCH PLATFORM",
   shortName: "The Switch Platform",
   tagline: "Unlock Potential. Build Confidence. Achieve More.",
+  logoSrc: "/brand/the-switch-logo.png",
+  /** @deprecated Use SwitchBrandLogo — kept for legacy mock previews only. */
   logoGlyph: "⚡",
   subtitle: "GCSE Revision · Timed Practice · Progress · Exam Ready.",
   purple: {

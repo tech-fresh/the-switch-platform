@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { MOCK_IDEA_BRAND, SEND_COLOUR_CHIPS } from "@/components/mock-idea/brand-tokens";
+import { SwitchBrandLogo } from "@/components/switch-brand-logo";
 
 export function MarketingSiteFooter() {
   return (
@@ -8,12 +9,13 @@ export function MarketingSiteFooter() {
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6">
         <div className="grid gap-10 md:grid-cols-[1.3fr_repeat(3,minmax(0,1fr))]">
           <div className="space-y-4">
-            <p className="flex items-center gap-3 text-xl font-black text-white">
-              <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-teal-800 text-xl text-white">
-                {MOCK_IDEA_BRAND.logoGlyph}
-              </span>
-              {MOCK_IDEA_BRAND.shortName}
-            </p>
+            <SwitchBrandLogo
+              href="/"
+              size="md"
+              showWordmark
+              wordmark={MOCK_IDEA_BRAND.shortName}
+              onDark
+            />
             <p className="max-w-sm text-sm leading-7 text-stone-300">{MOCK_IDEA_BRAND.tagline}</p>
             <p className="text-sm font-semibold text-white">theswitchplatform.com</p>
           </div>

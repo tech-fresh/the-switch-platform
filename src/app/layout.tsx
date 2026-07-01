@@ -11,6 +11,10 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "The Switch Platform",
   description: "GCSE revision, progress tracking and exam readiness platform.",
+  icons: {
+    icon: "/brand/the-switch-logo.png",
+    apple: "/brand/the-switch-logo.png",
+  },
 };
 
 export default async function RootLayout({

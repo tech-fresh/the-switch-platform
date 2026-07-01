@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { MARKETING_NAV, MOCK_IDEA_BRAND } from "@/components/mock-idea/brand-tokens";
+import { SwitchBrandLogo } from "@/components/switch-brand-logo";
 
 interface MarketingSiteHeaderProps {
   isAuthenticated?: boolean;
@@ -17,19 +18,13 @@ export function MarketingSiteHeader({ isAuthenticated = false }: MarketingSiteHe
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
         <div className="flex flex-col gap-3 sm:gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <Link href="/" className="flex min-w-0 items-center gap-3">
-              <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-teal-800 text-xl text-white shadow-sm">
-                {MOCK_IDEA_BRAND.logoGlyph}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-black tracking-tight text-stone-950">
-                  {MOCK_IDEA_BRAND.name}
-                </p>
-                <p className="hidden text-[10px] font-semibold uppercase tracking-[0.22em] text-stone-500 sm:block">
-                  GCSE revision made clearer
-                </p>
-              </div>
-            </Link>
+            <SwitchBrandLogo
+              href="/"
+              size="md"
+              showWordmark
+              wordmark={MOCK_IDEA_BRAND.name}
+              subtitle="GCSE revision made clearer"
+            />
 
             <div className="flex shrink-0 items-center gap-2 text-sm">
               <Link

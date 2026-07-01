@@ -12,7 +12,7 @@ import { mark32Ui } from "@/components/streamlined/mark32-ui";
 import {
   getDefaultExamBoard,
   listOnboardingExamBoardOptions,
-} from "@/modules/onboarding/service";
+} from "@/modules/onboarding/exam-board-options";
 import type { LearnerOnboardingProfile, OnboardingOverview, StudyGoal } from "@/modules/onboarding/types";
 
 interface OnboardingExperienceProps {

@@ -9,6 +9,7 @@ import {
   listOnboardingExamBoardOptions,
   resolveExamBoardForProfile,
 } from "./exam-availability";
+import { qualificationPathToCatalogType } from "./qualification-utils";
 import { getOnboardingProfileByUserId, saveOnboardingProfile } from "./repository";
 import type {
   LearnerOnboardingProfile,
@@ -139,13 +140,8 @@ export function getDashboardCreationStepLabels(): string[] {
   return [...DASHBOARD_CREATION_STEP_LABELS];
 }
 
-export { listOnboardingExamBoardOptions, getDefaultExamBoard } from "./exam-availability";
-
-export function qualificationPathToCatalogType(
-  qualificationPath: QualificationPath,
-): "GCSE" | "IGCSE" {
-  return qualificationPath === "igcse" ? "IGCSE" : "GCSE";
-}
+export { listOnboardingExamBoardOptions, getDefaultExamBoard } from "./exam-board-options";
+export { qualificationPathToCatalogType } from "./qualification-utils";
 
 export function listOnboardingSubjectsForQualificationPath(qualificationPath: QualificationPath) {
   const catalogType = qualificationPathToCatalogType(qualificationPath);

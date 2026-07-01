@@ -4,8 +4,8 @@ import type { ExamPaper } from "@/modules/exam-engine/types";
 import type { PowerGridSubjectProgress } from "@/modules/power-grid/types";
 import type { TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
 
-import { resolveExamBoardForProfile } from "./exam-availability";
-import { qualificationPathToCatalogType } from "./service";
+import { resolveExamBoardForProfile } from "./exam-board-options";
+import { qualificationPathToCatalogType } from "./qualification-utils";
 import type { LearnerOnboardingProfile, StudyGoal } from "./types";
 
 /** Maps onboarding catalog subject ids to exam paper subject labels. */

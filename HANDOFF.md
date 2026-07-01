@@ -67,13 +67,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-06-30 (onboarding → dashboard → exams watertight personalization pass)
+- **Last updated:** 2026-07-01 (onboarding personalization merged, build fix, Fly deploy complete)
 
 ### Active task
 
 - **Priority item #:** Mark 4 UI/UX planning lane on top of the live Mark 3.2 MVP
 - **Module:** Cross-route product UX planning
-- **Status:** Mark 4 Phases 1–6 merged to `main`; onboarding personalization watertight pass complete locally — Fly deploy pending
+- **Status:** Onboarding personalization on `main` (`d1bb73d` + build fix `1036ef0`); Fly deploy succeeded 1 July 2026
 - **Branch:** `main`
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -99,6 +99,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Onboarding personalization merged to main (1 July 2026)** — PR https://github.com/tech-fresh/the-switch-platform/pull/9 merged `cursor/onboarding-personalization-watertight` → `main` at `d1bb73d`. Build fix `1036ef0` split client-safe exam board helpers (`exam-board-options.ts`, `qualification-utils.ts`) so Fly webpack build no longer pulls persistence into the onboarding UI bundle.
 - **Onboarding → dashboard → exams watertight pass (30 June 2026)** — added `src/modules/onboarding/personalization.ts` as the single source of truth for onboarding-driven content filtering. Dashboard exam/assessment sessions, Power Grid summary, `/api/subjects/experience`, and `/api/assessments/definitions` now all respect completed onboarding profiles (qualification, exam board, selected subjects, study goal). Mission Control shows setup summary, study-goal messaging, exam availability, and a primary-subject CTA. Added `tests/onboarding-personalization-watertight.test.mjs`. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`176/176`).
 - **Merge Mark 4 batch to `main` and push (30 June 2026)** — fast-forward merged `cursor/mark32-route-consistency` into `main` at `a7a4e97`; pushed to https://github.com/tech-fresh/the-switch-platform. Default branch `main` now includes Mark 4 dashboard, subjects, homepage, login, progress, exams, and Phase 6 onboarding.
 - **Mark 4 Phase 6 onboarding dashboard-creation pass (30 June 2026)** — reframed `/onboarding` as dashboard creation with labelled steps, study-goal capture, exam-board selection (seeded boards only: AQA/Edexcel for GCSE, Cambridge IGCSE for iGCSE), and a dashboard-ready confirmation step. Added `examBoard` + `studyGoal` to onboarding profile types/service, `src/modules/onboarding/exam-availability.ts` to filter `/api/exams/papers` by onboarding setup, and teal Mark 4 shell styling. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`172/172`).
@@ -156,8 +157,10 @@ Update this section every session.
 
 ### What is next
 
-- **Deploy from `main` to production:** `npm run deploy:fly`
-- Re-run `npm run verify:local-launch-readiness` before or after deploy
+- Smoke-check https://theswitchplatform.com after deploy (`1036ef0`): sign in → complete onboarding → confirm dashboard/exams/subjects match choices
+- Re-run `npm run verify:local-launch-readiness` when convenient
+- **Content backlog:** Combined Science full papers (learners can select science; exams fall back to board-matched papers until editorial seeds science papers)
+- **Future boards:** OCR / Eduqas remain deferred until seeded content exists
 - Priority **E** deferred scope only — operator gate required to reopen
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
@@ -171,11 +174,18 @@ Update this section every session.
 
 ### Blockers
 
-- **Fly deploy (29 June 2026):** `0eaf697` is on GitHub but production may still be pre-Areas-4/5. Depot builder timeouts (`authentication handshake failed: EOF`) are bypassed with `npm run deploy:fly` (uses `fly deploy --depot=false`; no local Docker). If deploy fails with `401 Unauthorized` or `Not authorized to access this firecrackerapp`, run `fly auth login` in the operator terminal, confirm `fly status -a the-switch-platform`, then `npm run deploy:fly` again.
-- None for the current MVP closeout
+- None for onboarding personalization closeout
 - Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
 
 ### Verification last run
+
+Fresh rerun on 1 July 2026 (merge + build fix on main):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (176 tests)
+- [x] `npm run build`
+- [x] `npm run deploy:fly` (`1036ef0` on Fly — 1 July 2026)
 
 Fresh rerun on 30 June 2026 (onboarding personalization watertight pass):
 

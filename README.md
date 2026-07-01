@@ -462,6 +462,12 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-07-01 Onboarding personalization merged + Fly build fix
+
+- Merged PR https://github.com/tech-fresh/the-switch-platform/pull/9 (`cursor/onboarding-personalization-watertight` → `main` at `d1bb73d`).
+- Fixed Fly webpack build (`1036ef0`) by splitting client-safe exam board helpers into `exam-board-options.ts` and `qualification-utils.ts` so onboarding UI no longer imports the server persistence chain.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`176/176`), `npm run build`, `npm run deploy:fly`.
+
 ### 2026-06-30 Onboarding → dashboard → exams watertight personalization
 
 - Added `src/modules/onboarding/personalization.ts` — central filters for exam papers, timed assessments, subject catalog, Power Grid, and dashboard personalization context (setup summary, study goal, exam availability, primary subject href).

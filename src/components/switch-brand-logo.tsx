@@ -36,7 +36,7 @@ export function SwitchBrandLogo({
       alt="The Switch Platform logo"
       width={dimensions.width}
       height={dimensions.height}
-      className={`${dimensions.className} shrink-0 rounded-2xl object-cover shadow-sm`}
+      className={`${dimensions.className} shrink-0 object-contain opacity-90 drop-shadow-sm`}
       priority={size === "lg"}
     />
   );

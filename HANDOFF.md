@@ -66,8 +66,8 @@ Update this section every session.
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
-- **Last updated by:** Cursor
-- **Last updated:** 2026-07-01 (Combined Science full papers seeded)
+- **Last updated by:** Codex
+- **Last updated:** 2026-07-01 (all-exams inventory plan added)
 
 ### Active task
 
@@ -99,6 +99,11 @@ Update this section every session.
 
 ### What was just completed
 
+- **All-exams inventory plan added (1 July 2026)** — added a repo-level paper generation and inventory plan to `README.md` covering full GCSE papers, full iGCSE papers, Year 10 progression papers, bridge papers, and timed checkpoints. The plan now defines the source-of-truth inventory model, lifecycle statuses (`live`, `review`, `planned`, `blocked`, `retired`), website filtering rule, operator inventory view, coverage-test requirements, and future ingestion path for updated external exam sources.
+- **Exam-content MVP audit + doc sync (1 July 2026)** — confirmed the live MVP has enough seeded full-paper material for every launch subject route currently offered to learners: `aqa-maths-higher-paper-1`, `edexcel-maths-foundation-paper-1`, `edexcel-english-paper-1`, `aqa-combined-science-paper-1`, `edexcel-combined-science-paper-1`, and `cambridge-igcse-maths-paper-1`. Synced the same truth into `AGENTS.md` and `README.md`: onboarding board choices must stay limited to boards with real seeded papers, and OCR / Eduqas remain deferred until matching exam content exists.
+- **Live 502 recovery on Fly (1 July 2026)** — diagnosed the `HTTP 502` outage on https://theswitchplatform.com as a production Next.js out-of-memory crash on the Fly machine (`shared-cpu-1x:512MB`). Increased [`fly.toml`](./fly.toml) VM memory to `1024mb`, redeployed with `npm run deploy:fly`, and confirmed recovery with `curl -I https://theswitchplatform.com` returning `HTTP/2 200`. Live machine `7812e3dc1240d8` now runs as `shared-cpu-1x:1024MB`.
+- **Login sign-in layout deployed to Fly (1 July 2026)** — published the simplified provider-first `/login` layout to the live Fly app with `npm run deploy:fly`. Fly release finished healthy on machine `7812e3dc1240d8`; live app served at https://theswitchplatform.com and https://the-switch-platform.fly.dev/.
+- **Login sign-in layout simplified (1 July 2026)** — removed the large left-column welcome/promo section from `src/components/unified-sign-in-card.tsx` so `/login` now opens in the simpler provider-first format. Google / Microsoft / email sign-in actions and the help links remain intact. Verification: `npm run type-check`.
 - **Combined Science full papers seeded (1 July 2026)** — added `aqa-combined-science-paper-1` and `edexcel-combined-science-paper-1` in `src/modules/exam-engine/seeded-combined-science-papers.ts` (4 questions each, biology/chemistry/physics mix). Onboarding learners who select `gcse-combined-science` now receive dedicated science papers on `/exams` and dashboard — no board-level maths fallback. Tests: `tests/combined-science-exam-papers.test.mjs`; updated `tests/onboarding-exam-availability.test.mjs`.
 - **Live onboarding personalization smoke-check (1 July 2026)** — production API-assisted proof on https://theswitchplatform.com after deploy `1036ef0`: completed GCSE England / AQA / maths+English onboarding → `onboardingPersonalization.isActive=true`, dashboard setup summary, 2 filtered exam sessions, subjects API returned only chosen subject ids, exams API returned AQA papers only. Updated `scripts/verify-live-onboarding.mjs` for Mark 4 copy + personalization assertions. Signed-out gate confirmed: `/dashboard` and `/onboarding` redirect to `/login`.
 - **Onboarding personalization merged to main (1 July 2026)** — PR https://github.com/tech-fresh/the-switch-platform/pull/9 merged `cursor/onboarding-personalization-watertight` → `main` at `d1bb73d`. Build fix `1036ef0` split client-safe exam board helpers (`exam-board-options.ts`, `qualification-utils.ts`) so Fly webpack build no longer pulls persistence into the onboarding UI bundle.
@@ -160,7 +165,9 @@ Update this section every session.
 ### What is next
 
 - **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
+- Build the central all-exams inventory layer next so paper generation, onboarding board options, and `/api/exams/papers` all read from one source of truth
 - **Priority E:** **closed for year 1** — Wales/NI routes, parent/teacher onboarding, admin restyle, i18n, broader content expansion remain deferred; operator must explicitly reopen after year 1
+- Continue Mark 4 Phase 7 public marketing refinement when ready
 - Re-run `npm run verify:local-launch-readiness` when convenient
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
@@ -176,6 +183,7 @@ Update this section every session.
 
 - None for onboarding personalization closeout
 - Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
+- No active blocker for the 502 outage after the Fly memory increase
 
 ### Verification last run
 
@@ -183,6 +191,18 @@ Fresh rerun on 1 July 2026 (Combined Science full papers):
 
 - [x] `npm run type-check`
 - [x] `npm run test` (178 tests)
+
+Fresh rerun on 1 July 2026 (login sign-in layout simplification):
+
+- [x] `npm run type-check`
+- [x] `npm run build`
+- [x] `npm run deploy:fly`
+
+Fresh rerun on 1 July 2026 (live 502 recovery):
+
+- [x] `npm run deploy:fly`
+- [x] `fly machine list -a the-switch-platform` (`shared-cpu-1x:1024MB`)
+- [x] `curl -I https://theswitchplatform.com` (`HTTP/2 200`)
 
 Fresh rerun on 1 July 2026 (merge + build fix on main):
 
@@ -431,6 +451,7 @@ On completion:
 | **Live site** | https://theswitchplatform.com (Fly.io) |
 | **Launch status** | Live on Fly; Final Path Mark 2 and Priority A **complete** (26 June 2026) |
 | **Current phase** | Priority **B** docs sync · Priority **A** complete (26 June 2026) · Priority **C** complete (24 June 2026) |
+| **Launch exam material** | Enough for the live MVP today: 6 seeded full-paper routes — AQA Maths, Edexcel Maths, Edexcel English Language, AQA Combined Science, Edexcel Combined Science, Cambridge iGCSE Maths |
 
 ### Core MVP modules (build priority order)
 

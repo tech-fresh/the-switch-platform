@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { SignInStudyIllustration } from "@/components/sign-in-study-illustration";
 import type { AuthProvider, SignInOption } from "@/modules/auth/types";
 
 interface UnifiedSignInCardProps {
@@ -128,64 +127,8 @@ export function UnifiedSignInCard({
   const hasMicrosoftOption = orderedOptions.some((option) => option.provider === "microsoft");
 
   return (
-    <div className="w-full max-w-5xl rounded-[2rem] border border-stone-200 bg-white px-6 py-8 shadow-sm sm:px-8 lg:px-10">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start">
-        <section className="space-y-6 text-left">
-          <div className="space-y-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">
-              {signInIntent === "admin" ? "Admin access" : "Welcome back"}
-            </p>
-            <h1 className="text-3xl font-semibold tracking-tight text-stone-950">
-              {signInIntent === "admin" ? "Operator sign-in" : "Pick up your study flow in one sign-in"}
-            </h1>
-            <p className="max-w-xl text-sm leading-7 text-stone-600">
-              {signInIntent === "admin"
-                ? "Use the same Google or Microsoft sign-in as learners. Admin tools unlock automatically when your email is on the server allowlist."
-                : "Google or Microsoft sign-in takes you straight back into your dashboard, saved progress, and support settings without extra setup."}
-            </p>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            {[
-              {
-                title: "One sign-in",
-                detail: signInIntent === "admin" ? "Shared auth path with role-based access." : "One account for dashboard, revision, and progress.",
-              },
-              {
-                title: "Dashboard ready",
-                detail: signInIntent === "admin" ? "Return to the right admin destination." : "Continue where you left off without re-learning the product.",
-              },
-              {
-                title: "Support carries over",
-                detail: "Accessibility and support preferences stay connected to your account.",
-              },
-            ].map((item) => (
-              <article key={item.title} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
-                <h2 className="text-sm font-semibold text-stone-950">{item.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-stone-600">{item.detail}</p>
-              </article>
-            ))}
-          </div>
-
-          <div className="rounded-3xl border border-stone-200 bg-stone-50 p-5">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="max-w-md">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-stone-500">After sign-in</p>
-                <h2 className="mt-2 text-lg font-semibold tracking-tight text-stone-950">
-                  {signInIntent === "admin" ? "Open the right management path" : "Open one clear next step"}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-stone-600">
-                  {signInIntent === "admin"
-                    ? "You will land on the right protected route for content or operations work."
-                    : "You will return to your dashboard, continue a subject, or reopen saved work without extra friction."}
-                </p>
-              </div>
-              <SignInStudyIllustration />
-            </div>
-          </div>
-        </section>
-
-        <section className="space-y-6 text-center">
+    <div className="mx-auto w-full max-w-xl rounded-[2rem] border border-stone-200 bg-white px-6 py-8 shadow-sm sm:px-8">
+      <section className="space-y-6 text-center">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
               {signInIntent === "admin" ? "Operator sign-in" : "Welcome back!"}
@@ -321,8 +264,7 @@ export function UnifiedSignInCard({
               </p>
             </div>
           </div>
-        </section>
-      </div>
+      </section>
     </div>
   );
 }

@@ -85,6 +85,8 @@ flowchart LR
 | **Auth** | One Google/Microsoft sign-in; admin/editor via email allowlists; panel on `/login`, `/account`, `/admin` |
 | **Modules** | Exam Engine, Power Grid, Saved Progress, Read Aloud, Dashboard, Timed Assessments, Full GCSE Exams, Results, Recommendations, Accessibility, Access Arrangements, Onboarding |
 | **Subjects** | GCSE Maths, English Language, Combined Science; iGCSE Maths |
+| **Exam material** | Enough for the live MVP today: 6 seeded full-paper routes — AQA Maths, Edexcel Maths, Edexcel English Language, AQA Combined Science, Edexcel Combined Science, Cambridge iGCSE Maths |
+| **Exam expansion plan** | `README.md` now includes the all-exams inventory plan covering full papers, Year 10 progression papers, bridge papers, timed checkpoints, inventory statuses, and future updated-paper ingestion |
 | **Onboarding** | 8 steps → builds dashboard; secondary school; GCSE (England) + iGCSE; Wales/NI **later** |
 | **Polish lane** | **Final Phase** — Priority **C complete** (24 June 2026); Priority **A complete** (26 June 2026) |
 
@@ -145,10 +147,10 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Year 1 MVP live.** Combined Science full papers seeded (AQA + Edexcel). Onboarding personalization watertight on production. Priority **E closed for year 1**. |
+| What are we doing now? | **Year 1 MVP live.** Launch exam-paper coverage is now explicitly confirmed for the current MVP (6 seeded full-paper routes across Maths, English Language, Combined Science, and iGCSE Maths), onboarding personalization is watertight on production, the simpler provider-first `/login` layout is live on Fly, and the 1 July 2026 production 502 was recovered by increasing the Fly machine memory to `1024MB`. Priority **E closed for year 1**. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | Deploy from `main` to Fly (`npm run deploy:fly`), then continue Mark 4 Phase 7 public marketing refinement. |
+| What is next? | Build the central all-exams inventory layer next, then continue Mark 4 Phase 7 public marketing refinement. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 

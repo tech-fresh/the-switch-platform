@@ -13,12 +13,12 @@
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** (`0ee64b2`) |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 Phases 1–6 are on **`main`** at GitHub (dashboard, subjects, homepage, login, progress, exams, Phase 6 onboarding + exam filtering); Fly deploy pending. Priority A–D remain closed; Priority **E** deferred only. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** The current MVP exam-paper inventory is explicitly confirmed as launch-sufficient for the live routes (6 seeded full-paper routes across Maths, English Language, Combined Science, and iGCSE Maths). Mark 4 Phases 1–6 are on **`main`** at GitHub (dashboard, subjects, homepage, login, progress, exams, Phase 6 onboarding + exam filtering); `/login` uses the simpler provider-first sign-in format on Fly production, and the 1 July 2026 production 502 was recovered by increasing the Fly machine memory to `1024MB`. Priority A–D remain closed; Priority **E** deferred only. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Mark 4 UI lane | **Phases 1–6 on `main`** — see [`docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](./docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) and [`docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`](./docs/ideas/MARK-4-ROUTE-UX-AUDIT.md). |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Deploy latest **`main`** to Fly (`npm run deploy:fly`), then continue Mark 4 Phase 7 public marketing refinement. Priority **E** deferred only. |
+| What is next? | Continue Mark 4 Phase 7 public marketing refinement. Priority **E** deferred only. |
 
 **Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
 
@@ -164,6 +164,7 @@ Checklist and evidence → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL
 | **Live** | https://theswitchplatform.com |
 | **Launch** | Live on Fly; Final Path Mark 2 and Priority A **complete** (26 June 2026) |
 | **Now** | **MVP usability plan complete (Areas 1–9)** · **Priority A complete** (26 June) · **Priority C complete** (24 June) · **Priority D complete** (26 June) |
+| **Launch exam material** | Enough for the live MVP today: 6 seeded full-paper routes — AQA Maths, Edexcel Maths, Edexcel English Language, AQA Combined Science, Edexcel Combined Science, Cambridge iGCSE Maths |
 
 ### Core MVP modules (priority order)
 
@@ -181,6 +182,171 @@ Checklist and evidence → [`docs/ideas/FINAL-PHASE-PLAN.md`](./docs/ideas/FINAL
 | iGCSE Mathematics | `igcse` |
 
 Wales / Northern Ireland GCSE: **coming later** (visible in onboarding, not selectable).
+
+### Live MVP exam-paper inventory
+
+The current live MVP has enough seeded full-paper material for every launch subject route currently offered to learners. Today that means:
+
+- `aqa-maths-higher-paper-1`
+- `edexcel-maths-foundation-paper-1`
+- `edexcel-english-paper-1`
+- `aqa-combined-science-paper-1`
+- `edexcel-combined-science-paper-1`
+- `cambridge-igcse-maths-paper-1`
+
+Guardrail: onboarding board choices must stay limited to boards with real seeded papers. OCR, Eduqas, and other future board routes remain deferred until matching exam content exists.
+
+### All-exams paper generation and inventory plan
+
+This is the working plan for expanding exam coverage across the whole website, not only the current launch-safe papers.
+
+#### Goal
+
+Build one controlled exam inventory that covers:
+
+- full GCSE papers
+- full iGCSE papers
+- Year 10 end-of-year progression papers
+- advanced GCSE-bridge papers
+- timed assessment checkpoints that sit underneath the full-paper routes
+
+#### Rule one
+
+The website must only show exam boards, papers, and routes that actually exist in the inventory as real student-usable items.
+
+#### Phase 1 — create one central inventory
+
+Add one source of truth for every exam item with fields for:
+
+- `examId`
+- `title`
+- `subject`
+- `qualificationType`
+- `qualificationPath`
+- `board`
+- `tier`
+- `paperType`
+- `yearGroup`
+- `durationMinutes`
+- `totalMarks`
+- `status`
+- `sourceProviderId`
+- `sourceReference`
+- `studentVisibility`
+
+Recommended statuses:
+
+- `live`
+- `review`
+- `planned`
+- `blocked`
+- `retired`
+
+#### Phase 2 — map every current paper into that inventory
+
+The first inventory pass should include all currently seeded exam papers:
+
+- launch full papers
+- Year 10 progression papers
+- GCSE-bridge papers
+
+This gives the operator one exact count for:
+
+- live launch-safe papers
+- non-launch but student-usable papers
+- planned gaps by subject, board, and qualification
+
+#### Phase 3 — generate papers in a fixed coverage order
+
+Expand in this order so the site stays truthful:
+
+1. Fill missing paper depth for already-live launch subjects and boards.
+2. Add more paper variants for Mathematics, English Language, Combined Science, and iGCSE Mathematics.
+3. Complete full board coverage only where topic/content support already exists.
+4. Add future boards such as OCR and Eduqas only after real paper inventory exists.
+5. Expand Year 10 and bridge pathways only when they still clearly feed into GCSE/iGCSE routes.
+
+#### Phase 4 — keep onboarding, dashboard, and exams tied to inventory
+
+The following surfaces should read from the same inventory truth:
+
+- `/onboarding`
+- `/dashboard`
+- `/exams`
+- `/progress`
+- `/results`
+- `/api/exams/papers`
+
+That means:
+
+- onboarding board choices must come from `live` inventory only
+- dashboard and exam recommendations must not surface planned or blocked papers
+- progress/results must keep historical links stable even if a paper later moves to `retired`
+
+#### Phase 5 — add an operator inventory view
+
+Create an operator-facing inventory summary that shows:
+
+- papers by qualification
+- papers by subject
+- papers by board
+- papers by tier
+- papers by status
+- missing coverage gaps
+
+This should make it obvious which routes are:
+
+- fully covered
+- partially covered
+- not ready to expose on the live website
+
+#### Phase 6 — add quality gates before scale
+
+Every new paper should have:
+
+- source attribution
+- provider traceability
+- review status
+- fact-check status where needed
+- a student-visibility decision
+
+Do not treat generated papers as live just because they were created. They become live only after review and inventory status change.
+
+#### Phase 7 — add automated coverage checks
+
+Add tests that fail when:
+
+- onboarding offers a board with no `live` paper
+- a live subject route has no usable paper
+- duplicate `examId` values exist
+- required inventory metadata is missing
+- a paper is marked `live` but is missing questions, marks, board, or qualification data
+
+#### Phase 8 — prepare for updated external exam feeds later
+
+When the platform starts accepting updated papers from external or editorial sources, normalize them into the same inventory instead of bypassing it.
+
+The future ingestion path should:
+
+- validate source and licensing
+- normalize metadata
+- assign review status
+- hold papers in `review` until approved
+- promote only approved items to `live`
+
+#### Delivery order for the repo
+
+1. Create the central inventory model.
+2. Register every existing seeded paper in it.
+3. Add inventory-based filtering to `/api/exams/papers`.
+4. Drive onboarding board options from inventory.
+5. Add operator/admin inventory visibility.
+6. Add coverage tests.
+7. Add reviewed paper-expansion workflow.
+
+#### Plain-English operator rule
+
+If a paper is not in the inventory as `live`, the website should behave as if it does not exist.
 
 ### Key routes
 
@@ -461,6 +627,24 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-01 Live 502 recovery on Fly
+
+- Diagnosed the live `HTTP 502` outage on https://theswitchplatform.com as a Next.js out-of-memory crash on the Fly machine while it was running at `shared-cpu-1x:512MB`.
+- Increased Fly VM memory in `fly.toml` from `512mb` to `1024mb` and redeployed with `npm run deploy:fly`.
+- Confirmed recovery with `fly machine list -a the-switch-platform` showing `shared-cpu-1x:1024MB` and `curl -I https://theswitchplatform.com` returning `HTTP/2 200`.
+
+### 2026-07-01 Login sign-in layout deployed to Fly
+
+- Deployed the simplified provider-first `/login` layout to Fly with `npm run deploy:fly`.
+- Fly released the update successfully and marked machine `7812e3dc1240d8` healthy.
+- Live routes: https://theswitchplatform.com and https://the-switch-platform.fly.dev/.
+
+### 2026-07-01 Login sign-in layout simplified
+
+- Removed the large welcome/promo panel from `src/components/unified-sign-in-card.tsx` so `/login` now opens in the simpler provider-first format.
+- Kept the working Google, Microsoft, and email sign-in actions intact, along with the existing help/admin/Microsoft-guide links.
+- Verification: `npm run type-check`.
 
 ### 2026-07-01 Combined Science full exam papers
 

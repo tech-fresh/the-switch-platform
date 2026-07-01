@@ -87,6 +87,7 @@ Phase 6 shipped locally:
 - Dashboard-ready confirmation on the final step
 - `/api/exams/papers` filtered by onboarding profile so Exams stays usable after setup
 - Dashboard, subjects, assessments, and progress filtered through `personalization.ts` when onboarding is complete
+- **Combined Science full papers (1 July 2026):** `aqa-combined-science-paper-1` and `edexcel-combined-science-paper-1` in `seeded-combined-science-papers.ts` — learners who select Combined Science get dedicated science papers on `/exams` and dashboard
 
 Implementation constraints that still hold:
 

@@ -145,7 +145,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Onboarding personalization on `main`** (`d1bb73d` + build fix `1036ef0`). Fly deploy completed for watertight onboarding → dashboard → exams wiring. |
+| What are we doing now? | **Year 1 MVP live.** Combined Science full papers seeded (AQA + Edexcel). Onboarding personalization watertight on production. Priority **E closed for year 1**. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
 | What is next? | Deploy from `main` to Fly (`npm run deploy:fly`), then continue Mark 4 Phase 7 public marketing refinement. |

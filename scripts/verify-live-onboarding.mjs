@@ -126,8 +126,9 @@ assert(
   `Expected /onboarding to return 200 for authenticated learner, received ${onboardingPage.response.status}.`,
 );
 assert(
-  onboardingPage.body.includes("Select your Switch account type"),
-  "Expected onboarding page to include account-type step copy.",
+  onboardingPage.body.includes("Who is creating this dashboard?") ||
+    onboardingPage.body.includes("Mission Control"),
+  "Expected Mark 4 dashboard-creation onboarding framing on /onboarding.",
 );
 
 const subjectIds = gcseSubjects.slice(0, 2).map((subject) => subject.subjectId);
@@ -136,12 +137,15 @@ assert(subjectIds.length >= 1, "Need at least one subject id for onboarding comp
 console.log("Completing onboarding via API (mirrors guided setup steps)...");
 await putOnboardingProfile(baseUrl, proofHeaders, { learnerRole: "student" });
 await putOnboardingProfile(baseUrl, proofHeaders, { qualificationPath: "gcse-england" });
-await putOnboardingProfile(baseUrl, proofHeaders, { yearGroup: "Year 11" });
+await putOnboardingProfile(baseUrl, proofHeaders, { yearGroup: "Year 11", studyGoal: "exam-readiness" });
 await putOnboardingProfile(baseUrl, proofHeaders, {
   schoolName: "Live onboarding proof school",
   schoolNation: "england",
 });
-await putOnboardingProfile(baseUrl, proofHeaders, { selectedSubjectIds: subjectIds });
+await putOnboardingProfile(baseUrl, proofHeaders, {
+  examBoard: "AQA",
+  selectedSubjectIds: subjectIds,
+});
 await putOnboardingProfile(baseUrl, proofHeaders, {
   wantsAccessibilitySupport: true,
   wantsAccessArrangementHelp: false,
@@ -177,9 +181,9 @@ assert(
   `Expected /dashboard after onboarding to return 200, received ${dashboardPage.response.status}.`,
 );
 const dashboardShellMarkers = [
-  "Study Atelier",
-  "Your study home",
-  "Recommended now",
+  "Mission Control",
+  "What should you do next",
+  "THE SWITCH",
 ];
 assert(
   dashboardShellMarkers.some((marker) => dashboardPage.body.includes(marker)),
@@ -195,9 +199,50 @@ assert(
 );
 
 const recommendedAction = dashboardApi.json?.dashboard?.recommendedAction ?? "";
+const personalization = dashboardApi.json?.dashboard?.onboardingPersonalization;
 assert(
-  recommendedAction.includes("Year 11") || recommendedAction.includes("GCSE"),
+  personalization?.isActive === true,
+  "Expected onboardingPersonalization.isActive after completion.",
+);
+assert(
+  personalization?.setupSummary?.includes("Year 11") &&
+    personalization?.setupSummary?.includes("AQA"),
+  `Expected dashboard setup summary to reflect onboarding, received "${personalization?.setupSummary}".`,
+);
+assert(
+  recommendedAction.includes("Mission Control") ||
+    recommendedAction.includes("Year 11") ||
+    recommendedAction.includes("GCSE"),
   `Expected dashboard to reflect onboarding setup in recommendedAction, received "${recommendedAction}".`,
+);
+
+const subjectsApi = await fetchJson(`${baseUrl}/api/subjects/experience`, {
+  headers: jsonHeaders(proofHeaders),
+});
+assert(
+  subjectsApi.response.ok,
+  `Expected /api/subjects/experience to return 200, received ${subjectsApi.response.status}.`,
+);
+const visibleSubjectIds = (subjectsApi.json?.experience?.subjects ?? []).map(
+  (subject) => subject.subjectId,
+);
+assert(
+  visibleSubjectIds.length === subjectIds.length &&
+    subjectIds.every((subjectId) => visibleSubjectIds.includes(subjectId)),
+  `Expected subjects API to match onboarding selection (${subjectIds.join(",")}), received ${visibleSubjectIds.join(",")}.`,
+);
+
+const examsApi = await fetchJson(`${baseUrl}/api/exams/papers`, {
+  headers: jsonHeaders(proofHeaders),
+});
+assert(examsApi.response.ok, `Expected /api/exams/papers to return 200, received ${examsApi.response.status}.`);
+assert(
+  (examsApi.json?.papers ?? []).length > 0,
+  "Expected at least one exam paper after onboarding completion.",
+);
+assert(
+  (examsApi.json?.papers ?? []).every((paper) => paper.board === "AQA"),
+  "Expected exam papers to match onboarding exam board (AQA).",
 );
 
 console.log("Checking completed onboarding route redirect...");
@@ -218,3 +263,4 @@ console.log("- Signed-out route protection on /onboarding");
 console.log("- Account type, qualification (GCSE + iGCSE), profile/year, school + UK sources");
 console.log("- Subject selection, accessibility/SEND flags, guardian invite, age/consent");
 console.log("- Dashboard gate opens with personalised home after completion");
+console.log("- Subjects and exams APIs align with onboarding profile (personalization.ts)");

@@ -27,7 +27,7 @@ test("onboarding exam filtering keeps usable papers for typical GCSE maths setup
   assert.ok(visible.some((paper) => paper.subject === "Mathematics"));
 });
 
-test("onboarding exam filtering falls back when a subject has no seeded paper yet", () => {
+test("onboarding exam filtering exposes dedicated Combined Science papers", () => {
   const papers = getMockExamPapers();
   const visible = filterExamPapersForOnboardingProfile(papers, {
     qualificationPath: "gcse-england",
@@ -37,6 +37,20 @@ test("onboarding exam filtering falls back when a subject has no seeded paper ye
 
   assert.ok(visible.length > 0);
   assert.ok(visible.every((paper) => paper.qualificationType === "GCSE" && paper.board === "AQA"));
+  assert.ok(visible.every((paper) => paper.subject === "Combined Science"));
+  assert.equal(visible[0]?.examId, "aqa-combined-science-paper-1");
+});
+
+test("onboarding exam filtering exposes Edexcel Combined Science papers", () => {
+  const papers = getMockExamPapers();
+  const visible = filterExamPapersForOnboardingProfile(papers, {
+    qualificationPath: "gcse-england",
+    examBoard: "Edexcel",
+    selectedSubjectIds: ["gcse-combined-science"],
+  });
+
+  assert.equal(visible.length, 1);
+  assert.equal(visible[0]?.examId, "edexcel-combined-science-paper-1");
 });
 
 test("onboarding exam filtering exposes iGCSE Cambridge maths papers", () => {

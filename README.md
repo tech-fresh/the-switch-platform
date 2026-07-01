@@ -462,6 +462,19 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-07-01 Combined Science full exam papers
+
+- Seeded `aqa-combined-science-paper-1` and `edexcel-combined-science-paper-1` in `src/modules/exam-engine/seeded-combined-science-papers.ts`.
+- Each paper: 4 multiple-choice slots covering biology, chemistry, and physics; 70-minute foundation-tier full GCSE practice.
+- Onboarding `gcse-combined-science` selection now surfaces dedicated science papers on `/exams`, dashboard, and progress — no maths fallback.
+- Verification: `tests/combined-science-exam-papers.test.mjs`, updated `tests/onboarding-exam-availability.test.mjs`.
+
+### 2026-07-01 Live onboarding personalization smoke-check
+
+- Production API-assisted proof on https://theswitchplatform.com (post-deploy `1036ef0`): onboarding completion → dashboard personalization active, subjects/exams/assessments filtered to learner choices.
+- Updated `scripts/verify-live-onboarding.mjs` for Mark 4 dashboard-creation copy and personalization API assertions.
+- Priority **E** recorded as **closed for year 1** in HANDOFF (OCR/Eduqas when seeded only).
+
 ### 2026-07-01 Onboarding personalization merged + Fly build fix
 
 - Merged PR https://github.com/tech-fresh/the-switch-platform/pull/9 (`cursor/onboarding-personalization-watertight` → `main` at `d1bb73d`).

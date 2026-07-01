@@ -3,6 +3,8 @@ import type { StudentAccessProfileRepository } from "@/modules/access-arrangemen
 import { listSavedProgressByUser, saveExamProgress } from "@/modules/saved-progress/service";
 import type { SavedProgressRecord, SavedProgressRepository } from "@/modules/saved-progress/types";
 import { buildOperationsEvent, recordOperationsEvent } from "@/lib/server/operations-event";
+import type { ExamPaperBlueprint, ExamQuestionSlot } from "./paper-blueprint-types";
+import { seededCombinedSciencePaperBlueprints } from "./seeded-combined-science-papers";
 import type {
   ExamPaper,
   ExamQuestion,
@@ -10,20 +12,6 @@ import type {
   ExamSession,
   ExamSessionGenerationSummary,
 } from "./types";
-
-interface ExamPaperBlueprint extends Omit<ExamPaper, "questions"> {
-  questionSlots: ExamQuestionSlot[];
-}
-
-interface ExamQuestionSlot {
-  slotId: string;
-  number: number;
-  topic: string;
-  marks: number;
-  type: "multiple-choice";
-  guidance?: string;
-  variants: ExamQuestion[];
-}
 
 const mockExamPaperBlueprints: ExamPaperBlueprint[] = [
   {
@@ -1140,7 +1128,8 @@ const mockExamPaperBlueprints: ExamPaperBlueprint[] = [
         ],
       },
     ],
-  }
+  },
+  ...seededCombinedSciencePaperBlueprints,
 ];
 
 export function getMockExamPapers(): ExamPaper[] {

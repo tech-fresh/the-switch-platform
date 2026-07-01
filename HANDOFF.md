@@ -67,7 +67,7 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Cursor
-- **Last updated:** 2026-07-01 (onboarding personalization merged, build fix, Fly deploy complete)
+- **Last updated:** 2026-07-01 (Combined Science full papers seeded)
 
 ### Active task
 
@@ -99,6 +99,8 @@ Update this section every session.
 
 ### What was just completed
 
+- **Combined Science full papers seeded (1 July 2026)** — added `aqa-combined-science-paper-1` and `edexcel-combined-science-paper-1` in `src/modules/exam-engine/seeded-combined-science-papers.ts` (4 questions each, biology/chemistry/physics mix). Onboarding learners who select `gcse-combined-science` now receive dedicated science papers on `/exams` and dashboard — no board-level maths fallback. Tests: `tests/combined-science-exam-papers.test.mjs`; updated `tests/onboarding-exam-availability.test.mjs`.
+- **Live onboarding personalization smoke-check (1 July 2026)** — production API-assisted proof on https://theswitchplatform.com after deploy `1036ef0`: completed GCSE England / AQA / maths+English onboarding → `onboardingPersonalization.isActive=true`, dashboard setup summary, 2 filtered exam sessions, subjects API returned only chosen subject ids, exams API returned AQA papers only. Updated `scripts/verify-live-onboarding.mjs` for Mark 4 copy + personalization assertions. Signed-out gate confirmed: `/dashboard` and `/onboarding` redirect to `/login`.
 - **Onboarding personalization merged to main (1 July 2026)** — PR https://github.com/tech-fresh/the-switch-platform/pull/9 merged `cursor/onboarding-personalization-watertight` → `main` at `d1bb73d`. Build fix `1036ef0` split client-safe exam board helpers (`exam-board-options.ts`, `qualification-utils.ts`) so Fly webpack build no longer pulls persistence into the onboarding UI bundle.
 - **Onboarding → dashboard → exams watertight pass (30 June 2026)** — added `src/modules/onboarding/personalization.ts` as the single source of truth for onboarding-driven content filtering. Dashboard exam/assessment sessions, Power Grid summary, `/api/subjects/experience`, and `/api/assessments/definitions` now all respect completed onboarding profiles (qualification, exam board, selected subjects, study goal). Mission Control shows setup summary, study-goal messaging, exam availability, and a primary-subject CTA. Added `tests/onboarding-personalization-watertight.test.mjs`. Full `npm run lint`, `npm run type-check`, and `npm run test` green (`176/176`).
 - **Merge Mark 4 batch to `main` and push (30 June 2026)** — fast-forward merged `cursor/mark32-route-consistency` into `main` at `a7a4e97`; pushed to https://github.com/tech-fresh/the-switch-platform. Default branch `main` now includes Mark 4 dashboard, subjects, homepage, login, progress, exams, and Phase 6 onboarding.
@@ -157,11 +159,9 @@ Update this section every session.
 
 ### What is next
 
-- Smoke-check https://theswitchplatform.com after deploy (`1036ef0`): sign in → complete onboarding → confirm dashboard/exams/subjects match choices
+- **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
+- **Priority E:** **closed for year 1** — Wales/NI routes, parent/teacher onboarding, admin restyle, i18n, broader content expansion remain deferred; operator must explicitly reopen after year 1
 - Re-run `npm run verify:local-launch-readiness` when convenient
-- **Content backlog:** Combined Science full papers (learners can select science; exams fall back to board-matched papers until editorial seeds science papers)
-- **Future boards:** OCR / Eduqas remain deferred until seeded content exists
-- Priority **E** deferred scope only — operator gate required to reopen
 - Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
 
 ### Completion snapshot
@@ -179,6 +179,11 @@ Update this section every session.
 
 ### Verification last run
 
+Fresh rerun on 1 July 2026 (Combined Science full papers):
+
+- [x] `npm run type-check`
+- [x] `npm run test` (178 tests)
+
 Fresh rerun on 1 July 2026 (merge + build fix on main):
 
 - [x] `npm run lint`
@@ -186,6 +191,7 @@ Fresh rerun on 1 July 2026 (merge + build fix on main):
 - [x] `npm run test` (176 tests)
 - [x] `npm run build`
 - [x] `npm run deploy:fly` (`1036ef0` on Fly — 1 July 2026)
+- [x] Live onboarding personalization smoke-check on https://theswitchplatform.com (API-assisted — 1 July 2026)
 
 Fresh rerun on 30 June 2026 (onboarding personalization watertight pass):
 

@@ -17,6 +17,13 @@ import {
 } from "@/modules/content/service";
 import type { MvpCatalogSubject, MvpCatalogTopic } from "@/modules/content/types";
 import type { PowerGridLevel, PowerGridSummary, PowerGridSubjectProgress, PowerGridTrend } from "./types";
+import type { LearnerOnboardingProfile } from "@/modules/onboarding/types";
+import {
+  filterAssessmentsForOnboardingProfile,
+  filterCatalogSubjectsForOnboardingProfile,
+  filterExamPapersForOnboardingProfile,
+  isOnboardingPersonalizationActive,
+} from "@/modules/onboarding/personalization";
 
 const powerGridLevels: PowerGridLevel[] = [
   "Ignition",
@@ -41,13 +48,26 @@ interface TrackedSubject {
 export async function getMockPowerGridSummary(options?: {
   userId?: string;
   savedProgressRepository?: SavedProgressRepository;
+  onboardingProfile?: LearnerOnboardingProfile | null;
 }): Promise<PowerGridSummary> {
   const userId = options?.userId ?? "student-demo";
   const repository = options?.savedProgressRepository;
-  const papers = getMockExamPapers();
-  const assessments = getMockTimedAssessments();
-  const contentSubjects = listStudentVisibleContentSubjects();
-  const contentTopics = listStudentVisibleContentTopics();
+  const profile = options?.onboardingProfile ?? null;
+  const allPapers = getMockExamPapers();
+  const allAssessments = getMockTimedAssessments();
+  const allContentSubjects = listStudentVisibleContentSubjects();
+  const papers =
+    profile && isOnboardingPersonalizationActive(profile)
+      ? filterExamPapersForOnboardingProfile(allPapers, profile)
+      : allPapers;
+  const assessments =
+    profile && isOnboardingPersonalizationActive(profile)
+      ? filterAssessmentsForOnboardingProfile(allAssessments, profile)
+      : allAssessments;
+  const contentSubjects = filterCatalogSubjectsForOnboardingProfile(allContentSubjects, profile);
+  const contentTopics = listStudentVisibleContentTopics().filter((topic) =>
+    contentSubjects.some((subject) => subject.subjectId === topic.subjectId),
+  );
 
   await Promise.all(
     papers.map((paper) =>

@@ -462,6 +462,13 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-06-30 Onboarding → dashboard → exams watertight personalization
+
+- Added `src/modules/onboarding/personalization.ts` — central filters for exam papers, timed assessments, subject catalog, Power Grid, and dashboard personalization context (setup summary, study goal, exam availability, primary subject href).
+- Dashboard `getDashboardHomeData()` now filters exam and assessment session cards by completed onboarding profile; Mission Control surfaces personalised setup copy and primary-subject CTA.
+- `/api/subjects/experience` and `/api/assessments/definitions` filter by onboarding profile when complete; Power Grid summary accepts `onboardingProfile` for consistent progress tracking.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`176/176` passed). Added `tests/onboarding-personalization-watertight.test.mjs`.
+
 ### 2026-06-30 Mark 4 batch merged to GitHub main
 
 - Fast-forward merged `cursor/mark32-route-consistency` into **`main`** at `a7a4e97` and pushed to https://github.com/tech-fresh/the-switch-platform.

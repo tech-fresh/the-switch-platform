@@ -334,5 +334,17 @@ export function buildMockPreviewDashboardData(): DashboardHomeData {
         },
       ],
     },
+    onboardingPersonalization: {
+      isActive: false,
+      subjectFilterIds: [],
+      qualificationLabel: "GCSE",
+      examBoard: null,
+      studyGoalLabel: "",
+      studyGoalMessage: "Complete onboarding to personalise your dashboard.",
+      setupSummary: "Complete onboarding to personalise your dashboard.",
+      primarySubjectId: null,
+      primarySubjectHref: "/subjects",
+      examAvailabilitySummary: "",
+    },
   };
 }

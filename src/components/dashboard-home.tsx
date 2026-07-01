@@ -288,9 +288,23 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
       <section className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
         <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700">Mission Control</p>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">What should you do next?</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-stone-600 sm:text-base">
-          Start with one clear action, keep today&apos;s goal visible, and use saved progress only when it helps you continue smoothly.
-        </p>
+        {data.onboardingPersonalization.isActive ? (
+          <div className="mt-4 space-y-3 rounded-2xl border border-teal-100 bg-teal-50/70 p-4">
+            <p className="text-sm font-semibold text-teal-950">{data.onboardingPersonalization.setupSummary}</p>
+            <p className="text-sm leading-7 text-teal-900">{data.onboardingPersonalization.studyGoalMessage}</p>
+            <p className="text-sm leading-7 text-teal-800">{data.onboardingPersonalization.examAvailabilitySummary}</p>
+            <Link
+              href={data.onboardingPersonalization.primarySubjectHref}
+              className="inline-flex rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+            >
+              Open your first subject
+            </Link>
+          </div>
+        ) : (
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-stone-600 sm:text-base">
+            Start with one clear action, keep today&apos;s goal visible, and use saved progress only when it helps you continue smoothly.
+          </p>
+        )}
       </section>
 
       <Mark32HeroRow data={data} />

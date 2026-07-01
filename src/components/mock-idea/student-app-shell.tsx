@@ -5,13 +5,13 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import {
-  MOCK_IDEA_BRAND,
   MOBILE_NAV_ITEMS,
   STUDENT_NAV_ITEMS,
   badgeAccentClasses,
   isNavItemActive,
   navAccentClasses,
 } from "@/components/mock-idea/brand-tokens";
+import { SwitchBrandLogo } from "@/components/switch-brand-logo";
 import {
   getPowerGridLevelIndex,
   POWER_GRID_LEVELS,
@@ -49,9 +49,7 @@ export function StudentAppShell({
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3">
                 <Link href="/dashboard" className="flex items-center gap-3">
-                  <span className="grid size-12 place-items-center rounded-2xl bg-teal-800 text-2xl text-white shadow-sm">
-                    {MOCK_IDEA_BRAND.logoGlyph}
-                  </span>
+                  <SwitchBrandLogo href={undefined} size="md" />
                   <span className="min-w-0">
                     <span className="block text-sm font-black tracking-tight text-stone-950">THE SWITCH</span>
                     <span className="block text-[10px] font-semibold tracking-[0.32em] text-stone-500">

@@ -3,8 +3,8 @@ import Link from "next/link";
 
 import { MOCK_IDEA_BRAND } from "@/components/mock-idea/brand-tokens";
 
-/** Native asset ratio after trim — 726×255 */
-const LOGO_ASPECT = 726 / 255;
+/** Native asset ratio after trim — 792×256 */
+const LOGO_ASPECT = 792 / 256;
 
 const LOGO_SIZES = {
   sm: {
@@ -13,19 +13,19 @@ const LOGO_SIZES = {
     className: "h-auto w-28",
   },
   md: {
-    width: 160,
-    height: Math.round(160 / LOGO_ASPECT),
-    className: "h-auto w-36 sm:w-40",
+    width: 176,
+    height: Math.round(176 / LOGO_ASPECT),
+    className: "h-auto w-40 sm:w-44",
   },
   lg: {
-    width: 220,
-    height: Math.round(220 / LOGO_ASPECT),
-    className: "h-auto w-52 sm:w-56",
+    width: 240,
+    height: Math.round(240 / LOGO_ASPECT),
+    className: "h-auto w-56 sm:w-60",
   },
   hero: {
-    width: 726,
-    height: 255,
-    className: "h-auto w-full max-w-2xl sm:max-w-3xl",
+    width: 792,
+    height: 256,
+    className: "h-auto w-full max-w-3xl sm:max-w-4xl",
   },
 } as const;
 

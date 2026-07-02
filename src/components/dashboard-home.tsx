@@ -8,7 +8,6 @@ import { Mark32DailyQuote } from "@/components/streamlined/mark32-daily-quote";
 import { getStudyDaysThisWeek } from "@/components/streamlined/mark32-dashboard-utils";
 import { Mark32DevicePreview } from "@/components/streamlined/mark32-device-preview";
 import { Mark32HeroRow } from "@/components/streamlined/mark32-hero-row";
-import { MOCK_IDEA_BRAND } from "@/components/mock-idea/brand-tokens";
 import { SwitchBrandLogo } from "@/components/switch-brand-logo";
 import { Mark32MarketingSections } from "@/components/streamlined/mark32-marketing-sections";
 import { Mark32WeakestTopics } from "@/components/streamlined/mark32-weakest-topics";
@@ -147,14 +146,11 @@ function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeDa
         <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(13,148,136,0.12),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.1),_transparent_30%),linear-gradient(180deg,_#ffffff,_#f5f5f4)]">
           <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-center lg:gap-12">
             <div className="max-w-2xl">
-              <SwitchBrandLogo
-                href="/"
-                size="lg"
-                showWordmark
-                wordmark={MOCK_IDEA_BRAND.shortName}
-                subtitle="MARK 4 DIRECTION"
-              />
-              <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+              <SwitchBrandLogo href="/" size="hero" />
+              <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-teal-800">
+                Mark 4 direction
+              </p>
+              <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
                 GCSE revision with a clearer next step on every screen.
               </h1>
               <p className="mt-4 max-w-xl text-base leading-8 text-slate-600">

@@ -9,13 +9,7 @@ export function MarketingSiteFooter() {
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6">
         <div className="grid gap-10 md:grid-cols-[1.3fr_repeat(3,minmax(0,1fr))]">
           <div className="space-y-4">
-            <SwitchBrandLogo
-              href="/"
-              size="md"
-              showWordmark
-              wordmark={MOCK_IDEA_BRAND.shortName}
-              onDark
-            />
+            <SwitchBrandLogo href="/" size="md" onDark />
             <p className="max-w-sm text-sm leading-7 text-stone-300">{MOCK_IDEA_BRAND.tagline}</p>
             <p className="text-sm font-semibold text-white">theswitchplatform.com</p>
           </div>

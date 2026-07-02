@@ -18,13 +18,7 @@ export function MarketingSiteHeader({ isAuthenticated = false }: MarketingSiteHe
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
         <div className="flex flex-col gap-3 sm:gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <SwitchBrandLogo
-              href="/"
-              size="md"
-              showWordmark
-              wordmark={MOCK_IDEA_BRAND.name}
-              subtitle="GCSE revision made clearer"
-            />
+            <SwitchBrandLogo href="/" size="md" />
 
             <div className="flex shrink-0 items-center gap-2 text-sm">
               <Link

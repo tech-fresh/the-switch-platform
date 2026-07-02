@@ -3,8 +3,8 @@ import Link from "next/link";
 
 import { MOCK_IDEA_BRAND } from "@/components/mock-idea/brand-tokens";
 
-/** Native asset ratio after trim — 792×256 */
-const LOGO_ASPECT = 792 / 256;
+/** Native asset ratio after trim — 771×265 */
+const LOGO_ASPECT = 771 / 265;
 
 const LOGO_SIZES = {
   sm: {
@@ -23,8 +23,8 @@ const LOGO_SIZES = {
     className: "h-auto w-56 sm:w-60",
   },
   hero: {
-    width: 792,
-    height: 256,
+    width: 771,
+    height: 265,
     className: "h-auto w-full max-w-3xl sm:max-w-4xl",
   },
 } as const;

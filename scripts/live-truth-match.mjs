@@ -3,6 +3,8 @@ import "./load-script-env.mjs";
 import { assert, fetchJson } from "./launch-utils.mjs";
 import { getLiveWalkthroughConfig } from "./live-walkthrough-utils.mjs";
 
+delete process.env.SWITCH_LAUNCH_VERIFICATION_SECRET;
+
 function findById(items, key, value) {
   return Array.isArray(items) ? items.find((item) => item?.[key] === value) ?? null : null;
 }

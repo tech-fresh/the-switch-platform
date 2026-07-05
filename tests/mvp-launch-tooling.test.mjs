@@ -107,3 +107,27 @@ test("launch utils binds the local rehearsal server to loopback", () => {
   assert.match(launchUtilsSource, /"-H", "127\.0\.0\.1"/);
   assert.match(launchUtilsSource, /LOCAL_READINESS_PROBE_ROUTES/);
 });
+
+test("supportive live onboarding regression uses Fly warm-up and route retries", () => {
+  const onboardingSource = readRepoFile("scripts/verify-live-onboarding.mjs");
+  const warmupSource = readRepoFile("scripts/fly-machine-warmup.mjs");
+  const defaultsSource = readRepoFile("scripts/supportive-live-fetch-defaults.mjs");
+  const launchUtilsSource = readRepoFile("scripts/launch-utils.mjs");
+  const closeoutSource = readRepoFile("scripts/record-priority-a-closeout.mjs");
+
+  assert.match(onboardingSource, /supportive-live-fetch-defaults\.mjs/);
+  assert.match(onboardingSource, /ensureFlyMachineWarmup/);
+  assert.match(onboardingSource, /ensureLiveHttpWarmup/);
+  assert.match(onboardingSource, /fetchResponseWithWarmup/);
+  assert.match(onboardingSource, /fetchJsonWithWarmup/);
+  assert.match(onboardingSource, /SUPPORTIVE_ROUTE_WARMUP_ATTEMPTS/);
+  assert.match(onboardingSource, /supportive warm-up attempt/);
+  assert.match(warmupSource, /ensureLiveHttpWarmup/);
+  assert.match(warmupSource, /fly machine start/);
+  assert.match(warmupSource, /machines", "list"/);
+  assert.match(defaultsSource, /SWITCH_LIVE_FETCH_TIMEOUT_MS/);
+  assert.match(defaultsSource, /90000/);
+  assert.match(launchUtilsSource, /getLiveFetchConfig/);
+  assert.match(closeoutSource, /SWITCH_LIVE_FETCH_TIMEOUT_MS/);
+  assert.match(closeoutSource, /SWITCH_LIVE_HTTP_WARMUP_ATTEMPTS/);
+});

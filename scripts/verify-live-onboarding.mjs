@@ -8,8 +8,12 @@
  * npm run verify:priority-a-closeout without running this command in that chain.
  */
 import "./load-script-env.mjs";
+import "./supportive-live-fetch-defaults.mjs";
+
+import { setTimeout as delay } from "node:timers/promises";
 
 import { assert, fetchJson, fetchResponse, fetchText } from "./launch-utils.mjs";
+import { ensureFlyMachineWarmup, ensureLiveHttpWarmup } from "./fly-machine-warmup.mjs";
 import {
   buildLaunchVerificationHeaders,
   getLiveWalkthroughConfig,
@@ -31,6 +35,13 @@ const REQUIRED_STEPS = [
 ];
 
 const REQUIRED_SCHOOL_NATIONS = ["england", "scotland", "wales", "northern-ireland"];
+const SUPPORTIVE_ROUTE_WARMUP_STATUSES = new Set([502, 503, 504]);
+const SUPPORTIVE_ROUTE_WARMUP_ATTEMPTS = Number(
+  process.env.SWITCH_SUPPORTIVE_ROUTE_WARMUP_ATTEMPTS ?? 6,
+);
+const SUPPORTIVE_ROUTE_WARMUP_DELAY_MS = Number(
+  process.env.SWITCH_SUPPORTIVE_ROUTE_WARMUP_DELAY_MS ?? 2000,
+);
 
 const { baseUrl, studentHeaders } = getLiveWalkthroughConfig();
 const useLaunchVerification = Boolean(process.env.SWITCH_LAUNCH_VERIFICATION_SECRET?.trim());
@@ -50,9 +61,12 @@ const proofHeaders = buildLaunchVerificationHeaders("student", process.env, {
 
 console.log(`Live onboarding regression target: ${baseUrl}`);
 console.log(`Proof learner user id: ${proofUserId}`);
+console.log("Waking the deployed site for the supportive onboarding regression...");
+await ensureFlyMachineWarmup();
+await ensureLiveHttpWarmup(baseUrl);
 
 console.log("Checking signed-out /onboarding redirect...");
-const signedOutOnboarding = await fetchResponse(`${baseUrl}/onboarding`, {
+const signedOutOnboarding = await fetchResponseWithWarmup(`${baseUrl}/onboarding`, {
   redirect: "manual",
 });
 const signedOutLocation = signedOutOnboarding.headers.get("location") ?? "";
@@ -64,7 +78,7 @@ assert(
 );
 
 console.log("Checking fresh learner onboarding overview...");
-const initialOverview = await fetchJson(`${baseUrl}/api/onboarding/profile`, {
+const initialOverview = await fetchJsonWithWarmup(`${baseUrl}/api/onboarding/profile`, {
   headers: jsonHeaders(proofHeaders),
 });
 assert(
@@ -118,7 +132,7 @@ assert(
 );
 
 console.log("Checking Seneca-style onboarding page...");
-const onboardingPage = await fetchText(`${baseUrl}/onboarding`, {
+const onboardingPage = await fetchTextWithWarmup(`${baseUrl}/onboarding`, {
   headers: proofHeaders,
 });
 assert(
@@ -173,7 +187,7 @@ const completedOverview = await fetchJson(`${baseUrl}/api/onboarding/profile`, {
 assert(completedOverview.json?.onboarding?.isComplete === true, "Expected isComplete true after finish.");
 
 console.log("Checking personalised dashboard access...");
-const dashboardPage = await fetchText(`${baseUrl}/dashboard`, {
+const dashboardPage = await fetchTextWithWarmup(`${baseUrl}/dashboard`, {
   headers: proofHeaders,
 });
 assert(
@@ -246,7 +260,7 @@ assert(
 );
 
 console.log("Checking completed onboarding route redirect...");
-const completedOnboardingRoute = await fetchResponse(`${baseUrl}/onboarding`, {
+const completedOnboardingRoute = await fetchResponseWithWarmup(`${baseUrl}/onboarding`, {
   headers: proofHeaders,
   redirect: "manual",
 });
@@ -264,3 +278,56 @@ console.log("- Account type, qualification (GCSE + iGCSE), profile/year, school 
 console.log("- Subject selection, accessibility/SEND flags, guardian invite, age/consent");
 console.log("- Dashboard gate opens with personalised home after completion");
 console.log("- Subjects and exams APIs align with onboarding profile (personalization.ts)");
+
+async function fetchResponseWithWarmup(url, options) {
+  return fetchWithSupportiveWarmup(url, async () => fetchResponse(url, options));
+}
+
+async function fetchJsonWithWarmup(url, options) {
+  return fetchWithSupportiveWarmup(url, async () => fetchJson(url, options));
+}
+
+async function fetchTextWithWarmup(url, options) {
+  return fetchWithSupportiveWarmup(url, async () => fetchText(url, options));
+}
+
+async function fetchWithSupportiveWarmup(url, callback) {
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= SUPPORTIVE_ROUTE_WARMUP_ATTEMPTS; attempt += 1) {
+    try {
+      const result = await callback();
+
+      if (
+        !result?.response ||
+        result.response.ok ||
+        !SUPPORTIVE_ROUTE_WARMUP_STATUSES.has(result.response.status) ||
+        attempt === SUPPORTIVE_ROUTE_WARMUP_ATTEMPTS
+      ) {
+        return result;
+      }
+
+      console.log(
+        `${url} supportive warm-up attempt ${attempt}/${SUPPORTIVE_ROUTE_WARMUP_ATTEMPTS} returned ${result.response.status}. Retrying...`,
+      );
+    } catch (error) {
+      lastError = error;
+
+      if (
+        attempt === SUPPORTIVE_ROUTE_WARMUP_ATTEMPTS ||
+        !(error instanceof Error) ||
+        !error.message.includes("Timed out after")
+      ) {
+        throw error;
+      }
+
+      console.log(
+        `${url} supportive warm-up attempt ${attempt}/${SUPPORTIVE_ROUTE_WARMUP_ATTEMPTS} timed out. Retrying...`,
+      );
+    }
+
+    await delay(SUPPORTIVE_ROUTE_WARMUP_DELAY_MS);
+  }
+
+  throw lastError ?? new Error(`Supportive warm-up failed for ${url}.`);
+}

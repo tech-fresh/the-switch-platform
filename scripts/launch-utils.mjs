@@ -217,8 +217,14 @@ function getNextDistDirName() {
   return process.env.SWITCH_NEXT_DIST_DIR?.trim() || DEFAULT_REHEARSAL_DIST_DIR;
 }
 
-const DEFAULT_FETCH_TIMEOUT_MS = Number(process.env.SWITCH_LIVE_FETCH_TIMEOUT_MS ?? 45000);
-const DEFAULT_FETCH_ATTEMPTS = Number(process.env.SWITCH_LIVE_FETCH_ATTEMPTS ?? 3);
+function getLiveFetchConfig() {
+  return {
+    timeoutMs: Number(process.env.SWITCH_LIVE_FETCH_TIMEOUT_MS ?? 45000),
+    attempts: Number(process.env.SWITCH_LIVE_FETCH_ATTEMPTS ?? 3),
+  };
+}
+
+export { getLiveFetchConfig };
 
 export async function fetchResponse(url, options) {
   return fetchWithRetry(url, options);
@@ -249,10 +255,11 @@ export async function fetchJson(url, options) {
 async function fetchWithRetry(url, options = {}) {
   let lastError = null;
   let lastResponse = null;
+  const { timeoutMs, attempts } = getLiveFetchConfig();
 
-  for (let attempt = 1; attempt <= DEFAULT_FETCH_ATTEMPTS; attempt += 1) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), DEFAULT_FETCH_TIMEOUT_MS);
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await fetch(url, {
@@ -260,7 +267,7 @@ async function fetchWithRetry(url, options = {}) {
         signal: controller.signal,
       });
 
-      if (response.status >= 500 && attempt < DEFAULT_FETCH_ATTEMPTS) {
+      if (response.status >= 500 && attempt < attempts) {
         lastResponse = response;
         await delay(750 * attempt);
         continue;
@@ -270,10 +277,10 @@ async function fetchWithRetry(url, options = {}) {
     } catch (error) {
       lastError = error;
 
-      if (!isRetryableFetchError(error) || attempt === DEFAULT_FETCH_ATTEMPTS) {
+      if (!isRetryableFetchError(error) || attempt === attempts) {
         if (error?.name === "AbortError") {
           throw new Error(
-            `Timed out after ${DEFAULT_FETCH_TIMEOUT_MS}ms waiting for ${url}. If Fly auto-stopped the machine, open ${url} in a browser first or run: fly machines start -a the-switch-platform`,
+            `Timed out after ${timeoutMs}ms waiting for ${url}. If Fly auto-stopped the machine, open ${url} in a browser first or run: fly machines start -a the-switch-platform`,
           );
         }
 

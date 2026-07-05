@@ -14,6 +14,8 @@ Read HANDOFF.md first.
 
 **Session end:** update the **Live session state** section below before stopping or switching tools.
 
+**Operator completion rule:** when the operator says to complete something, treat that as an instruction to finish the full requested scope end to end. Do not stop at a foundation, scaffold, partial pass, or planning-only layer unless the operator explicitly asks for a phased delivery.
+
 ## Before each action — consult first
 
 Before **every** action — code, docs, commands, git, planning, or review — consult in order:
@@ -65,16 +67,22 @@ Update this section every session.
 
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
-- **Current branch:** `main`
-- **Last updated by:** Codex
-- **Last updated:** 2026-07-01 (all-exams inventory plan added)
+- **Current branch:** `cursor/fix-live-onboarding-cold-start`
+- **Last updated by:** Cursor Agent
+- **Last updated:** 2026-07-06 (supportive live onboarding cold-start hardening)
 
 ### Active task
 
-- **Priority item #:** Mark 4 UI/UX planning lane on top of the live Mark 3.2 MVP
-- **Module:** Cross-route product UX planning
-- **Status:** Onboarding personalization on `main` (`d1bb73d` + build fix `1036ef0`); Fly deploy succeeded 1 July 2026
-- **Branch:** `main`
+- **Priority item #:** Supportive live verification hardening
+- **Module:** launch scripts / repo entry docs
+- **Status:** `verify:live-onboarding` cold-start fix committed on branch; docs synced; merge to `main` pending
+- **Branch:** `cursor/fix-live-onboarding-cold-start`
+
+### Current readiness truth
+
+- **Historical production closeout:** `100%` for the 26 June 2026 Fly production closeout evidence only. That number records the completed 22-item launch checklist and Priority A canonical proof in `release-evidence/2026-06-26-priority-a-canonical-closeout.md`.
+- **Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. `verify:check-live-cookies`, `verify:live-truth-match`, `verify:live-walkthrough:real-auth`, and `verify:priority-a-closeout` all passed with fresh production cookies.
+- **Current branch-readiness rule:** older `100%` references are historical completion records, not an automatic claim about the present working tree.
 
 ### Priority C — COMPLETE (24 June 2026)
 
@@ -99,6 +107,21 @@ Update this section every session.
 
 ### What was just completed
 
+- **Supportive live onboarding cold-start hardening (6 July 2026)** — hardened `verify:live-onboarding` for Fly wake-up: shared `ensureFlyMachineWarmup()` + new `ensureLiveHttpWarmup()`, generous supportive fetch defaults in `scripts/supportive-live-fetch-defaults.mjs`, route-level warm-up retries on signed-out redirect/API/page fetches, closeout env parity in `record-priority-a-closeout.mjs`, and deduplicated warm-up in `live-route-walkthrough.mjs`. Still API-assisted regression only — outside strict A-4. Branch: `cursor/fix-live-onboarding-cold-start` (`620ef21`, `7a1b48e`).
+- **Local readiness verification completed (5 July 2026)** — `npm run build` passed, and `npm run verify:local-launch-readiness` passed end to end once re-run outside the sandboxed loopback restriction. The local branch now has a clean verification baseline through lint, type-check, build, contract tests, smoke, and signed-in rehearsal.
+- **Fly deploy + live verification pass (5 July 2026)** — `npm run deploy:fly` succeeded, `curl -I https://theswitchplatform.com` returned `HTTP/2 200`, `npm run verify:live-readiness` passed, and `npm run verify:launch-status` was repaired so it now reports the 26 June 2026 closeout as historical evidence instead of stale “remaining live-only items” language when the live preflight is ready.
+- **Priority A canonical closeout refreshed with real-auth cookies (5 July 2026)** — fresh `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE` validated successfully, `verify:live-truth-match` passed, `verify:live-walkthrough:real-auth` passed, and `verify:priority-a-closeout` passed end to end. New canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
+- **Supportive onboarding regression remained non-blocking (5 July 2026)** — `verify:live-onboarding` timed out during a Fly cold-start on `/onboarding` when rerun by the closeout recorder outside the strict chain. The recorder marked it as supportive-only failure and still completed strict A-6/A-8 successfully. **Follow-up fix shipped 6 July 2026** on `cursor/fix-live-onboarding-cold-start`.
+- **Preview shell type repair + readiness truth sync (5 July 2026)** — repaired the preview-route shell contract so preview pages can pass `hrefPrefix`, `showUtilityLinks`, and `accountHref` without breaking type-check. Updated the repo entry docs so historical `100% complete` wording now explicitly refers to the completed Fly production closeout / end-completion plan, while the current branch gets its own live readiness percentage based on present verification.
+- **Combined Science variation picker added (1 July 2026)** — onboarding step 4 now keeps Combined Science constrained to supported live variants only. When `gcse-combined-science` is selected, the flow persists a board-matched `combinedScienceVariation` instead of leaving the route as a generic science choice. Current live options are `AQA Combined Science: Trilogy` and `Pearson Edexcel GCSE Combined Science`; separate/triple science stays out of the MVP picker.
+- **Quiz answers now return right/wrong feedback with explanation (1 July 2026)** — the subject quick-check cards on `/subjects` no longer sit as static multiple-choice content. They now submit real answers through `/api/quiz/attempts/[topicId]`, show whether the learner was right or wrong, display the explanation for the correct answer, and keep per-topic attempt/correct/accuracy totals.
+- **Quiz totals now feed Progress and Power Grid voltage (1 July 2026)** — added persisted quiz-progress records plus Power Grid integration so quiz totals now contribute to subject readiness, subject evidence, XP totals, and voltage points on `/progress`. Progress cards and the Power Grid journey now show quiz totals plus XP/voltage summaries instead of ignoring subject quick checks.
+- **Preview app navigation fixed (1 July 2026)** — `/mock-idea-preview` now links into a working preview namespace instead of leaving the signed-in app cards as a dead gallery surface. Added `/preview/dashboard`, `/preview/subjects`, `/preview/exams`, `/preview/progress`, and `/preview/account`, wired the shared student shell/components to support preview-prefixed links, and kept app navigation inside preview mode instead of bouncing back into auth-gated routes.
+- **Content system deployed to Fly production (1 July 2026)** — fixed the Fly build break caused by the onboarding UI importing the server-heavy inventory service by moving board-option reads onto the client-safe helper `src/modules/exam-inventory/board-options.ts`. Re-ran `npm run type-check`, `npm run build`, and `npm run deploy:fly`; Fly updated machine `7812e3dc1240d8`, and `curl -I https://theswitchplatform.com` returned `HTTP/2 200`.
+- **Content system completed end to end (1 July 2026)** — finished the full local scope from the subject-library and inventory plan: added `src/modules/exam-inventory/` with one central seeded-paper inventory, mapped all nine current seeded exam papers into it (launch-safe + Year 10 + bridge), switched onboarding board choices and `/api/exams/papers` to inventory truth, updated dashboard/power-grid/results/recommendations/weekly-planner/saved-progress consumers to use the same live-paper inventory, and added operator-facing inventory visibility plus specification-import visibility on `/admin`.
+- **Board-specific specification imports populated (1 July 2026)** — replaced the earlier placeholder-only specification objectives with imported board-specific objective coverage in `src/modules/specification-engine/imports.ts` for the current live routes (`AQA`, `Edexcel`, `Cambridge IGCSE`) plus AQA separate-science future architecture support. Student-visible objectives are now imported/reviewed rather than `official-spec-import-required` placeholders.
+- **Completion rule tightened in repo entry docs (1 July 2026)** — updated the operator-facing repo entry points so “complete this” now explicitly means end-to-end completion of the requested scope by default, not a foundation-only or partial implementation unless the operator asks for phased delivery.
+- **Specification engine foundation added (1 July 2026)** — created `src/modules/specification-engine/` with a new subject-library service, validators, README, and seed data in `src/data/subjects/mvp-subject-library.json`. The foundation now models the MVP launch subjects, keeps GCSE Combined Science separate from future Separate/Triple Science routes, exposes all supported GCSE / iGCSE exam boards at the specification layer, and marks generated learning objectives as official-spec import scaffolds rather than student-visible curriculum content. Added `tests/specification-engine.test.mjs`.
 - **All-exams inventory plan added (1 July 2026)** — added a repo-level paper generation and inventory plan to `README.md` covering full GCSE papers, full iGCSE papers, Year 10 progression papers, bridge papers, and timed checkpoints. The plan now defines the source-of-truth inventory model, lifecycle statuses (`live`, `review`, `planned`, `blocked`, `retired`), website filtering rule, operator inventory view, coverage-test requirements, and future ingestion path for updated external exam sources.
 - **Exam-content MVP audit + doc sync (1 July 2026)** — confirmed the live MVP has enough seeded full-paper material for every launch subject route currently offered to learners: `aqa-maths-higher-paper-1`, `edexcel-maths-foundation-paper-1`, `edexcel-english-paper-1`, `aqa-combined-science-paper-1`, `edexcel-combined-science-paper-1`, and `cambridge-igcse-maths-paper-1`. Synced the same truth into `AGENTS.md` and `README.md`: onboarding board choices must stay limited to boards with real seeded papers, and OCR / Eduqas remain deferred until matching exam content exists.
 - **Live 502 recovery on Fly (1 July 2026)** — diagnosed the `HTTP 502` outage on https://theswitchplatform.com as a production Next.js out-of-memory crash on the Fly machine (`shared-cpu-1x:512MB`). Increased [`fly.toml`](./fly.toml) VM memory to `1024mb`, redeployed with `npm run deploy:fly`, and confirmed recovery with `curl -I https://theswitchplatform.com` returning `HTTP/2 200`. Live machine `7812e3dc1240d8` now runs as `shared-cpu-1x:1024MB`.
@@ -164,12 +187,13 @@ Update this section every session.
 
 ### What is next
 
+- Merge `cursor/fix-live-onboarding-cold-start` to `main` and rerun `npm run verify:live-onboarding` from `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
-- Build the central all-exams inventory layer next so paper generation, onboarding board options, and `/api/exams/papers` all read from one source of truth
-- **Priority E:** **closed for year 1** — Wales/NI routes, parent/teacher onboarding, admin restyle, i18n, broader content expansion remain deferred; operator must explicitly reopen after year 1
 - Continue Mark 4 Phase 7 public marketing refinement when ready
-- Re-run `npm run verify:local-launch-readiness` when convenient
-- Refresh live cookies via `/account/live-cookie-guide` before any future rerun of `npm run verify:priority-a-closeout`
+- Keep future board expansion wired through the completed inventory/specification path instead of adding direct route-level exceptions
+- **Priority E:** **closed for year 1** — Wales/NI routes, parent/teacher onboarding, admin restyle, i18n, broader content expansion remain deferred; operator must explicitly reopen after year 1
+- Keep future release reruns synced with `release-evidence/2026-07-05-priority-a-canonical-closeout.md`
+- Refresh live cookies again via `/account/live-cookie-guide` only when a future release rerun needs fresh strict real-auth proof
 
 ### Completion snapshot
 
@@ -177,15 +201,68 @@ Update this section every session.
 - **Priority B:** `4 / 4` complete
 - **Priority C:** `10 / 10` complete
 - **Priority D:** `6 / 6` complete
-- **Overall active plan:** `28 / 28` complete (`100%`)
+- **Historical production closeout plan:** `28 / 28` complete (`100%`) — this is the recorded Fly production end-completion snapshot, not a blanket claim about any in-progress branch
+- **Current branch readiness:** `100%` after the 5 July 2026 refreshed canonical closeout rerun
 
 ### Blockers
 
-- None for onboarding personalization closeout
+- No local verification blocker after the 5 July 2026 repair pass
 - Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
 - No active blocker for the 502 outage after the Fly memory increase
 
 ### Verification last run
+
+Fresh rerun on 6 July 2026 (supportive onboarding cold-start hardening):
+
+- [x] `tests/mvp-launch-tooling.test.mjs` (supportive warm-up contract checks)
+- [x] `node --check scripts/live-route-walkthrough.mjs`
+- [ ] `npm run verify:live-onboarding` (rerun from project root after merge; prior 5 July closeout failure was supportive-only)
+
+Fresh rerun on 5 July 2026 (branch-readiness repair pass):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (192 tests)
+- [x] `npm run build`
+- [x] `npm run verify:local-launch-readiness` (passed end to end on unsandboxed rerun after sandbox `listen EPERM 127.0.0.1`)
+- [x] `npm run deploy:fly`
+- [x] `curl -I https://theswitchplatform.com` (`HTTP/2 200`)
+- [x] `npm run verify:live-readiness`
+- [x] `npm run verify:launch-status` (truthful historical-closeout wording repaired)
+- [x] `npm run verify:check-live-cookies` (fresh student/admin cookies valid)
+- [x] `verify:live-truth-match`
+- [x] `verify:live-walkthrough:real-auth`
+- [x] `npm run verify:priority-a-closeout` → `release-evidence/2026-07-05-priority-a-canonical-closeout.md`
+- [!] `verify:live-onboarding` failed as supportive API-assisted regression only; strict A-4 browser proof and canonical closeout remain valid
+
+Fresh rerun on 1 July 2026 (content system completion pass):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (189 tests)
+- [x] `npm run build`
+- [x] `npm run deploy:fly`
+- [x] `curl -I https://theswitchplatform.com` (`HTTP/2 200`)
+
+Fresh rerun on 1 July 2026 (preview app navigation pass):
+
+- [x] `npm run type-check`
+
+Fresh rerun on 1 July 2026 (quiz feedback + Power Grid integration):
+
+- [x] `npm run type-check`
+- [x] `npm run test` (191 tests)
+
+Fresh rerun on 1 July 2026 (Combined Science variation picker):
+
+- [x] `npm run type-check`
+- [x] `npm run test` (192 tests)
+
+Fresh rerun on 1 July 2026 (specification engine foundation):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (184 tests)
 
 Fresh rerun on 1 July 2026 (Combined Science full papers):
 
@@ -930,6 +1007,33 @@ Rules:
 
 Add a new entry here at the end of every session. Do not delete older entries.
 
+### 2026-07-01 — Codex — Content system completion pass
+
+- Branch: main
+- Module: specification-engine + exam-inventory
+- Priority #: subject/specification + exam inventory full completion
+- Done: added a central exam inventory module and seed file, registered all seeded papers (launch-safe + Year 10 + bridge), switched onboarding board options and `/api/exams/papers` to inventory truth, updated paper-consuming services to use the same live inventory, added `/api/exams/inventory` and `/api/content/specification-library`, surfaced inventory/specification visibility in `/admin`, and replaced student-visible placeholder objectives with imported board-specific objective coverage for live boards plus AQA separate-science future support
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`189/189` passed)
+- Next: return to Mark 4 Phase 7 public marketing refinement or future board expansion through the same inventory/specification path
+
+### 2026-07-01 — Codex — Subject library / specification engine foundation
+
+- Branch: main
+- Module: specification-engine
+- Priority #: content/editorial foundation aligned with MVP priority #8
+- Done: added `src/modules/specification-engine/` with types, service, validators, README, and `src/data/subjects/mvp-subject-library.json`; modelled MVP subject-library scaffolds for GCSE Maths, English Language, Combined Science, and iGCSE Maths; kept Combined Science separate from deferred Biology/Chemistry/Physics routes; added validation and service coverage in `tests/specification-engine.test.mjs`
+- Next: connect the specification engine into the central all-exams inventory and future board-aware content import paths
+- Blocker: none
+
+### 2026-07-01 — Codex — Completion rule tightened
+
+- Branch: main
+- Module: project-workflow
+- Priority #: operator instruction handling
+- Done: updated repo entry docs so “complete” now means full requested scope end to end by default, not a scaffold, foundation, or partial implementation unless the operator explicitly asks for phased delivery
+- Next: apply that stricter completion rule to future build requests
+- Blocker: none
+
 ### 2026-07-01 — Codex — Onboarding UK school lookup clickability pass
 
 - Done: upgraded onboarding step 3 from an England-only school note to a UK-wide clickable school-finder step with nation cards and official links for England, Scotland, Wales, and Northern Ireland
@@ -1341,8 +1445,3 @@ flowchart TD
 - Done: created HANDOFF.md and filled placeholders with real values
 - Next: expand with full workflow guidance
 - Commit: not committed yet
-</think>
-
-
-
-Read

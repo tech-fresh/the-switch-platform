@@ -14,6 +14,10 @@ Before doing ANY work in this repository:
 
 Never switch between Cursor and Codex without updating **`HANDOFF.md`**, **`AGENTS.md`**, and pushing committed work first.
 
+### Completion meaning
+
+When the operator says to **complete** something, that means the full requested scope should be delivered end to end by default. Do not stop at a foundation, scaffold, placeholder, partial pass, or “phase 1 only” state unless the operator explicitly asks for phased delivery.
+
 ### Operator rule — every session
 
 **At session start:** tell Cursor or Codex:
@@ -37,7 +41,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 **Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Do not reopen C-1–C-10 unless the operator explicitly requests an exception.
 
-**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. Strict closeout chain blanks `SWITCH_LAUNCH_VERIFICATION_SECRET`; `verify:live-onboarding` runs afterward as API-assisted regression only (not strict A-4). Browser-authenticated A-4 proof remains in `release-evidence/2026-06-25-priority-a-truth-audit.md`. Priorities **B**, **C**, and **D** are also complete for the current MVP.
+**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md` (refreshed 5 July 2026 in `release-evidence/2026-07-05-priority-a-canonical-closeout.md`). Strict closeout chain blanks `SWITCH_LAUNCH_VERIFICATION_SECRET`; `verify:live-onboarding` runs afterward as API-assisted regression only (not strict A-4). Cold-start hardening for that supportive check lives on `cursor/fix-live-onboarding-cold-start`. Browser-authenticated A-4 proof remains in `release-evidence/2026-06-25-priority-a-truth-audit.md`. Priorities **B**, **C**, and **D** are also complete for the current MVP.
 
 **At session end:** run verification, confirm push, refresh **`HANDOFF.md`** and **`AGENTS.md`** if the story changed.
 
@@ -147,12 +151,16 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Year 1 MVP live.** Launch exam-paper coverage is now explicitly confirmed for the current MVP (6 seeded full-paper routes across Maths, English Language, Combined Science, and iGCSE Maths), onboarding personalization is watertight on production, the simpler provider-first `/login` layout is live on Fly, and the 1 July 2026 production 502 was recovered by increasing the Fly machine memory to `1024MB`. Priority **E closed for year 1**. |
+| What are we doing now? | **Year 1 MVP live.** Strict A-4 closeout remains valid on Fly production. Supportive `verify:live-onboarding` cold-start hardening is on branch `cursor/fix-live-onboarding-cold-start` (HTTP + Fly warm-up, longer fetch retries). Priority **E closed for year 1**. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | Build the central all-exams inventory layer next, then continue Mark 4 Phase 7 public marketing refinement. |
+| What is next? | Merge `cursor/fix-live-onboarding-cold-start`, rerun supportive `verify:live-onboarding` from the project root, then continue Mark 4 Phase 7 public marketing refinement. |
 
-**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
+**Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) on Fly production closeout evidence dated 26 June 2026.
+
+**Current branch-readiness rule:** do not reuse the historical `100%` label for the working tree by default. Always read `HANDOFF.md` for the current branch readiness percentage and latest verification result first.
+
+**Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. Canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
 
 ```mermaid
 flowchart LR
@@ -287,7 +295,7 @@ route (thin page) → module service → API route → persistence
 
 **Verification:** `npm run lint && npm run type-check && npm run test` — 102/102 passed.
 
-**What is next:** Priority **B** — repo/docs sync. Priority **A** and **C** are **complete**.
+**What is next:** keep the current branch and production verification in sync with the historical closeout evidence; Priority **A** through **D** are complete for the recorded MVP closeout, and Priority **E** stays deferred unless the operator reopens expansion scope.
 
 **Current A status (26 June 2026):** **COMPLETE** — A-1 through A-8 closed. Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout` after cookie refresh for new releases.
 

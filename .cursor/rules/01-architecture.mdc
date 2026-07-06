@@ -36,3 +36,7 @@ Flow: `src/app` route → thin component → `src/modules/*/service.ts` → cont
 12. Access Arrangements foundation
 
 Do not skip higher-priority work unless explicitly overridden. Record the reason in `HANDOFF.md`.
+
+# Deployment
+
+**Fly.io only.** Never deploy to Netlify or Vercel. Policy: `docs/DEPLOYMENT-FLY-ONLY.md`.

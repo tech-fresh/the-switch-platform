@@ -17,6 +17,8 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 **GitHub:** `https://github.com/tech-fresh/the-switch-platform`  
 **Live site:** `https://theswitchplatform.com`
 
+**Deployment (Fly.io only):** [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md) — do **not** use Netlify or Vercel. Disconnect those GitHub integrations if PR checks still appear.
+
 ---
 
 ## Operator and agent sync
@@ -69,13 +71,14 @@ flowchart LR
 3. [Development rules](#development-rules)
 4. [Build priority](#build-priority)
 5. [Design system](#design-system)
-6. [Full End-to-End Completion List](#full-end-to-end-completion-list)
-7. [Launch verification commands](#launch-verification-commands)
-8. [Module reference](#module-reference)
-9. [Shared folders](#shared-folders)
-10. [Auth and live sign-in](#auth-and-live-sign-in)
-11. [Changes 1.0 product direction](#changes-10-product-direction)
-12. [Completion standard](#completion-standard)
+6. [Deployment — Fly.io only](#deployment--flyio-only)
+7. [Full End-to-End Completion List](#full-end-to-end-completion-list)
+8. [Launch verification commands](#launch-verification-commands)
+9. [Module reference](#module-reference)
+10. [Shared folders](#shared-folders)
+11. [Auth and live sign-in](#auth-and-live-sign-in)
+12. [Changes 1.0 product direction](#changes-10-product-direction)
+13. [Completion standard](#completion-standard)
 
 ---
 
@@ -261,6 +264,24 @@ Active order unless explicitly overridden:
 - Reuse stone, sky, emerald, amber, teal, and rose utility patterns
 - Mobile-first layouts; respect accessibility runtime attributes on `html`/`body`
 - Extend existing page patterns; do not invent disconnected visual systems
+
+---
+
+## Deployment — Fly.io only
+
+**Authoritative policy:** [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md)
+
+| Rule | Detail |
+|------|--------|
+| **Production** | Fly.io only — https://theswitchplatform.com |
+| **Do not use** | Netlify, Vercel, Vercel Blob, or alternate host deploy configs |
+| **Deploy** | `npm run deploy:fly` after lint, type-check, test, build |
+| **Persistence** | SQLite on Fly volume `/data` |
+| **GitHub** | Disconnect Netlify/Vercel GitHub App integrations — see deployment policy doc |
+
+Agents must never suggest Vercel or Netlify as deployment paths. Historical README entries mentioning those hosts are archived context only.
+
+Provisioning: [`docs/FREE_TIER_DEPLOY.md`](./docs/FREE_TIER_DEPLOY.md) · Runbook: [`FINAL_LAUNCH_RUNBOOK.md`](./FINAL_LAUNCH_RUNBOOK.md)
 
 ---
 

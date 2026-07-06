@@ -120,33 +120,28 @@ Or:
 npm run verify:launch-complete
 ```
 
-## If Vercel Blob Is Suspended Or You Cannot Redeploy
+## If persistence or deploy fails on Fly
 
-When Vercel is blocked, use **Fly.io** — full steps in [`docs/FREE_TIER_DEPLOY.md`](docs/FREE_TIER_DEPLOY.md).
+Production runs on **Fly.io only**. See [`docs/DEPLOYMENT-FLY-ONLY.md`](docs/DEPLOYMENT-FLY-ONLY.md) and [`docs/FREE_TIER_DEPLOY.md`](docs/FREE_TIER_DEPLOY.md).
 
-When `npm run verify:persistence-health` reports Blob `suspended` and you still have Vercel deploy access:
+**Do not** redeploy to Vercel or Netlify — those paths are retired.
 
-1. Open the Vercel project Storage / Blob settings for the live store backing `SWITCH_DATA_DIRECTORY`.
-2. Unsuspend the store **or** create a replacement store and update:
-   - `BLOB_READ_WRITE_TOKEN`
-   - `SWITCH_DATA_DIRECTORY` (for example `vercel-blob://switch-live-data`)
-3. Seed or restore the sqlite file:
-   - `npm run persistence:migrate-to-sqlite` for a fresh seed, or
-   - `npm run persistence:restore-from-backup` when a valid backup exists
-4. Rerun the full final live sequence above.
+When persistence health fails on Fly:
+
+1. Confirm `SWITCH_PERSISTENCE_DRIVER=sqlite` and `SWITCH_DATA_DIRECTORY=/data` on the Fly app
+2. Confirm the volume is mounted: `fly volumes list -a the-switch-platform`
+3. Run backup/restore scripts against `/data` — `npm run verify:persistence-recovery`
+4. Rerun the full final live sequence above
 
 Do not describe the platform as fully complete while live persistence reads still fail.
 
-## Free alternative hosts (Fly.io — preferred when Vercel blocked)
+## Historical note — Vercel Blob (retired)
 
-Repo includes `Dockerfile`, `fly.toml`, and `docs/FREE_TIER_DEPLOY.md`.
+Vercel Blob persistence was used during an earlier migration period and is **no longer a valid production path**. README Ordered Build Record entries mentioning Vercel Blob are historical only.
 
-```bash
-SWITCH_PERSISTENCE_DRIVER=sqlite
-SWITCH_DATA_DIRECTORY=/data
-```
+## Free alternative hosts
 
-Render (paid disk) is documented in `README.md` → **Free-tier launch workaround plan**.
+**Fly.io is the only supported production host.** Render or other hosts are not documented as active deployment paths for this repo.
 
 ## Evidence To Confirm
 

@@ -7,6 +7,7 @@ alwaysApply: true
 
 - Active folder: `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - GitHub: `https://github.com/tech-fresh/the-switch-platform`
+- **Production deploy: Fly.io only** — see `docs/DEPLOYMENT-FLY-ONLY.md`. Do not use Netlify or Vercel.
 - Do not use `THE SWITCH` or `THE SWITCH 2`
 
 # Session start

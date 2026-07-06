@@ -1,6 +1,8 @@
 # Fly deploy — persistent SQLite on mounted storage
 
-Use this when you need to provision or recover the production runtime on Fly.io. The repo now assumes a filesystem-backed sqlite path on a mounted volume.
+> **Deployment policy:** **Fly.io only.** Do not use Netlify or Vercel. See [`DEPLOYMENT-FLY-ONLY.md`](./DEPLOYMENT-FLY-ONLY.md).
+
+Use this when you need to provision or recover the production runtime on Fly.io. The repo assumes a filesystem-backed sqlite path on a mounted volume.
 
 ## Why Fly.io
 

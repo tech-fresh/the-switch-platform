@@ -59,7 +59,8 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
 | **`docs/design/11_UI_UX_MASTER_GUIDE.md`** | Authoritative UI reference |
-| **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`** | Connected learning architecture principles (documentation only) |
+| **`docs/DEPLOYMENT-FLY-ONLY.md`** | **Fly.io only** — do not use Netlify/Vercel |
+| **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`** | Connected learning architecture principles |
 | **`docs/design/UI-UX-MASTERPLAN.md`** | Pointer to UI master guide |
 | **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** | Mark 3.2 full product vision + route mapping to live repo |
 
@@ -141,7 +142,7 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
 - External prompt pack → **`docs/CHATGPT-PROMPTS-README.md`**
 
-**Current deployment note:** production is Fly-only. Treat `.vercel`, Netlify deploy config, and Vercel Blob persistence as retired unless the operator explicitly asks to restore a historical migration path.
+**Current deployment note:** **Fly.io only** — see [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not** deploy to Netlify or Vercel. Disconnect those GitHub App integrations from the repository. Vercel Blob and Netlify configs are **retired** — not valid production paths.
 
 ---
 

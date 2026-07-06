@@ -14,7 +14,8 @@
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
-| GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** (`0ee64b2`) |
+| GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** |
+| Production deploy | **Fly.io only** — [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not use Netlify or Vercel.** |
 | What are we doing now? | **Connected learning architecture documented** in `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`. PR [#11](https://github.com/tech-fresh/the-switch-platform/pull/11) open for premium/UI branch merge. Priority A–D closed; Priority **E** deferred only. |
 | Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength (future), Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
@@ -651,6 +652,12 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-06 Fly-only deployment policy (Netlify/Vercel retired)
+
+- Added **`docs/DEPLOYMENT-FLY-ONLY.md`** — authoritative Fly.io-only deployment rule; operator steps to disconnect Netlify/Vercel GitHub Apps.
+- Updated **`PLATFORM-GUIDE.md`**, **`AGENTS.md`**, **`FINAL_LAUNCH_RUNBOOK.md`**, **`docs/FREE_TIER_DEPLOY.md`**, **`.cursor/rules/`**, **`.github/DEPLOYMENT.md`**.
+- **Do not deploy to Netlify or Vercel again.** Historical README entries mentioning those hosts are archived context only.
 
 ### 2026-07-06 Connected learning architecture (Seneca-inspired principles — documentation only)
 

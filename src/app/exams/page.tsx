@@ -1,9 +1,11 @@
+import { JourneyNextStepPanel } from "@/components/journey/journey-next-step-panel";
 import { ExamExperience } from "./exam-experience";
 import { ExamLobbyExperience } from "./exam-lobby-experience";
 import { ExamsRecoveryInShell } from "./exams-recovery";
 import {
   getExamPapersApiData,
   getExamSessionApiData,
+  getJourneyNextActionApiData,
   getReadAloudSessionApiData,
 } from "@/lib/api/server";
 import { isExamFocusMode } from "@/lib/exams/focus-mode";
@@ -26,9 +28,10 @@ export default async function ExamsPage({ searchParams }: ExamsPageProps) {
 
   try {
     const shell = await requireStudentAppRouteContext();
-    const [papers, readAloudSession] = await Promise.all([
+    const [papers, readAloudSession, journey] = await Promise.all([
       getExamPapersApiData(),
       getReadAloudSessionApiData("question"),
+      getJourneyNextActionApiData(),
     ]);
 
     if (papers.length === 0) {
@@ -73,7 +76,10 @@ export default async function ExamsPage({ searchParams }: ExamsPageProps) {
 
     return (
       <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
-        <ExamLobbyExperience papers={papers} sessionSeeds={sessionSeeds} />
+        <div className="flex flex-col gap-6">
+          <JourneyNextStepPanel journey={journey} />
+          <ExamLobbyExperience papers={papers} sessionSeeds={sessionSeeds} />
+        </div>
       </StudentAppShell>
     );
   } catch {

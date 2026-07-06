@@ -6,6 +6,7 @@ import {
   buildAccessibilityPreferenceChips,
   buildAccessibilitySupportSummary,
 } from "@/modules/accessibility/presentation";
+import { getContinuityGraph } from "./continuity-graph";
 import { getLearnerContinuityOverview } from "./continuity-service";
 import { getSavedProgressSessionInsights } from "./insights-service";
 import { listSavedProgressByUser } from "./service";
@@ -48,6 +49,7 @@ export async function getSavedProgressOverview(
   const submittedCount = records.filter((record) => record.status === "submitted").length;
   const accessSnapshotCount = records.filter((record) => record.accessArrangementSnapshot).length;
   const continuity = getLearnerContinuityOverview(sessions);
+  const continuityGraph = getContinuityGraph(sessions);
 
   return {
     sessionCount: sessions.length,
@@ -63,6 +65,7 @@ export async function getSavedProgressOverview(
     reviewSessionHref: continuity.reviewSession?.href,
     latestSessionHref: continuity.latestSession?.href,
     continuity,
+    continuityGraph,
     sessions,
   };
 }

@@ -1,11 +1,13 @@
 import { applyAccessArrangementsToAssessment } from "@/modules/access-arrangements";
 import type { StudentAccessProfileRepository } from "@/modules/access-arrangements";
+import { appendProgressionEvent } from "@/lib/persistence/progression-event-store";
 import { getSavedProgress, saveTimedAssessmentProgress } from "@/modules/saved-progress/service";
 import type {
   SavedProgressRepository,
   SavedProgressStatus,
 } from "@/modules/saved-progress/types";
 import { buildOperationsEvent, recordOperationsEvent } from "@/lib/server/operations-event";
+import { createProgressionEvent } from "@/modules/power-grid/progression-events";
 import type {
   CreateTimedAssessmentAttemptInput,
   TimedAssessmentAttempt,
@@ -590,6 +592,14 @@ export async function getMockTimedAssessmentAttemptSeed(
     options?.savedProgressRepository,
   );
 
+  await appendProgressionEvent(
+    createProgressionEvent({
+      userId: resumedAttempt.attempt.userId,
+      type: "assessment.progress",
+      occurredAt: resumedAttempt.attempt.lastSavedAt,
+    }),
+  );
+
   return {
     attempt: resumedAttempt.attempt,
     questions,
@@ -651,6 +661,14 @@ export async function saveMockTimedAssessmentAttempt(
     input.savedProgressRepository,
   );
 
+  await appendProgressionEvent(
+    createProgressionEvent({
+      userId: nextAttempt.userId,
+      type: "assessment.progress",
+      occurredAt: nextAttempt.lastSavedAt,
+    }),
+  );
+
   return {
     attempt: nextAttempt,
     questions: seed.questions,
@@ -701,6 +719,14 @@ export async function submitMockTimedAssessmentAttempt(
       status: getSavedProgressStatusForAttemptStatus(submittedAttempt.status),
     },
     input.savedProgressRepository,
+  );
+
+  await appendProgressionEvent(
+    createProgressionEvent({
+      userId: submittedAttempt.userId,
+      type: "assessment.submitted",
+      occurredAt: submittedAttempt.lastSavedAt,
+    }),
   );
 
   recordOperationsEvent(

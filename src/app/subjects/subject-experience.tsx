@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { LearningLoopStepRail } from "@/components/learning-loop/learning-loop-step-rail";
 import { PremiumExamBoardSelector } from "@/components/premium/premium-exam-board-selector";
 import { PremiumQuizCard } from "@/components/premium/premium-quiz-card";
 import { premiumUi } from "@/components/premium/premium-ui";
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { Mark32SubjectCatalogGrid } from "@/components/streamlined/mark32-subject-catalog-grid";
 import type { QuizQuestion, SubmitQuizAnswerResult } from "@/modules/quiz/types";
+import type { LearningLoopStage } from "@/modules/learning-loop/types";
 import type { RevisionContent } from "@/modules/revision/types";
 import type { Subject } from "@/modules/subjects/types";
 import type { Topic } from "@/modules/topics/types";
@@ -85,6 +87,10 @@ export function SubjectExperience({
     quizAttemptsByTopic,
   );
   const [quizSubmitState, setQuizSubmitState] = useState<"idle" | "saving" | "error">("idle");
+  const [learningLoopStage, setLearningLoopStage] = useState<LearningLoopStage>("learn");
+  const [loopNextAction, setLoopNextAction] = useState<{ label: string; href: string; reason: string } | null>(
+    null,
+  );
   const learnSections = getRevisionSectionBody(revision, [
     "Explain Simply",
     "Standard Explanation",
@@ -106,6 +112,51 @@ export function SubjectExperience({
   useEffect(() => {
     setQuizFeedbackByTopic(quizAttemptsByTopic);
   }, [quizAttemptsByTopic]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadLearningLoopStage() {
+      try {
+        const response = await fetch(`/api/learning-loop/${encodeURIComponent(selectedTopic.topicId)}`);
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as { session: { stage: LearningLoopStage } };
+        if (!cancelled) {
+          setLearningLoopStage(payload.session.stage);
+        }
+      } catch {
+        if (!cancelled) {
+          setLearningLoopStage("learn");
+        }
+      }
+    }
+
+    void loadLearningLoopStage();
+    setLoopNextAction(null);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedTopic.topicId]);
+
+  async function refreshLoopNextAction() {
+    try {
+      const response = await fetch("/api/journey/next-action");
+      if (!response.ok) {
+        return;
+      }
+
+      const payload = (await response.json()) as {
+        journey: { primaryAction: { label: string; href: string; reason: string } };
+      };
+      setLoopNextAction(payload.journey.primaryAction);
+    } catch {
+      setLoopNextAction(null);
+    }
+  }
 
   async function handleQuizSubmit() {
     if (!selectedQuizOptionId) {
@@ -135,6 +186,14 @@ export function SubjectExperience({
         ...current,
         [selectedTopic.topicId]: payload.result,
       }));
+
+      const loopResponse = await fetch(`/api/learning-loop/${encodeURIComponent(selectedTopic.topicId)}`);
+      if (loopResponse.ok) {
+        const loopPayload = (await loopResponse.json()) as { session: { stage: LearningLoopStage } };
+        setLearningLoopStage(loopPayload.session.stage);
+      }
+
+      await refreshLoopNextAction();
       setQuizSubmitState("idle");
     } catch {
       setQuizSubmitState("error");
@@ -324,6 +383,9 @@ export function SubjectExperience({
                 <p className="text-sm leading-6 text-stone-600">
                   One structure each time: learn the idea, look at a worked example, practise, then move into exam-style questions.
                 </p>
+                <div className="mt-4">
+                  <LearningLoopStepRail stage={learningLoopStage} />
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {topics.map((topic) => {
                     const isSelected = topic.topicId === selectedTopic.topicId;
@@ -512,14 +574,40 @@ export function SubjectExperience({
               selectedOptionId={selectedQuizOptionId}
               feedback={quizFeedback}
               submitState={quizSubmitState}
-              onSelectOption={(optionId) =>
+              onSelectOption={(optionId) => {
                 setSelectedQuizOptionByTopic((current) => ({
                   ...current,
                   [selectedTopic.topicId]: optionId,
-                }))
-              }
+                }));
+
+                if (learningLoopStage === "learn") {
+                  void fetch(`/api/learning-loop/${encodeURIComponent(selectedTopic.topicId)}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ subjectId: selectedSubject.subjectId }),
+                  }).then(async (response) => {
+                    if (response.ok) {
+                      const payload = (await response.json()) as { session: { stage: LearningLoopStage } };
+                      setLearningLoopStage(payload.session.stage);
+                    }
+                  });
+                }
+              }}
               onSubmit={handleQuizSubmit}
             />
+
+            {quizFeedback && loopNextAction ? (
+              <section className="rounded-3xl border border-teal-200 bg-teal-50 p-5 shadow-sm">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-800">What to do next</p>
+                <p className="mt-2 text-sm leading-6 text-teal-950">{loopNextAction.reason}</p>
+                <Link
+                  href={loopNextAction.href}
+                  className="mt-4 inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
+                >
+                  {loopNextAction.label}
+                </Link>
+              </section>
+            ) : null}
 
             <section className={`${premiumUi.cardMuted} space-y-3`}>
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9CA3AF]">Exam board</h2>

@@ -16,13 +16,13 @@
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** |
 | Production deploy | **Fly.io only** — [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not use Netlify or Vercel.** |
-| What are we doing now? | **Codex implementation plan published** — [`IMPLEMENTATION-PLAN.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/IMPLEMENTATION-PLAN.md) phases 0–9. Architecture principles documented; **code not started**. |
-| Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength (future), Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
+| What are we doing now? | **Connected learning architecture Phase 5 complete** — Recall Strength now has its own decay logic, persistence store, snapshot/review API routes, quiz-driven review updates, and recall-due wiring into journey plus ranked recommendations from [`CODEX-FULL-IMPLEMENTATION-PACK.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md). |
+| Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength, Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Mark 4 UI lane | **Phases 1–6 on `main`** — see [`docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](./docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) and [`docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`](./docs/ideas/MARK-4-ROUTE-UX-AUDIT.md). |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Commit `/brand-mockup` when operator asks; merge cold-start branch; continue Mark 4 Phase 7 public marketing refinement; route future board/content expansion through the inventory + specification-engine path. Priority **E** deferred only. |
+| What is next? | Execute **Phase 6** from [`CODEX-FULL-IMPLEMENTATION-PACK.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md) (learning-loop store + service + API + first subject-route stage persistence), then keep Fly verification follow-ups and future content expansion in sync. Priority **E** remains deferred only. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) in the recorded Fly production closeout.
 
@@ -652,6 +652,72 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-06 Connected learning architecture Phase 6
+
+- Implemented the learning loop from **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`**.
+- Added `src/lib/persistence/learning-loop-store.ts`, `src/modules/learning-loop/service.ts`, `vocabulary.ts`, `contracts.ts`, and authenticated `GET`/`POST` `/api/learning-loop/[topicId]`.
+- Added `LearningLoopStepRail` and wired `/subjects` topic experience to load loop stage, advance to question on quiz selection, sync to feedback after quiz submit, and show journey next-action CTA after feedback.
+- Updated `src/modules/quiz/service.ts` to call `syncLearningLoopAfterQuiz` after each attempt.
+- Added `tests/learning-loop.test.mjs` (`4/4` passed).
+
+### 2026-07-06 Connected learning architecture Phase 5
+
+- Implemented the Recall Strength module from **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`**.
+- Added `src/modules/recall-strength/decay.ts`, `src/lib/persistence/recall-strength-store.ts`, and `src/modules/recall-strength/service.ts`.
+- Added authenticated routes `src/app/api/recall-strength/snapshot/route.ts` and `src/app/api/recall-strength/review/route.ts`.
+- Updated `src/modules/quiz/service.ts` so successful quiz submissions also record recall reviews, and the Recall Strength service now appends its own `recall-strength.reviewed` progression events.
+- Updated `src/modules/journey/service.ts` and `src/modules/recommendations/service.ts` so due recall topics become first-class ranking inputs and route the learner back to the due topic on `/subjects`.
+- Added `tests/recall-strength.test.mjs` and updated existing journey, recommendation, and progression-event tests to cover the new behavior.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`215/215` passed).
+
+### 2026-07-06 Connected learning architecture Phase 4
+
+- Implemented the append-only Power Grid progression-event layer from **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`**.
+- Added `src/modules/power-grid/progression-events.ts` and `src/lib/persistence/progression-event-store.ts`.
+- Updated `src/modules/quiz/service.ts`, `src/modules/exam-engine/service.ts`, and `src/modules/timed-assessment/service.ts` so quiz completions plus exam and timed-assessment progress/submissions now append audit events after the existing persistence writes.
+- Added `tests/power-grid-progression-events.test.mjs`.
+- Kept the existing Power Grid XP formulas unchanged; Phase 4 only adds the progression-event trail for future analytics and downstream signals.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`211/211` passed).
+
+### 2026-07-06 Connected learning architecture Phase 3
+
+- Implemented the recommendations ranking brain from **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`**.
+- Added `src/modules/recommendations/ranking.ts`.
+- Added authenticated route `src/app/api/recommendations/ranked/route.ts`.
+- Extended the recommendations service with `buildRankingSignals(userId)` and `getRankedRecommendations(userId)`.
+- Updated `src/app/api/recommendations/route.ts` to delegate to ranked output and switched `src/modules/journey/service.ts` to use the ranked top pick.
+- Added `tests/recommendations-ranking.test.mjs`.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`208/208` passed).
+
+### 2026-07-06 Connected learning architecture Phase 2
+
+- Implemented the saved-progress continuity graph from **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`**.
+- Added `src/modules/saved-progress/continuity-graph.ts` and extended `SavedProgressOverview` with `continuityGraph`.
+- Added `src/components/journey/journey-next-step-panel.tsx`.
+- Wired the shared Journey Next Step panel onto `/subjects`, `/exams`, and `/saved-progress`.
+- Added `tests/journey-phase2.test.mjs` for continuity-graph and route wiring coverage.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`205/205` passed).
+
+### 2026-07-06 Connected learning architecture Phase 1
+
+- Implemented the `journey` orchestrator from **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`**.
+- Added `src/modules/journey/ranking.ts` and `src/modules/journey/service.ts`.
+- Added authenticated API route `src/app/api/journey/next-action/route.ts`.
+- Added `getJourneyNextActionApiData()` to `src/lib/api/server.ts`.
+- Wired `src/modules/dashboard/service.ts`, `src/components/dashboard-home.tsx`, and `src/components/streamlined/mark32-dashboard-utils.ts` so the dashboard Continue Learning CTA now prefers `journey.primaryAction` while preserving the older saved-progress continuity contract for existing routes and tests.
+- Added `tests/journey-next-action.test.mjs` for precedence and wiring coverage.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`203/203` passed).
+
+### 2026-07-06 Connected learning architecture Phase 0
+
+- Implemented the shared contract layer from **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`**.
+- Added `src/modules/journey/types.ts`, `src/modules/journey/contracts.ts`, and `src/modules/journey/vocabulary.ts`.
+- Added `src/modules/recall-strength/types.ts` and `src/modules/recall-strength/contracts.ts`.
+- Added `src/modules/learning-loop/types.ts`.
+- Added `tests/journey-vocabulary.test.mjs` to lock the standard next-action vocabulary.
+- **No route or UI changes yet** — this phase only establishes the typed shared contracts for later journey/recommendation/recall implementation.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`199/199` passed).
 
 ### 2026-07-06 Connected learning Codex implementation plan
 

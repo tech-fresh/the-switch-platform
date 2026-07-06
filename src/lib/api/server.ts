@@ -6,6 +6,7 @@ import type { ContentEditorialAudit, MvpContentCatalog } from "@/modules/content
 import type { DashboardHomeData } from "@/modules/dashboard/types";
 import type { ExamPaper, ExamSession } from "@/modules/exam-engine/types";
 import type { ExamInventoryPaper, ExamInventorySummary } from "@/modules/exam-inventory/types";
+import type { JourneyContext } from "@/modules/journey/types";
 import type { LaunchGovernanceOverview } from "@/modules/governance/types";
 import type { OperationsOverview } from "@/modules/operations/types";
 import type { PastPaperCatalogOverview } from "@/modules/past-papers/types";
@@ -195,6 +196,12 @@ export async function getStudentRecommendationsApiData(): Promise<Recommendation
   const response = await fetchApiJson<{ recommendations: Recommendation[] }>("/api/recommendations");
 
   return response.recommendations;
+}
+
+export async function getJourneyNextActionApiData(): Promise<JourneyContext> {
+  const response = await fetchApiJson<{ journey: JourneyContext }>("/api/journey/next-action");
+
+  return response.journey;
 }
 
 export async function getRecommendationsPageApiData(): Promise<RecommendationsPageData> {

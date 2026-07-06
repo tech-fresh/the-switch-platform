@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { JourneyNextStepPanel } from "@/components/journey/journey-next-step-panel";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { Mark32PowerGridJourney } from "@/components/streamlined/mark32-power-grid-journey";
@@ -8,8 +9,13 @@ import { Mark32SubjectProgressCard } from "@/components/streamlined/mark32-subje
 import { mark32Ui } from "@/components/streamlined/mark32-ui";
 import { StudentRouteRecovery } from "@/components/student-route-recovery";
 import { WeeklyPlannerGrid } from "@/components/weekly-planner-grid";
-import { getProgressSummaryApiData, getWeeklyPlannerApiData } from "@/lib/api/server";
+import {
+  getJourneyNextActionApiData,
+  getProgressSummaryApiData,
+  getWeeklyPlannerApiData,
+} from "@/lib/api/server";
 import { requireStudentAppRouteContext } from "@/lib/server/student-route";
+import type { JourneyContext } from "@/modules/journey/types";
 import type { PowerGridSummary } from "@/modules/power-grid/types";
 
 export const dynamic = "force-dynamic";
@@ -28,9 +34,11 @@ function formatActivityTimestamp(value?: string): string {
 function ProgressMainContent({
   summary,
   planner,
+  journey,
 }: {
   summary: PowerGridSummary;
   planner: Awaited<ReturnType<typeof getWeeklyPlannerApiData>>;
+  journey: JourneyContext;
 }) {
   return (
     <>
@@ -97,6 +105,8 @@ function ProgressMainContent({
           ) : null}
         </div>
       </section>
+
+      <JourneyNextStepPanel journey={journey} />
     </>
   );
 }
@@ -105,9 +115,10 @@ export default async function ProgressPage() {
   const shell = await requireStudentAppRouteContext();
 
   try {
-    const [summary, planner] = await Promise.all([
+    const [summary, planner, journey] = await Promise.all([
       getProgressSummaryApiData(),
       getWeeklyPlannerApiData(),
+      getJourneyNextActionApiData(),
     ]);
 
     if (summary.dataState === "degraded" || summary.subjectProgress.length === 0) {
@@ -134,7 +145,7 @@ export default async function ProgressPage() {
     return (
       <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips} xpTotal={summary.xpTotal}>
         <div className="flex flex-col gap-8">
-          <ProgressMainContent summary={summary} planner={planner} />
+          <ProgressMainContent summary={summary} planner={planner} journey={journey} />
         </div>
       </StudentAppShell>
     );

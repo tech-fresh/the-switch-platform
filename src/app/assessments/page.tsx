@@ -1,5 +1,7 @@
+import { JourneyNextStepPanel } from "@/components/journey/journey-next-step-panel";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import {
+  getJourneyNextActionApiData,
   getReadAloudSessionApiData,
   getTimedAssessmentDefinitionsApiData,
   getTimedAssessmentSeedApiData,
@@ -21,9 +23,10 @@ interface AssessmentsPageProps {
 
 export default async function AssessmentsPage({ searchParams }: AssessmentsPageProps) {
   const shell = await requireStudentAppRouteContext();
-  const [assessments, readAloudSession] = await Promise.all([
+  const [assessments, readAloudSession, journey] = await Promise.all([
     getTimedAssessmentDefinitionsApiData(),
     getReadAloudSessionApiData("question"),
+    getJourneyNextActionApiData(),
   ]);
 
   const attemptEntries = await Promise.all(
@@ -73,14 +76,17 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
 
   return (
     <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
-      <AssessmentExperience
-        assessments={assessments}
-        attemptSeeds={attemptSeeds}
-        readAloudSession={readAloudSession}
-        initialAssessmentId={initialAssessmentId}
-        initialDurationKey={resolvedSearchParams?.durationMinutes}
-        initialQuestionId={resolvedSearchParams?.questionId}
-      />
+      <div className="flex flex-col gap-6">
+        <AssessmentExperience
+          assessments={assessments}
+          attemptSeeds={attemptSeeds}
+          readAloudSession={readAloudSession}
+          initialAssessmentId={initialAssessmentId}
+          initialDurationKey={resolvedSearchParams?.durationMinutes}
+          initialQuestionId={resolvedSearchParams?.questionId}
+        />
+        <JourneyNextStepPanel journey={journey} />
+      </div>
     </StudentAppShell>
   );
 }

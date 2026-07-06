@@ -6,7 +6,6 @@ import { PremiumDashboardCard } from "@/components/premium/premium-dashboard-car
 import { PremiumPowerGridCard } from "@/components/premium/premium-power-grid-card";
 import { premiumUi } from "@/components/premium/premium-ui";
 import {
-  getWeeklyGoalProgress,
   pickContinueLearning,
   pickNextExam,
   pickWeakestTopics,
@@ -17,29 +16,45 @@ interface Mark32HeroRowProps {
 }
 
 export function Mark32HeroRow({ data }: Mark32HeroRowProps) {
-  const continueLearning = pickContinueLearning(data);
-  const nextExam = pickNextExam(data);
-  const dailyGoal = getWeeklyGoalProgress(data.weeklyPlanner);
+  const signals = data.primarySignals;
+  const continueLearning = signals
+    ? {
+        title: signals.continueLearning.label,
+        subtitle: signals.continueLearning.reason,
+        progress: data.summary.examReadinessScore,
+        href: signals.continueLearning.href,
+        actionLabel: signals.continueLearning.label,
+      }
+    : pickContinueLearning(data);
+  const nextExam = signals
+    ? {
+        title: signals.nextExamTask.title,
+        detail: signals.nextExamTask.dueLabel ?? "Open exam lobby",
+        href: signals.nextExamTask.href,
+      }
+    : pickNextExam(data);
+  const weakTopic = signals?.weakTopic;
   const weakest = pickWeakestTopics(data, 3);
 
   return (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Study overview">
       <PremiumContinueRevisionCard {...continueLearning} />
 
+      <PremiumDashboardCard eyebrow="Weak topic" title={weakTopic?.label ?? "Focus here next"} accent="amber">
+        <p className={premiumUi.body}>
+          {weakTopic?.strength !== undefined
+            ? `${weakTopic.strength}/100 strength — practise to improve recall.`
+            : "Strengthen your weakest area next."}
+        </p>
+        <Link href={weakTopic?.href ?? "/subjects"} className={`mt-4 ${premiumUi.secondaryBtn}`}>
+          Practise weak topic
+        </Link>
+      </PremiumDashboardCard>
+
       <PremiumDashboardCard eyebrow="Next exam" title={nextExam.title} accent="blue">
         <p className={premiumUi.body}>{nextExam.detail}</p>
         <Link href={nextExam.href} className={`mt-4 ${premiumUi.secondaryBtn}`}>
           View exam
-        </Link>
-      </PremiumDashboardCard>
-
-      <PremiumDashboardCard eyebrow="Today's goal" title={`${dailyGoal}% complete`} accent="green">
-        <p className={premiumUi.body}>Weekly planner items finished this week.</p>
-        <div className={`mt-4 ${premiumUi.progressTrack}`}>
-          <div className="h-full rounded-full bg-gradient-to-r from-[#22C55E] to-[#00BFFF]" style={{ width: `${dailyGoal}%` }} />
-        </div>
-        <Link href="/progress" className={`mt-4 inline-flex ${premiumUi.linkAccent}`}>
-          Open planner →
         </Link>
       </PremiumDashboardCard>
 
@@ -50,7 +65,7 @@ export function Mark32HeroRow({ data }: Mark32HeroRowProps) {
         compact
       />
 
-      {weakest.length ? (
+      {!signals && weakest.length ? (
         <PremiumDashboardCard
           eyebrow="Weak topics"
           title="Focus here next"

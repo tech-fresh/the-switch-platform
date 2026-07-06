@@ -96,6 +96,14 @@ export interface SavedProgressSessionSummary {
   reviewSummary: string;
 }
 
+export interface ContinuityGraph {
+  overview: import("./continuity-service").LearnerContinuityOverview;
+  lastTopicId?: string;
+  lastSubjectId?: string;
+  lastRoute?: string;
+  generatedAt: string;
+}
+
 export interface SavedProgressOverview {
   sessionCount: number;
   activeCount: number;
@@ -110,5 +118,6 @@ export interface SavedProgressOverview {
   reviewSessionHref?: string;
   latestSessionHref?: string;
   continuity: import("./continuity-service").LearnerContinuityOverview;
+  continuityGraph: ContinuityGraph;
   sessions: SavedProgressSessionSummary[];
 }

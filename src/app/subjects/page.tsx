@@ -1,5 +1,6 @@
+import { JourneyNextStepPanel } from "@/components/journey/journey-next-step-panel";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
-import { getSubjectsExperienceApiData } from "@/lib/api/server";
+import { getJourneyNextActionApiData, getSubjectsExperienceApiData } from "@/lib/api/server";
 import { requireStudentAppRouteContext } from "@/lib/server/student-route";
 
 import { SubjectExperience } from "./subject-experience";
@@ -18,6 +19,7 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
     requireStudentAppRouteContext(),
     getSubjectsExperienceApiData(),
   ]);
+  const journey = await getJourneyNextActionApiData();
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
 
   const onboardingSubjectId = shell.onboardingSubjectIds.find((subjectId) =>
@@ -40,16 +42,19 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
 
   return (
     <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
-      <SubjectExperience
-        subjects={experience.subjects}
-        topicsBySubject={experience.topicsBySubject}
-        revisionByTopic={experience.revisionByTopic}
-        quizByTopic={experience.quizByTopic}
-        quizAttemptsByTopic={experience.quizAttemptsByTopic}
-        initialSubjectId={initialSubjectId}
-        initialTopicId={initialTopicId}
-        onboardingSubjectIds={shell.onboardingSubjectIds}
-      />
+      <div className="flex flex-col gap-6">
+        <JourneyNextStepPanel journey={journey} />
+        <SubjectExperience
+          subjects={experience.subjects}
+          topicsBySubject={experience.topicsBySubject}
+          revisionByTopic={experience.revisionByTopic}
+          quizByTopic={experience.quizByTopic}
+          quizAttemptsByTopic={experience.quizAttemptsByTopic}
+          initialSubjectId={initialSubjectId}
+          initialTopicId={initialTopicId}
+          onboardingSubjectIds={shell.onboardingSubjectIds}
+        />
+      </div>
     </StudentAppShell>
   );
 }

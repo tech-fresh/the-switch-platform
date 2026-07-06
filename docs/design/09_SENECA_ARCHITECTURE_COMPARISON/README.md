@@ -25,9 +25,10 @@ The Switch must remain distinct through **Power Grid**, GCSE/iGCSE exam readines
 
 ## Read order
 
-1. **[`ARCHITECTURE-PRINCIPLES.md`](./ARCHITECTURE-PRINCIPLES.md)** — eight principles (what to build)
-2. **[`IMPLEMENTATION-PLAN.md`](./IMPLEMENTATION-PLAN.md)** — **Codex execution plan** (phases 0–9, code, APIs, tests)
-3. [`01_Seneca_Product_Flow.md`](./01_Seneca_Product_Flow.md) → [`07_RECOMMENDATION_ADDENDUM.md`](./07_RECOMMENDATION_ADDENDUM.md) — comparison detail
+1. **[`CODEX-FULL-IMPLEMENTATION-PACK.md`](./CODEX-FULL-IMPLEMENTATION-PACK.md)** — **send this one file to Codex** (principles + phases + full code)
+2. **[`ARCHITECTURE-PRINCIPLES.md`](./ARCHITECTURE-PRINCIPLES.md)** — eight principles (what to build)
+3. **[`IMPLEMENTATION-PLAN.md`](./IMPLEMENTATION-PLAN.md)** — phase summary (shorter; pack is authoritative for Codex)
+4. [`01_Seneca_Product_Flow.md`](./01_Seneca_Product_Flow.md) → [`07_RECOMMENDATION_ADDENDUM.md`](./07_RECOMMENDATION_ADDENDUM.md) — comparison detail
 3. [`../11_UI_UX_MASTER_GUIDE.md`](../11_UI_UX_MASTER_GUIDE.md) — UI expression of journey rules
 4. [`../../PLATFORM-GUIDE.md`](../../PLATFORM-GUIDE.md) → Connected learning architecture
 5. [`../../ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](../../ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) — phased execution

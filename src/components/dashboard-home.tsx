@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MarketingSiteHeader } from "@/components/marketing-site-header";
+import { JourneyNextStepPanel } from "@/components/journey/journey-next-step-panel";
 import { MarketingSiteFooter } from "@/components/mock-idea/marketing-site-footer";
 import { PlannerPromptCard } from "@/components/mock-idea/planner-prompt-card";
 import { SendSupportRail } from "@/components/mock-idea/send-support-rail";
@@ -170,126 +171,102 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
 
   return (
     <div className="space-y-8">
-      <section className={premiumUi.card}>
-        <p className={premiumUi.eyebrowAccent}>Mission Control</p>
-        <h2 className={`mt-3 ${premiumUi.heading}`}>What should you do next?</h2>
-        {data.onboardingPersonalization.isActive ? (
+      {data.onboardingPersonalization.isActive ? (
+        <section className={premiumUi.card}>
+          <p className={premiumUi.eyebrowAccent}>Your setup</p>
           <div className="mt-4 space-y-3 rounded-2xl border border-[#6C4EFF]/30 bg-[#6C4EFF]/10 p-4">
             <p className="text-sm font-semibold text-white">{data.onboardingPersonalization.setupSummary}</p>
             <p className={premiumUi.body}>{data.onboardingPersonalization.studyGoalMessage}</p>
-            <p className={premiumUi.body}>{data.onboardingPersonalization.examAvailabilitySummary}</p>
             <Link href={data.onboardingPersonalization.primarySubjectHref} className={premiumUi.primaryBtn}>
               Open your first subject
             </Link>
           </div>
-        ) : (
-          <p className={`mt-3 max-w-3xl ${premiumUi.body}`}>
-            Start with one clear action, keep today&apos;s goal visible, and use saved progress when it helps you continue.
-          </p>
-        )}
-      </section>
+        </section>
+      ) : null}
 
       <Mark32HeroRow data={data} />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
-        <Mark32DailyQuote motivation={data.dailyMotivation} />
-        <Mark32WeakestTopics data={data} />
-      </div>
+      {data.journey ? <JourneyNextStepPanel journey={data.journey} /> : null}
 
-      <article className={premiumUi.card}>
-        <p className={premiumUi.eyebrowAccent}>Continue learning</p>
-        <h2 className={`mt-3 ${premiumUi.heading}`}>{data.recommendedAction}</h2>
-        <p className={`mt-3 ${premiumUi.body}`}>{data.continuityDescription}</p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link href={data.continuityHref} className={premiumUi.primaryBtn}>
-            {data.continuityActionLabel}
-          </Link>
-          <Link href="/progress" className={premiumUi.secondaryBtn}>
-            Open weekly plan
-          </Link>
-          <Link href="/saved-progress" className={premiumUi.secondaryBtn}>
-            Saved progress
-          </Link>
-        </div>
-      </article>
+      <details className={`${premiumUi.card} group`}>
+        <summary className="cursor-pointer list-none text-lg font-bold tracking-tight text-white marker:content-none [&::-webkit-details-marker]:hidden">
+          <span className={premiumUi.eyebrowAccent}>More study tools</span>
+          <span className="mt-2 block">Planner, saved work, routes, and support</span>
+        </summary>
+        <div className="mt-6 space-y-8 border-t border-white/10 pt-6">
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+            <Mark32DailyQuote motivation={data.dailyMotivation} />
+            <Mark32WeakestTopics data={data} />
+          </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-        <PlannerPromptCard initialDismissed={data.plannerPromptDismissed} />
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+            <PlannerPromptCard initialDismissed={data.plannerPromptDismissed} />
 
-        <article className={premiumUi.card}>
-          <p className={premiumUi.eyebrowAccent}>Focus right now</p>
-          <div className="mt-4 space-y-3">
-            {topFocus.length ? (
-              topFocus.map((card) => (
+            <article className={premiumUi.card}>
+              <p className={premiumUi.eyebrowAccent}>Focus right now</p>
+              <div className="mt-4 space-y-3">
+                {topFocus.length ? (
+                  topFocus.map((card) => (
+                    <Link
+                      key={card.subject}
+                      href={card.subjectId ? `/subjects?subjectId=${encodeURIComponent(card.subjectId)}` : "/subjects"}
+                      className="block rounded-2xl border border-white/10 bg-[#0F1420] p-4 transition hover:border-[#6C4EFF]/40"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="text-sm font-semibold text-white">{card.subject}</h3>
+                        <span className="text-xs font-semibold text-[#9CA3AF]">{card.readinessScore}/100</span>
+                      </div>
+                      <p className={`mt-2 ${premiumUi.body}`}>{card.recommendedFocus}</p>
+                    </Link>
+                  ))
+                ) : (
+                  <p className={premiumUi.body}>Start a practice session to build subject focus cards.</p>
+                )}
+              </div>
+            </article>
+          </div>
+
+          <section className="grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+            <article className={premiumUi.card}>
+              <p className={premiumUi.eyebrow}>Other routes</p>
+              {primaryRoute ? (
                 <Link
-                  key={card.subject}
-                  href={card.subjectId ? `/subjects?subjectId=${encodeURIComponent(card.subjectId)}` : "/subjects"}
-                  className="block rounded-2xl border border-white/10 bg-[#0F1420] p-4 transition hover:border-[#6C4EFF]/40"
+                  href={primaryRoute.href}
+                  className="mt-5 block rounded-2xl border border-[#6C4EFF]/30 bg-[#6C4EFF]/10 p-5 transition hover:border-[#6C4EFF]/50"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="text-sm font-semibold text-white">{card.subject}</h3>
-                    <span className="text-xs font-semibold text-[#9CA3AF]">{card.readinessScore}/100</span>
-                  </div>
-                  <p className={`mt-2 ${premiumUi.body}`}>{card.recommendedFocus}</p>
-                  <p className="mt-3 text-sm font-semibold text-[#6C4EFF]">Open subject</p>
+                  <p className={premiumUi.eyebrowAccent}>{primaryRoute.eyebrow}</p>
+                  <h3 className="mt-2 text-xl font-bold tracking-tight text-white">{primaryRoute.title}</h3>
+                  <p className={`mt-2 ${premiumUi.body}`}>{primaryRoute.description}</p>
                 </Link>
-              ))
-            ) : (
-              <p className={premiumUi.body}>Start a practice session to build subject focus cards.</p>
-            )}
-          </div>
-        </article>
-      </div>
+              ) : null}
+              {supportRoutes.length ? (
+                <div className="mt-5">
+                  <StreamlinedRouteCards cards={supportRoutes} />
+                </div>
+              ) : null}
+            </article>
 
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-        <article className={premiumUi.card}>
-          <p className={premiumUi.eyebrow}>If you need something else</p>
-          <h2 className={`mt-3 ${premiumUi.heading}`}>Keep the next move simple</h2>
-          <p className={`mt-3 ${premiumUi.body}`}>
-            Use one route for your main study step, then come back here for planning, saved work, or a different mode.
-          </p>
-          {primaryRoute ? (
-            <Link
-              href={primaryRoute.href}
-              className="mt-5 block rounded-2xl border border-[#6C4EFF]/30 bg-[#6C4EFF]/10 p-5 transition hover:border-[#6C4EFF]/50"
-            >
-              <p className={premiumUi.eyebrowAccent}>{primaryRoute.eyebrow}</p>
-              <h3 className="mt-2 text-xl font-bold tracking-tight text-white">{primaryRoute.title}</h3>
-              <p className={`mt-2 ${premiumUi.body}`}>{primaryRoute.description}</p>
-              <p className="mt-3 text-sm font-semibold text-[#00BFFF]">{primaryRoute.stat}</p>
-            </Link>
-          ) : null}
-          {supportRoutes.length ? (
-            <div className="mt-5">
-              <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${premiumUi.eyebrow}`}>Other routes</p>
-              <div className="mt-3">
-                <StreamlinedRouteCards cards={supportRoutes} />
-              </div>
-            </div>
-          ) : null}
-        </article>
+            <div className="space-y-6">
+              <article className={premiumUi.card}>
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <div>
+                    <p className={premiumUi.eyebrowAccent}>Resume recent work</p>
+                    <h2 className="mt-2 text-xl font-bold tracking-tight text-white">Return without losing momentum</h2>
+                  </div>
+                  <Link href="/saved-progress" className={premiumUi.linkAccent}>
+                    View all
+                  </Link>
+                </div>
+                <div className="mt-4">
+                  <CompactRecentSessions sessions={recentSessions} />
+                </div>
+              </article>
 
-        <div className="space-y-6">
-          <article className={premiumUi.card}>
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className={`${premiumUi.eyebrowAccent}`}>Resume recent work</p>
-                <h2 className="mt-2 text-xl font-bold tracking-tight text-white">Return without losing momentum</h2>
-              </div>
-              <Link href="/saved-progress" className={premiumUi.linkAccent}>
-                View all
-              </Link>
+              <SendSupportRail summary={data.supportSnapshotSummary} chips={data.supportPreferenceChips} />
             </div>
-            <div className="mt-4">
-              <CompactRecentSessions sessions={recentSessions} />
-            </div>
-          </article>
-
-          <div>
-            <SendSupportRail summary={data.supportSnapshotSummary} chips={data.supportPreferenceChips} />
-          </div>
+          </section>
         </div>
-      </section>
+      </details>
     </div>
   );
 }

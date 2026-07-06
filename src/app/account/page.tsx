@@ -1,6 +1,7 @@
+import { JourneyNextStepPanel } from "@/components/journey/journey-next-step-panel";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
 import { mark32Ui } from "@/components/streamlined/mark32-ui";
-import { getAccountOverviewApiData } from "@/lib/api/server";
+import { getAccountOverviewApiData, getJourneyNextActionApiData } from "@/lib/api/server";
 import { requireStudentAppRouteContext } from "@/lib/server/student-route";
 
 import { AccountExperience, getAccountAuthErrorMessage } from "./account-experience";
@@ -30,10 +31,14 @@ export default async function AccountPage({
   }
 
   const shell = await requireStudentAppRouteContext();
+  const journey = await getJourneyNextActionApiData();
 
   return (
     <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
-      {experience}
+      <div className="flex flex-col gap-6">
+        {experience}
+        <JourneyNextStepPanel journey={journey} />
+      </div>
     </StudentAppShell>
   );
 }

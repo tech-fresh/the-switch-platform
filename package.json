@@ -12,7 +12,7 @@
     "start": "SWITCH_NEXT_DIST_DIR=.next-rehearsal next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "node scripts/repo-lint.mjs",
     "type-check": "node scripts/type-check.mjs",
-    "test": "node --import tsx --test tests/*.test.mjs",
+    "test": "SWITCH_PERSISTENCE_DRIVER=memory node --import tsx --test tests/*.test.mjs",
     "test:smoke": "node scripts/route-smoke.mjs",
     "test:route-clickability": "node scripts/mvp-route-clickability.mjs",
     "test:exam-assessment-rehearsal": "node scripts/mvp-exam-assessment-rehearsal.mjs",

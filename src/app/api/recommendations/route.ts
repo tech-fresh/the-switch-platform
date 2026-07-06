@@ -1,8 +1,8 @@
 import { withAuthenticatedSwitchRequestContext } from "@/lib/server/api";
-import { getStudentRecommendations } from "@/modules/recommendations/service";
+import { getRankedRecommendations } from "@/modules/recommendations/service";
 
 export async function GET() {
   return withAuthenticatedSwitchRequestContext(async (context) => ({
-    recommendations: await getStudentRecommendations(context.userId),
+    recommendations: await getRankedRecommendations(context.userId),
   }));
 }

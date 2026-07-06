@@ -1,5 +1,9 @@
 import { getDefaultQuizProgressRepository } from "@/lib/server/repositories";
+import { appendProgressionEvent } from "@/lib/persistence/progression-event-store";
 import { getStudentVisibleContentTopic } from "@/modules/content/service";
+import { createProgressionEvent } from "@/modules/power-grid/progression-events";
+import { syncLearningLoopAfterQuiz } from "@/modules/learning-loop/service";
+import { recordReview } from "@/modules/recall-strength/service";
 import type {
   QuizProgressRecord,
   QuizProgressRepository,
@@ -50,6 +54,7 @@ export async function submitQuizAnswer(
   repository: QuizProgressRepository = defaultRepository,
 ): Promise<SubmitQuizAnswerResult> {
   const question = getMockQuizQuestion(topicId);
+  const topic = getStudentVisibleContentTopic(topicId);
   const selectedOption = question.options.find((option) => option.optionId === input.selectedOptionId);
   const correctOption = question.options.find((option) => option.optionId === question.correctOptionId);
 
@@ -75,6 +80,25 @@ export async function submitQuizAnswer(
     incorrectCount,
     lastAnsweredAt,
   });
+
+  await appendProgressionEvent(
+    createProgressionEvent({
+      userId: input.userId,
+      type: "quiz.completed",
+      subjectId: topic?.subjectId,
+      topicId,
+      occurredAt: lastAnsweredAt,
+    }),
+  );
+
+  if (topic?.subjectId) {
+    await recordReview(input.userId, {
+      topicId,
+      subjectId: topic.subjectId,
+      outcome: isCorrect ? "correct" : "incorrect",
+    });
+    await syncLearningLoopAfterQuiz(input.userId, topicId, topic.subjectId);
+  }
 
   return {
     topicId,

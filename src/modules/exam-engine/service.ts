@@ -1,8 +1,10 @@
 import { applyAccessArrangementsToExam } from "@/modules/access-arrangements";
 import type { StudentAccessProfileRepository } from "@/modules/access-arrangements";
+import { appendProgressionEvent } from "@/lib/persistence/progression-event-store";
 import { listSavedProgressByUser, saveExamProgress } from "@/modules/saved-progress/service";
 import type { SavedProgressRecord, SavedProgressRepository } from "@/modules/saved-progress/types";
 import { buildOperationsEvent, recordOperationsEvent } from "@/lib/server/operations-event";
+import { createProgressionEvent } from "@/modules/power-grid/progression-events";
 import type { ExamPaperBlueprint, ExamQuestionSlot } from "./paper-blueprint-types";
 import { seededCombinedSciencePaperBlueprints } from "./seeded-combined-science-papers";
 import type {
@@ -1216,6 +1218,14 @@ export async function getMockExamSession(
     options?.savedProgressRepository,
   );
 
+  await appendProgressionEvent(
+    createProgressionEvent({
+      userId: session.userId,
+      type: "exam.progress",
+      occurredAt: session.lastSavedAt,
+    }),
+  );
+
   return session;
 }
 
@@ -1264,6 +1274,14 @@ export async function saveMockExamSession(
     input.savedProgressRepository,
   );
 
+  await appendProgressionEvent(
+    createProgressionEvent({
+      userId: nextSession.userId,
+      type: "exam.progress",
+      occurredAt: nextSession.lastSavedAt,
+    }),
+  );
+
   return nextSession;
 }
 
@@ -1298,6 +1316,14 @@ export async function submitMockExamSession(
         submittedSession.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
     },
     input.savedProgressRepository,
+  );
+
+  await appendProgressionEvent(
+    createProgressionEvent({
+      userId: submittedSession.userId,
+      type: "exam.submitted",
+      occurredAt: submittedSession.lastSavedAt,
+    }),
   );
 
   recordOperationsEvent(
@@ -1374,6 +1400,14 @@ async function buildSessionFromRecord(
           session.accessArrangements?.accessArrangementApplication.savedProgressSnapshot,
       },
       options?.savedProgressRepository,
+    );
+
+    await appendProgressionEvent(
+      createProgressionEvent({
+        userId: session.userId,
+        type: "exam.progress",
+        occurredAt: session.lastSavedAt,
+      }),
     );
   }
 

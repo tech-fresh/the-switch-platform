@@ -17,6 +17,9 @@ import {
   buildAccessibilityPreferenceChips,
   buildAccessibilitySupportSummary,
 } from "@/modules/accessibility/presentation";
+import { getJourneyContext } from "@/modules/journey/service";
+import { getPowerGridRankPresentation } from "@/lib/power-grid/rank-presentation";
+import { getRecallStrengthSnapshot } from "@/modules/recall-strength/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import {
   findSavedProgressSessionSummary,
@@ -30,15 +33,18 @@ import type {
   DashboardFocusCard,
   DashboardHomeData,
   DashboardMetric,
+  DashboardPrimarySignals,
   DashboardRouteCard,
   DashboardSessionCard,
+  ExamTaskSignal,
+  WeakTopicSignal,
 } from "./types";
 
 export async function getDashboardHomeData(userId = "guest-preview"): Promise<DashboardHomeData> {
   const onboardingOverview =
     userId === "guest-preview" ? null : await getOnboardingOverview(userId);
 
-  const [summary, savedProgress, uiPreferences, weeklyPlanner] = await Promise.all([
+  const [summary, savedProgress, uiPreferences, weeklyPlanner, journey, recallStrength] = await Promise.all([
     getMockPowerGridSummary({
       userId,
       onboardingProfile: onboardingOverview?.profile ?? null,
@@ -48,6 +54,8 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
       ? Promise.resolve({ plannerPromptDismissed: false })
       : getDashboardUiPreferences(userId),
     getWeeklyPlannerSummary({ userId }),
+    getJourneyContext(userId),
+    userId === "guest-preview" ? Promise.resolve(null) : getRecallStrengthSnapshot(userId),
   ]);
   const setup = buildDashboardSetupSummary(onboardingOverview?.profile ?? null);
   const onboardingPersonalization = buildOnboardingPersonalizationContext(
@@ -342,9 +350,18 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     savedProgress.sessions.find((session) => session.supportPreferenceChips.length > 0)
       ?.supportPreferenceChips ?? [];
   const dailyMotivation = getDailyMotivation();
+  const primarySignals = buildDashboardPrimarySignals({
+    journey,
+    summary,
+    weakestSubject,
+    examSessions: sortedExamSessionCards,
+    recallStrength,
+  });
 
   return {
     summary,
+    journey,
+    primarySignals,
     metrics,
     dailyMotivation,
     routeCards,
@@ -355,10 +372,10 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     weakestSubject,
     recommendedAction:
       onboardingPersonalization.isActive
-        ? `${onboardingPersonalization.studyGoalMessage} • ${savedProgress.continuity.primaryAction.title}`
+        ? `${onboardingPersonalization.studyGoalMessage} • ${journey.primaryAction.label}`
         : setup.subjectFilterIds.length > 0
-          ? `${setup.setupSummary} • ${savedProgress.continuity.primaryAction.title}`
-          : savedProgress.continuity.primaryAction.title,
+          ? `${setup.setupSummary} • ${journey.primaryAction.label}`
+          : journey.primaryAction.label,
     continuityStatus: savedProgress.continuity.status,
     continuityDescription: savedProgress.continuity.primaryAction.description,
     continuityHref: savedProgress.continuity.primaryAction.href,
@@ -372,6 +389,67 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
     plannerPromptDismissed: uiPreferences.plannerPromptDismissed,
     weeklyPlanner,
     onboardingPersonalization,
+  };
+}
+
+function buildDashboardPrimarySignals(options: {
+  journey: Awaited<ReturnType<typeof getJourneyContext>>;
+  summary: Awaited<ReturnType<typeof getMockPowerGridSummary>>;
+  weakestSubject?: DashboardFocusCard;
+  examSessions: DashboardSessionCard[];
+  recallStrength: Awaited<ReturnType<typeof getRecallStrengthSnapshot>> | null;
+}): DashboardPrimarySignals {
+  const rankPresentation = getPowerGridRankPresentation(options.summary.xpTotal);
+  const inProgressExam =
+    options.examSessions.find((session) => session.status === "in-progress") ??
+    options.examSessions[0];
+  const nextExamTask: ExamTaskSignal = inProgressExam
+    ? {
+        title: inProgressExam.title,
+        href: inProgressExam.href,
+        dueLabel:
+          inProgressExam.status === "in-progress"
+            ? `${inProgressExam.completionPercentage}% complete`
+            : "Ready in exam lobby",
+      }
+    : {
+        title: "Open exam lobby",
+        href: "/exams",
+        dueLabel: "No active paper yet",
+      };
+
+  const recallTopic = options.recallStrength?.weakestTopic ?? options.recallStrength?.nextDueTopic;
+  const weakTopic: WeakTopicSignal = recallTopic
+    ? {
+        topicId: recallTopic.topicId,
+        subjectId: recallTopic.subjectId,
+        label: recallTopic.topicId,
+        href: `/subjects?subjectId=${encodeURIComponent(recallTopic.subjectId)}&topicId=${encodeURIComponent(recallTopic.topicId)}`,
+        strength: recallTopic.strength,
+      }
+    : options.weakestSubject
+      ? {
+          subjectId: options.weakestSubject.subjectId,
+          label: options.weakestSubject.subject,
+          href: options.weakestSubject.subjectId
+            ? `/subjects?subjectId=${encodeURIComponent(options.weakestSubject.subjectId)}`
+            : "/subjects",
+          strength: options.weakestSubject.readinessScore,
+        }
+      : {
+          label: "Open subjects",
+          href: "/subjects",
+        };
+
+  return {
+    continueLearning: options.journey.primaryAction,
+    weakTopic,
+    nextExamTask,
+    powerGrid: {
+      examReadinessScore: options.summary.examReadinessScore,
+      overallLevel: options.summary.overallLevel,
+      ...rankPresentation,
+    },
   };
 }
 

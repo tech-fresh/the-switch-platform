@@ -56,10 +56,10 @@ export function pickContinueLearning(data: DashboardHomeData): {
 
   return {
     title: data.recommendedAction,
-    subtitle: data.continuityDescription,
+    subtitle: data.journey?.primaryAction.reason ?? data.continuityDescription,
     progress: data.summary.examReadinessScore,
-    href: data.continuityHref,
-    actionLabel: data.continuityActionLabel,
+    href: data.journey?.primaryAction.href ?? data.continuityHref,
+    actionLabel: data.journey?.primaryAction.label ?? data.continuityActionLabel,
   };
 }
 

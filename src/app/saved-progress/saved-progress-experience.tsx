@@ -1,8 +1,10 @@
+import { JourneyNextStepPanel } from "@/components/journey/journey-next-step-panel";
 import Link from "next/link";
 
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { SavedProgressStatusControls } from "@/components/saved-progress-status-controls";
 import { StudentRouteRecovery } from "@/components/student-route-recovery";
+import type { JourneyContext } from "@/modules/journey/types";
 import type { SavedProgressOverview, SavedProgressStatus } from "@/modules/saved-progress/types";
 
 function formatLastActivity(timestamp?: string): string {
@@ -32,9 +34,10 @@ function getStatusClasses(status: SavedProgressStatus): string {
 
 interface SavedProgressExperienceProps {
   overview: SavedProgressOverview;
+  journey: JourneyContext;
 }
 
-export function SavedProgressExperience({ overview }: SavedProgressExperienceProps) {
+export function SavedProgressExperience({ overview, journey }: SavedProgressExperienceProps) {
   if (overview.sessionCount === 0) {
     return (
       <StudentRouteRecovery
@@ -52,6 +55,8 @@ export function SavedProgressExperience({ overview }: SavedProgressExperiencePro
 
   return (
     <div className="flex flex-col gap-8">
+      <JourneyNextStepPanel journey={journey} />
+
       <Mark32PageHeader
         eyebrow="Saved progress"
         title="Resume exams and timed assessments from your autosave records"

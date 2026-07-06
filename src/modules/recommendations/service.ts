@@ -9,22 +9,164 @@ import {
   listStudentVisibleContentTopics,
 } from "@/modules/content/service";
 import { getRouteCopy } from "@/modules/language/service";
+import { getOnboardingOverview } from "@/modules/onboarding/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
+import { getRecallStrengthSnapshot } from "@/modules/recall-strength/service";
 import { getResultsOverview } from "@/modules/results/service";
 import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
 import { listSavedProgressByUser } from "@/modules/saved-progress/service";
 import { listStudentVisibleExamPapers } from "@/modules/exam-inventory/service";
 import { getMockTimedAssessments } from "@/modules/timed-assessment/service";
+import { getWeeklyPlannerSummary } from "@/modules/weekly-planner/service";
+import {
+  RECOMMENDATION_SIGNAL_WEIGHTS,
+  sortRankingSignals,
+  type RankingSignal,
+} from "./ranking";
 import type { Recommendation, RecommendationsPageData } from "./types";
 
 export async function getStudentRecommendations(userId: string): Promise<Recommendation[]> {
-  const [summary, accessibility, savedProgress, results, routeCopy, savedProgressRecords] = await Promise.all([
+  const data = await buildRecommendationData(userId);
+
+  return buildBaseRecommendations(data);
+}
+
+export async function buildRankingSignals(userId: string): Promise<RankingSignal[]> {
+  const data = await buildRecommendationData(userId);
+  const recommendations = buildBaseRecommendations(data);
+  const recommendationsByCategory = new Map(
+    recommendations.map((recommendation) => [recommendation.category, recommendation] as const),
+  );
+  const signals: RankingSignal[] = [];
+  const plannerItems = data.weeklyPlanner.days.flatMap((day) => day.items);
+  const completedPlannerDays = data.weeklyPlanner.days.filter((day) =>
+    day.items.some((item) => item.status === "completed"),
+  ).length;
+
+  const resumeSavedRecommendation = recommendationsByCategory.get("resume-saved");
+  if (data.savedProgress.continuity.activeSession && resumeSavedRecommendation) {
+    signals.push({
+      id: "active-saved-session",
+      weight: RECOMMENDATION_SIGNAL_WEIGHTS.activeSavedSession,
+      recommendation: resumeSavedRecommendation,
+    });
+  }
+
+  const reviewResultsRecommendation = recommendationsByCategory.get("review-results");
+  if (data.results.readyForReviewCount > 0 && reviewResultsRecommendation) {
+    signals.push({
+      id: "review-ready-results",
+      weight: RECOMMENDATION_SIGNAL_WEIGHTS.reviewReadyResults,
+      recommendation: reviewResultsRecommendation,
+    });
+  }
+
+  const reviseNextRecommendation = recommendationsByCategory.get("revise-next");
+  if (data.recallStrength.nextDueTopic && reviseNextRecommendation) {
+    signals.push({
+      id: "recall-strength-due",
+      weight: RECOMMENDATION_SIGNAL_WEIGHTS.recallStrengthDue,
+      recommendation: reviseNextRecommendation,
+    });
+  }
+
+  if (data.weakestTopic && reviseNextRecommendation) {
+    signals.push({
+      id: "weakest-topic",
+      weight: RECOMMENDATION_SIGNAL_WEIGHTS.weakestTopic,
+      recommendation: reviseNextRecommendation,
+    });
+  }
+
+  const nextPlannerItem = plannerItems.find((item) => item.kind === "exam" || item.kind === "assessment");
+  if (nextPlannerItem) {
+    const plannerRecommendation =
+      nextPlannerItem.kind === "exam"
+        ? recommendationsByCategory.get("exam-readiness")
+        : recommendationsByCategory.get("timed-practice");
+
+    if (plannerRecommendation) {
+      signals.push({
+        id: "next-exam-in-planner",
+        weight: RECOMMENDATION_SIGNAL_WEIGHTS.nextExamInPlanner,
+        recommendation: plannerRecommendation,
+      });
+    }
+  }
+
+  const onboardingGapRecommendation = recommendationsByCategory.get("revise-next");
+  if ((!data.onboardingOverview?.isComplete || data.savedProgress.sessionCount === 0) && onboardingGapRecommendation) {
+    signals.push({
+      id: "onboarding-gap",
+      weight: RECOMMENDATION_SIGNAL_WEIGHTS.onboardingGap,
+      recommendation: onboardingGapRecommendation,
+    });
+  }
+
+  const revisionStreakRecommendation = recommendationsByCategory.get("timed-practice");
+  if (completedPlannerDays >= 2 && revisionStreakRecommendation) {
+    signals.push({
+      id: "revision-streak",
+      weight: RECOMMENDATION_SIGNAL_WEIGHTS.revisionStreak,
+      recommendation: revisionStreakRecommendation,
+    });
+  }
+
+  const accessibilityRecommendation = recommendationsByCategory.get("access-support");
+  if (
+    accessibilityRecommendation &&
+    (data.accessibility.settings.textToSpeechEnabled ||
+      data.supportPreferenceChips.length > 0)
+  ) {
+    signals.push({
+      id: "accessibility-friendly",
+      weight: RECOMMENDATION_SIGNAL_WEIGHTS.accessibilityFriendly,
+      recommendation: accessibilityRecommendation,
+    });
+  }
+
+  const powerGridRecommendation = pickPowerGridRecommendation(
+    data.summary.nextBestActionHref,
+    recommendationsByCategory,
+  );
+  if (powerGridRecommendation) {
+    signals.push({
+      id: "power-grid-next-best-action",
+      weight: RECOMMENDATION_SIGNAL_WEIGHTS.powerGridNextBestAction,
+      recommendation: powerGridRecommendation,
+    });
+  }
+
+  return signals;
+}
+
+export async function getRankedRecommendations(userId: string): Promise<Recommendation[]> {
+  const [signals, fallbackRecommendations] = await Promise.all([
+    buildRankingSignals(userId),
+    getStudentRecommendations(userId),
+  ]);
+
+  const ranked = sortRankingSignals(signals).map((signal) => signal.recommendation);
+  const deduped = new Map<string, Recommendation>();
+
+  for (const recommendation of [...ranked, ...fallbackRecommendations]) {
+    deduped.set(recommendation.recommendationId, recommendation);
+  }
+
+  return [...deduped.values()];
+}
+
+async function buildRecommendationData(userId: string) {
+  const [summary, accessibility, savedProgress, results, routeCopy, savedProgressRecords, weeklyPlanner, onboardingOverview, recallStrength] = await Promise.all([
     getMockPowerGridSummary({ userId }),
     getAccessibilitySnapshot(userId),
     getSavedProgressOverview({ userId }),
     getResultsOverview(userId),
     getRouteCopy(),
     listSavedProgressByUser(userId),
+    getWeeklyPlannerSummary({ userId }),
+    userId === "guest-preview" ? Promise.resolve(null) : getOnboardingOverview(userId),
+    getRecallStrengthSnapshot(userId),
   ]);
   const reinforcementOverview = buildAcademicReinforcementOverview({
     records: savedProgressRecords,
@@ -83,26 +225,78 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
       : undefined,
   );
 
+  return {
+    userId,
+    summary,
+    accessibility,
+    savedProgress,
+    results,
+    routeCopy,
+    savedProgressRecords,
+    weeklyPlanner,
+    onboardingOverview,
+    recallStrength,
+    reinforcementOverview,
+    lowestSubject,
+    strongestSubject,
+    activeSavedSession,
+    submittedSavedSession,
+    hasReviewReadyResults,
+    weakestTopic,
+    supportSummary,
+    supportPreferenceChips,
+  };
+}
+
+function buildBaseRecommendations(data: Awaited<ReturnType<typeof buildRecommendationData>>): Recommendation[] {
+  const {
+    userId,
+    lowestSubject,
+    strongestSubject,
+    activeSavedSession,
+    submittedSavedSession,
+    hasReviewReadyResults,
+    recallStrength,
+    weakestTopic,
+    supportSummary,
+    supportPreferenceChips,
+    accessibility,
+    routeCopy,
+    savedProgress,
+    results,
+  } = data;
+
   return [
     {
       recommendationId: "rec-revise-next",
       userId,
       category: "revise-next",
       eyebrow: "Revise next",
-      title: weakestTopic
-        ? `Revise ${weakestTopic.topic} in ${weakestTopic.subject} next`
-        : `Revise ${lowestSubject?.subject ?? "your weakest subject"} next`,
+      title: recallStrength.nextDueTopic
+        ? `Review ${recallStrength.nextDueTopic.topicId} next`
+        : weakestTopic
+          ? `Revise ${weakestTopic.topic} in ${weakestTopic.subject} next`
+          : `Revise ${lowestSubject?.subject ?? "your weakest subject"} next`,
       description:
-        weakestTopic?.evidence ??
-        lowestSubject?.recommendedFocus ??
-        "Open a subject route and continue with the next recommended topic.",
+        recallStrength.nextDueTopic
+          ? "Recall Strength shows this topic is due for review now."
+          : weakestTopic?.evidence ??
+            lowestSubject?.recommendedFocus ??
+            "Open a subject route and continue with the next recommended topic.",
       actionLabel:
-        weakestTopic?.href
+        recallStrength.nextDueTopic
+          ? "Review due topic"
+          : weakestTopic?.href
           ? "Open revision topic"
           : lowestSubject?.subjectHref && lowestSubject.recommendedTopicId
           ? "Open revision topic"
           : routeCopy["/subjects"].label,
-      href: weakestTopic?.href ?? lowestSubject?.subjectHref ?? "/subjects",
+      href:
+        (recallStrength.nextDueTopic
+          ? `/subjects?subjectId=${recallStrength.nextDueTopic.subjectId}&topicId=${recallStrength.nextDueTopic.topicId}`
+          : weakestTopic?.href) ??
+        lowestSubject?.subjectHref ??
+        "/subjects",
       priority: activeSavedSession ? "medium" : "high",
     },
     {
@@ -190,21 +384,17 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
 }
 
 export async function getRecommendationsPageData(userId: string): Promise<RecommendationsPageData> {
-  const [summary, accessibility, savedProgress, results, routes, recommendations] = await Promise.all([
-    getMockPowerGridSummary({ userId }),
-    getAccessibilitySnapshot(userId),
-    getSavedProgressOverview({ userId }),
-    getResultsOverview(userId),
-    getRouteCopy(),
-    getStudentRecommendations(userId),
+  const [data, recommendations] = await Promise.all([
+    buildRecommendationData(userId),
+    getRankedRecommendations(userId),
   ]);
   const supportSummary = buildAccessibilitySupportSummary({
-    activeAccessArrangements: accessibility.studentAccessProfile.activeAccessArrangements,
-    preferredReadingSpeed: accessibility.studentAccessProfile.preferredReadingSpeed,
-    preferredFontSize: accessibility.studentAccessProfile.preferredFontSize,
-    preferredColourScheme: accessibility.studentAccessProfile.preferredColourScheme,
-    textToSpeechEnabled: accessibility.studentAccessProfile.textToSpeechEnabled,
-    accessibilityPreferences: accessibility.studentAccessProfile.accessibilityPreferences,
+    activeAccessArrangements: data.accessibility.studentAccessProfile.activeAccessArrangements,
+    preferredReadingSpeed: data.accessibility.studentAccessProfile.preferredReadingSpeed,
+    preferredFontSize: data.accessibility.studentAccessProfile.preferredFontSize,
+    preferredColourScheme: data.accessibility.studentAccessProfile.preferredColourScheme,
+    textToSpeechEnabled: data.accessibility.studentAccessProfile.textToSpeechEnabled,
+    accessibilityPreferences: data.accessibility.studentAccessProfile.accessibilityPreferences,
     capturedAt: new Date().toISOString(),
   });
 
@@ -212,43 +402,70 @@ export async function getRecommendationsPageData(userId: string): Promise<Recomm
     title: "Student recommendations built from readiness, autosave, support, and results signals.",
     description:
       "This route turns the recommendation module into a real student product surface. It gathers progress, support, saved state, and outcome signals into one ordered action list without pushing the decision logic into the frontend.",
-    nextBestAction: savedProgress.continuity.primaryAction.title,
-    routeSummary: routes["/recommendations"].description,
+    nextBestAction: data.savedProgress.continuity.primaryAction.title,
+    routeSummary: data.routeCopy["/recommendations"].description,
     insights: [
       {
         label: "Next best action",
-        value: savedProgress.continuity.primaryAction.title,
-        detail: `${summary.overallLevel} level with a ${summary.overallTrend} trend`,
+        value: data.savedProgress.continuity.primaryAction.title,
+        detail: `${data.summary.overallLevel} level with a ${data.summary.overallTrend} trend`,
       },
       {
         label: "Saved sessions",
-        value: String(savedProgress.activeCount),
+        value: String(data.savedProgress.activeCount),
         detail:
-          savedProgress.submittedCount > 0
-            ? `${savedProgress.submittedCount} completed session${
-                savedProgress.submittedCount === 1 ? "" : "s"
+          data.savedProgress.submittedCount > 0
+            ? `${data.savedProgress.submittedCount} completed session${
+                data.savedProgress.submittedCount === 1 ? "" : "s"
               } ready for review`
-            : `${savedProgress.recoveryReadyCount} resume-ready session${
-                savedProgress.recoveryReadyCount === 1 ? "" : "s"
+            : `${data.savedProgress.recoveryReadyCount} resume-ready session${
+                data.savedProgress.recoveryReadyCount === 1 ? "" : "s"
               } already captured`,
       },
       {
         label: "Strongest area",
-        value: results.strongestArea,
+        value: data.results.strongestArea,
         detail:
-          results.readyForReviewCount > 0
-            ? `${results.readyForReviewCount} submitted result${
-                results.readyForReviewCount === 1 ? "" : "s"
+          data.results.readyForReviewCount > 0
+            ? `${data.results.readyForReviewCount} submitted result${
+                data.results.readyForReviewCount === 1 ? "" : "s"
               } ready to open`
-            : results.nextPriority,
+            : data.results.nextPriority,
       },
       {
         label: "Support profile",
-        value: accessibility.settings.textToSpeechEnabled ? "Support active" : "Support ready",
+        value: data.accessibility.settings.textToSpeechEnabled ? "Support active" : "Support ready",
         detail: supportSummary,
         supportSummary,
       },
     ],
     recommendations,
   };
+}
+
+function pickPowerGridRecommendation(
+  nextBestActionHref: string | undefined,
+  recommendationsByCategory: Map<Recommendation["category"], Recommendation>,
+): Recommendation | undefined {
+  if (!nextBestActionHref) {
+    return undefined;
+  }
+
+  if (nextBestActionHref.startsWith("/exams")) {
+    return recommendationsByCategory.get("exam-readiness");
+  }
+
+  if (nextBestActionHref.startsWith("/assessments")) {
+    return recommendationsByCategory.get("timed-practice");
+  }
+
+  if (nextBestActionHref.startsWith("/accessibility")) {
+    return recommendationsByCategory.get("access-support");
+  }
+
+  if (nextBestActionHref.startsWith("/results")) {
+    return recommendationsByCategory.get("review-results");
+  }
+
+  return recommendationsByCategory.get("revise-next");
 }

@@ -7,8 +7,10 @@ import {
   writeLaunchGovernanceRecords,
 } from "@/lib/persistence/launch-governance-store";
 import { readAccessProfiles, writeAccessProfiles } from "@/lib/persistence/access-profile-store";
+import { readQuizProgressRecords, writeQuizProgressRecords } from "@/lib/persistence/quiz-progress-store";
 import { getPersistenceRuntimeConfig } from "@/lib/persistence/runtime";
 import { readSavedProgressRecords, writeSavedProgressRecords } from "@/lib/persistence/saved-progress-store";
+import type { QuizProgressRecord, QuizProgressRepository } from "@/modules/quiz/types";
 import type { StudentAccessProfile, StudentAccessProfileRepository } from "@/modules/access-arrangements/types";
 import type { CmsEditorialWorkflowRecord } from "@/modules/cms/types";
 import type { StoredGovernanceRecord } from "@/modules/governance/types";
@@ -112,6 +114,31 @@ const defaultStudentAccessProfileRepository: StudentAccessProfileRepository = {
   },
 };
 
+const defaultQuizProgressRepository: QuizProgressRepository = {
+  async getByTopicId(userId, topicId) {
+    const records = await readQuizProgressRecords();
+    return records.find((record) => record.userId === userId && record.topicId === topicId) ?? null;
+  },
+  async listByUserId(userId) {
+    const records = await readQuizProgressRecords();
+    return records
+      .filter((record) => record.userId === userId)
+      .sort((left, right) => right.lastAnsweredAt.localeCompare(left.lastAnsweredAt));
+  },
+  async save(record) {
+    const repositoryKey = buildQuizProgressRepositoryKey(record.userId, record.topicId);
+    const records = await readQuizProgressRecords();
+    const nextRecords = records
+      .filter((existingRecord) => buildQuizProgressRepositoryKey(existingRecord.userId, existingRecord.topicId) !== repositoryKey)
+      .concat(record)
+      .sort((left, right) => right.lastAnsweredAt.localeCompare(left.lastAnsweredAt));
+
+    await writeQuizProgressRecords(nextRecords);
+
+    return record;
+  },
+};
+
 const defaultAuthSessionRepository: AuthSessionRepository = {
   async listSessions() {
     return readPersistedAuthSessions();
@@ -145,6 +172,10 @@ export function getDefaultSavedProgressRepository(): SavedProgressRepository {
 
 export function getDefaultStudentAccessProfileRepository(): StudentAccessProfileRepository {
   return defaultStudentAccessProfileRepository;
+}
+
+export function getDefaultQuizProgressRepository(): QuizProgressRepository {
+  return defaultQuizProgressRepository;
 }
 
 export function getDefaultAuthSessionRepository(): AuthSessionRepository {
@@ -189,4 +220,8 @@ function buildSavedProgressRepositoryKey(
   entityId: string,
 ): string {
   return userId + ":" + entityType + ":" + entityId;
+}
+
+function buildQuizProgressRepositoryKey(userId: string, topicId: string): string {
+  return userId + ":" + topicId;
 }

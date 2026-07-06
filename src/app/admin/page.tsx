@@ -1,9 +1,11 @@
 import {
   getCmsOverviewApiData,
+  getExamInventoryApiData,
   getLaunchGovernanceOverviewApiData,
   getOperationsOverviewApiData,
   getPastPaperCatalogApiData,
   getPersistenceRuntimeSummaryApiData,
+  getSpecificationLibraryApiData,
 } from "@/lib/api/server";
 import { AuthAccessPathPanel } from "@/components/auth-access-path-panel";
 import { buildAuthAccessPathSummary } from "@/modules/auth/allowlist-service";
@@ -75,9 +77,11 @@ function getOperationsClasses(status: "healthy" | "warning" | "critical"): strin
 
 export default async function AdminPage() {
   const session = await requireRequestSessionRoles(["editor", "admin"]);
-  const [cms, papers, operations, governance, persistence] = await Promise.all([
+  const [cms, papers, inventory, specificationLibrary, operations, governance, persistence] = await Promise.all([
     getCmsOverviewApiData(),
     getPastPaperCatalogApiData(),
+    getExamInventoryApiData(),
+    getSpecificationLibraryApiData(),
     getOperationsOverviewApiData(),
     getLaunchGovernanceOverviewApiData(),
     getPersistenceRuntimeSummaryApiData(),
@@ -130,9 +134,23 @@ export default async function AdminPage() {
               <p className="mt-1 text-sm text-stone-600">{papers.cataloguedCount} catalogued entries in controlled source review</p>
             </div>
             <div className="border border-stone-200 bg-white p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Exam inventory</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">{inventory.summary.liveEntries} live</p>
+              <p className="mt-1 text-sm text-stone-600">
+                {inventory.summary.launchMvpEntries} launch-safe • {inventory.summary.year10Entries} Year 10 • {inventory.summary.bridgeEntries} bridge
+              </p>
+            </div>
+            <div className="border border-stone-200 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Editorial queue</p>
               <p className="mt-2 text-lg font-semibold text-stone-950">{cms.editorialWorkflow.length}</p>
               <p className="mt-1 text-sm text-stone-600">{cms.editorialWorkflowSummary.queuedReviewCount} waiting for review</p>
+            </div>
+            <div className="border border-stone-200 bg-white p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Specification imports</p>
+              <p className="mt-2 text-lg font-semibold text-stone-950">{specificationLibrary.objectives.length}</p>
+              <p className="mt-1 text-sm text-stone-600">
+                Validation {specificationLibrary.validation.isValid ? "passed" : "needs attention"} for board-specific objective coverage
+              </p>
             </div>
             <div className={`border p-4 ${getPersistenceClasses(persistence.driver, persistence.isPrototypePersistence, persistence.isEphemeralStorage)}`}>
               <p className="text-xs uppercase tracking-[0.2em] opacity-75">Persistence driver</p>
@@ -249,6 +267,24 @@ export default async function AdminPage() {
           </article>
 
           <aside className="space-y-4">
+            <section className="border border-stone-200 bg-white p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
+                Inventory coverage
+              </h2>
+              <ul className="mt-4 space-y-2 text-sm leading-6 text-stone-600">
+                {inventory.summary.bySubject.map((group) => (
+                  <li key={group.key}>
+                    {group.label}: {group.live} live / {group.total} total
+                  </li>
+                ))}
+              </ul>
+              {inventory.summary.coverageGaps.length > 0 ? (
+                <div className="mt-4 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950">
+                  {inventory.summary.coverageGaps.join(" ")}
+                </div>
+              ) : null}
+            </section>
+
             <section className="border border-stone-200 bg-white p-4">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 Metrics this page already exposes

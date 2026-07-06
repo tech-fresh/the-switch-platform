@@ -10,9 +10,13 @@ Before doing ANY work in this repository:
 3. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 4. Read **`PROJECT_RECOVERY.md`** and **`RESTORED_CHATS.md`** if folder or history context is unclear
 5. For module work, open the matching section in **`PLATFORM-GUIDE.md` → Module reference**
-6. For Mark 3.2 UI/product vision work, read **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** after **`UI-UX-MASTERPLAN.md`** — extend the live Fly stack; do not greenfield-replace with Supabase/Vercel unless the operator reopens architecture
+6. For Mark 3.2 UI/product vision work, read **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`** then **`docs/design/11_UI_UX_MASTER_GUIDE.md`** and **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** — extend the live Fly stack; do not greenfield-replace with Supabase/Vercel unless the operator reopens architecture
 
 Never switch between Cursor and Codex without updating **`HANDOFF.md`**, **`AGENTS.md`**, and pushing committed work first.
+
+### Completion meaning
+
+When the operator says to **complete** something, that means the full requested scope should be delivered end to end by default. Do not stop at a foundation, scaffold, placeholder, partial pass, or “phase 1 only” state unless the operator explicitly asks for phased delivery.
 
 ### Operator rule — every session
 
@@ -20,7 +24,8 @@ Never switch between Cursor and Codex without updating **`HANDOFF.md`**, **`AGEN
 
 ```text
 Read HANDOFF.md first.
-Then read docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md for Mark 3.2 vision (extend live repo — do not greenfield Supabase/Vercel).
+Then read docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md for connected learning architecture.
+Then read docs/design/11_UI_UX_MASTER_GUIDE.md and docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md (extend live repo — do not greenfield Supabase/Vercel).
 ```
 
 Then read **`PLATFORM-GUIDE.md`** before making changes.
@@ -37,7 +42,7 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 
 **Priority C rule (24 June 2026):** Priority **C** is **COMPLETE**. Do not reopen C-1–C-10 unless the operator explicitly requests an exception.
 
-**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. Strict closeout chain blanks `SWITCH_LAUNCH_VERIFICATION_SECRET`; `verify:live-onboarding` runs afterward as API-assisted regression only (not strict A-4). Browser-authenticated A-4 proof remains in `release-evidence/2026-06-25-priority-a-truth-audit.md`. Priorities **B**, **C**, and **D** are also complete for the current MVP.
+**Priority A rule (26 June 2026):** Priority **A** is **COMPLETE** (A-1 through A-8). Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md` (refreshed 5 July 2026 in `release-evidence/2026-07-05-priority-a-canonical-closeout.md`). Strict closeout chain blanks `SWITCH_LAUNCH_VERIFICATION_SECRET`; `verify:live-onboarding` runs afterward as API-assisted regression only (not strict A-4). Cold-start hardening for that supportive check lives on `cursor/fix-live-onboarding-cold-start`. Browser-authenticated A-4 proof remains in `release-evidence/2026-06-25-priority-a-truth-audit.md`. Priorities **B**, **C**, and **D** are also complete for the current MVP.
 
 **At session end:** run verification, confirm push, refresh **`HANDOFF.md`** and **`AGENTS.md`** if the story changed.
 
@@ -53,8 +58,10 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`docs/ideas/`** | Plan index — prior plans historical |
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
+| **`docs/design/11_UI_UX_MASTER_GUIDE.md`** | Authoritative UI reference |
+| **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`** | Connected learning architecture principles (documentation only) |
+| **`docs/design/UI-UX-MASTERPLAN.md`** | Pointer to UI master guide |
 | **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** | Mark 3.2 full product vision + route mapping to live repo |
-| **`docs/design/UI-UX-MASTERPLAN.md`** | Live UI implementation constraints (Study Atelier) |
 
 **Dual-agent handoff:** `HANDOFF.md` → **Dual-agent document system** — never switch tools without updating it.
 
@@ -128,7 +135,9 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - MVP usability plan → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`** · **`docs/LOCAL-LAUNCH-REHEARSAL.md`** · **`docs/MVP-OPERATOR-TRUTH.md`**
 - Active redesign track → Areas **1–9 complete** (30 June 2026); operator-requested Mark 4 planning, route audit, Microsoft OIDC runtime restoration, and the current implementation passes on `/dashboard`, `/subjects`, `/`, and `/login` are now documented in `docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md` and `docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`
 - Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
-- **UI masterplan** → **`docs/design/UI-UX-MASTERPLAN.md`**
+- Brand logo mockup → `/brand-mockup` · entry from `/mock-idea-preview`
+- **UI master guide** → **`docs/design/11_UI_UX_MASTER_GUIDE.md`** (authoritative) · **`docs/design/UI-UX-MASTERPLAN.md`** (pointer)
+- **Connected learning architecture** → **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`**
 - **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
 - External prompt pack → **`docs/CHATGPT-PROMPTS-README.md`**
 
@@ -147,12 +156,16 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Year 1 MVP live.** Launch exam-paper coverage is now explicitly confirmed for the current MVP (6 seeded full-paper routes across Maths, English Language, Combined Science, and iGCSE Maths), onboarding personalization is watertight on production, the simpler provider-first `/login` layout is live on Fly, and the 1 July 2026 production 502 was recovered by increasing the Fly machine memory to `1024MB`. Priority **E closed for year 1**. |
+| What are we doing now? | **Connected learning architecture documented** in `09_SENECA_ARCHITECTURE_COMPARISON/` — principles synced across HANDOFF, AGENTS, PLATFORM-GUIDE, UI guides. PR #11 open for UI/premium branch merge. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
-| Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | Build the central all-exams inventory layer next, then continue Mark 4 Phase 7 public marketing refinement. |
+| Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** now in live code paths. |
+| What is next? | Deploy premium redesign to Fly; commit brand mockup when operator asks; merge cold-start branch; rerun supportive `verify:live-onboarding`. |
 
-**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
+**Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) on Fly production closeout evidence dated 26 June 2026.
+
+**Current branch-readiness rule:** do not reuse the historical `100%` label for the working tree by default. Always read `HANDOFF.md` for the current branch readiness percentage and latest verification result first.
+
+**Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. Canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
 
 ```mermaid
 flowchart LR
@@ -287,7 +300,7 @@ route (thin page) → module service → API route → persistence
 
 **Verification:** `npm run lint && npm run type-check && npm run test` — 102/102 passed.
 
-**What is next:** Priority **B** — repo/docs sync. Priority **A** and **C** are **complete**.
+**What is next:** keep the current branch and production verification in sync with the historical closeout evidence; Priority **A** through **D** are complete for the recorded MVP closeout, and Priority **E** stays deferred unless the operator reopens expansion scope.
 
 **Current A status (26 June 2026):** **COMPLETE** — A-1 through A-8 closed. Canonical evidence: `release-evidence/2026-06-26-priority-a-canonical-closeout.md`. Re-run: `npm run verify:priority-a-closeout` after cookie refresh for new releases.
 

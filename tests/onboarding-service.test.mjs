@@ -27,6 +27,10 @@ test("onboarding options include school sources and MVP catalog subjects", () =>
   ]);
   assert.equal(options.schoolSources.length, 4);
   assert.equal(options.subjects.length, 4);
+  assert.deepEqual(
+    options.combinedScienceVariations.map((variation) => variation.id),
+    ["aqa-combined-science-trilogy", "edexcel-gcse-combined-science"],
+  );
 
   const subjectIds = options.subjects.map((subject) => subject.subjectId).sort();
   assert.deepEqual(subjectIds, [
@@ -105,6 +109,7 @@ test("onboarding completion requires consent and valid MVP subject selection", (
     examBoard: "AQA",
     studyGoal: "exam-readiness",
     selectedSubjectIds: ["gcse-maths", "gcse-combined-science"],
+    combinedScienceVariation: "aqa-combined-science-trilogy",
     wantsAccessibilitySupport: true,
     wantsAccessArrangementHelp: false,
     sendSupportPathVisible: true,
@@ -115,6 +120,49 @@ test("onboarding completion requires consent and valid MVP subject selection", (
 
   assert.equal(validateOnboardingProfile(completeProfile), null);
   assert.equal(isOnboardingProfileComplete(completeProfile), true);
+});
+
+test("combined science validation only allows supported live variations", () => {
+  const missingVariation = validateOnboardingProfile({
+    userId: "student-demo",
+    learnerRole: "student",
+    schoolPhase: "secondary",
+    schoolName: "Example Secondary School",
+    schoolNation: "england",
+    yearGroup: "Year 11",
+    qualificationPath: "gcse-england",
+    examBoard: "AQA",
+    studyGoal: "exam-readiness",
+    selectedSubjectIds: ["gcse-combined-science"],
+    wantsAccessibilitySupport: false,
+    wantsAccessArrangementHelp: false,
+    sendSupportPathVisible: false,
+    ageOrConsentConfirmed: true,
+    updatedAt: new Date().toISOString(),
+  });
+
+  assert.match(missingVariation ?? "", /combined science variation/i);
+
+  const wrongVariation = validateOnboardingProfile({
+    userId: "student-demo",
+    learnerRole: "student",
+    schoolPhase: "secondary",
+    schoolName: "Example Secondary School",
+    schoolNation: "england",
+    yearGroup: "Year 11",
+    qualificationPath: "gcse-england",
+    examBoard: "AQA",
+    studyGoal: "exam-readiness",
+    selectedSubjectIds: ["gcse-combined-science"],
+    combinedScienceVariation: "edexcel-gcse-combined-science",
+    wantsAccessibilitySupport: false,
+    wantsAccessArrangementHelp: false,
+    sendSupportPathVisible: false,
+    ageOrConsentConfirmed: true,
+    updatedAt: new Date().toISOString(),
+  });
+
+  assert.match(wrongVariation ?? "", /matches your board/i);
 });
 
 test("onboarding support summary surfaces MVP accessibility and SEND signposting", () => {

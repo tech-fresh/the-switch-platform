@@ -1,9 +1,14 @@
-import { getDefaultSavedProgressRepository, getDefaultStudentAccessProfileRepository } from "@/lib/server/repositories";
+import {
+  getDefaultQuizProgressRepository,
+  getDefaultSavedProgressRepository,
+  getDefaultStudentAccessProfileRepository,
+} from "@/lib/server/repositories";
 import { getRequestAuthSession } from "@/modules/auth/request";
 import { getAuthUserIdFromSession } from "@/modules/auth/service";
 import type { AuthRole, AuthSession } from "@/modules/auth/types";
 import type { AuthenticatedAuthSession } from "@/modules/auth/types";
 import type { StudentAccessProfileRepository } from "@/modules/access-arrangements/types";
+import type { QuizProgressRepository } from "@/modules/quiz/types";
 import type { SavedProgressRepository } from "@/modules/saved-progress/types";
 
 export interface SwitchRequestContext {
@@ -12,6 +17,7 @@ export interface SwitchRequestContext {
   repositories: {
     savedProgress: SavedProgressRepository;
     accessProfiles: StudentAccessProfileRepository;
+    quizProgress: QuizProgressRepository;
   };
 }
 
@@ -36,6 +42,7 @@ export async function getSwitchRequestContext(): Promise<SwitchRequestContext> {
     repositories: {
       savedProgress: getDefaultSavedProgressRepository(),
       accessProfiles: getDefaultStudentAccessProfileRepository(),
+      quizProgress: getDefaultQuizProgressRepository(),
     },
   };
 }
@@ -55,6 +62,7 @@ export async function getAuthenticatedSwitchRequestContext(): Promise<SwitchRequ
     repositories: {
       savedProgress: getDefaultSavedProgressRepository(),
       accessProfiles: getDefaultStudentAccessProfileRepository(),
+      quizProgress: getDefaultQuizProgressRepository(),
     },
   };
 }
@@ -78,6 +86,7 @@ export async function getAuthorizedSwitchRequestContext(
     repositories: {
       savedProgress: getDefaultSavedProgressRepository(),
       accessProfiles: getDefaultStudentAccessProfileRepository(),
+      quizProgress: getDefaultQuizProgressRepository(),
     },
   };
 }

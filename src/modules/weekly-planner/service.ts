@@ -1,11 +1,12 @@
 import { resolveCatalogSubjectByLabel, resolveSubjectToneById, resolveSubjectToneByLabel } from "@/lib/subjects/tone";
-import { getMockExamPapers } from "@/modules/exam-engine/service";
+import { listStudentVisibleExamPapers } from "@/modules/exam-inventory/service";
 import { buildDashboardSetupSummary, getOnboardingOverview } from "@/modules/onboarding/service";
 import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import type { PowerGridSubjectProgress } from "@/modules/power-grid/types";
 import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
 import type { SavedProgressSessionSummary } from "@/modules/saved-progress/types";
 import { getMockTimedAssessments } from "@/modules/timed-assessment/service";
+import type { ExamPaper } from "@/modules/exam-engine/types";
 import type {
   WeeklyPlannerDay,
   WeeklyPlannerItem,
@@ -30,7 +31,7 @@ export async function getWeeklyPlannerSummary(
   ]);
 
   const setup = buildDashboardSetupSummary(onboardingOverview?.profile ?? null);
-  const papers = getMockExamPapers();
+  const papers = listStudentVisibleExamPapers();
   const assessments = getMockTimedAssessments();
   const weekStart = getWeekStart(referenceDate);
   const days = buildWeekDays(weekStart, referenceDate);
@@ -94,7 +95,7 @@ function buildWeekDays(weekStart: Date, referenceDate: Date): WeeklyPlannerDay[]
 
 function buildPlannerItemFromSession(
   session: SavedProgressSessionSummary,
-  papers: ReturnType<typeof getMockExamPapers>,
+  papers: ExamPaper[],
   assessments: ReturnType<typeof getMockTimedAssessments>,
 ): WeeklyPlannerItem | null {
   if (session.entityType === "exam-session") {

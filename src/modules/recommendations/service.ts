@@ -13,7 +13,7 @@ import { getMockPowerGridSummary } from "@/modules/power-grid/service";
 import { getResultsOverview } from "@/modules/results/service";
 import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
 import { listSavedProgressByUser } from "@/modules/saved-progress/service";
-import { getMockExamPapers } from "@/modules/exam-engine/service";
+import { listStudentVisibleExamPapers } from "@/modules/exam-inventory/service";
 import { getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import type { Recommendation, RecommendationsPageData } from "./types";
 
@@ -37,7 +37,7 @@ export async function getStudentRecommendations(userId: string): Promise<Recomme
       subjectId: topic.subjectId,
       name: topic.name,
     })),
-    examPapers: getMockExamPapers().map((paper) => ({
+    examPapers: listStudentVisibleExamPapers().map((paper) => ({
       examId: paper.examId,
       subject: paper.subject,
     })),

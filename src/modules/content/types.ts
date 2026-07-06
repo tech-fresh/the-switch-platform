@@ -87,6 +87,7 @@ export interface MvpCatalogTopic {
     prompt: string;
     options: QuizOption[];
     correctOptionId: string;
+    explanation: string;
   };
   metadata: ContentReviewMetadata;
 }

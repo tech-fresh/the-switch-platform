@@ -4,7 +4,7 @@
 
 > **Ingested:** 29 June 2026  
 > **Purpose:** product and UX vision reference for Mark 3.2 — screens, features, gamification, accessibility, and landing-page story  
-> **Read with:** [`UI-UX-MASTERPLAN.md`](./UI-UX-MASTERPLAN.md) · [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](../ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md) Area 9 · [`PLATFORM-GUIDE.md`](../../PLATFORM-GUIDE.md)
+> **Read with:** [`UI-UX-MASTERPLAN.md`](./UI-UX-MASTERPLAN.md) · [`11_UI_UX_MASTER_GUIDE.md`](./11_UI_UX_MASTER_GUIDE.md) · [`09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) · [`MVP-USABILITY-LAUNCH-READINESS-PLAN.md`](../ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md) Area 9 · [`PLATFORM-GUIDE.md`](../../PLATFORM-GUIDE.md)
 
 ---
 

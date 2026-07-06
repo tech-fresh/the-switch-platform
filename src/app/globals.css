@@ -3,19 +3,25 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
-  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color-scheme: dark;
+  font-family: "Inter", "Segoe UI", "Avenir Next", sans-serif;
   --switch-line-height: 1.6;
+  --switch-bg: #0b0f17;
+  --switch-card: #121826;
+  --switch-primary: #6c4eff;
+  --switch-accent: #00bfff;
+  --switch-green: #22c55e;
+  --switch-text-muted: #9ca3af;
 }
 
 html {
-  background: #f5f5f4;
+  background: var(--switch-bg);
 }
 
 body {
   margin: 0;
-  background: #f5f5f4;
-  color: #1c1917;
+  background: var(--switch-bg);
+  color: #ffffff;
   line-height: var(--switch-line-height);
   transition:
     background-color 160ms ease,

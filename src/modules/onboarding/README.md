@@ -52,7 +52,7 @@ School lookup is now UK-wide, but onboarding still relies on maintained official
 | 1 | `qualification` | GCSE (England) or iGCSE — Wales/NI deferred |
 | 2 | `profile` | Year group persona |
 | 3 | `school` | **Secondary school** name + UK nation picker + official finder links |
-| 4 | `subjects` | MVP catalog subjects for chosen route |
+| 4 | `subjects` | MVP catalog subjects for chosen route + supported Combined Science variation picker when science is selected |
 | 5 | `support` | Accessibility, access arrangements, SEND signposting |
 | 6 | `guardian` | Optional guardian email |
 | 7 | `consent` | Age/consent → open dashboard |
@@ -84,6 +84,7 @@ Phase 6 shipped locally:
 - Dashboard-creation framing across all 8 onboarding steps
 - `studyGoal` capture on the year-group step
 - `examBoard` capture on the board-and-subjects step (seeded boards only)
+- `combinedScienceVariation` capture when `gcse-combined-science` is selected, limited to supported live variants only
 - Dashboard-ready confirmation on the final step
 - `/api/exams/papers` filtered by onboarding profile so Exams stays usable after setup
 - Dashboard, subjects, assessments, and progress filtered through `personalization.ts` when onboarding is complete
@@ -104,27 +105,29 @@ Implementation constraints:
 
 1. Keep the onboarding flow at 8 steps.
 2. Map these inputs into the existing live onboarding architecture rather than creating a separate signup product.
-3. `Exam Board` is planned scope, but is **not yet** a fully active locked MVP onboarding field; it must only be introduced where it truthfully fits the current qualification, subject, and exam architecture.
-4. The final onboarding state should more clearly communicate that the student's dashboard is now ready.
+3. `Exam Board` is now an active MVP onboarding field and must stay truthful to the live exam inventory.
+4. The final onboarding state should clearly communicate that the student's dashboard is now ready.
 
-Current exam-board truth for this planned field:
+Current exam-board truth for this active field:
 
 - Platform exam-board type supports:
   `AQA`, `Edexcel`, `OCR`, `Eduqas`, `WJEC`, `CCEA`, `Cambridge IGCSE`, `Edexcel International GCSE`, `OxfordAQA International GCSE`
 - Current seeded exam content in the repo uses:
   `AQA`, `Edexcel`, `Cambridge IGCSE`
-- Planned first-class onboarding board menu should be:
-  `AQA`, `Pearson Edexcel`, `OCR`, and `Eduqas` for GCSE;
-  `Edexcel International GCSE` and `Cambridge IGCSE` for iGCSE
+- Current onboarding board menu is driven from `live` exam inventory only:
+  `AQA` and `Edexcel` for `gcse-england`;
+  `Cambridge IGCSE` for `igcse`
 - `WJEC`, `CCEA`, and `OxfordAQA International GCSE` may remain modelled in types, but should stay out of the first-class onboarding menu until matching content pathways are intentionally live
 - Access-arrangements planning must keep the governance split explicit:
   JCQ wording for national GCSE boards; Cambridge International wording for Cambridge IGCSE pathways
 
-Planned behavior:
+Current behavior:
 
 - the learner chooses an exam board during onboarding
+- when the learner selects Combined Science, they also choose from the supported live combined-science variation labels only
 - that board choice helps determine which exam content and paper pathways they receive
 - that board choice also determines which access-arrangements guidance copy and support signposting they see
+- onboarding board choices and `/api/exams/papers` both read from the same live exam inventory truth
 - implementation must remain truthful to the exam content that actually exists in the live repo
 
 ---

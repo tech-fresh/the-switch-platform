@@ -9,20 +9,44 @@
 
 **Synced with `HANDOFF.md` and `AGENTS.md` — update all three when the story changes.**
 
+**Completion rule:** when the operator says to complete something, that means deliver the full requested scope end to end by default. Do not treat a scaffold, foundation, or partial phase as complete unless the operator explicitly asks for phased delivery.
+
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** (`0ee64b2`) |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** The current MVP exam-paper inventory is explicitly confirmed as launch-sufficient for the live routes (6 seeded full-paper routes across Maths, English Language, Combined Science, and iGCSE Maths). Mark 4 Phases 1–6 are on **`main`** at GitHub (dashboard, subjects, homepage, login, progress, exams, Phase 6 onboarding + exam filtering); `/login` uses the simpler provider-first sign-in format on Fly production, and the 1 July 2026 production 502 was recovered by increasing the Fly machine memory to `1024MB`. Priority A–D remain closed; Priority **E** deferred only. |
+| What are we doing now? | **Connected learning architecture documented** in `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`. PR [#11](https://github.com/tech-fresh/the-switch-platform/pull/11) open for premium/UI branch merge. Priority A–D closed; Priority **E** deferred only. |
+| Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength (future), Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Mark 4 UI lane | **Phases 1–6 on `main`** — see [`docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](./docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) and [`docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`](./docs/ideas/MARK-4-ROUTE-UX-AUDIT.md). |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Continue Mark 4 Phase 7 public marketing refinement. Priority **E** deferred only. |
+| What is next? | Commit `/brand-mockup` when operator asks; merge cold-start branch; continue Mark 4 Phase 7 public marketing refinement; route future board/content expansion through the inventory + specification-engine path. Priority **E** deferred only. |
 
-**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
+**Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) in the recorded Fly production closeout.
+
+**Current branch-readiness rule:** older `100%` references in this repo describe the end-completion plan and the 26 June 2026 production proof chain. They should not be read as a default claim about the current working tree; use `HANDOFF.md` for the live branch readiness percentage.
+
+**Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. Canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
 
 **Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception.
+
+---
+
+## Website Redesign Direction (July 2026)
+
+Premium dark-mode GCSE revision platform — implemented in code, not mockups only.
+
+| Inspiration | Contribution |
+|-------------|--------------|
+| **Stripe** | Premium homepage gradients, trust stats, purple CTAs |
+| **Linear** | Desktop sidebar navigation, command-centre dashboard |
+| **Seneca** | Clean quiz card, progress bar, instant right/wrong feedback |
+| **Duolingo** | Power Grid levels, streak stats, motivational progress rings |
+| **BBC Bitesize** | Clear topic hierarchy and educational structure |
+| **Save My Exams** | Subject → exam board → topic navigation |
+
+**Live code:** `src/components/premium/` · tokens in `premium-ui.ts` · full guide in [`docs/design/UI-UX-MASTERPLAN.md`](docs/design/UI-UX-MASTERPLAN.md).
 
 ---
 
@@ -41,7 +65,7 @@
 | **Live website** | Students can use the real site on Fly.io | **Running** |
 | **Website polish (Priority C)** | Shared study layout, planner, public pages, recovery screens | **Done — 24 June 2026** |
 | **Proof audit (Priority A)** | Written notes, admin screen, and live site must all tell the same story | **Complete — 26 June 2026** |
-| **Mark 4 UI (Phases 1–6)** | Dashboard, subjects, homepage, login, progress, exams, onboarding dashboard-creation | **On GitHub `main` — deploy to Fly pending** |
+| **Mark 4 UI (Phases 1–6)** | Dashboard, subjects, homepage, login, progress, exams, onboarding dashboard-creation | **On GitHub `main` and live on Fly** |
 | **Wales / NI GCSE** | Extra qualification routes | **Later — not in MVP yet** |
 
 ### Two lanes — do not mix them up
@@ -628,6 +652,122 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-07-06 Connected learning architecture (Seneca-inspired principles — documentation only)
+
+- Added **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`** — eight Switch-native architecture principles for future implementation.
+- Principles: Connected Website (no dead ends), **Recall Strength** (future memory/mastery system), Power Grid as progression engine, Learning Loop standard, Dashboard simplification (four primary signals), Recommendations as decision brain, Saved Progress as continuity glue, Modular architecture reinforcement.
+- Synced across `HANDOFF.md`, `AGENTS.md`, `PLATFORM-GUIDE.md`, `11_UI_UX_MASTER_GUIDE.md`, `MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`, `MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`.
+- **No code changes** — existing Fly, OIDC, SQLite, onboarding, and module architecture preserved.
+
+### 2026-07-06 Accessibility icon swap
+
+- Replaced ♿ with 🎛️ on homepage platform features and benefits cards — study-settings metaphor without wheelchair disability symbol. Files: `premium-ui.ts`, `premium-homepage-marketing.tsx`.
+
+### 2026-07-06 `11_UI_UX_MASTER_GUIDE.md` + Phase 7 homepage
+
+- Created **`docs/design/11_UI_UX_MASTER_GUIDE.md`** — canonical UI/UX reference (tokens, IA, routes, Power Grid rules, Phase 7 checklist).
+- **`UI-UX-MASTERPLAN.md`** now points to the new guide.
+- Homepage: `PremiumHomepageMarketing` (benefits, how-it-works, FAQ); hero CTA **Start Learning Free**; Power Grid stats from `xpTotal`.
+- Dashboard: dark-mode styling for recent-session cards (removed stone/teal drift).
+- Verification: `npm run lint`, `npm run type-check`, `npm run test`.
+
+### 2026-07-06 Power Grid six-rank XP presentation (presentation layer only)
+
+- Added `src/lib/power-grid/rank-presentation.ts` — maps existing `xpTotal` to six milestone ranks (💡 Switch On → 👑 Switch Legend) with internal Power Levels 1–10, progress bars, next reward, and next rank preview.
+- New `PowerGridRankPanel` component; updated `/progress`, dashboard Power Grid card, sidebar footer, homepage Power Grid section, and progress-at-a-glance panel.
+- **No backend changes** — XP calculations, APIs, schema, 9-level service logic, tests, and save data preserved. Legacy evidence level (`overallLevel`) shown as secondary detail only.
+- Tests: `tests/power-grid-rank-presentation.test.mjs`. Verification: lint + type-check + test (`198/198` passed).
+
+### 2026-07-06 Premium website redesign (Stripe / Linear / Seneca direction)
+
+- Shipped premium **dark-mode** UI across live homepage, dashboard, student shell, and quiz flow.
+- New component library: `src/components/premium/` — hero, subject cards, dashboard cards, Power Grid, quiz card, exam board selector, accessibility toolbar.
+- Homepage: “Switch On Your GCSE Revision” hero, GCSE subject cards, Power Grid section, platform features (Exam Mode, Timed Practice, Saved Progress, Accessibility).
+- Dashboard: Linear-style sidebar on desktop, premium cards for Today’s Goal, Continue Revision, Power Level, Weak Topics, Timed Practice.
+- Quiz flow: `PremiumQuizCard` with progress bar, timer, save indicator, accessibility toolbar on `/subjects`.
+- Tokens: `premium-ui.ts` + `mark32Ui` re-export; `globals.css` dark background `#0B0F17`.
+- Docs: `docs/design/UI-UX-MASTERPLAN.md` → **Website Redesign Direction** with inspiration mapping.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`194/194` passed).
+
+### 2026-07-06 Brand logo mockup gallery
+
+- Added `/brand-mockup` with `BrandLogoMockup` — placement panels for hero, marketing header, sign-in, signed-in shell, footer, size scale, and contrast surfaces using live `SwitchBrandLogo` (`public/brand/the-switch-logo.png`).
+- Linked the gallery from `/mock-idea-preview` and Mockup 5 in `mock-idea-showcase.tsx`; streamlined mockup hero now uses `SwitchBrandLogo`.
+- Synced `docs/design/UI-UX-MASTERPLAN.md`, `HANDOFF.md`, `AGENTS.md`, and `docs/MOCK-IDEA-BUILD-REFERENCE.md`.
+- Local dev note: stale `.next` can cause `ENOENT` for `brand-mockup/page.js` — stop dev, `rm -rf .next`, restart `npm run dev`.
+- Verification: `npm run type-check`; local `/brand-mockup` → `200`. **Uncommitted** on working tree at doc-sync time.
+
+### 2026-07-06 Supportive live onboarding cold-start hardening
+
+- Hardened `verify:live-onboarding` for Fly cold-start: shared `scripts/fly-machine-warmup.mjs`, new `ensureLiveHttpWarmup()`, supportive fetch defaults in `scripts/supportive-live-fetch-defaults.mjs`, and route-level warm-up retries on signed-out redirect, API, and page fetches.
+- Gave the closeout recorder the same generous supportive fetch env when it appends `verify:live-onboarding` outside the strict A-4 chain.
+- Deduplicated Fly/HTTP warm-up in `scripts/live-route-walkthrough.mjs` and cleared launch-verification headers on real-auth / truth-match entrypoints.
+- Docs synced in `HANDOFF.md`, `AGENTS.md`, and this build record. Still supportive-only regression — strict A-4 browser proof unchanged.
+- Branch: `cursor/fix-live-onboarding-cold-start` (`620ef21`, `7a1b48e`).
+- Verification: `tests/mvp-launch-tooling.test.mjs`, `node --check scripts/live-route-walkthrough.mjs`.
+
+### 2026-07-05 Preview shell repair + branch-readiness truth sync
+
+- Repaired `StudentAppShell` so preview routes can safely pass `hrefPrefix`, `showUtilityLinks`, and `accountHref` without breaking type-check.
+- Kept preview navigation inside `/preview/*` by prefixing shell links and allowing preview-specific account routing.
+- Rewrote the repo entry docs so earlier `100%` wording is now clearly labeled as the historical Fly production closeout / end-completion snapshot, while the current branch readiness is tracked separately.
+- Repaired `scripts/launch-status.mjs` so a ready live environment no longer prints stale “remaining live-only items” wording and instead describes the 26 June 2026 closeout as historical evidence to refresh.
+- Hardened strict real-auth entrypoints so `live-truth-match` and `live-route-walkthrough-real-auth` no longer rely on a manually blanked `SWITCH_LAUNCH_VERIFICATION_SECRET`.
+- Fixed `scripts/verify-persistence-health.mjs` so deployed `/data` is compared against the intended live path instead of the desktop fallback SQLite path during final closeout runs.
+- Current branch readiness after this pass: `100%`.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`192/192` passed), `npm run build`, `npm run verify:local-launch-readiness`, `npm run deploy:fly`, `curl -I https://theswitchplatform.com` (`HTTP/2 200`), `npm run verify:live-readiness`, `npm run verify:launch-status`.
+- Strict real-auth production verification then passed with refreshed live cookies: `verify:check-live-cookies`, `verify:live-truth-match`, `verify:live-walkthrough:real-auth`, and `verify:priority-a-closeout`.
+- New canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
+- `verify:live-onboarding` failed only as a supportive API-assisted regression append during a Fly cold-start; the recorder explicitly treats that path as outside the strict A-4 chain, so canonical closeout remained valid.
+
+### 2026-07-01 Content system completion pass
+
+- Added `src/modules/exam-inventory/` plus `src/data/exam-paper-inventory.json` as the central source of truth for all seeded exam papers.
+- Registered all nine current seeded papers in the inventory: six launch-safe routes plus two Year 10 progression papers and one GCSE bridge paper.
+- Switched onboarding board options, `/api/exams/papers`, and the main paper-consuming services to inventory-driven live-paper filtering.
+- Added `/api/exams/inventory` and `/api/content/specification-library`, and surfaced inventory/specification visibility on `/admin`.
+- Replaced placeholder-only specification objectives with imported board-specific objective coverage for live boards (`AQA`, `Edexcel`, `Cambridge IGCSE`) plus AQA separate-science future architecture support.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`189/189` passed).
+
+### 2026-07-01 Preview app navigation pass
+
+- Replaced the dead signed-in gallery panel on `/mock-idea-preview` with launcher links into a working preview namespace.
+- Added `/preview/dashboard`, `/preview/subjects`, `/preview/exams`, `/preview/progress`, and `/preview/account`.
+- Updated the shared student shell and preview-aware components so route navigation can stay inside `/preview/*` instead of bouncing back into auth-gated routes.
+- Verification: `npm run type-check`.
+
+### 2026-07-01 Quiz feedback and Power Grid integration
+
+- Added persisted quiz-progress records plus `/api/quiz/attempts/[topicId]` so subject quick checks now save answers, return right/wrong feedback, and show answer explanations.
+- Updated quiz content entries to carry explanation copy instead of only a hidden correct option id.
+- Wired quiz totals into Power Grid subject scoring, XP totals, and voltage points, and surfaced those totals on `/progress`.
+- Verification: `npm run type-check`, `npm run test` (`191/191` passed).
+
+### 2026-07-01 Combined Science variation picker
+
+- Added a persisted `combinedScienceVariation` onboarding field so `gcse-combined-science` no longer sits as a generic science selection.
+- Step 4 of `/onboarding` now keeps the learner on supported live Combined Science variations only: `AQA Combined Science: Trilogy` and `Pearson Edexcel GCSE Combined Science`.
+- Validation now rejects missing or board-mismatched Combined Science variations, and onboarding/dashboard summaries carry the saved variation label forward.
+- Verification: `npm run type-check`, `npm run test` (`192/192` passed).
+
+### 2026-07-01 Content system deployed to Fly
+
+- Fixed the Fly build break caused by the onboarding UI importing the server-heavy inventory service. The onboarding exam-board path now reads inventory board options through `src/modules/exam-inventory/board-options.ts`, which is client-safe.
+- Re-ran `npm run type-check`, `npm run build`, and `npm run deploy:fly`.
+- Fly updated machine `7812e3dc1240d8`, and `curl -I https://theswitchplatform.com` returned `HTTP/2 200`.
+
+### 2026-07-01 Completion rule tightened in repo entry docs
+
+- Updated `HANDOFF.md`, `AGENTS.md`, and the README operator-sync section so future requests to “complete” something are treated as end-to-end delivery by default.
+- Partial scaffolds, foundations, and phased first passes should no longer be described as complete unless the operator explicitly asks for phased delivery.
+
+### 2026-07-01 Subject library / specification engine foundation
+
+- Added `src/modules/specification-engine/` with a new subject-library service, validators, and module README for specification mapping.
+- Added `src/data/subjects/mvp-subject-library.json` as the seed source of truth for MVP subjects plus deferred separate-science architecture support.
+- Kept GCSE Combined Science separate from future Separate/Triple Science routes, exposed all supported GCSE / iGCSE exam boards at the spec layer, and marked generated learning objectives as official-spec import scaffolds rather than student-visible curriculum content.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`184/184` passed). Added `tests/specification-engine.test.mjs`.
+
 ### 2026-07-01 Live 502 recovery on Fly
 
 - Diagnosed the live `HTTP 502` outage on https://theswitchplatform.com as a Next.js out-of-memory crash on the Fly machine while it was running at `shared-cpu-1x:512MB`.
@@ -942,12 +1082,16 @@ This section is the running record of what has been requested, added, and commit
 
 ### 2026-06-25 Priority A audit — real browser-authenticated OIDC proof recorded
 
+Historical archive note: the unresolved blocker language below was true on 25 June 2026, but it was superseded by the canonical closeout on 26 June 2026. Keep it as evidence history, not as the current project state.
+
 - Extended [release-evidence/2026-06-25-priority-a-truth-audit.md](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/release-evidence/2026-06-25-priority-a-truth-audit.md) with the real production browser proof path.
 - Proved Google OIDC auth start, provider redirect, callback-backed signed session, protected dashboard access, real 8-step learner onboarding, dashboard unlock, onboarding revisit redirect, and real sign-out lockout on https://theswitchplatform.com.
 - Closed **A-1**, **A-3**, and **A-4** in browser evidence.
 - Later June 25 update: fresh cookies were validated, strict OIDC proof passed, Fly sign-off passed, and strict truth-match passed. The remaining blocker is no longer cookie input; it is the flaky `verify:live-walkthrough:real-auth` / `verify:launch-complete` wrapper path, so **A-6** remains open until one canonical final bundle is green end to end.
 
 ### 2026-06-25 Priority A audit — strict proofs and truth-match green, canonical bundle still blocked
+
+Historical archive note: this section records the state before the 26 June 2026 canonical closeout. Treat the “remaining honest blocker” wording here as superseded history.
 
 - Verified fresh production student/admin cookies against `/api/auth/session`; both returned authenticated Google sessions with `admin` and `student` roles.
 - Passed `npm run verify:launch-status`.
@@ -960,6 +1104,8 @@ This section is the running record of what has been requested, added, and commit
 - Remaining honest blocker: `verify:live-walkthrough:real-auth` and downstream `verify:launch-complete` are still flaky under production fetch load, so **A-6** is still open.
 
 ### 2026-06-25 Priority A audit — strict live proof run recorded
+
+Historical archive note: this was an interim audit state before Priority A closed on 26 June 2026. The open-item wording remains here for chronology only.
 
 - Added [release-evidence/2026-06-25-priority-a-truth-audit.md](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/release-evidence/2026-06-25-priority-a-truth-audit.md) as the current strict-audit record.
 - Confirmed the new strict commands reject `SWITCH_LAUNCH_VERIFICATION_SECRET` in final-proof mode.

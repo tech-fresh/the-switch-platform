@@ -5,6 +5,7 @@ import type { CmsOverview } from "@/modules/cms/types";
 import type { ContentEditorialAudit, MvpContentCatalog } from "@/modules/content/types";
 import type { DashboardHomeData } from "@/modules/dashboard/types";
 import type { ExamPaper, ExamSession } from "@/modules/exam-engine/types";
+import type { ExamInventoryPaper, ExamInventorySummary } from "@/modules/exam-inventory/types";
 import type { LaunchGovernanceOverview } from "@/modules/governance/types";
 import type { OperationsOverview } from "@/modules/operations/types";
 import type { PastPaperCatalogOverview } from "@/modules/past-papers/types";
@@ -13,10 +14,11 @@ import type { Recommendation, RecommendationsPageData } from "@/modules/recommen
 import type { ReadAloudContentType, ReadAloudSession } from "@/modules/read-aloud/types";
 import type { ResultsOverview } from "@/modules/results/types";
 import type { SavedProgressOverview } from "@/modules/saved-progress/types";
-import type { QuizQuestion } from "@/modules/quiz/types";
+import type { QuizQuestion, SubmitQuizAnswerResult } from "@/modules/quiz/types";
 import type { RevisionContent } from "@/modules/revision/types";
 import type { Subject } from "@/modules/subjects/types";
 import type { SupportHubData } from "@/modules/support/types";
+import type { SubjectLibraryLearningObjective, SubjectLibraryValidationResult } from "@/modules/specification-engine/types";
 import type { TimedAssessmentAttemptSeed, TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
 import type { Topic } from "@/modules/topics/types";
 import type { WebsiteGuideData } from "@/modules/website-guide/types";
@@ -28,6 +30,7 @@ export interface SubjectsExperienceData {
   topicsBySubject: Record<string, Topic[]>;
   revisionByTopic: Record<string, RevisionContent>;
   quizByTopic: Record<string, QuizQuestion>;
+  quizAttemptsByTopic: Record<string, SubmitQuizAnswerResult | null>;
 }
 
 async function getRequestOrigin(): Promise<string> {
@@ -122,6 +125,15 @@ export async function getExamPapersApiData(): Promise<ExamPaper[]> {
   const response = await fetchApiJson<{ papers: ExamPaper[] }>("/api/exams/papers");
 
   return response.papers;
+}
+
+export async function getExamInventoryApiData(): Promise<{
+  summary: ExamInventorySummary;
+  papers: ExamInventoryPaper[];
+}> {
+  return fetchApiJson<{ summary: ExamInventorySummary; papers: ExamInventoryPaper[] }>(
+    "/api/exams/inventory",
+  );
 }
 
 export async function getExamSessionApiData(examId: string): Promise<ExamSession> {
@@ -263,6 +275,16 @@ export async function getContentEditorialAuditApiData(): Promise<ContentEditoria
   );
 
   return response.audit;
+}
+
+export async function getSpecificationLibraryApiData(): Promise<{
+  objectives: SubjectLibraryLearningObjective[];
+  validation: SubjectLibraryValidationResult;
+}> {
+  return fetchApiJson<{
+    objectives: SubjectLibraryLearningObjective[];
+    validation: SubjectLibraryValidationResult;
+  }>("/api/content/specification-library");
 }
 
 export async function getSubjectsExperienceApiData(): Promise<SubjectsExperienceData> {

@@ -48,6 +48,7 @@ Streamlining applies to **homepage and signed-in chrome** (duplicate mockups, re
 | Dark footer + SEND swatches | `/` | `marketing-site-footer.tsx` | Shipped |
 | Stone mesh hero background | `/` | `dashboard-home.tsx` `mode="home"` | Shipped |
 | Visual gallery | `/mock-idea-preview` | `mock-idea-showcase.tsx` | Shipped |
+| Brand logo mockup | `/brand-mockup` | `brand-logo-mockup.tsx` | Local (uncommitted) |
 
 ### Phase 2 — Signed-in student shell (done)
 

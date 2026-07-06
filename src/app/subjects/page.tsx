@@ -45,6 +45,7 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
         topicsBySubject={experience.topicsBySubject}
         revisionByTopic={experience.revisionByTopic}
         quizByTopic={experience.quizByTopic}
+        quizAttemptsByTopic={experience.quizAttemptsByTopic}
         initialSubjectId={initialSubjectId}
         initialTopicId={initialTopicId}
         onboardingSubjectIds={shell.onboardingSubjectIds}

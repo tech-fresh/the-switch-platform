@@ -3,10 +3,12 @@ import Link from "next/link";
 import { mark32Ui } from "@/components/streamlined/mark32-ui";
 import { SubjectToneChip, subjectToneBlockClasses } from "@/components/subject-tone-chip";
 import { resolveCatalogSubjectByLabel, resolveSubjectToneById, resolveSubjectToneByLabel } from "@/lib/subjects/tone";
+import { prefixPreviewHref } from "@/lib/preview/links";
 import type { PowerGridSubjectProgress, PowerGridTrend } from "@/modules/power-grid/types";
 
 interface Mark32SubjectProgressCardProps {
   subject: PowerGridSubjectProgress;
+  hrefPrefix?: string;
 }
 
 function getTrendTone(trend: PowerGridTrend): string {
@@ -48,13 +50,14 @@ function ProgressBar({
   );
 }
 
-export function Mark32SubjectProgressCard({ subject }: Mark32SubjectProgressCardProps) {
+export function Mark32SubjectProgressCard({ subject, hrefPrefix = "" }: Mark32SubjectProgressCardProps) {
   const catalogSubject = subject.subjectId
     ? { subjectId: subject.subjectId, name: subject.subject }
     : resolveCatalogSubjectByLabel(subject.subject);
   const tone = catalogSubject?.subjectId
     ? resolveSubjectToneById(catalogSubject.subjectId)
     : resolveSubjectToneByLabel(subject.subject);
+  const withPrefix = (href: string) => prefixPreviewHref(href, hrefPrefix);
 
   return (
     <article className={`${mark32Ui.cardHover} flex flex-col gap-5`}>
@@ -78,16 +81,35 @@ export function Mark32SubjectProgressCard({ subject }: Mark32SubjectProgressCard
         <ProgressBar label="Completion" value={subject.completionScore} />
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="rounded-2xl border border-stone-100 bg-stone-50 p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">Quiz score</p>
+          <p className="mt-2 text-sm font-semibold text-stone-950">{subject.quizAccuracyPercentage}%</p>
+        </div>
+        <div className="rounded-2xl border border-stone-100 bg-stone-50 p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">Quiz totals</p>
+          <p className="mt-2 text-sm font-semibold text-stone-950">
+            {subject.quizCorrectCount}/{subject.quizAttemptCount || 0}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-stone-100 bg-stone-50 p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">XP / voltage</p>
+          <p className="mt-2 text-sm font-semibold text-stone-950">
+            {subject.xpEarned} XP · {subject.voltagePoints}V
+          </p>
+        </div>
+      </div>
+
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-stone-100 pt-4">
         <p className="text-xs uppercase tracking-[0.18em] text-stone-500">
           {subject.activeSessionCount} active · {subject.completedSessionCount} completed
         </p>
         <div className="flex flex-wrap gap-2">
-          <Link href={subject.subjectHref ?? "/subjects"} className={mark32Ui.primaryBtn}>
+          <Link href={withPrefix(subject.subjectHref ?? "/subjects")} className={mark32Ui.primaryBtn}>
             Continue subject
           </Link>
           {subject.resumeHref ? (
-            <Link href={subject.resumeHref} className={mark32Ui.secondaryBtn}>
+            <Link href={withPrefix(subject.resumeHref)} className={mark32Ui.secondaryBtn}>
               Resume
             </Link>
           ) : null}

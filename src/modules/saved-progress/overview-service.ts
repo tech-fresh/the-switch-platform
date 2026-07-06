@@ -1,4 +1,6 @@
-import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
+import { getMockExamSession } from "@/modules/exam-engine/service";
+import { listStudentVisibleExamPapers } from "@/modules/exam-inventory/service";
+import type { ExamPaper } from "@/modules/exam-engine/types";
 import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import {
   buildAccessibilityPreferenceChips,
@@ -23,7 +25,7 @@ export async function getSavedProgressOverview(
   const userId = options?.userId ?? "student-demo";
   const repository = options?.savedProgressRepository;
 
-  const papers = getMockExamPapers();
+  const papers = listStudentVisibleExamPapers();
   const assessments = getMockTimedAssessments();
 
   await Promise.all([
@@ -67,7 +69,7 @@ export async function getSavedProgressOverview(
 
 function buildSessionSummary(
   record: SavedProgressRecord,
-  papers: ReturnType<typeof getMockExamPapers>,
+  papers: ExamPaper[],
   assessments: ReturnType<typeof getMockTimedAssessments>,
 ): SavedProgressSessionSummary | null {
   if (record.entityType === "exam-session" && record.examProgress) {

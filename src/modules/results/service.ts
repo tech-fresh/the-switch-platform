@@ -1,4 +1,5 @@
-import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
+import { getMockExamSession } from "@/modules/exam-engine/service";
+import { listStudentVisibleExamPapers } from "@/modules/exam-inventory/service";
 import { buildAcademicReinforcementOverview } from "@/modules/academic-coverage/reinforcement-service";
 import {
   buildAccessibilityPreferenceChips,
@@ -26,7 +27,7 @@ import type {
 
 export async function getResultsOverview(userId = "guest-preview"): Promise<ResultsOverview> {
   const [papers, assessments, powerGrid, savedProgressOverview, savedProgressRecords] = await Promise.all([
-    Promise.resolve(getMockExamPapers()),
+    Promise.resolve(listStudentVisibleExamPapers()),
     Promise.resolve(getMockTimedAssessments()),
     getMockPowerGridSummary({ userId }),
     getSavedProgressOverview({ userId }),

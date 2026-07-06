@@ -17,6 +17,9 @@ export type QualificationPath =
   | "igcse";
 
 export type StudyGoal = "exam-readiness" | "build-confidence" | "steady-progress";
+export type CombinedScienceVariation =
+  | "aqa-combined-science-trilogy"
+  | "edexcel-gcse-combined-science";
 
 export interface SchoolSourceLink {
   nation: SchoolNation;
@@ -38,6 +41,8 @@ export interface LearnerOnboardingProfile {
   /** Personalises dashboard messaging — collected during setup. */
   studyGoal: StudyGoal;
   selectedSubjectIds: string[];
+  /** Keeps Combined Science locked to supported live route variants only. */
+  combinedScienceVariation?: CombinedScienceVariation;
   wantsAccessibilitySupport: boolean;
   wantsAccessArrangementHelp: boolean;
   sendSupportPathVisible: boolean;
@@ -63,6 +68,13 @@ export interface OnboardingStudyGoalOption {
   description: string;
 }
 
+export interface OnboardingCombinedScienceVariationOption {
+  id: CombinedScienceVariation;
+  label: string;
+  description: string;
+  examBoard: ExamBoard;
+}
+
 export interface OnboardingOptions {
   learnerRoles: Array<{ id: LearnerRole; label: string; description: string }>;
   studyGoals: OnboardingStudyGoalOption[];
@@ -79,6 +91,7 @@ export interface OnboardingOptions {
     qualificationLabel: string;
     description?: string;
   }>;
+  combinedScienceVariations: OnboardingCombinedScienceVariationOption[];
   schoolSources: SchoolSourceLink[];
   steps: string[];
   dashboardCreationStepLabels: string[];

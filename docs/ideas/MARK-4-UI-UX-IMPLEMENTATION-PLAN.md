@@ -15,6 +15,7 @@ Plain English: this plan does **not** replace the current app or reopen closed l
 5. **Keep onboarding at 8 steps.** The attached guide's onboarding language must map to the locked MVP onboarding flow.
 6. **Business logic stays in modules and APIs.** UI improvements do not move logic into page components.
 7. **Study Atelier / Mark 3.2 tokens remain the current implementation base.** Mark 4 may refine the system, but not silently replace it with a conflicting purple/sidebar system.
+8. **Follow connected learning architecture.** [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](../design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — documentation-only principles for journeys, Power Grid centrality, Saved Progress glue, and Recommendations as decision engine.
 
 ## 2. Reconciliation With The Attached Mark 4.0 Guide
 
@@ -92,9 +93,9 @@ Plain English: this plan does **not** replace the current app or reopen closed l
 
 ### Power Grid and progress
 
-- Keep Power Grid visible and meaningful
+- Keep Power Grid visible and meaningful — **central progression engine** (see architecture principles)
 - Make progress more visual than tabular
-- Tie progression, readiness, and next-step guidance together more tightly
+- Tie progression, readiness, Recall Strength (future), and next-step guidance together more tightly
 
 ### Accessibility and clarity
 

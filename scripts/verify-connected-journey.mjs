@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import "./load-script-env.mjs";
+
 import assert from "node:assert/strict";
 
 const baseUrl = process.env.SWITCH_LIVE_BASE_URL ?? "http://localhost:3000";

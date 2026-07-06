@@ -158,10 +158,10 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Connected learning architecture phases 0–9 complete** on branch `cursor/connected-learning-phases-0-6` — all eight principles implemented in code. Next: merge + live journey verification. |
+| What are we doing now? | **Connected learning architecture phases 0–9 complete on `main`** — all eight principles implemented in code; merged from `cursor/connected-learning-phases-0-6` 6 July 2026. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** now in live code paths. |
-| What is next? | Merge `cursor/connected-learning-phases-0-6`; run `npm run verify:connected-journey`; continue Priority E usability (Area 6). |
+| What is next? | `npm run deploy:fly` to publish connected learning to production; `npm run verify:connected-journey` after deploy; **Mark 4 Phase 7** public marketing refinement when ready. Priority **E** deferred only. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) on Fly production closeout evidence dated 26 June 2026.
 

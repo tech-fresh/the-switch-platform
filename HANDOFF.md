@@ -68,14 +68,14 @@ Update this section every session.
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
-- **Last updated by:** Codex
-- **Last updated:** 2026-07-06 (Connected learning architecture phases 0–9 complete)
+- **Last updated by:** Cursor Agent
+- **Last updated:** 2026-07-06 (Connected learning phases 0–9 merged to `main`)
 
 ### Active task
 
 - **Priority item #:** Connected learning architecture **implementation** (Codex)
 - **Module:** `learning-loop` → `dashboard` → connected routes
-- **Status:** **Phases 0–9 complete** from `CODEX-FULL-IMPLEMENTATION-PACK.md` — connected learning architecture implemented end to end. Verification: `npm run test` (`228/228` passed).
+- **Status:** **Phases 0–9 complete and merged to `main`** — connected learning architecture implemented end to end. GitHub `main` at `e203a9b`. Fly deploy pending to match production.
 - **Branch:** `main`
 - **Codex entry:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`
 
@@ -108,7 +108,7 @@ Update this section every session.
 
 ### What was just completed
 
-- **Connected learning architecture Phases 7–9 (6 July 2026)** — completed dashboard simplification (`DashboardPrimarySignals`, four-card hero row, collapsed “More study tools”), connected-route journey panels on all signed-in routes, weak-topic catalog labels, `verify:connected-journey` npm script, `tests/connected-journey-closeout.test.mjs`, and implementation status table in `ARCHITECTURE-PRINCIPLES.md`. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed).
+- **Connected learning merge + Phase 9 closeout (6 July 2026)** — fast-forward merged `cursor/connected-learning-phases-0-6` → `main` and pushed to GitHub (`e203a9b`). Phase 9 verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228`), `npm run build` green. Updated `verify-connected-journey.mjs` to load `.env.local` via `load-script-env.mjs`. Synced `HANDOFF.md`, `AGENTS.md`, and `README.md` operator tables. **Next:** `npm run deploy:fly` then `npm run verify:connected-journey` on live. — completed dashboard simplification (`DashboardPrimarySignals`, four-card hero row, collapsed “More study tools”), connected-route journey panels on all signed-in routes, weak-topic catalog labels, `verify:connected-journey` npm script, `tests/connected-journey-closeout.test.mjs`, and implementation status table in `ARCHITECTURE-PRINCIPLES.md`. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed).
 - **Connected learning architecture Phase 6 (6 July 2026)** — implemented the learning loop from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/lib/persistence/learning-loop-store.ts`, `src/modules/learning-loop/service.ts`, `vocabulary.ts`, `contracts.ts`, `GET`/`POST` `/api/learning-loop/[topicId]`, `LearningLoopStepRail`, and subject-route hooks in `subject-experience.tsx`. Quiz submissions now call `syncLearningLoopAfterQuiz` from `quiz/service.ts`; after feedback the subject route fetches `/api/journey/next-action` for a single next CTA. Added `tests/learning-loop.test.mjs` (`4/4` passed). Verification: `npm run lint`, `npm run type-check`, learning-loop tests green.
 - **Connected learning architecture Phase 4 (6 July 2026)** — implemented the Power Grid progression-event trail from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/modules/power-grid/progression-events.ts` and `src/lib/persistence/progression-event-store.ts`, then wired append-only emits into `src/modules/quiz/service.ts`, `src/modules/exam-engine/service.ts`, and `src/modules/timed-assessment/service.ts` after the existing persistence writes. Added `tests/power-grid-progression-events.test.mjs` to prove quiz, exam, and timed-assessment events append without changing the existing Power Grid scoring path. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`211/211` passed).
 - **Connected learning architecture Phase 3 (6 July 2026)** — implemented the recommendations ranking brain from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/modules/recommendations/ranking.ts`, `src/app/api/recommendations/ranked/route.ts`, ranking contracts, `buildRankingSignals(userId)`, and `getRankedRecommendations(userId)`. Updated `/api/recommendations` to delegate to ranked output and switched `src/modules/journey/service.ts` to use the ranked top pick. Added `tests/recommendations-ranking.test.mjs`. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`208/208` passed).
@@ -202,15 +202,13 @@ Update this section every session.
 
 ### What is next
 
-- Merge `cursor/connected-learning-phases-0-6` to `main` after operator review
-- Run `npm run verify:connected-journey` against live with fresh `SWITCH_LIVE_STUDENT_COOKIE`
-- Continue **Priority E** usability plan (Area 6 support/recovery UX) per `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`
+- Run **`npm run deploy:fly`** so https://theswitchplatform.com serves connected learning (journey API, learning loop, recall strength, dashboard signals)
+- Run **`npm run verify:connected-journey`** on live after deploy (uses `SWITCH_LIVE_STUDENT_COOKIE` from `.env.local`)
+- Continue **Mark 4 Phase 7** public marketing refinement when ready
 - **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
-- Continue Mark 4 Phase 7 public marketing refinement when ready
-- Keep future board expansion wired through the completed inventory/specification path instead of adding direct route-level exceptions
 - **Priority E:** **closed for year 1** — Wales/NI routes, parent/teacher onboarding, admin restyle, i18n, broader content expansion remain deferred; operator must explicitly reopen after year 1
 - Keep future release reruns synced with `release-evidence/2026-07-05-priority-a-canonical-closeout.md`
-- Refresh live cookies again via `/account/live-cookie-guide` only when a future release rerun needs fresh strict real-auth proof
+- Refresh live cookies via `/account/live-cookie-guide` when verification fails with 401
 
 ### Completion snapshot
 
@@ -223,11 +221,21 @@ Update this section every session.
 
 ### Blockers
 
-- No local verification blocker after the 5 July 2026 repair pass
-- Live cookies expire periodically — refresh via `/account/live-cookie-guide` before re-running closeout
-- No active blocker for the 502 outage after the Fly memory increase
+- **Live cookies expired (6 July 2026)** — `verify:check-live-cookies` failed (`status=signed-out`). Refresh via https://theswitchplatform.com/account/live-cookie-guide before `verify:connected-journey` or Priority A reruns.
+- **Fly deploy pending** — connected learning merged to `main` but production still on pre-merge build until `npm run deploy:fly`
+- No local verification blocker after Phase 9 merge closeout
 
 ### Verification last run
+
+Fresh rerun on 6 July 2026 (Connected learning Phase 9 merge closeout):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (`228/228` passed)
+- [x] `npm run build`
+- [x] `git push origin main` (`e203a9b`)
+- [ ] `npm run verify:check-live-cookies` — failed 6 July 2026 (cookies expired; refresh via live-cookie-guide)
+- [ ] `npm run verify:connected-journey` — failed 404 pre-deploy (journey API not on live yet); rerun after `deploy:fly` + cookie refresh
 
 Fresh rerun on 6 July 2026 (Connected learning architecture Phase 5):
 

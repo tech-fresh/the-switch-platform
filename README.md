@@ -16,13 +16,13 @@
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** |
 | Production deploy | **Fly.io only** — [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not use Netlify or Vercel.** |
-| What are we doing now? | **Connected learning architecture Phase 5 complete** — Recall Strength now has its own decay logic, persistence store, snapshot/review API routes, quiz-driven review updates, and recall-due wiring into journey plus ranked recommendations from [`CODEX-FULL-IMPLEMENTATION-PACK.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md). |
+| What are we doing now? | **Connected learning architecture phases 0–9 complete on `main`** — journey orchestrator, recall strength, learning loop, ranked recommendations, progression events, dashboard simplification, and connected-route journey panels from [`CODEX-FULL-IMPLEMENTATION-PACK.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md). |
 | Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength, Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Mark 4 UI lane | **Phases 1–6 on `main`** — see [`docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](./docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) and [`docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`](./docs/ideas/MARK-4-ROUTE-UX-AUDIT.md). |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Execute **Phase 6** from [`CODEX-FULL-IMPLEMENTATION-PACK.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md) (learning-loop store + service + API + first subject-route stage persistence), then keep Fly verification follow-ups and future content expansion in sync. Priority **E** remains deferred only. |
+| What is next? | Run `npm run deploy:fly` so production matches `main`; refresh live cookies and re-run `npm run verify:connected-journey` after deploy. Continue **Mark 4 Phase 7** public marketing refinement when ready. Priority **E** remains deferred only. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) in the recorded Fly production closeout.
 
@@ -57,7 +57,7 @@ Premium dark-mode GCSE revision platform — implemented in code, not mockups on
 
 ### In one sentence
 
-**The Switch** is a live GCSE revision website at https://theswitchplatform.com. Priority A proof closeout is **complete**, the MVP usability plan is **closed**, and Mark 4 Phases 1–6 are now on GitHub **`main`** — Fly production deploy is the remaining step to match live.
+**The Switch** is a live GCSE revision website at https://theswitchplatform.com. Priority A proof closeout is **complete**, the MVP usability plan is **closed**, Mark 4 Phases 1–6 are on **`main`**, and connected learning architecture phases 0–9 merged to **`main`** 6 July 2026 — run **`npm run deploy:fly`** to publish the journey/learning-loop stack to production.
 
 ### Where we are (simple view)
 
@@ -652,6 +652,14 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-06 Connected learning merge to main + Phase 9 closeout
+
+- Fast-forward merged `cursor/connected-learning-phases-0-6` → `main` at `e203a9b`; pushed to https://github.com/tech-fresh/the-switch-platform.
+- Phase 9 verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228`), `npm run build` green.
+- Hardened `scripts/verify-connected-journey.mjs` to load `.env.local` via `load-script-env.mjs`.
+- Synced `HANDOFF.md`, `AGENTS.md`, and README operator tables to the merged-on-`main` story.
+- **Production:** run `npm run deploy:fly` then `npm run verify:connected-journey` to prove live journey API.
 
 ### 2026-07-06 Connected learning architecture Phases 7–9
 

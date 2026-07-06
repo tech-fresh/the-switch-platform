@@ -70,6 +70,8 @@ Research and design a **Switch-branded** learning-memory system inspired by spac
 
 Recall Strength is the platform’s model for how well a learner remembers a topic over time — separate from one-off quiz scores and separate from Seneca’s naming.
 
+**Switch-branded naming options** (not yet canonical — see [`07_RECOMMENDATION_ADDENDUM.md`](./07_RECOMMENDATION_ADDENDUM.md)): Switch Strength, Recharge Time, Power Boost Review, Circuit Check. Operator picks one term set before implementation.
+
 ### Requirements (future implementation)
 
 | Requirement | Notes |

@@ -21,6 +21,10 @@ test("dashboard home builds four primary signals", async () => {
   assert.ok(data.primarySignals.nextExamTask.href);
   assert.equal(typeof data.primarySignals.powerGrid.xpTotal, "number");
   assert.ok(data.primarySignals.powerGrid.rank.label);
+
+  if (data.primarySignals.weakTopic.topicId) {
+    assert.notEqual(data.primarySignals.weakTopic.label, data.primarySignals.weakTopic.topicId);
+  }
 });
 
 test("dashboard UI uses primary signals and collapses secondary content", () => {

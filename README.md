@@ -653,6 +653,14 @@ The current homepage now presents both the website-first preview and the future 
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
 
+### 2026-07-06 Connected learning architecture Phases 7–9
+
+- Completed dashboard simplification: `DashboardPrimarySignals`, four-card hero row, collapsed “More study tools” accordion on `/dashboard`.
+- Connected all signed-in routes with `JourneyNextStepPanel` and journey API wiring.
+- Added `npm run verify:connected-journey`, `tests/connected-journey-closeout.test.mjs`, and implementation status in `ARCHITECTURE-PRINCIPLES.md`.
+- Weak-topic labels now resolve from the content catalog when recall data is present.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed).
+
 ### 2026-07-06 Connected learning architecture Phase 6
 
 - Implemented the learning loop from **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`**.

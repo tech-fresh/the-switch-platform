@@ -33,6 +33,7 @@
     "verify:launch-signoff": "node scripts/launch-signoff.mjs",
     "verify:launch-complete": "node scripts/launch-complete.mjs",
     "verify:check-live-cookies": "node scripts/check-live-auth-cookies.mjs",
+    "verify:connected-journey": "node scripts/verify-connected-journey.mjs",
     "verify:priority-a-closeout": "node scripts/record-priority-a-closeout.mjs",
     "deploy:fly": "node scripts/fly-deploy.mjs",
     "verify:persistence-recovery": "node scripts/persistence-recovery-check.mjs",

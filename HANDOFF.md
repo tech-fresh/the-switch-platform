@@ -69,13 +69,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Codex
-- **Last updated:** 2026-07-06 (Connected learning architecture Phase 6 complete)
+- **Last updated:** 2026-07-06 (Connected learning architecture phases 0–9 complete)
 
 ### Active task
 
 - **Priority item #:** Connected learning architecture **implementation** (Codex)
 - **Module:** `learning-loop` → `dashboard` → connected routes
-- **Status:** **Phase 6 complete** from `CODEX-FULL-IMPLEMENTATION-PACK.md` — learning-loop store, service, API, quiz sync, step rail on `/subjects`, and post-quiz journey next-action CTA. Phase 7 next.
+- **Status:** **Phases 0–9 complete** from `CODEX-FULL-IMPLEMENTATION-PACK.md` — connected learning architecture implemented end to end (journey, recall strength, ranking, progression events, learning loop, dashboard simplification, route CTAs, closeout tests). **224/228 tests green** on branch; run `npm run verify:connected-journey` for live API check.
 - **Branch:** `main`
 - **Codex entry:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`
 
@@ -108,6 +108,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Connected learning architecture Phases 7–9 (6 July 2026)** — completed dashboard simplification (`DashboardPrimarySignals`, four-card hero row, collapsed “More study tools”), connected-route journey panels on all signed-in routes, weak-topic catalog labels, `verify:connected-journey` npm script, `tests/connected-journey-closeout.test.mjs`, and implementation status table in `ARCHITECTURE-PRINCIPLES.md`. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed).
 - **Connected learning architecture Phase 6 (6 July 2026)** — implemented the learning loop from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/lib/persistence/learning-loop-store.ts`, `src/modules/learning-loop/service.ts`, `vocabulary.ts`, `contracts.ts`, `GET`/`POST` `/api/learning-loop/[topicId]`, `LearningLoopStepRail`, and subject-route hooks in `subject-experience.tsx`. Quiz submissions now call `syncLearningLoopAfterQuiz` from `quiz/service.ts`; after feedback the subject route fetches `/api/journey/next-action` for a single next CTA. Added `tests/learning-loop.test.mjs` (`4/4` passed). Verification: `npm run lint`, `npm run type-check`, learning-loop tests green.
 - **Connected learning architecture Phase 4 (6 July 2026)** — implemented the Power Grid progression-event trail from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/modules/power-grid/progression-events.ts` and `src/lib/persistence/progression-event-store.ts`, then wired append-only emits into `src/modules/quiz/service.ts`, `src/modules/exam-engine/service.ts`, and `src/modules/timed-assessment/service.ts` after the existing persistence writes. Added `tests/power-grid-progression-events.test.mjs` to prove quiz, exam, and timed-assessment events append without changing the existing Power Grid scoring path. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`211/211` passed).
 - **Connected learning architecture Phase 3 (6 July 2026)** — implemented the recommendations ranking brain from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/modules/recommendations/ranking.ts`, `src/app/api/recommendations/ranked/route.ts`, ranking contracts, `buildRankingSignals(userId)`, and `getRankedRecommendations(userId)`. Updated `/api/recommendations` to delegate to ranked output and switched `src/modules/journey/service.ts` to use the ranked top pick. Added `tests/recommendations-ranking.test.mjs`. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`208/208` passed).
@@ -201,9 +202,9 @@ Update this section every session.
 
 ### What is next
 
-- Execute **Phase 7** from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md` — dashboard simplification with four primary signals above the fold and collapsed secondary tools
-- Commit brand mockup route + gallery links when operator asks (keep separate from unrelated WIP on the working tree)
-- Merge `cursor/fix-live-onboarding-cold-start` to `main` and rerun `npm run verify:live-onboarding` from `/Users/lloydnwagbara/Documents/THE SWITCH 3`
+- Merge `cursor/connected-learning-phases-0-6` to `main` after operator review
+- Run `npm run verify:connected-journey` against live with fresh `SWITCH_LIVE_STUDENT_COOKIE`
+- Continue **Priority E** usability plan (Area 6 support/recovery UX) per `docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`
 - **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
 - Continue Mark 4 Phase 7 public marketing refinement when ready
 - Keep future board expansion wired through the completed inventory/specification path instead of adding direct route-level exceptions

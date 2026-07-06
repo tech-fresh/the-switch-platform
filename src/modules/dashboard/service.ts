@@ -17,6 +17,7 @@ import {
   buildAccessibilityPreferenceChips,
   buildAccessibilitySupportSummary,
 } from "@/modules/accessibility/presentation";
+import { getStudentVisibleContentTopic } from "@/modules/content/service";
 import { getJourneyContext } from "@/modules/journey/service";
 import { getPowerGridRankPresentation } from "@/lib/power-grid/rank-presentation";
 import { getRecallStrengthSnapshot } from "@/modules/recall-strength/service";
@@ -419,11 +420,14 @@ function buildDashboardPrimarySignals(options: {
       };
 
   const recallTopic = options.recallStrength?.weakestTopic ?? options.recallStrength?.nextDueTopic;
+  const recallTopicLabel = recallTopic
+    ? getStudentVisibleContentTopic(recallTopic.topicId)?.name ?? recallTopic.topicId
+    : undefined;
   const weakTopic: WeakTopicSignal = recallTopic
     ? {
         topicId: recallTopic.topicId,
         subjectId: recallTopic.subjectId,
-        label: recallTopic.topicId,
+        label: recallTopicLabel ?? recallTopic.topicId,
         href: `/subjects?subjectId=${encodeURIComponent(recallTopic.subjectId)}&topicId=${encodeURIComponent(recallTopic.topicId)}`,
         strength: recallTopic.strength,
       }

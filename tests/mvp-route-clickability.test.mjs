@@ -85,6 +85,21 @@ test("dashboard route cards resolve to allowed MVP click targets", async () => {
   }
 
   assertAllowedMvpClickTarget(dashboard.continuityHref, "dashboard continuity href");
+
+  if (dashboard.primarySignals) {
+    assertAllowedMvpClickTarget(
+      dashboard.primarySignals.continueLearning.href,
+      "dashboard primary continue-learning signal",
+    );
+    assertAllowedMvpClickTarget(
+      dashboard.primarySignals.weakTopic.href,
+      "dashboard primary weak-topic signal",
+    );
+    assertAllowedMvpClickTarget(
+      dashboard.primarySignals.nextExamTask.href,
+      "dashboard primary next-exam signal",
+    );
+  }
 });
 
 test("account quick links resolve to allowed MVP click targets", async () => {

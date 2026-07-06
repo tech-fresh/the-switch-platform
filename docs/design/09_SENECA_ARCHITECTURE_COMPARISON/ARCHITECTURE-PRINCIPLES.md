@@ -1,12 +1,29 @@
-# Architecture Principles — Connected Learning System (Documentation Only)
+# Architecture Principles — Connected Learning System
 
-> **Status:** long-term product architecture guidance  
+> **Status:** implemented in code (phases 0–9) — 6 July 2026  
 > **Updated:** 2026-07-06  
 > **Scope:** Mark 3.2 / Mark 4 MVP — extend existing systems; do not replace them
 
-These principles were identified during a Seneca-inspired architecture comparison. They are **Switch-native** product rules for future implementation. **No code in this document.**
+These principles were identified during a Seneca-inspired architecture comparison. They are **Switch-native** product rules.
 
 **Non-negotiable preservation:** Fly deployment · OIDC auth · SQLite persistence · 8-step onboarding · module/service/API architecture · existing Power Grid XP mechanics.
+
+---
+
+## Implementation status (6 July 2026)
+
+| # | Principle | Status | Key evidence |
+|---|-----------|--------|--------------|
+| 8 | Modular architecture | **Implemented in code** | `journey/`, `recall-strength/`, `learning-loop/` modules + API layer |
+| 1 | Connected Website | **Implemented in code** | `JourneyNextStepPanel` on signed-in routes |
+| 7 | Saved Progress glue | **Implemented in code** | `continuity-graph.ts` → journey precedence |
+| 6 | Recommendations brain | **Implemented in code** | `recommendations/ranking.ts`, `/api/recommendations/ranked` |
+| 2 | Recall Strength | **Implemented in code** | `recall-strength/` module + quiz integration |
+| 3 | Power Grid engine | **Implemented in code** | `progression-events.ts` from quiz, exams, assessments |
+| 4 | Learning Loop | **Implemented in code** | `learning-loop/` + subject step rail |
+| 5 | Dashboard simplification | **Implemented in code** | `DashboardPrimarySignals` + hero row + collapsed “More” |
+
+Execution plan: [`CODEX-FULL-IMPLEMENTATION-PACK.md`](./CODEX-FULL-IMPLEMENTATION-PACK.md)
 
 ---
 

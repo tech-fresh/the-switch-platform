@@ -75,7 +75,7 @@ Update this section every session.
 
 - **Priority item #:** Connected learning architecture **implementation** (Codex)
 - **Module:** `learning-loop` → `dashboard` → connected routes
-- **Status:** **Phases 0–9 complete** from `CODEX-FULL-IMPLEMENTATION-PACK.md` — connected learning architecture implemented end to end (journey, recall strength, ranking, progression events, learning loop, dashboard simplification, route CTAs, closeout tests). **224/228 tests green** on branch; run `npm run verify:connected-journey` for live API check.
+- **Status:** **Phases 0–9 complete** from `CODEX-FULL-IMPLEMENTATION-PACK.md` — connected learning architecture implemented end to end. Verification: `npm run test` (`228/228` passed).
 - **Branch:** `main`
 - **Codex entry:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`
 

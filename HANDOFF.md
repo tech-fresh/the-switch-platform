@@ -73,10 +73,11 @@ Update this section every session.
 
 ### Active task
 
-- **Priority item #:** Connected learning architecture documentation
-- **Module:** docs / product architecture
-- **Status:** eight Seneca-inspired principles integrated across HANDOFF, AGENTS, PLATFORM-GUIDE, UI guides, Mark 4 plan — **documentation only, no code**
-- **Branch:** `cursor/fix-live-onboarding-cold-start` · PR #11 open
+- **Priority item #:** Connected learning architecture **implementation** (Codex)
+- **Module:** `journey` → `saved-progress` → `recommendations` → `recall-strength` → UI
+- **Status:** **`IMPLEMENTATION-PLAN.md` published** — principles are documented; **code not started** (Phase 0 next)
+- **Branch:** `main`
+- **Codex entry:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/IMPLEMENTATION-PLAN.md`
 
 ### Current readiness truth
 
@@ -107,7 +108,7 @@ Update this section every session.
 
 ### What was just completed
 
-- **Fly-only deployment policy (6 July 2026)** — added `docs/DEPLOYMENT-FLY-ONLY.md` and `.github/DEPLOYMENT.md`. Updated PLATFORM-GUIDE, AGENTS, FINAL_LAUNCH_RUNBOOK, FREE_TIER_DEPLOY, cursor rules. **Netlify and Vercel are retired** — disconnect GitHub App integrations manually. Documentation only.
+- **Connected learning implementation plan (6 July 2026)** — `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/IMPLEMENTATION-PLAN.md` — nine phases for Codex (journey orchestrator, Recall Strength module, ranking brain, learning loop, dashboard simplification, route CTAs). **Plan only — no code yet.**
 - **Connected learning architecture documentation (6 July 2026)** — created `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/` with eight Switch-native principles: Connected Website, Recall Strength (future), Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue, Modular architecture. Synced across `PLATFORM-GUIDE.md`, `11_UI_UX_MASTER_GUIDE.md`, `MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`, `MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`, `AGENTS.md`. **No implementation** — preserves Fly, OIDC, SQLite, onboarding, existing modules.
 - **Accessibility icon swap (6 July 2026)** — replaced ♿ with 🎛️ on homepage feature cards and benefits (study settings metaphor; avoids wheelchair disability symbol).
 - **`11_UI_UX_MASTER_GUIDE.md` + Mark 4 Phase 7 homepage (6 July 2026)** — created canonical UI/UX guide at `docs/design/11_UI_UX_MASTER_GUIDE.md`; slimmed `UI-UX-MASTERPLAN.md` to pointer. Shipped homepage benefits, how-it-works, and FAQ via `PremiumHomepageMarketing`; hero uses six-rank Power Grid from `xpTotal`; primary CTA **Start Learning Free**; fixed remaining light-mode session cards on dashboard. Verification: lint + type-check + test `198/198`.

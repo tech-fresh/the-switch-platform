@@ -25,8 +25,9 @@ The Switch must remain distinct through **Power Grid**, GCSE/iGCSE exam readines
 
 ## Read order
 
-1. **[`ARCHITECTURE-PRINCIPLES.md`](./ARCHITECTURE-PRINCIPLES.md)** — authoritative eight principles (**start here**)
-2. [`01_Seneca_Product_Flow.md`](./01_Seneca_Product_Flow.md) → [`07_RECOMMENDATION_ADDENDUM.md`](./07_RECOMMENDATION_ADDENDUM.md) — comparison detail and Switch naming options
+1. **[`ARCHITECTURE-PRINCIPLES.md`](./ARCHITECTURE-PRINCIPLES.md)** — eight principles (what to build)
+2. **[`IMPLEMENTATION-PLAN.md`](./IMPLEMENTATION-PLAN.md)** — **Codex execution plan** (phases 0–9, code, APIs, tests)
+3. [`01_Seneca_Product_Flow.md`](./01_Seneca_Product_Flow.md) → [`07_RECOMMENDATION_ADDENDUM.md`](./07_RECOMMENDATION_ADDENDUM.md) — comparison detail
 3. [`../11_UI_UX_MASTER_GUIDE.md`](../11_UI_UX_MASTER_GUIDE.md) — UI expression of journey rules
 4. [`../../PLATFORM-GUIDE.md`](../../PLATFORM-GUIDE.md) → Connected learning architecture
 5. [`../../ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](../../ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) — phased execution
@@ -37,7 +38,8 @@ The Switch must remain distinct through **Power Grid**, GCSE/iGCSE exam readines
 
 | File | Purpose |
 |------|---------|
-| **`ARCHITECTURE-PRINCIPLES.md`** | Authoritative eight Switch-native principles (Connected Website, Recall Strength, Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue, Modular architecture) |
+| **`ARCHITECTURE-PRINCIPLES.md`** | Eight Switch-native principles (documentation) |
+| **`IMPLEMENTATION-PLAN.md`** | **End-to-end technical plan for Codex** — phases, code, APIs, tests |
 | `01_Seneca_Product_Flow.md` | Public-product learning loop and what can be learned from it |
 | `02_Switch_Current_Architecture.md` | Current Switch modules and route connections |
 | `03_Connected_Website_Map.md` | How the whole website should connect before launch |
@@ -108,7 +110,7 @@ If a page does not make that obvious, it needs redesign or simplification.
 
 ## Agent rule
 
-At session start, after `HANDOFF.md`, read **`ARCHITECTURE-PRINCIPLES.md`** before UI or module work that touches learner journeys, dashboard hierarchy, recommendations, or progression presentation.
+At session start, after `HANDOFF.md`, read **`ARCHITECTURE-PRINCIPLES.md`**. For implementation work, read **`IMPLEMENTATION-PLAN.md`** and execute **one phase only**.
 
 ---
 

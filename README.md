@@ -16,7 +16,7 @@
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** |
 | Production deploy | **Fly.io only** — [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not use Netlify or Vercel.** |
-| What are we doing now? | **Connected learning architecture documented** in `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`. PR [#11](https://github.com/tech-fresh/the-switch-platform/pull/11) open for premium/UI branch merge. Priority A–D closed; Priority **E** deferred only. |
+| What are we doing now? | **Codex implementation plan published** — [`IMPLEMENTATION-PLAN.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/IMPLEMENTATION-PLAN.md) phases 0–9. Architecture principles documented; **code not started**. |
 | Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength (future), Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
@@ -652,6 +652,11 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-06 Connected learning Codex implementation plan
+
+- Added **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/IMPLEMENTATION-PLAN.md`** — end-to-end technical plan: Phases 0–9, new `journey` + `recall-strength` + `learning-loop` modules, APIs, persistence stores, tests, definition of done for all eight principles.
+- **Status:** plan only — implementation not started. Codex executes one phase per session.
 
 ### 2026-07-06 Fly-only deployment policy (Netlify/Vercel retired)
 

@@ -60,7 +60,8 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
 | **`docs/design/11_UI_UX_MASTER_GUIDE.md`** | Authoritative UI reference |
 | **`docs/DEPLOYMENT-FLY-ONLY.md`** | **Fly.io only** — do not use Netlify/Vercel |
-| **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`** | Connected learning architecture principles |
+| **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/IMPLEMENTATION-PLAN.md`** | **Codex execution plan** — phases 0–9 |
+| **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`** | Architecture principles + comparison docs |
 | **`docs/design/UI-UX-MASTERPLAN.md`** | Pointer to UI master guide |
 | **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** | Mark 3.2 full product vision + route mapping to live repo |
 
@@ -157,7 +158,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Connected learning architecture documented** in `09_SENECA_ARCHITECTURE_COMPARISON/` — principles synced across HANDOFF, AGENTS, PLATFORM-GUIDE, UI guides. PR #11 open for UI/premium branch merge. |
+| What are we doing now? | **Codex implementation plan published** — [`IMPLEMENTATION-PLAN.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/IMPLEMENTATION-PLAN.md) phases 0–9. Principles documented; **code not started**. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** now in live code paths. |
 | What is next? | Deploy premium redesign to Fly; commit brand mockup when operator asks; merge cold-start branch; rerun supportive `verify:live-onboarding`. |

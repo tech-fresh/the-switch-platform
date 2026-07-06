@@ -16,13 +16,13 @@
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** |
 | Production deploy | **Fly.io only** — [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not use Netlify or Vercel.** |
-| What are we doing now? | **Connected learning architecture phases 0–9 complete on `main`** — journey orchestrator, recall strength, learning loop, ranked recommendations, progression events, dashboard simplification, and connected-route journey panels from [`CODEX-FULL-IMPLEMENTATION-PACK.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md). |
+| What are we doing now? | **Connected learning phases 0–9 on `main` and deployed to Fly** — journey orchestrator, recall strength, learning loop, ranked recommendations, progression events, dashboard simplification, connected-route panels. |
+| What is next? | Refresh live cookies, run `npm run verify:connected-journey`. **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
 | Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength, Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Mark 4 UI lane | **Phases 1–6 on `main`** — see [`docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](./docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) and [`docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`](./docs/ideas/MARK-4-ROUTE-UX-AUDIT.md). |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Run `npm run deploy:fly` so production matches `main`; refresh live cookies and re-run `npm run verify:connected-journey` after deploy. Continue **Mark 4 Phase 7** public marketing refinement when ready. Priority **E** remains deferred only. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) in the recorded Fly production closeout.
 
@@ -57,7 +57,7 @@ Premium dark-mode GCSE revision platform — implemented in code, not mockups on
 
 ### In one sentence
 
-**The Switch** is a live GCSE revision website at https://theswitchplatform.com. Priority A proof closeout is **complete**, the MVP usability plan is **closed**, Mark 4 Phases 1–6 are on **`main`**, and connected learning architecture phases 0–9 merged to **`main`** 6 July 2026 — run **`npm run deploy:fly`** to publish the journey/learning-loop stack to production.
+**The Switch** is a live GCSE revision website at https://theswitchplatform.com. Connected learning phases 0–9 are on **`main`** and **deployed to Fly** (7 July 2026). Refresh live cookies to complete `verify:connected-journey`.
 
 ### Where we are (simple view)
 
@@ -652,6 +652,13 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-07 Connected learning deployed to Fly
+
+- `npm run deploy:fly` succeeded (`deployment-01KWWV6CS16RH77WN1B35XKMGW`); `curl -I https://theswitchplatform.com` → HTTP 200.
+- `/api/journey/next-action` live on production (401 without auth; was 404 pre-deploy).
+- `verify:check-live-cookies` failed — expired cookies; refresh via live-cookie-guide before `verify:connected-journey`.
+- Improved `verify-connected-journey.mjs` to print a clear message on 401 (expired cookie).
 
 ### 2026-07-06 Connected learning merge to main + Phase 9 closeout
 

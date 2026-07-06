@@ -58,10 +58,15 @@ const closeoutItems = [
 const preflight = getLaunchPreflightReport(process.env);
 const doneItems = closeoutItems.filter((item) => item.status === "done");
 const remainingItems = closeoutItems.filter((item) => item.status === "remaining");
+const historicalCloseoutRecorded = preflight.ready;
 
 console.log("Final Path Mark 1 launch status:");
 console.log(`- Code-complete closeout items: ${doneItems.length} of ${closeoutItems.length}`);
-console.log("- Current completion range: 88% to 90%");
+console.log(
+  historicalCloseoutRecorded
+    ? "- Current completion range: historical closeout recorded; use the live sequence below to refresh evidence for a new release."
+    : "- Current completion range: 88% to 90%",
+);
 console.log(
   `- Launch preflight: ${preflight.ready ? "ready for live sequence" : "missing required live inputs"}`,
 );
@@ -71,9 +76,15 @@ for (const item of doneItems) {
   console.log(`- ${item.title}`);
 }
 
-console.log("\nRemaining live-only items:");
-for (const item of remainingItems) {
-  console.log(`- ${item.title}`);
+if (historicalCloseoutRecorded) {
+  console.log("\nHistorical closeout status:");
+  console.log("- The 26 June 2026 Fly production closeout is already recorded.");
+  console.log("- Use the live sequence below to refresh production evidence after a new deploy or release change.");
+} else {
+  console.log("\nRemaining live-only items:");
+  for (const item of remainingItems) {
+    console.log(`- ${item.title}`);
+  }
 }
 
 if (!preflight.ready) {

@@ -1,7 +1,8 @@
 import Link from "next/link";
 
-import { mark32Ui } from "@/components/streamlined/mark32-ui";
-import type { PowerGridLevel, PowerGridSummary } from "@/modules/power-grid/types";
+import { premiumUi } from "@/components/premium/premium-ui";
+import { getPowerGridRankPresentation } from "@/lib/power-grid/rank-presentation";
+import type { PowerGridSummary } from "@/modules/power-grid/types";
 
 interface Mark32ProgressAtAGlanceProps {
   summary: Pick<
@@ -11,6 +12,11 @@ interface Mark32ProgressAtAGlanceProps {
     | "examReadinessScore"
     | "activeSessionCount"
     | "completedSessionCount"
+    | "quizAttemptCount"
+    | "quizCorrectCount"
+    | "quizAccuracyPercentage"
+    | "xpTotal"
+    | "voltagePointsTotal"
     | "nextBestAction"
     | "nextBestActionHref"
     | "resumeHref"
@@ -31,67 +37,97 @@ function getTrendLabel(trend: PowerGridSummary["overallTrend"]): string {
 
 export function Mark32ProgressAtAGlance({ summary }: Mark32ProgressAtAGlanceProps) {
   const readinessWidth = Math.max(4, Math.min(100, summary.examReadinessScore));
+  const rank = getPowerGridRankPresentation(summary.xpTotal);
 
   return (
-    <section className={`${mark32Ui.card} grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]`}>
+    <section className={`${premiumUi.card} grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]`}>
       <div className="space-y-5">
         <div>
-          <p className={mark32Ui.eyebrow}>Progress at a glance</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
-            {summary.overallLevel} · {getTrendLabel(summary.overallTrend)}
+          <p className={premiumUi.eyebrowAccent}>Progress at a glance</p>
+          <h2 className={`mt-2 ${premiumUi.heading}`}>
+            {rank.rank.icon} {rank.rank.label} · {getTrendLabel(summary.overallTrend)}
           </h2>
+          <p className={`mt-1 ${premiumUi.body}`}>
+            Power Level {rank.powerLevel} · {summary.xpTotal.toLocaleString()} XP · {summary.voltagePointsTotal.toLocaleString()}{" "}
+            voltage points
+          </p>
         </div>
 
         <div>
-          <div className="flex items-center justify-between gap-3 text-sm text-stone-600">
-            <span>Exam readiness</span>
-            <span className="font-semibold text-stone-950">{summary.examReadinessScore} / 100</span>
+          <div className="flex items-center justify-between gap-3 text-sm">
+            <span className={premiumUi.body}>Exam readiness</span>
+            <span className="font-semibold text-white">{summary.examReadinessScore} / 100</span>
           </div>
           <div
-            className="mt-2 h-3 overflow-hidden rounded-full bg-stone-100"
+            className={`mt-2 ${premiumUi.progressTrack}`}
             role="progressbar"
             aria-valuenow={summary.examReadinessScore}
             aria-valuemin={0}
             aria-valuemax={100}
             aria-label="Exam readiness score"
           >
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-teal-700 to-teal-500 transition-all"
-              style={{ width: `${readinessWidth}%` }}
-            />
+            <div className={premiumUi.progressFill} style={{ width: `${readinessWidth}%` }} />
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between gap-3 text-sm">
+            <span className={premiumUi.body}>Next Power Level</span>
+            <span className="font-semibold text-white">
+              {rank.xpNeededForNextPowerLevel > 0 ? `${rank.xpNeededForNextPowerLevel} XP to go` : "Max level in rank"}
+            </span>
+          </div>
+          <div
+            className={`mt-2 ${premiumUi.progressTrack}`}
+            role="progressbar"
+            aria-valuenow={rank.powerLevelProgressPercentage}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Progress to next Power Level"
+          >
+            <div className={premiumUi.progressFill} style={{ width: `${rank.powerLevelProgressPercentage}%` }} />
           </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className={mark32Ui.statCard}>
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Active sessions</p>
-            <p className="mt-2 text-2xl font-semibold text-stone-950">{summary.activeSessionCount}</p>
-            <p className="mt-1 text-sm text-stone-600">{summary.completedSessionCount} completed</p>
+          <div className={premiumUi.statCard}>
+            <p className={premiumUi.eyebrow}>Active sessions</p>
+            <p className="mt-2 text-2xl font-semibold text-white">{summary.activeSessionCount}</p>
+            <p className={`mt-1 ${premiumUi.body}`}>{summary.completedSessionCount} completed</p>
           </div>
-          <div className={mark32Ui.statCard}>
-            <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Current level</p>
-            <p className="mt-2 text-lg font-semibold leading-tight text-stone-950">{summary.overallLevel}</p>
-            <p className="mt-1 text-sm capitalize text-stone-600">{summary.overallTrend} trend</p>
+          <div className={premiumUi.statCard}>
+            <p className={premiumUi.eyebrow}>Next reward</p>
+            <p className="mt-2 text-lg font-semibold leading-tight text-white">{rank.nextReward}</p>
+            <p className={`mt-1 capitalize ${premiumUi.body}`}>{summary.overallTrend} trend</p>
+          </div>
+          <div className={premiumUi.statCard}>
+            <p className={premiumUi.eyebrow}>Quiz totals</p>
+            <p className="mt-2 text-2xl font-semibold text-white">
+              {summary.quizCorrectCount}/{summary.quizAttemptCount || 0}
+            </p>
+            <p className={`mt-1 ${premiumUi.body}`}>{summary.quizAccuracyPercentage}% accuracy</p>
+          </div>
+          <div className={premiumUi.statCard}>
+            <p className={premiumUi.eyebrow}>Next rank</p>
+            <p className="mt-2 text-sm font-semibold leading-tight text-white">{rank.nextRankPreview}</p>
+            <p className={`mt-1 ${premiumUi.body}`}>Evidence level: {summary.overallLevel}</p>
           </div>
         </div>
       </div>
 
-      <aside className="flex flex-col justify-between gap-4 rounded-3xl border border-teal-800 bg-gradient-to-br from-teal-900 to-teal-700 p-5 text-white">
+      <aside className="flex flex-col justify-between gap-4 rounded-3xl border border-[#6C4EFF]/40 bg-gradient-to-br from-[#6C4EFF]/30 to-[#121826] p-5 text-white">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-100">Next best step</p>
+          <p className={premiumUi.eyebrowAccent}>Next best step</p>
           <p className="mt-3 text-lg font-semibold leading-snug">{summary.nextBestAction}</p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link
-            href={summary.nextBestActionHref ?? "/subjects"}
-            className="inline-flex items-center justify-center rounded-2xl bg-white px-4 py-2.5 text-sm font-bold text-teal-900 hover:bg-teal-50"
-          >
+          <Link href={summary.nextBestActionHref ?? "/subjects"} className={premiumUi.primaryBtn}>
             Open next step
           </Link>
           {summary.resumeHref ? (
             <Link
               href={summary.resumeHref}
-              className="inline-flex items-center justify-center rounded-2xl border border-teal-200/40 bg-teal-950/20 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-950/40"
+              className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white hover:bg-white/20"
             >
               Resume session
             </Link>
@@ -101,5 +137,3 @@ export function Mark32ProgressAtAGlance({ summary }: Mark32ProgressAtAGlanceProp
     </section>
   );
 }
-
-export type { PowerGridLevel };

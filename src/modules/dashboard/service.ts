@@ -1,4 +1,5 @@
-import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
+import { getMockExamSession } from "@/modules/exam-engine/service";
+import { listStudentVisibleExamPapers } from "@/modules/exam-inventory/service";
 import { getDailyMotivation } from "@/modules/motivation/service";
 import {
   buildOnboardingSupportSummary,
@@ -51,11 +52,11 @@ export async function getDashboardHomeData(userId = "guest-preview"): Promise<Da
   const setup = buildDashboardSetupSummary(onboardingOverview?.profile ?? null);
   const onboardingPersonalization = buildOnboardingPersonalizationContext(
     onboardingOverview?.profile ?? null,
-    getMockExamPapers(),
+    listStudentVisibleExamPapers(),
   );
   const onboardingSupport = buildOnboardingSupportSummary(onboardingOverview?.profile ?? null);
   const profile = onboardingOverview?.profile ?? null;
-  const allPapers = getMockExamPapers();
+  const allPapers = listStudentVisibleExamPapers();
   const allAssessments = getMockTimedAssessments();
   const papers =
     profile && isOnboardingPersonalizationActive(profile)

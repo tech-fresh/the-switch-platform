@@ -1,16 +1,10 @@
 import type { ExamBoard } from "@/modules/access-arrangements";
+import { listInventoryExamBoardsForQualificationPath } from "@/modules/exam-inventory/board-options";
 
-import { qualificationPathToCatalogType } from "./qualification-utils";
 import type { LearnerOnboardingProfile, QualificationPath } from "./types";
 
-/** Exam boards with seeded full-paper content in the current repo. */
-const SEEDED_EXAM_BOARDS: Record<"GCSE" | "IGCSE", ExamBoard[]> = {
-  GCSE: ["AQA", "Edexcel"],
-  IGCSE: ["Cambridge IGCSE"],
-};
-
 export function listOnboardingExamBoardOptions(qualificationPath: QualificationPath): ExamBoard[] {
-  return SEEDED_EXAM_BOARDS[qualificationPathToCatalogType(qualificationPath)];
+  return listInventoryExamBoardsForQualificationPath(qualificationPath);
 }
 
 export function getDefaultExamBoard(qualificationPath: QualificationPath): ExamBoard {

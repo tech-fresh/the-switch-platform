@@ -69,7 +69,7 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `cursor/fix-live-onboarding-cold-start`
 - **Last updated by:** Cursor Agent
-- **Last updated:** 2026-07-06 (supportive live onboarding cold-start hardening)
+- **Last updated:** 2026-07-06 (`11_UI_UX_MASTER_GUIDE.md` + Phase 7 homepage)
 
 ### Active task
 
@@ -107,6 +107,11 @@ Update this section every session.
 
 ### What was just completed
 
+- **Accessibility icon swap (6 July 2026)** — replaced ♿ with 🎛️ on homepage feature cards and benefits (study settings metaphor; avoids wheelchair disability symbol).
+- **`11_UI_UX_MASTER_GUIDE.md` + Mark 4 Phase 7 homepage (6 July 2026)** — created canonical UI/UX guide at `docs/design/11_UI_UX_MASTER_GUIDE.md`; slimmed `UI-UX-MASTERPLAN.md` to pointer. Shipped homepage benefits, how-it-works, and FAQ via `PremiumHomepageMarketing`; hero uses six-rank Power Grid from `xpTotal`; primary CTA **Start Learning Free**; fixed remaining light-mode session cards on dashboard. Verification: lint + type-check + test `198/198`.
+- **Power Grid six-rank XP presentation (6 July 2026)** — presentation-only layer mapping existing `xpTotal` to six milestone ranks (Switch On → Switch Legend) with internal Power Levels 1–10, progress bars, next reward, and next rank preview. New `src/lib/power-grid/rank-presentation.ts`, `PowerGridRankPanel`, updated dashboard/progress/sidebar/homepage cards. Backend XP calculations, APIs, schema, and 9-level service logic unchanged. Tests: `tests/power-grid-rank-presentation.test.mjs`. Verification: lint + type-check + test `198/198`.
+- **Premium website redesign (6 July 2026)** — dark-mode UI inspired by Stripe (homepage), Linear (sidebar dashboard), Seneca (quiz flow), Duolingo (Power Grid/streaks), BBC Bitesize (content hierarchy), Save My Exams (subject/board/topic). New `src/components/premium/` library; updated `/`, `/dashboard`, `StudentAppShell`, `/subjects` quiz UI, `globals.css`, `mark32Ui` tokens. Docs: `UI-UX-MASTERPLAN.md` → Website Redesign Direction. Verification: lint + type-check + test `194/194`.
+- **Brand logo mockup gallery (6 July 2026)** — added `/brand-mockup` with `BrandLogoMockup` placement panels (hero, marketing header, sign-in, signed-in shell, footer, size scale, contrast surfaces) using live `SwitchBrandLogo` and `public/brand/the-switch-logo.png`. Linked from `/mock-idea-preview` and Mockup 5 in `mock-idea-showcase.tsx`; streamlined mockup hero now uses the same component. Aligned `docs/design/UI-UX-MASTERPLAN.md` brand token row. Local dev: if Next.js reports missing `.next/server/app/brand-mockup/page.js`, stop dev, `rm -rf .next`, and restart `npm run dev`.
 - **Supportive live onboarding cold-start hardening (6 July 2026)** — hardened `verify:live-onboarding` for Fly wake-up: shared `ensureFlyMachineWarmup()` + new `ensureLiveHttpWarmup()`, generous supportive fetch defaults in `scripts/supportive-live-fetch-defaults.mjs`, route-level warm-up retries on signed-out redirect/API/page fetches, closeout env parity in `record-priority-a-closeout.mjs`, and deduplicated warm-up in `live-route-walkthrough.mjs`. Still API-assisted regression only — outside strict A-4. Branch: `cursor/fix-live-onboarding-cold-start` (`620ef21`, `7a1b48e`).
 - **Local readiness verification completed (5 July 2026)** — `npm run build` passed, and `npm run verify:local-launch-readiness` passed end to end once re-run outside the sandboxed loopback restriction. The local branch now has a clean verification baseline through lint, type-check, build, contract tests, smoke, and signed-in rehearsal.
 - **Fly deploy + live verification pass (5 July 2026)** — `npm run deploy:fly` succeeded, `curl -I https://theswitchplatform.com` returned `HTTP/2 200`, `npm run verify:live-readiness` passed, and `npm run verify:launch-status` was repaired so it now reports the 26 June 2026 closeout as historical evidence instead of stale “remaining live-only items” language when the live preflight is ready.
@@ -187,6 +192,7 @@ Update this section every session.
 
 ### What is next
 
+- Commit brand mockup route + gallery links when operator asks (keep separate from unrelated WIP on the working tree)
 - Merge `cursor/fix-live-onboarding-cold-start` to `main` and rerun `npm run verify:live-onboarding` from `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
 - Continue Mark 4 Phase 7 public marketing refinement when ready
@@ -211,6 +217,23 @@ Update this section every session.
 - No active blocker for the 502 outage after the Fly memory increase
 
 ### Verification last run
+
+Fresh rerun on 6 July 2026 (`11_UI_UX_MASTER_GUIDE.md` + Phase 7 homepage):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (`198/198` passed)
+
+Fresh rerun on 6 July 2026 (Power Grid six-rank XP presentation):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (`198/198` passed, includes `power-grid-rank-presentation.test.mjs`)
+
+Fresh rerun on 6 July 2026 (brand logo mockup gallery):
+
+- [x] `npm run type-check`
+- [x] `curl http://localhost:3000/brand-mockup` → `200` after clearing stale `.next` dev cache
 
 Fresh rerun on 6 July 2026 (supportive onboarding cold-start hardening):
 
@@ -609,6 +632,7 @@ Detail and checklist → `docs/ideas/FINAL-PHASE-PLAN.md`
 | Study Atelier shell | `src/components/mock-idea/` |
 | Build reference | `docs/MOCK-IDEA-BUILD-REFERENCE.md` |
 | Visual gallery | `/mock-idea-preview` |
+| Brand logo mockup | `/brand-mockup` — `brand-logo-mockup.tsx` · entry from gallery |
 | Streamline plan (historical) | `docs/ideas/STREAMLINE-WEBSITE-PLAN.md` |
 | **Active plan** | **`docs/ideas/FINAL-PHASE-PLAN.md`** |
 
@@ -1006,6 +1030,31 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-07-06 — Cursor — UI master guide, Power Grid presentation, Phase 7 homepage, accessibility icon
+
+- Branch: `cursor/fix-live-onboarding-cold-start`
+- Done: `docs/design/11_UI_UX_MASTER_GUIDE.md`; six-rank Power Grid presentation layer; Phase 7 homepage (benefits, FAQ); premium dark redesign; brand mockup; quiz/inventory/specification WIP on branch; accessibility icon ♿ → 🎛️
+- Docs: `HANDOFF.md`, `AGENTS.md`, `README.md` Ordered Build Record, `UI-UX-MASTERPLAN.md` pointer
+- Verification: lint, type-check, test `198/198`
+- Next: merge branch; rerun `verify:live-onboarding`; deploy for live UI
+
+### 2026-07-06 — Cursor — Premium website redesign
+
+- Branch: `cursor/fix-live-onboarding-cold-start` (redesign uncommitted on working tree)
+- Module: premium UI / homepage / dashboard / subjects quiz
+- Done: dark-mode premium redesign — `src/components/premium/*`, Linear sidebar, Stripe hero, Seneca quiz card, Power Grid sections; updated HANDOFF/AGENTS/README/UI-UX-MASTERPLAN
+- Verification: lint, type-check, test `194/194`
+
+### 2026-07-06 — Cursor — Brand logo mockup gallery + doc sync
+
+- Branch: `cursor/fix-live-onboarding-cold-start` (brand mockup files uncommitted on working tree)
+- Module: Mock Idea / brand surfaces
+- Priority #: Mark 4 Phase 7 public marketing refinement (visual reference)
+- Done: added `/brand-mockup` + `BrandLogoMockup` placement gallery; linked from `/mock-idea-preview` and mock-idea showcase; streamlined mockup hero uses `SwitchBrandLogo`; synced `HANDOFF.md`, `AGENTS.md`, `README.md`, `docs/MOCK-IDEA-BUILD-REFERENCE.md`, and `docs/design/UI-UX-MASTERPLAN.md`
+- Done: recovered local dev ENOENT on `.next/server/app/brand-mockup/page.js` by clearing `.next` and restarting `npm run dev`
+- Verification: `npm run type-check`; `/brand-mockup` → `200` locally
+- Next: operator commit when ready; merge cold-start branch; deploy for live `/brand-mockup`
 
 ### 2026-07-01 — Codex — Content system completion pass
 

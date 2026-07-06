@@ -10,6 +10,12 @@ import {
 } from "@/components/onboarding/onboarding-shell";
 import { mark32Ui } from "@/components/streamlined/mark32-ui";
 import {
+  getCombinedScienceVariationLabel,
+  hasCombinedScienceSelection,
+  listCombinedScienceVariationOptions,
+  resolveCombinedScienceVariationForProfile,
+} from "@/modules/onboarding/combined-science-variation-options";
+import {
   getDefaultExamBoard,
   listOnboardingExamBoardOptions,
 } from "@/modules/onboarding/exam-board-options";
@@ -128,6 +134,16 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
       ),
     [selectedSubjectIds, subjectsForQualification],
   );
+  const hasCombinedScience = hasCombinedScienceSelection(validSelectedSubjectIds);
+  const combinedScienceVariationOptions = useMemo(
+    () => listCombinedScienceVariationOptions(activeExamBoard),
+    [activeExamBoard],
+  );
+  const activeCombinedScienceVariation = resolveCombinedScienceVariationForProfile({
+    examBoard: activeExamBoard ?? "AQA",
+    combinedScienceVariation: profile.combinedScienceVariation,
+    selectedSubjectIds: validSelectedSubjectIds,
+  });
 
   async function persistStep(update: DraftProfile, nextStep: number, complete = false) {
     setIsSaving(true);
@@ -156,7 +172,15 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
     const next = selectedSubjectIds.includes(subjectId)
       ? selectedSubjectIds.filter((id) => id !== subjectId)
       : [...selectedSubjectIds, subjectId];
-    setProfile({ ...profile, selectedSubjectIds: next });
+    setProfile({
+      ...profile,
+      selectedSubjectIds: next,
+      combinedScienceVariation: resolveCombinedScienceVariationForProfile({
+        examBoard: activeExamBoard ?? "AQA",
+        combinedScienceVariation: profile.combinedScienceVariation,
+        selectedSubjectIds: next,
+      }),
+    });
   }
 
   function canContinueCurrentStep(): boolean {
@@ -170,7 +194,11 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
       case 3:
         return Boolean(profile.schoolName?.trim());
       case 4:
-        return validSelectedSubjectIds.length > 0 && Boolean(activeExamBoard);
+        return (
+          validSelectedSubjectIds.length > 0 &&
+          Boolean(activeExamBoard) &&
+          (!hasCombinedScience || Boolean(activeCombinedScienceVariation))
+        );
       case 7:
         return Boolean(profile.ageOrConsentConfirmed);
       default:
@@ -237,6 +265,11 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
                         ...profile,
                         qualificationPath: nextPath,
                         examBoard: getDefaultExamBoard(nextPath),
+                        combinedScienceVariation: resolveCombinedScienceVariationForProfile({
+                          examBoard: getDefaultExamBoard(nextPath),
+                          combinedScienceVariation: profile.combinedScienceVariation,
+                          selectedSubjectIds: nextSelected,
+                        }),
                         selectedSubjectIds: nextSelected,
                       });
                     }}
@@ -465,7 +498,17 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
                   <button
                     key={board}
                     type="button"
-                    onClick={() => setProfile({ ...profile, examBoard: board })}
+                    onClick={() =>
+                      setProfile({
+                        ...profile,
+                        examBoard: board,
+                        combinedScienceVariation: resolveCombinedScienceVariationForProfile({
+                          examBoard: board,
+                          combinedScienceVariation: profile.combinedScienceVariation,
+                          selectedSubjectIds: validSelectedSubjectIds,
+                        }),
+                      })
+                    }
                     className={`rounded-2xl border px-4 py-4 text-left transition ${
                       selected
                         ? "border-teal-400 bg-teal-50 ring-2 ring-teal-100"
@@ -514,6 +557,35 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
               })}
             </div>
           </div>
+
+          {hasCombinedScience ? (
+            <div className="space-y-3">
+              <p className={mark32Ui.eyebrow}>Combined Science variation</p>
+              <p className="text-sm leading-6 text-stone-600">
+                Pick only the supported combined-science route for this board. Separate and triple science stay outside this MVP chooser.
+              </p>
+              <div className="grid gap-3">
+                {combinedScienceVariationOptions.map((variation) => {
+                  const selected = activeCombinedScienceVariation === variation.id;
+                  return (
+                    <button
+                      key={variation.id}
+                      type="button"
+                      onClick={() => setProfile({ ...profile, combinedScienceVariation: variation.id })}
+                      className={`rounded-2xl border px-4 py-4 text-left transition ${
+                        selected
+                          ? "border-teal-400 bg-teal-50 ring-2 ring-teal-100"
+                          : "border-stone-200 bg-white hover:border-stone-300"
+                      }`}
+                    >
+                      <p className="text-sm font-semibold text-stone-900">{variation.label}</p>
+                      <p className="mt-1 text-xs leading-5 text-stone-600">{variation.description}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
       );
     }
@@ -583,6 +655,9 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
             <li>
               {profile.yearGroup} · {qualificationLabel} · {activeExamBoard}
             </li>
+            {hasCombinedScience && activeCombinedScienceVariation ? (
+              <li>{getCombinedScienceVariationLabel(activeCombinedScienceVariation)}</li>
+            ) : null}
             <li>
               {validSelectedSubjectIds.length} subject{validSelectedSubjectIds.length === 1 ? "" : "s"} on your
               study routes
@@ -693,6 +768,7 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
                   {
                     ...profile,
                     examBoard: activeExamBoard,
+                    combinedScienceVariation: activeCombinedScienceVariation,
                     studyGoal: profile.studyGoal ?? "exam-readiness",
                   },
                   8,
@@ -704,6 +780,8 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
                 {
                   ...profile,
                   examBoard: stepIndex >= 4 ? activeExamBoard : profile.examBoard,
+                  combinedScienceVariation:
+                    stepIndex >= 4 ? activeCombinedScienceVariation : profile.combinedScienceVariation,
                   studyGoal: profile.studyGoal ?? "exam-readiness",
                 },
                 stepIndex + 1,

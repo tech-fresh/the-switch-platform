@@ -1,6 +1,6 @@
 # Final Phase Plan — Full Completion Audit
 
-> **Status:** **CURRENT MVP COMPLETE** — this is the single completion plan for the repository; Priorities A, B, C, and D are closed; **MVP usability hardening (Areas 1–9) is complete**; Priority E remains deferred expansion scope
+> **Status:** **HISTORICAL MVP CLOSEOUT COMPLETE** — this is the single completion plan for the repository; Priorities A, B, C, and D are closed in the recorded Fly production closeout evidence, **MVP usability hardening (Areas 1–9) is complete**, and Priority E remains deferred expansion scope
 > **Created:** 2026-06-24
 > **Purpose:** stop partial closeout; list everything still required for an honest full-completion claim
 > **Live site:** https://theswitchplatform.com
@@ -30,6 +30,8 @@ Read order every session:
 - **Documented status:** all 22 launch items are complete on Fly production
 - **Audit status:** Priority A is **airtight enough to close** as of 26 June 2026; canonical evidence is recorded
 - **Product status:** live MVP with active-plan closeout complete and only deferred expansion scope remaining
+- **Branch-readiness rule:** this file records the end-completion plan and closeout history. It does **not** override the current branch readiness percentage in `HANDOFF.md`.
+- **Current branch readiness reference (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun; use `HANDOFF.md` for the freshest number.
 
 ### Completion snapshot
 
@@ -39,7 +41,7 @@ Read order every session:
 | **Priority B** | **4 / 4 complete** |
 | **Priority C** | **10 / 10 complete** |
 | **Priority D** | **6 / 6 complete** |
-| **Overall active plan (A+B+C+D)** | **28 / 28 complete — 100%** |
+| **Overall active plan (A+B+C+D)** | **28 / 28 complete — 100% historical closeout on Fly production** |
 
 ### What remains open now
 
@@ -47,7 +49,7 @@ The repo no longer has a truthful-completion proof gap, an open active-plan bloc
 
 - keep future release reruns synced with the canonical closeout evidence
 - treat Priority E as deferred scope, not current MVP incompleteness
-- deploy latest usability work to Fly when ready (`npm run deploy:fly`)
+- refresh `SWITCH_LIVE_STUDENT_COOKIE` and `SWITCH_LIVE_ADMIN_COOKIE` only when a future release rerun needs fresh strict real-auth production proof
 - re-run `npm run verify:local-launch-readiness` after meaningful product changes
 
 ### MVP usability plan — complete (appended 30 June 2026)

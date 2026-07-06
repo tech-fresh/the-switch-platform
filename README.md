@@ -15,12 +15,12 @@
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** (`0ee64b2`) |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** The current MVP exam-paper inventory is explicitly confirmed as launch-sufficient for the live routes (6 seeded full-paper routes across Maths, English Language, Combined Science, and iGCSE Maths). Mark 4 Phases 1–6 are on **`main`** at GitHub (dashboard, subjects, homepage, login, progress, exams, Phase 6 onboarding + exam filtering); `/login` uses the simpler provider-first sign-in format on Fly production, the 1 July 2026 production 502 was recovered by increasing the Fly machine memory to `1024MB`, the completed content-system path is now deployed on Fly too, the mock/gallery flow now includes a working preview app namespace (`/preview/*`), Combined Science onboarding now stays limited to supported live variation choices only, and topic quizzes now give right/wrong feedback with explanations while feeding totals into Progress, XP, and Power Grid voltage. Priority A–D remain closed; Priority **E** deferred only. |
+| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 Phases 1–6 on **`main`**. Supportive `verify:live-onboarding` cold-start hardening on branch `cursor/fix-live-onboarding-cold-start`. Brand logo placement gallery at **`/brand-mockup`** (local, uncommitted). Priority A–D closed; Priority **E** deferred only. |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Mark 4 UI lane | **Phases 1–6 on `main`** — see [`docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](./docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) and [`docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`](./docs/ideas/MARK-4-ROUTE-UX-AUDIT.md). |
 | Usability hardening | **Complete — 30 June 2026** — see [`docs/MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
-| What is next? | Continue Mark 4 Phase 7 public marketing refinement, and route future board/content expansion through the completed inventory + specification-engine path. Priority **E** deferred only. |
+| What is next? | Commit `/brand-mockup` when operator asks; merge cold-start branch; continue Mark 4 Phase 7 public marketing refinement; route future board/content expansion through the inventory + specification-engine path. Priority **E** deferred only. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) in the recorded Fly production closeout.
 
@@ -29,6 +29,23 @@
 **Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. Canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
 
 **Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception.
+
+---
+
+## Website Redesign Direction (July 2026)
+
+Premium dark-mode GCSE revision platform — implemented in code, not mockups only.
+
+| Inspiration | Contribution |
+|-------------|--------------|
+| **Stripe** | Premium homepage gradients, trust stats, purple CTAs |
+| **Linear** | Desktop sidebar navigation, command-centre dashboard |
+| **Seneca** | Clean quiz card, progress bar, instant right/wrong feedback |
+| **Duolingo** | Power Grid levels, streak stats, motivational progress rings |
+| **BBC Bitesize** | Clear topic hierarchy and educational structure |
+| **Save My Exams** | Subject → exam board → topic navigation |
+
+**Live code:** `src/components/premium/` · tokens in `premium-ui.ts` · full guide in [`docs/design/UI-UX-MASTERPLAN.md`](docs/design/UI-UX-MASTERPLAN.md).
 
 ---
 
@@ -633,6 +650,44 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-06 Accessibility icon swap
+
+- Replaced ♿ with 🎛️ on homepage platform features and benefits cards — study-settings metaphor without wheelchair disability symbol. Files: `premium-ui.ts`, `premium-homepage-marketing.tsx`.
+
+### 2026-07-06 `11_UI_UX_MASTER_GUIDE.md` + Phase 7 homepage
+
+- Created **`docs/design/11_UI_UX_MASTER_GUIDE.md`** — canonical UI/UX reference (tokens, IA, routes, Power Grid rules, Phase 7 checklist).
+- **`UI-UX-MASTERPLAN.md`** now points to the new guide.
+- Homepage: `PremiumHomepageMarketing` (benefits, how-it-works, FAQ); hero CTA **Start Learning Free**; Power Grid stats from `xpTotal`.
+- Dashboard: dark-mode styling for recent-session cards (removed stone/teal drift).
+- Verification: `npm run lint`, `npm run type-check`, `npm run test`.
+
+### 2026-07-06 Power Grid six-rank XP presentation (presentation layer only)
+
+- Added `src/lib/power-grid/rank-presentation.ts` — maps existing `xpTotal` to six milestone ranks (💡 Switch On → 👑 Switch Legend) with internal Power Levels 1–10, progress bars, next reward, and next rank preview.
+- New `PowerGridRankPanel` component; updated `/progress`, dashboard Power Grid card, sidebar footer, homepage Power Grid section, and progress-at-a-glance panel.
+- **No backend changes** — XP calculations, APIs, schema, 9-level service logic, tests, and save data preserved. Legacy evidence level (`overallLevel`) shown as secondary detail only.
+- Tests: `tests/power-grid-rank-presentation.test.mjs`. Verification: lint + type-check + test (`198/198` passed).
+
+### 2026-07-06 Premium website redesign (Stripe / Linear / Seneca direction)
+
+- Shipped premium **dark-mode** UI across live homepage, dashboard, student shell, and quiz flow.
+- New component library: `src/components/premium/` — hero, subject cards, dashboard cards, Power Grid, quiz card, exam board selector, accessibility toolbar.
+- Homepage: “Switch On Your GCSE Revision” hero, GCSE subject cards, Power Grid section, platform features (Exam Mode, Timed Practice, Saved Progress, Accessibility).
+- Dashboard: Linear-style sidebar on desktop, premium cards for Today’s Goal, Continue Revision, Power Level, Weak Topics, Timed Practice.
+- Quiz flow: `PremiumQuizCard` with progress bar, timer, save indicator, accessibility toolbar on `/subjects`.
+- Tokens: `premium-ui.ts` + `mark32Ui` re-export; `globals.css` dark background `#0B0F17`.
+- Docs: `docs/design/UI-UX-MASTERPLAN.md` → **Website Redesign Direction** with inspiration mapping.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`194/194` passed).
+
+### 2026-07-06 Brand logo mockup gallery
+
+- Added `/brand-mockup` with `BrandLogoMockup` — placement panels for hero, marketing header, sign-in, signed-in shell, footer, size scale, and contrast surfaces using live `SwitchBrandLogo` (`public/brand/the-switch-logo.png`).
+- Linked the gallery from `/mock-idea-preview` and Mockup 5 in `mock-idea-showcase.tsx`; streamlined mockup hero now uses `SwitchBrandLogo`.
+- Synced `docs/design/UI-UX-MASTERPLAN.md`, `HANDOFF.md`, `AGENTS.md`, and `docs/MOCK-IDEA-BUILD-REFERENCE.md`.
+- Local dev note: stale `.next` can cause `ENOENT` for `brand-mockup/page.js` — stop dev, `rm -rf .next`, restart `npm run dev`.
+- Verification: `npm run type-check`; local `/brand-mockup` → `200`. **Uncommitted** on working tree at doc-sync time.
 
 ### 2026-07-06 Supportive live onboarding cold-start hardening
 

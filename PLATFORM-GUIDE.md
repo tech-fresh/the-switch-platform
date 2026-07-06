@@ -32,7 +32,11 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 | Usability hardening | **Complete — 30 June 2026** — see [`MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
 | Priority C | **Complete — closed.** Do not reopen unless operator requests exception. |
 
-**Completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`).
+**Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) for the recorded Fly production closeout on 26 June 2026.
+
+**Current branch-readiness rule:** treat the `100%` figure in this guide as historical end-completion evidence, not as an automatic claim about the present working tree. The live branch percentage must come from `HANDOFF.md` and the latest verification run.
+
+**Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. Canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
 
 ### MVP at a glance
 

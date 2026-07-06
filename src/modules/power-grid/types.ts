@@ -21,6 +21,11 @@ export interface PowerGridSubjectProgress {
   completionScore: number;
   activeSessionCount: number;
   completedSessionCount: number;
+  quizAttemptCount: number;
+  quizCorrectCount: number;
+  quizAccuracyPercentage: number;
+  xpEarned: number;
+  voltagePoints: number;
   reviewItemCount: number;
   accessSnapshotCount: number;
   recommendedFocus: string;
@@ -38,6 +43,11 @@ export interface PowerGridSummary {
   examReadinessScore: number;
   completedSessionCount: number;
   activeSessionCount: number;
+  quizAttemptCount: number;
+  quizCorrectCount: number;
+  quizAccuracyPercentage: number;
+  xpTotal: number;
+  voltagePointsTotal: number;
   trackedSubjectCount: number;
   subjectsNeedingAttentionCount: number;
   accessSnapshotCoverage: number;

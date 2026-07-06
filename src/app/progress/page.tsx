@@ -41,7 +41,12 @@ function ProgressMainContent({
         description="Power Grid level, weekly planner, and subject readiness — all from your saved sessions."
       />
 
-      <Mark32PowerGridJourney currentLevel={summary.overallLevel} readinessScore={summary.examReadinessScore} />
+      <Mark32PowerGridJourney
+        currentLevel={summary.overallLevel}
+        readinessScore={summary.examReadinessScore}
+        xpTotal={summary.xpTotal}
+        voltagePointsTotal={summary.voltagePointsTotal}
+      />
 
       <Mark32ProgressAtAGlance summary={summary} />
 
@@ -51,7 +56,7 @@ function ProgressMainContent({
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className={mark32Ui.eyebrow}>Subject progress</p>
-            <h2 className="mt-2 text-xl font-semibold tracking-tight text-stone-950">Your active subjects</h2>
+            <h2 className="mt-2 text-xl font-bold tracking-tight text-white">Your active subjects</h2>
           </div>
           <p className="text-sm text-stone-600">
             {summary.trackedSubjectCount} tracked · {summary.subjectsNeedingAttentionCount} need extra focus
@@ -127,7 +132,7 @@ export default async function ProgressPage() {
     }
 
     return (
-      <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips}>
+      <StudentAppShell displayName={shell.displayName} supportChips={shell.supportChips} xpTotal={summary.xpTotal}>
         <div className="flex flex-col gap-8">
           <ProgressMainContent summary={summary} planner={planner} />
         </div>

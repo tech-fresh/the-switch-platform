@@ -132,7 +132,8 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - MVP usability plan → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`** · **`docs/LOCAL-LAUNCH-REHEARSAL.md`** · **`docs/MVP-OPERATOR-TRUTH.md`**
 - Active redesign track → Areas **1–9 complete** (30 June 2026); operator-requested Mark 4 planning, route audit, Microsoft OIDC runtime restoration, and the current implementation passes on `/dashboard`, `/subjects`, `/`, and `/login` are now documented in `docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md` and `docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`
 - Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
-- **UI masterplan** → **`docs/design/UI-UX-MASTERPLAN.md`**
+- Brand logo mockup → `/brand-mockup` · entry from `/mock-idea-preview`
+- **UI master guide** → **`docs/design/11_UI_UX_MASTER_GUIDE.md`** (authoritative) · **`docs/design/UI-UX-MASTERPLAN.md`** (pointer)
 - **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
 - External prompt pack → **`docs/CHATGPT-PROMPTS-README.md`**
 
@@ -151,10 +152,10 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Year 1 MVP live.** Strict A-4 closeout remains valid on Fly production. Supportive `verify:live-onboarding` cold-start hardening is on branch `cursor/fix-live-onboarding-cold-start` (HTTP + Fly warm-up, longer fetch retries). Priority **E closed for year 1**. |
+| What are we doing now? | **UI/UX master guide + premium redesign committed** — `11_UI_UX_MASTER_GUIDE.md`, six-rank Power Grid presentation, Phase 7 homepage, accessibility icon 🎛️. Cold-start branch ready to merge. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
-| Lane B — website | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
-| What is next? | Merge `cursor/fix-live-onboarding-cold-start`, rerun supportive `verify:live-onboarding` from the project root, then continue Mark 4 Phase 7 public marketing refinement. |
+| Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** now in live code paths. |
+| What is next? | Deploy premium redesign to Fly; commit brand mockup when operator asks; merge cold-start branch; rerun supportive `verify:live-onboarding`. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) on Fly production closeout evidence dated 26 June 2026.
 

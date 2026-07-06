@@ -33,8 +33,9 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    ".next-rehearsal/types/**/*.ts",
     "next-env.d.ts",
-    ".next-rehearsal/types/**/*.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

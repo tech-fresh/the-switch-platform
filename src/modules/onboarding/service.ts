@@ -9,6 +9,12 @@ import {
   listOnboardingExamBoardOptions,
   resolveExamBoardForProfile,
 } from "./exam-availability";
+import {
+  getCombinedScienceVariationLabel,
+  hasCombinedScienceSelection,
+  listCombinedScienceVariationOptions,
+  resolveCombinedScienceVariationForProfile,
+} from "./combined-science-variation-options";
 import { qualificationPathToCatalogType } from "./qualification-utils";
 import { getOnboardingProfileByUserId, saveOnboardingProfile } from "./repository";
 import type {
@@ -333,6 +339,9 @@ export function getOnboardingOptions(): OnboardingOptions {
     deferredQualificationPaths: DEFERRED_ONBOARDING_QUALIFICATION_PATHS,
     mvpSchoolNations: MVP_ONBOARDING_SCHOOL_NATIONS,
     subjects: mapCatalogSubjectsToOnboardingOptions(),
+    combinedScienceVariations: listCombinedScienceVariationOptions("AQA").concat(
+      listCombinedScienceVariationOptions("Edexcel"),
+    ),
     schoolSources: SCHOOL_SOURCES,
     steps: ONBOARDING_STEPS,
     dashboardCreationStepLabels: DASHBOARD_CREATION_STEP_LABELS,
@@ -446,6 +455,17 @@ function normalizeProfileUpdate(
       update.selectedSubjectIds ?? base.selectedSubjectIds,
       (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
     ),
+    combinedScienceVariation: resolveCombinedScienceVariationForProfile({
+      examBoard: resolveExamBoardForProfile({
+        qualificationPath: (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
+        examBoard: update.examBoard ?? base.examBoard,
+      }),
+      combinedScienceVariation: update.combinedScienceVariation ?? base.combinedScienceVariation,
+      selectedSubjectIds: filterOnboardingSubjectIds(
+        update.selectedSubjectIds ?? base.selectedSubjectIds,
+        (update.qualificationPath ?? base.qualificationPath) as QualificationPath,
+      ),
+    }),
     updatedAt: now,
   };
 
@@ -491,6 +511,22 @@ export function validateOnboardingProfile(profile: LearnerOnboardingProfile): st
 
   if (profile.selectedSubjectIds.some((subjectId) => !allowedIds.has(subjectId))) {
     return "Select subjects that match your qualification route.";
+  }
+
+  if (hasCombinedScienceSelection(profile.selectedSubjectIds)) {
+    const allowedVariations = listCombinedScienceVariationOptions(profile.examBoard);
+
+    if (allowedVariations.length === 0) {
+      return "Combined Science is only available on supported live board variants.";
+    }
+
+    if (!profile.combinedScienceVariation) {
+      return "Choose the Combined Science variation for your board.";
+    }
+
+    if (!allowedVariations.some((option) => option.id === profile.combinedScienceVariation)) {
+      return "Choose a Combined Science variation that matches your board.";
+    }
   }
 
   if (!profile.ageOrConsentConfirmed) {
@@ -558,7 +594,7 @@ export function buildDashboardSetupSummary(profile: LearnerOnboardingProfile | n
   return {
     qualificationLabel: qualification,
     subjectFilterIds: profile.selectedSubjectIds,
-    setupSummary: `${profile.yearGroup} • ${qualification} • ${profile.examBoard} • ${profile.selectedSubjectIds.length} subject${
+    setupSummary: `${profile.yearGroup} • ${qualification} • ${profile.examBoard}${profile.combinedScienceVariation ? ` • ${getCombinedScienceVariationLabel(profile.combinedScienceVariation)}` : ""} • ${profile.selectedSubjectIds.length} subject${
       profile.selectedSubjectIds.length === 1 ? "" : "s"
     } selected`,
   };

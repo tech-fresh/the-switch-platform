@@ -31,6 +31,12 @@ export default async function MockIdeaPreviewPage() {
           </div>
           <div className="flex shrink-0 flex-wrap gap-2">
             <Link
+              href="/brand-mockup"
+              className="border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-950 hover:bg-white"
+            >
+              Brand logo mockup
+            </Link>
+            <Link
               href="/streamlined-mockup"
               className="border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-950 hover:bg-white"
             >

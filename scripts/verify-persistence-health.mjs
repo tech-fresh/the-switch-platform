@@ -9,6 +9,7 @@ const { getPersistenceRuntimeConfig } = await import("../src/lib/persistence/run
 
 const config = getPersistenceRuntimeConfig();
 const liveBaseUrl = process.env.SWITCH_LIVE_BASE_URL?.trim();
+const intendedLiveDataDirectory = process.env.SWITCH_DATA_DIRECTORY?.trim() ?? "";
 
 console.log("Persistence health check:");
 console.log(`- Driver: ${config.driver}`);
@@ -17,7 +18,7 @@ console.log(`- Data directory: ${config.dataDirectory}`);
 console.log(`- Ephemeral storage: ${config.isEphemeralStorage}`);
 
 assert(config.driver === "sqlite", "SWITCH_PERSISTENCE_DRIVER must be sqlite for live launch.");
-assert(config.dataDirectory, "SWITCH_DATA_DIRECTORY is required.");
+assert(intendedLiveDataDirectory, "SWITCH_DATA_DIRECTORY is required.");
 assert(!config.isEphemeralStorage, "Persistence path resolves to ephemeral storage — use a mounted volume or durable filesystem path.");
 
 try {
@@ -66,11 +67,12 @@ if (liveBaseUrl) {
       "Deployed persistence still reports ephemeral storage.",
     );
     assert(
-      persistence.dataDirectory === config.dataDirectory,
-      `Deployed data directory ${persistence.dataDirectory} does not match ${config.dataDirectory}.`,
+      persistence.dataDirectory === intendedLiveDataDirectory,
+      `Deployed data directory ${persistence.dataDirectory} does not match intended live path ${intendedLiveDataDirectory}.`,
     );
 
     console.log(`- Deployed runtime API: healthy at ${liveBaseUrl}`);
+    console.log(`- Intended live data directory: ${intendedLiveDataDirectory}`);
   }
 }
 

@@ -2,14 +2,18 @@ import Link from "next/link";
 
 import { SubjectToneChip, subjectToneBlockClasses } from "@/components/subject-tone-chip";
 import { mark32Ui } from "@/components/streamlined/mark32-ui";
+import { prefixPreviewHref } from "@/lib/preview/links";
 import type { WeeklyPlannerSummary } from "@/modules/weekly-planner/types";
 
 interface WeeklyPlannerGridProps {
   planner: WeeklyPlannerSummary;
   compact?: boolean;
+  hrefPrefix?: string;
 }
 
-export function WeeklyPlannerGrid({ planner, compact = false }: WeeklyPlannerGridProps) {
+export function WeeklyPlannerGrid({ planner, compact = false, hrefPrefix = "" }: WeeklyPlannerGridProps) {
+  const withPrefix = (href: string) => prefixPreviewHref(href, hrefPrefix);
+
   return (
     <section className={mark32Ui.card}>
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -42,7 +46,7 @@ export function WeeklyPlannerGrid({ planner, compact = false }: WeeklyPlannerGri
                 day.items.map((item) => (
                   <Link
                     key={item.itemId}
-                    href={item.href}
+                    href={withPrefix(item.href)}
                     className={`block rounded-lg border p-2 transition hover:shadow-sm ${subjectToneBlockClasses(item.tone)}`}
                   >
                     <SubjectToneChip label={item.subject} tone={item.tone} />

@@ -4,6 +4,7 @@ import type { ExamPaper } from "@/modules/exam-engine/types";
 import type { PowerGridSubjectProgress } from "@/modules/power-grid/types";
 import type { TimedAssessmentDefinition } from "@/modules/timed-assessment/types";
 
+import { getCombinedScienceVariationLabel } from "./combined-science-variation-options";
 import { resolveExamBoardForProfile } from "./exam-board-options";
 import { qualificationPathToCatalogType } from "./qualification-utils";
 import type { LearnerOnboardingProfile, StudyGoal } from "./types";
@@ -100,7 +101,7 @@ export function buildOnboardingPersonalizationContext(
     examBoard,
     studyGoalLabel: resolveStudyGoalLabel(profile.studyGoal),
     studyGoalMessage: resolveStudyGoalDashboardMessage(profile.studyGoal),
-    setupSummary: `${profile.yearGroup} • ${qualificationLabel} • ${examBoard} • ${profile.selectedSubjectIds.length} subject${
+    setupSummary: `${profile.yearGroup} • ${qualificationLabel} • ${examBoard}${profile.combinedScienceVariation ? ` • ${getCombinedScienceVariationLabel(profile.combinedScienceVariation)}` : ""} • ${profile.selectedSubjectIds.length} subject${
       profile.selectedSubjectIds.length === 1 ? "" : "s"
     } selected`,
     primarySubjectId,

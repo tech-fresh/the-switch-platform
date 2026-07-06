@@ -1,22 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PremiumExamBoardSelector } from "@/components/premium/premium-exam-board-selector";
+import { PremiumQuizCard } from "@/components/premium/premium-quiz-card";
+import { premiumUi } from "@/components/premium/premium-ui";
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { Mark32SubjectCatalogGrid } from "@/components/streamlined/mark32-subject-catalog-grid";
-import type { QuizQuestion } from "@/modules/quiz/types";
+import type { QuizQuestion, SubmitQuizAnswerResult } from "@/modules/quiz/types";
 import type { RevisionContent } from "@/modules/revision/types";
 import type { Subject } from "@/modules/subjects/types";
 import type { Topic } from "@/modules/topics/types";
+import { prefixPreviewHref } from "@/lib/preview/links";
 
 interface SubjectExperienceProps {
   subjects: Subject[];
   topicsBySubject: Record<string, Topic[]>;
   revisionByTopic: Record<string, RevisionContent>;
   quizByTopic: Record<string, QuizQuestion>;
+  quizAttemptsByTopic: Record<string, SubmitQuizAnswerResult | null>;
   initialSubjectId?: string;
   initialTopicId?: string;
   onboardingSubjectIds?: string[];
+  hrefPrefix?: string;
 }
 
 function getRevisionSectionBody(
@@ -31,9 +37,11 @@ export function SubjectExperience({
   topicsBySubject,
   revisionByTopic,
   quizByTopic,
+  quizAttemptsByTopic,
   initialSubjectId,
   initialTopicId,
   onboardingSubjectIds = [],
+  hrefPrefix = "",
 }: SubjectExperienceProps) {
   if (subjects.length === 0) {
     return (
@@ -72,6 +80,11 @@ export function SubjectExperience({
     topics.find((topic) => topic.topicId === selectedTopicId) ?? topics[0];
   const revision = revisionByTopic[selectedTopic.topicId];
   const quiz = quizByTopic[selectedTopic.topicId];
+  const [selectedQuizOptionByTopic, setSelectedQuizOptionByTopic] = useState<Record<string, string>>({});
+  const [quizFeedbackByTopic, setQuizFeedbackByTopic] = useState<Record<string, SubmitQuizAnswerResult | null>>(
+    quizAttemptsByTopic,
+  );
+  const [quizSubmitState, setQuizSubmitState] = useState<"idle" | "saving" | "error">("idle");
   const learnSections = getRevisionSectionBody(revision, [
     "Explain Simply",
     "Standard Explanation",
@@ -80,6 +93,53 @@ export function SubjectExperience({
   const workedExampleSections = getRevisionSectionBody(revision, ["Worked Examples", "Common Mistakes"]);
   const practiceSections = getRevisionSectionBody(revision, ["Practice Questions", "Timed Assessment"]);
   const examSections = getRevisionSectionBody(revision, ["Past Paper Questions", "Mark Scheme", "Exam Technique"]);
+  const withPrefix = (href: string) => prefixPreviewHref(href, hrefPrefix);
+  const [selectedBoard, setSelectedBoard] = useState<string>(selectedSubject.examBoards[0] ?? "");
+  const selectedQuizOptionId =
+    selectedQuizOptionByTopic[selectedTopic.topicId] ?? quizFeedbackByTopic[selectedTopic.topicId]?.selectedOptionId ?? "";
+  const quizFeedback = quizFeedbackByTopic[selectedTopic.topicId];
+
+  useEffect(() => {
+    setSelectedBoard(selectedSubject.examBoards[0] ?? "");
+  }, [selectedSubject.subjectId, selectedSubject.examBoards]);
+
+  useEffect(() => {
+    setQuizFeedbackByTopic(quizAttemptsByTopic);
+  }, [quizAttemptsByTopic]);
+
+  async function handleQuizSubmit() {
+    if (!selectedQuizOptionId) {
+      return;
+    }
+
+    setQuizSubmitState("saving");
+
+    try {
+      const response = await fetch(`/api/quiz/attempts/${encodeURIComponent(selectedTopic.topicId)}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          selectedOptionId: selectedQuizOptionId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Quiz answer submission failed.");
+      }
+
+      const payload = (await response.json()) as { result: SubmitQuizAnswerResult };
+
+      setQuizFeedbackByTopic((current) => ({
+        ...current,
+        [selectedTopic.topicId]: payload.result,
+      }));
+      setQuizSubmitState("idle");
+    } catch {
+      setQuizSubmitState("error");
+    }
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -111,7 +171,7 @@ export function SubjectExperience({
                   Open this topic
                 </button>
                 <Link
-                  href="/assessments"
+                  href={withPrefix("/assessments")}
                   className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
                 >
                   Start timed practice
@@ -166,7 +226,7 @@ export function SubjectExperience({
               Next topic: {selectedSubject.nextTopicToRevise}
             </p>
             <Link
-              href="/progress"
+              href={withPrefix("/progress")}
               className="mt-4 inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
             >
               Open progress
@@ -190,13 +250,13 @@ export function SubjectExperience({
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Link
-                href="/assessments"
+                href={withPrefix("/assessments")}
                 className="inline-flex items-center justify-center rounded-2xl bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-900"
               >
                 Practice
               </Link>
               <Link
-                href="/exams"
+                href={withPrefix("/exams")}
                 className="inline-flex items-center justify-center rounded-2xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-900 hover:border-sky-300 hover:bg-sky-50"
               >
                 Mock exam
@@ -446,43 +506,44 @@ export function SubjectExperience({
           </section>
 
           <aside className="space-y-6">
-            <section className="space-y-3 border border-stone-200 bg-white p-4">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                Quick check
-              </h2>
-              <p className="text-sm leading-6 text-stone-700">{quiz.prompt}</p>
-              <div className="space-y-2">
-                {quiz.options.map((option) => (
-                  <div key={option.optionId} className="border border-stone-200 bg-stone-50 p-3">
-                    <p className="text-sm text-stone-700">
-                      <span className="font-semibold text-stone-950">{option.label}</span> {option.text}
-                    </p>
-                  </div>
-                ))}
-              </div>
+            <PremiumQuizCard
+              quiz={quiz}
+              topicId={selectedTopic.topicId}
+              selectedOptionId={selectedQuizOptionId}
+              feedback={quizFeedback}
+              submitState={quizSubmitState}
+              onSelectOption={(optionId) =>
+                setSelectedQuizOptionByTopic((current) => ({
+                  ...current,
+                  [selectedTopic.topicId]: optionId,
+                }))
+              }
+              onSubmit={handleQuizSubmit}
+            />
+
+            <section className={`${premiumUi.cardMuted} space-y-3`}>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9CA3AF]">Exam board</h2>
+              <PremiumExamBoardSelector
+                boards={selectedSubject.examBoards}
+                selectedBoard={selectedBoard}
+                onSelect={setSelectedBoard}
+              />
             </section>
 
-            <section className="space-y-3 border border-stone-200 bg-white p-4">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                Visual support
-              </h2>
-              <p className="text-sm leading-6 text-stone-700">
-                Generated study visuals follow the same review and fact-check workflow as other
-                student content before they become visible.
+            <section className={`${premiumUi.cardMuted} space-y-3`}>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9CA3AF]">Visual support</h2>
+              <p className={premiumUi.body}>
+                Generated study visuals follow the same review and fact-check workflow as other student content.
               </p>
-              <div className="border border-stone-200 bg-stone-50 p-3">
-                <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Planned visual</p>
-                <p className="mt-2 text-sm leading-6 text-stone-700">
-                  {selectedTopic.visualSupport.altText}
-                </p>
+              <div className="rounded-xl border border-white/10 bg-[#0B0F17] p-3">
+                <p className={premiumUi.eyebrow}>Planned visual</p>
+                <p className={`mt-2 ${premiumUi.body}`}>{selectedTopic.visualSupport.altText}</p>
               </div>
             </section>
 
-            <section className="space-y-3 border border-stone-200 bg-white p-4">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
-                Next after this topic
-              </h2>
-              <ul className="space-y-2 text-sm leading-6 text-stone-600">
+            <section className={`${premiumUi.cardMuted} space-y-3`}>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9CA3AF]">Next after this topic</h2>
+              <ul className={`space-y-2 ${premiumUi.body}`}>
                 <li>Return to this topic if you need another pass through the explanation.</li>
                 <li>Use timed practice to check how well the idea is sticking.</li>
                 <li>Move into exam mode when you are ready to answer under pressure.</li>

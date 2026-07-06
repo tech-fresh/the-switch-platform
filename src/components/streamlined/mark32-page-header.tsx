@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { mark32Ui } from "@/components/streamlined/mark32-ui";
+import { premiumUi } from "@/components/premium/premium-ui";
 
 interface Mark32StatItem {
   label: string;
@@ -19,29 +20,27 @@ interface Mark32PageHeaderProps {
 
 function getEyebrowClass(tone: Mark32PageHeaderProps["eyebrowTone"]): string {
   switch (tone) {
-    case "teal":
-      return "text-teal-700";
     case "sky":
-      return "text-sky-700";
+      return "text-[#00BFFF]";
     case "emerald":
-      return "text-emerald-700";
+      return "text-[#22C55E]";
     case "amber":
-      return "text-amber-700";
+      return "text-[#F59E0B]";
     case "rose":
-      return "text-rose-700";
+      return "text-[#EF4444]";
     case "violet":
-      return "text-teal-700";
+    case "teal":
     default:
-      return "text-teal-700";
+      return "text-[#6C4EFF]";
   }
 }
 
 export function Mark32StatCard({ label, value, detail }: Mark32StatItem) {
   return (
     <div className={mark32Ui.statCard}>
-      <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{label}</p>
-      <p className="mt-2 text-lg font-semibold text-stone-950">{value}</p>
-      {detail ? <p className="mt-1 text-sm text-stone-600">{detail}</p> : null}
+      <p className={premiumUi.eyebrow}>{label}</p>
+      <p className="mt-2 text-lg font-bold text-white">{value}</p>
+      {detail ? <p className={`mt-1 ${premiumUi.body}`}>{detail}</p> : null}
     </div>
   );
 }
@@ -61,10 +60,8 @@ export function Mark32PageHeader({
           {eyebrow}
         </p>
         <div className="space-y-3">
-          <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">{title}</h1>
-          {description ? (
-            <p className="max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">{description}</p>
-          ) : null}
+          <h1 className={`max-w-3xl ${premiumUi.heading} sm:text-4xl`}>{title}</h1>
+          {description ? <p className={`max-w-2xl ${premiumUi.body}`}>{description}</p> : null}
         </div>
       </div>
 

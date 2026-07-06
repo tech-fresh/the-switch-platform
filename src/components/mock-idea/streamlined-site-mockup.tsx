@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { MarketingSiteFooter } from "@/components/mock-idea/marketing-site-footer";
 import { MarketingSiteHeader } from "@/components/mock-idea/marketing-site-header";
+import { SwitchBrandLogo } from "@/components/switch-brand-logo";
 import { PlannerPromptCard } from "@/components/mock-idea/planner-prompt-card";
 import { SendSupportRail } from "@/components/mock-idea/send-support-rail";
 import { StudentAppShell } from "@/components/mock-idea/student-app-shell";
@@ -45,10 +46,11 @@ export function StreamlinedSiteMockup({
         <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(13,148,136,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(245,158,11,0.14),_transparent_30%),linear-gradient(180deg,_#fffcf7,_#f5f5f4)]">
           <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-18 lg:grid lg:grid-cols-[minmax(0,1.15fr)_24rem] lg:gap-10">
             <div className="max-w-3xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-teal-700">
+              <SwitchBrandLogo href="/" size="hero" />
+              <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.28em] text-teal-700">
                 Streamlined concept
               </p>
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
+              <h1 className="mt-3 text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
                 A calmer study website with one clear next step at a time.
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-8 text-stone-600">

@@ -253,7 +253,8 @@
             "text": "6x + 10"
           }
         ],
-        "correctOptionId": "b"
+        "correctOptionId": "b",
+        "explanation": "Expand first: 5(x + 2) becomes 5x + 10. Then subtract x, leaving 4x + 10. This is the correct simplified expression."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -350,7 +351,8 @@
             "text": "15"
           }
         ],
-        "correctOptionId": "c"
+        "correctOptionId": "c",
+        "explanation": "To simplify a ratio, divide both parts by the same common factor. The correct option is the one that keeps the ratio equivalent after that division."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -447,7 +449,8 @@
             "text": "List every adjective in the extract"
           }
         ],
-        "correctOptionId": "b"
+        "correctOptionId": "b",
+        "explanation": "Strong language analysis picks a precise quotation and explains its effect clearly. The correct answer is the one that combines evidence choice with explanation, not just feature spotting."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -544,7 +547,8 @@
             "text": "The exact number of paragraphs only"
           }
         ],
-        "correctOptionId": "b"
+        "correctOptionId": "b",
+        "explanation": "Structure questions focus on how the writer organises ideas across the text. The correct answer identifies a structural move and explains its impact on the reader."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -641,7 +645,8 @@
             "text": "The test tube size"
           }
         ],
-        "correctOptionId": "b"
+        "correctOptionId": "b",
+        "explanation": "Chemical change questions are strongest when they focus on the actual substance change, not only what can be seen. The correct answer matches the chemistry taking place."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -738,7 +743,8 @@
             "text": "Voltage against colour"
           }
         ],
-        "correctOptionId": "a"
+        "correctOptionId": "a",
+        "explanation": "Energy stores and transfers must stay scientifically accurate. The correct answer is the one that traces where the energy starts and where it ends up."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -834,7 +840,8 @@
             "text": "y = 2x - 3"
           }
         ],
-        "correctOptionId": "b"
+        "correctOptionId": "b",
+        "explanation": "For linear graphs, use the relationship shown by the gradient and intercept. The correct answer matches the line's pattern rather than just one plotted point."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -931,7 +938,8 @@
             "text": "360°"
           }
         ],
-        "correctOptionId": "b"
+        "correctOptionId": "b",
+        "explanation": "Geometry questions often depend on using the named angle fact accurately. The correct answer is the one that applies the right rule in the right place."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -1028,7 +1036,8 @@
             "text": "Changing subject every sentence"
           }
         ],
-        "correctOptionId": "a"
+        "correctOptionId": "a",
+        "explanation": "Writing craft is about deliberate effect. The correct answer chooses the technique that most clearly shapes tone and reader response."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -1125,7 +1134,8 @@
             "text": "It stops using energy"
           }
         ],
-        "correctOptionId": "b"
+        "correctOptionId": "b",
+        "explanation": "Forces questions need precise scientific vocabulary. The correct answer is the one that describes the motion or force effect accurately, not approximately."
       },
       "metadata": {
         "publicationStatus": "published",
@@ -1221,7 +1231,8 @@
             "text": "The y-intercept"
           }
         ],
-        "correctOptionId": "b"
+        "correctOptionId": "b",
+        "explanation": "Transformations depend on matching the shape's movement or change exactly. The correct answer is the one that fits the full transformation, not just part of it."
       },
       "metadata": {
         "publicationStatus": "published",

@@ -659,6 +659,47 @@ test("launch status script reports code-complete and missing live inputs", async
   assert.match(stdout, /npm run verify:launch-complete/i);
 });
 
+test("launch status script treats a ready live environment as a historical closeout refresh state", async () => {
+  const scriptPath = path.join(process.cwd(), "scripts", "launch-status.mjs");
+  const { stdout } = await execFileAsync(process.execPath, [scriptPath], {
+    cwd: process.cwd(),
+    env: buildIsolatedScriptEnv({
+      SWITCH_AUTH_MODE: "oidc",
+      SWITCH_AUTH_SECRET: "test-secret",
+      SWITCH_AUTH_BASE_URL: "https://theswitchplatform.com",
+      SWITCH_OIDC_GOOGLE_CLIENT_ID: "client-id",
+      SWITCH_OIDC_GOOGLE_CLIENT_SECRET: "client-secret",
+      SWITCH_OIDC_GOOGLE_AUTHORIZATION_URL: "https://accounts.google.com/o/oauth2/v2/auth",
+      SWITCH_OIDC_GOOGLE_TOKEN_URL: "https://oauth2.googleapis.com/token",
+      SWITCH_OIDC_GOOGLE_USERINFO_URL: "https://openidconnect.googleapis.com/v1/userinfo",
+      SWITCH_OIDC_GOOGLE_SCOPES: "openid profile email",
+      SWITCH_PERSISTENCE_DRIVER: "sqlite",
+      SWITCH_DATA_DIRECTORY: "/data",
+      SWITCH_CMS_BACKEND_MODE: "live",
+      SWITCH_RECORD_GOVERNANCE: "1",
+      SWITCH_GOVERNANCE_ENVIRONMENT: "production-eu",
+      SWITCH_LAUNCH_APPROVER: "Release board",
+      SWITCH_LAUNCH_STOP_AUTHORITY: "Platform lead",
+      SWITCH_GOVERNANCE_PRIVACY_REVIEW_NOTE: "done",
+      SWITCH_GOVERNANCE_SAFEGUARDING_REVIEW_NOTE: "done",
+      SWITCH_GOVERNANCE_RELEASE_REVIEW_NOTE: "done",
+      SWITCH_GOVERNANCE_PRIVACY_SIGNOFF_NOTE: "done",
+      SWITCH_GOVERNANCE_SAFEGUARDING_SIGNOFF_NOTE: "done",
+      SWITCH_GOVERNANCE_ALERTS_SIGNOFF_NOTE: "done",
+      SWITCH_GOVERNANCE_INCIDENT_SIGNOFF_NOTE: "done",
+      SWITCH_GOVERNANCE_RELEASE_SIGNOFF_NOTE: "done",
+      SWITCH_LIVE_BASE_URL: "https://theswitchplatform.com",
+      SWITCH_LIVE_STUDENT_COOKIE: "student-cookie",
+      SWITCH_LIVE_ADMIN_COOKIE: "admin-cookie",
+    }),
+  });
+
+  assert.match(stdout, /Final Path Mark 1 launch status/i);
+  assert.match(stdout, /Historical closeout status:/i);
+  assert.match(stdout, /26 June 2026 Fly production closeout is already recorded/i);
+  assert.doesNotMatch(stdout, /Remaining live-only items:/i);
+});
+
 test("live readiness script fails when preview auth is still active", async () => {
   await withTempDir(async (tempDir) => {
     const scriptPath = path.join(process.cwd(), "scripts", "live-readiness.mjs");

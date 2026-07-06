@@ -6,6 +6,7 @@ import type { PowerGridLevel } from "@/modules/power-grid/types";
 interface Mark32MarketingSectionsProps {
   powerGridLevel?: PowerGridLevel;
   readinessScore?: number;
+  xpTotal?: number;
 }
 
 const FEATURE_ICONS = [
@@ -20,7 +21,7 @@ const KEY_FEATURES = [
   { title: "Timed assessments", detail: "Configurable duration, question navigation, and saved attempts.", href: "/assessments" },
   { title: "Full GCSE exams", detail: "Paper lobby, focus mode, countdown timer, and mark-scheme review.", href: "/exams" },
   { title: "Progress tracking", detail: "Subject readiness, trends, and weakest-topic signals.", href: "/progress" },
-  { title: "Power Grid", detail: "Nine-level journey that rewards consistent study.", href: "/progress" },
+  { title: "Power Grid", detail: "Six-rank XP journey with frequent Power Level rewards.", href: "/progress" },
   { title: "Accessibility first", detail: "Support settings persist across study routes.", href: "/accessibility" },
 ] as const;
 
@@ -36,6 +37,7 @@ const ACCESSIBILITY_FEATURES = [
 export function Mark32MarketingSections({
   powerGridLevel = "Voltage Rising",
   readinessScore = 0,
+  xpTotal = 0,
 }: Mark32MarketingSectionsProps) {
   return (
     <>
@@ -78,7 +80,7 @@ export function Mark32MarketingSections({
         </div>
       </section>
 
-      <Mark32PowerGridJourney currentLevel={powerGridLevel} readinessScore={readinessScore} compact />
+      <Mark32PowerGridJourney currentLevel={powerGridLevel} readinessScore={readinessScore} xpTotal={xpTotal} compact />
 
       <section className="rounded-3xl border border-teal-800 bg-gradient-to-br from-teal-900 to-teal-700 p-6 text-white shadow-sm sm:p-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-50/90">Mission</p>

@@ -15,7 +15,7 @@ Plain English: **Mock Idea · Study Atelier** is the saved design direction for 
 ## Quick start (operators and agents)
 
 1. Read `HANDOFF.md` and `docs/ideas/FINAL-PHASE-PLAN.md`.
-2. Open the live gallery: `/mock-idea-preview`.
+2. Open the live gallery: `/mock-idea-preview` (brand logo placements: `/brand-mockup`).
 3. Import tokens from `src/components/mock-idea/brand-tokens.ts` — do not hard-code colours elsewhere.
 4. Reuse existing shell components before inventing new layout patterns.
 5. Keep business logic in modules/API — UI components stay thin.
@@ -112,6 +112,8 @@ Use `SEND_COLOUR_CHIPS` array for chips, swatches, and footer links. Always incl
 | `PlannerPromptCard` | `mock-idea/planner-prompt-card.tsx` | Dashboard top — dismissible bento planner |
 | `SendSupportRail` | `mock-idea/send-support-rail.tsx` | Dashboard — access/SEND + onboarding chips |
 | `MockIdeaShowcase` | `mock-idea/mock-idea-showcase.tsx` | Gallery page sections only |
+| `BrandLogoMockup` | `mock-idea/brand-logo-mockup.tsx` | `/brand-mockup` placement gallery |
+| `SwitchBrandLogo` | `switch-brand-logo.tsx` | Official transparent logo — sizes `sm` / `md` / `lg` / `hero` |
 | `OnboardingShell` | `onboarding/onboarding-shell.tsx` | All `/onboarding` steps |
 | `DashboardHome` | `dashboard-home.tsx` | `/` and `/dashboard` — wires shells |
 
@@ -140,6 +142,9 @@ Re-export: `src/components/marketing-site-header.tsx` → `mock-idea/marketing-s
 
 /mock-idea-preview         mock-idea-preview/page.tsx
                              └ MockIdeaShowcase (visual reference gallery)
+
+/brand-mockup              brand-mockup/page.tsx
+                             └ BrandLogoMockup (SwitchBrandLogo placements)
 ```
 
 ---
@@ -346,6 +351,7 @@ npm run lint && npm run type-check && npm run test
 Manual checks:
 
 - [ ] `/mock-idea-preview` loads all four gallery sections
+- [ ] `/brand-mockup` loads all logo placement panels and links back to the gallery
 - [ ] `/dashboard` shows study rail, planner bento, SEND rail when signed in
 - [ ] `/` shows marketing header + dark footer + SEND swatches
 - [ ] `/onboarding` shows stone banner + step rail (desktop)
@@ -376,6 +382,8 @@ src/components/mock-idea/
   mock-idea-showcase.tsx
 
 src/app/mock-idea-preview/page.tsx
+src/app/brand-mockup/page.tsx
+src/components/switch-brand-logo.tsx
 src/components/marketing-site-header.tsx   (re-export)
 src/components/dashboard-home.tsx
 src/components/onboarding/onboarding-shell.tsx
@@ -401,6 +409,7 @@ src/modules/onboarding/service.ts
 
 | Date | Change |
 |------|--------|
+| 2026-07-06 | Added `/brand-mockup` brand logo placement gallery; linked from visual gallery |
 | 2026-06-24 | Created build reference; Study Atelier shipped with `/mock-idea-preview` |
 | 2026-06-24 | Onboarding-stays decision; onboarding→dashboard contract; linked `docs/ideas/` |
 | 2026-06-24 | Active plan: `docs/ideas/FINAL-PHASE-PLAN.md`; prior phases complete |

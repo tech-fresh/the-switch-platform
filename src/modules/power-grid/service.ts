@@ -1,4 +1,5 @@
-import { getMockExamPapers, getMockExamSession } from "@/modules/exam-engine/service";
+import { getMockExamSession } from "@/modules/exam-engine/service";
+import { listStudentVisibleExamPapers } from "@/modules/exam-inventory/service";
 import type { ExamPaper } from "@/modules/exam-engine/types";
 import { buildAcademicReinforcementOverview } from "@/modules/academic-coverage/reinforcement-service";
 import { getSavedProgressSessionInsights } from "@/modules/saved-progress/insights-service";
@@ -15,6 +16,8 @@ import {
   listStudentVisibleContentSubjects,
   listStudentVisibleContentTopicsForSubject,
 } from "@/modules/content/service";
+import { listQuizProgressByUser } from "@/modules/quiz/service";
+import type { QuizProgressRecord, QuizProgressRepository } from "@/modules/quiz/types";
 import type { MvpCatalogSubject, MvpCatalogTopic } from "@/modules/content/types";
 import type { PowerGridLevel, PowerGridSummary, PowerGridSubjectProgress, PowerGridTrend } from "./types";
 import type { LearnerOnboardingProfile } from "@/modules/onboarding/types";
@@ -48,12 +51,14 @@ interface TrackedSubject {
 export async function getMockPowerGridSummary(options?: {
   userId?: string;
   savedProgressRepository?: SavedProgressRepository;
+  quizProgressRepository?: QuizProgressRepository;
   onboardingProfile?: LearnerOnboardingProfile | null;
 }): Promise<PowerGridSummary> {
   const userId = options?.userId ?? "student-demo";
   const repository = options?.savedProgressRepository;
+  const quizRepository = options?.quizProgressRepository;
   const profile = options?.onboardingProfile ?? null;
-  const allPapers = getMockExamPapers();
+  const allPapers = listStudentVisibleExamPapers();
   const allAssessments = getMockTimedAssessments();
   const allContentSubjects = listStudentVisibleContentSubjects();
   const papers =
@@ -83,6 +88,7 @@ export async function getMockPowerGridSummary(options?: {
     ),
   );
   const records = await listSavedProgressByUser(userId, repository);
+  const quizRecords = await listQuizProgressByUser(userId, quizRepository);
   const savedProgressOverview = await getSavedProgressOverview({
     userId,
     savedProgressRepository: repository,
@@ -111,7 +117,13 @@ export async function getMockPowerGridSummary(options?: {
 
   const subjectProgress = trackedSubjects
     .map((trackedSubject) =>
-      buildSubjectProgress(trackedSubject, records, savedProgressOverview.sessions, reinforcementOverview),
+      buildSubjectProgress(
+        trackedSubject,
+        records,
+        quizRecords,
+        savedProgressOverview.sessions,
+        reinforcementOverview,
+      ),
     )
     .filter((subject): subject is PowerGridSubjectProgress => Boolean(subject));
 
@@ -121,6 +133,11 @@ export async function getMockPowerGridSummary(options?: {
   );
   const activeCount = records.filter((record) => record.status !== "submitted").length;
   const completedCount = records.filter((record) => record.status === "submitted").length;
+  const quizAttemptCount = quizRecords.reduce((total, record) => total + record.attemptsCount, 0);
+  const quizCorrectCount = quizRecords.reduce((total, record) => total + record.correctCount, 0);
+  const quizAccuracyPercentage = calculateCompletionScore(quizCorrectCount, quizAttemptCount);
+  const xpTotal = subjectProgress.reduce((total, subject) => total + subject.xpEarned, 0);
+  const voltagePointsTotal = subjectProgress.reduce((total, subject) => total + subject.voltagePoints, 0);
   const accessSnapshotCoverage = calculateCompletionScore(
     records.filter((record) => record.accessArrangementSnapshot).length,
     records.length,
@@ -168,6 +185,11 @@ export async function getMockPowerGridSummary(options?: {
     examReadinessScore: overallReadinessScore,
     completedSessionCount: completedCount,
     activeSessionCount: activeCount,
+    quizAttemptCount,
+    quizCorrectCount,
+    quizAccuracyPercentage,
+    xpTotal,
+    voltagePointsTotal,
     trackedSubjectCount: subjectProgress.length,
     subjectsNeedingAttentionCount: subjectProgress.filter((subject) => subject.readinessScore < 50).length,
     accessSnapshotCoverage,
@@ -231,12 +253,15 @@ function buildTrackedSubjects(
 function buildSubjectProgress(
   trackedSubject: TrackedSubject,
   records: SavedProgressRecord[],
+  quizRecords: QuizProgressRecord[],
   sessions: Awaited<ReturnType<typeof getSavedProgressOverview>>["sessions"],
   reinforcementOverview: ReturnType<typeof buildAcademicReinforcementOverview>,
 ): PowerGridSubjectProgress | null {
   const subjectRecords = records.filter((record) => belongsToTrackedSubject(record, trackedSubject));
+  const subjectTopicIds = new Set(trackedSubject.topics.map((topic) => topic.topicId));
+  const subjectQuizRecords = quizRecords.filter((record) => subjectTopicIds.has(record.topicId));
 
-  if (subjectRecords.length === 0) {
+  if (subjectRecords.length === 0 && subjectQuizRecords.length === 0) {
     return null;
   }
 
@@ -259,7 +284,7 @@ function buildSubjectProgress(
     assessmentRecords.map((record) => getSavedProgressSessionInsights(record).completionPercentage),
   );
   const completionScore = getAverageScore(
-    [examCompletion, assessmentCompletion].filter((score) => score > 0),
+    [examCompletion, assessmentCompletion, getQuizAccuracyPercentage(subjectQuizRecords)].filter((score) => score > 0),
   );
   const completedSessionCount = subjectRecords.filter((record) => record.status === "submitted").length;
   const activeSessionCount = subjectRecords.length - completedSessionCount;
@@ -274,13 +299,25 @@ function buildSubjectProgress(
   const accessCoverage = calculateCompletionScore(accessSnapshotCount, subjectRecords.length);
   const reviewStabilityScore = Math.max(0, 100 - Math.min(reviewItemCount * 15, 80));
   const activityDepthScore = Math.min(subjectRecords.length * 25, 100);
+  const quizAttemptCount = subjectQuizRecords.reduce((total, record) => total + record.attemptsCount, 0);
+  const quizCorrectCount = subjectQuizRecords.reduce((total, record) => total + record.correctCount, 0);
+  const quizAccuracyPercentage = calculateCompletionScore(quizCorrectCount, quizAttemptCount);
+  const quizCoverage = calculateCompletionScore(subjectQuizRecords.length, trackedSubject.topics.length);
   const readinessScore = Math.round(
-    completionScore * 0.55 +
-      completionCoverage * 0.2 +
-      accessCoverage * 0.1 +
-      reviewStabilityScore * 0.1 +
-      activityDepthScore * 0.05,
+    completionScore * 0.45 +
+      completionCoverage * 0.18 +
+      accessCoverage * 0.08 +
+      reviewStabilityScore * 0.09 +
+      activityDepthScore * 0.05 +
+      quizAccuracyPercentage * 0.1 +
+      quizCoverage * 0.05,
   );
+  const xpEarned =
+    completedSessionCount * 30 +
+    activeSessionCount * 10 +
+    quizCorrectCount * 12 +
+    Math.max(quizAttemptCount - quizCorrectCount, 0) * 4;
+  const voltagePoints = readinessScore + quizCorrectCount * 5 + completedSessionCount * 10;
   const subjectReinforcement = reinforcementOverview.subjectSignals.find(
     (signal) => normalizeLabel(signal.subject) === normalizeLabel(trackedSubject.subject),
   );
@@ -303,6 +340,11 @@ function buildSubjectProgress(
     completionScore,
     activeSessionCount,
     completedSessionCount,
+    quizAttemptCount,
+    quizCorrectCount,
+    quizAccuracyPercentage,
+    xpEarned,
+    voltagePoints,
     reviewItemCount,
     accessSnapshotCount,
     recommendedFocus,
@@ -317,6 +359,8 @@ function buildSubjectProgress(
       buildSubjectEvidence({
         activeSessionCount,
         completedSessionCount,
+        quizAttemptCount,
+        quizCorrectCount,
         reviewItemCount,
         accessSnapshotCount,
       }),
@@ -333,6 +377,13 @@ function getAverageScore(scores: number[]): number {
   }
 
   return Math.round(scores.reduce((total, score) => total + score, 0) / scores.length);
+}
+
+function getQuizAccuracyPercentage(records: QuizProgressRecord[]): number {
+  const attemptsCount = records.reduce((total, record) => total + record.attemptsCount, 0);
+  const correctCount = records.reduce((total, record) => total + record.correctCount, 0);
+
+  return calculateCompletionScore(correctCount, attemptsCount);
 }
 
 function getLevelFromScore(score: number): PowerGridLevel {
@@ -517,11 +568,17 @@ function getRecommendedFocus(trackedSubject: TrackedSubject): string {
 function buildSubjectEvidence(input: {
   activeSessionCount: number;
   completedSessionCount: number;
+  quizAttemptCount: number;
+  quizCorrectCount: number;
   reviewItemCount: number;
   accessSnapshotCount: number;
 }): string {
   if (input.reviewItemCount > 0) {
     return `${input.reviewItemCount} review item${input.reviewItemCount === 1 ? "" : "s"} still need attention across saved activity.`;
+  }
+
+  if (input.quizAttemptCount > 0) {
+    return `${input.quizCorrectCount}/${input.quizAttemptCount} quiz answers are now contributing to this subject's XP and voltage totals.`;
   }
 
   if (input.completedSessionCount > 0) {

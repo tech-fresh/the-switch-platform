@@ -15,7 +15,8 @@
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** (`0ee64b2`) |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Mark 4 Phases 1–6 on **`main`**. Supportive `verify:live-onboarding` cold-start hardening on branch `cursor/fix-live-onboarding-cold-start`. Brand logo placement gallery at **`/brand-mockup`** (local, uncommitted). Priority A–D closed; Priority **E** deferred only. |
+| What are we doing now? | **Connected learning architecture documented** in `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`. PR [#11](https://github.com/tech-fresh/the-switch-platform/pull/11) open for premium/UI branch merge. Priority A–D closed; Priority **E** deferred only. |
+| Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength (future), Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
 | Mark 4 UI lane | **Phases 1–6 on `main`** — see [`docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](./docs/ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) and [`docs/ideas/MARK-4-ROUTE-UX-AUDIT.md`](./docs/ideas/MARK-4-ROUTE-UX-AUDIT.md). |
@@ -650,6 +651,13 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-06 Connected learning architecture (Seneca-inspired principles — documentation only)
+
+- Added **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`** — eight Switch-native architecture principles for future implementation.
+- Principles: Connected Website (no dead ends), **Recall Strength** (future memory/mastery system), Power Grid as progression engine, Learning Loop standard, Dashboard simplification (four primary signals), Recommendations as decision brain, Saved Progress as continuity glue, Modular architecture reinforcement.
+- Synced across `HANDOFF.md`, `AGENTS.md`, `PLATFORM-GUIDE.md`, `11_UI_UX_MASTER_GUIDE.md`, `MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`, `MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`.
+- **No code changes** — existing Fly, OIDC, SQLite, onboarding, and module architecture preserved.
 
 ### 2026-07-06 Accessibility icon swap
 

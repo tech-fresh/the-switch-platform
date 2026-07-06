@@ -4,7 +4,8 @@
 > **Current plan record:** [`ideas/FINAL-PHASE-PLAN.md`](./ideas/FINAL-PHASE-PLAN.md) — current MVP closeout complete; Priority E is deferred scope only  
 > **Historical:** [`ideas/STREAMLINE-WEBSITE-PLAN.md`](./ideas/STREAMLINE-WEBSITE-PLAN.md) (phases 1–2 complete)  
 > **Use this file when building UI like the Mock Idea direction.**  
-> **Visual mockups:** [`SENECA-STYLE-ONBOARDING-MOCKUP.md`](./SENECA-STYLE-ONBOARDING-MOCKUP.md)  
+> **Connected learning architecture:** [`design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md)  
+> **UI master guide:** [`design/11_UI_UX_MASTER_GUIDE.md`](./design/11_UI_UX_MASTER_GUIDE.md)
 > **Live gallery:** https://theswitchplatform.com/mock-idea-preview  
 > **Shipped:** 2026-06-24 · commit `02ab881`
 
@@ -14,7 +15,8 @@ Plain English: **Mock Idea · Study Atelier** is the saved design direction for 
 
 ## Quick start (operators and agents)
 
-1. Read `HANDOFF.md` and `docs/ideas/FINAL-PHASE-PLAN.md`.
+1. Read `HANDOFF.md` and `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md` for journey rules.
+2. Read `docs/ideas/FINAL-PHASE-PLAN.md`.
 2. Open the live gallery: `/mock-idea-preview` (brand logo placements: `/brand-mockup`).
 3. Import tokens from `src/components/mock-idea/brand-tokens.ts` — do not hard-code colours elsewhere.
 4. Reuse existing shell components before inventing new layout patterns.

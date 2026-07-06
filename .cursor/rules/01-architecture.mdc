@@ -18,6 +18,7 @@ Flow: `src/app` route → thin component → `src/modules/*/service.ts` → cont
 - Keep Access Arrangements independent from other modules
 - All student progress must auto-save where applicable
 - Mobile-first UI and accessibility-first design
+- Follow connected learning architecture: `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md` (documentation only — one primary CTA per route, Power Grid centrality, Saved Progress glue, Recommendations as brain)
 
 # Build priority order
 

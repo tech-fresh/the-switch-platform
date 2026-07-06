@@ -18,6 +18,7 @@ Plain English: this guide defines how the product **looks, reads, and flows**. I
 | **Presentation before architecture** | Prefer UI-layer changes over service/schema changes |
 | **MVP routes preserved** | Onboarding, exams, assessments, saved progress, results, recommendations, accessibility, planner, support, account, admin |
 | **Mark 4 Phases 1–6** | Complete on `main`; **Phase 7** (public marketing) is active |
+| **Connected learning architecture** | [`09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — documentation only |
 
 **Code entry points**
 
@@ -42,6 +43,16 @@ Every screen should satisfy:
 4. **Premium but calm** — dark mode, generous spacing, restrained motion  
 5. **Mobile-first** — bottom dock on small screens; sidebar on desktop  
 6. **Accessibility-minded** — focus rings, contrast, semantic progress bars, keyboard paths  
+
+### Connected learning architecture (UI expression)
+
+These UI rules implement [`ARCHITECTURE-PRINCIPLES.md`](./09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md):
+
+- **No dead ends** — every signed-in route terminus has one primary CTA (Continue Learning, Resume, Practise Weak Topic, Start Exam, Return to Dashboard, etc.)
+- **Learning loop** — topic/quiz surfaces follow Learn → Question → Feedback → Progress → Next → Power Grid → Recommendation
+- **Dashboard simplification** — hero row prioritises Continue Learning, Weak Topic, Next Exam, Power Grid; below-fold sections are secondary
+- **Power Grid visibility** — rank + Power Level on sidebar, dashboard card, and `/progress`
+- **Thin pages** — no XP, recommendation, or progression calculations in components; read module/API data only
 
 ### Inspiration mapping
 
@@ -143,11 +154,12 @@ Supporting routes (shell when signed in): `/saved-progress`, `/results`, `/recom
 
 ### `/dashboard` — Mission Control
 
-**Above the fold (priority order)**
+**Dashboard simplification rule** — primary above-the-fold signals only:
 
-1. Mission Control intro (or onboarding personalization banner)  
-2. `Mark32HeroRow` — Continue revision · Next exam · Today’s goal · Power Grid  
-3. Daily quote + weakest topics  
+1. Continue Learning  
+2. Weak Topic  
+3. Next Exam Task  
+4. Power Grid Progress  
 
 **Below the fold (supporting only)**
 
@@ -294,6 +306,7 @@ Update `HANDOFF.md`, `AGENTS.md`, and README Ordered Build Record when behavior 
 
 | Document | Role |
 |----------|------|
+| [`ARCHITECTURE-PRINCIPLES.md`](./09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) | Connected learning architecture (documentation only) |
 | [`UI-UX-MASTERPLAN.md`](./UI-UX-MASTERPLAN.md) | Short pointer → this guide |
 | [`MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`](./MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md) | Full product vision |
 | [`../ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`](../ideas/MARK-4-UI-UX-IMPLEMENTATION-PLAN.md) | Phased execution plan |

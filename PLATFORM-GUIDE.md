@@ -148,6 +148,25 @@ src/app route → thin component → src/modules/*/service.ts → contracts/type
 - Use API layer between UI and services
 - Mobile-first UI · Accessibility-first design
 
+### Connected learning architecture
+
+Long-term product architecture (documentation only — **no implementation in this pass**):
+
+**Authoritative source:** [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md)
+
+| Principle | Rule |
+|-----------|------|
+| **Connected Website** | Every signed-in route ends with one primary CTA; no dead ends |
+| **Recall Strength** | Future Switch-branded memory/mastery system inside Power Grid + Recommendations (documented only) |
+| **Power Grid engine** | Central motivation — lessons, quizzes, exams, saved work, streaks feed progression |
+| **Learning Loop** | Learn → Question → Feedback → Progress → Next → Power Grid → Recommendation |
+| **Dashboard simplification** | Above fold: Continue Learning · Weak Topic · Next Exam · Power Grid only |
+| **Recommendations brain** | Future decision engine ranking navigation from onboarding, saved work, weak topics, Recall Strength, streaks, accessibility |
+| **Saved Progress glue** | Central continuity across Dashboard → Subjects → Practice → Exams → Results → Power Grid → Recommendations |
+| **Modular architecture** | Route → Page → Module → API → Persistence — never progression logic in pages |
+
+UI expression: [`docs/design/11_UI_UX_MASTER_GUIDE.md`](docs/design/11_UI_UX_MASTER_GUIDE.md).
+
 ### Repository map
 
 | Path | Purpose |
@@ -222,7 +241,9 @@ Active order unless explicitly overridden:
 
 ### Index
 
-- **UI masterplan:** `docs/design/UI-UX-MASTERPLAN.md` (Mark 3.2 streamlined light-mode)
+- **UI masterplan:** `docs/design/UI-UX-MASTERPLAN.md` (pointer)
+- **UI master guide:** `docs/design/11_UI_UX_MASTER_GUIDE.md` (authoritative UI)
+- **Connected learning architecture:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`
 - **Mark 3.2 build handoff:** `docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md` (product vision + live-repo mapping)
 - Primary design: `src/app/globals.css`
 - Tailwind: `tailwind.config.ts`
@@ -345,21 +366,26 @@ Owns exam mode rules and official exam timing. Access arrangements applied via A
 
 `src/modules/power-grid/`
 
-Owns progress calculations and Power Grid level mapping.
+Owns progress calculations and Power Grid level mapping. **Central progression engine** — all study activity should feed Power Grid signals (see Connected learning architecture).
 
-- Subject-level readiness summaries, overall progress from exam/assessment activity
+- Subject-level readiness summaries, overall progress from exam/assessment/quiz activity
+- XP and voltage totals; presentation ranks via `src/lib/power-grid/rank-presentation.ts` (UI layer)
 - Next-best-action routing: active saved work → review items → revision routes
+- Future: **Recall Strength** mastery signals integrate here (documented only)
 - Submitted work routes to Results, not back into live attempts
 
 ### Saved Progress Module
 
 `src/modules/saved-progress/`
 
+**Central continuity service** — connects Dashboard, Subjects, practice, timed assessments, exams, Results, Power Grid, and Recommendations.
+
 Owns save and resume state. Stores access arrangement snapshots with records.
 
 - Autosave for exam and timed assessment state
 - File-backed repository, normalization, safe resume pointers, status transitions
 - Framework-neutral overview contract for API delivery
+- Students must always resume where they left off — pages consume resume hrefs from module/API, not ad-hoc state
 - Owns persistence contracts, not UI
 
 ### Read Aloud Module
@@ -377,6 +403,7 @@ Owns browser SpeechSynthesis integration. Entitlement from access profile.
 Owns student-home aggregation. Does not calculate exam or progress scores itself.
 
 - Home metrics, route cards, session summaries, subject focus from Power Grid
+- **Dashboard simplification rule:** primary signals only — Continue Learning, Weak Topic, Next Exam Task, Power Grid Progress; all other sections secondary
 - Serves `/` and `/dashboard`
 
 ### Timed Assessment Module
@@ -435,10 +462,12 @@ Owns score summaries and post-session interpretation.
 
 `src/modules/recommendations/`
 
-Owns recommendation contracts and output boundaries.
+**Platform decision engine (brain)** — owns recommendation contracts and output boundaries. Should drive next-step navigation across routes, not duplicate ad-hoc CTAs in pages.
 
-- Cards from Power Grid and support profile signals
+- Cards from Power Grid, saved work, support profile, and onboarding context
+- Future ranking inputs: weakest topics, Recall Strength, exam proximity, revision streak, accessibility settings (see architecture principles)
 - Shared page-level view model for website and future clients
+- Learning loop terminus: after quiz/lesson feedback, recommendations supply the next href
 
 ### Accessibility Module
 

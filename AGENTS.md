@@ -10,7 +10,7 @@ Before doing ANY work in this repository:
 3. Read **`README.md`** sections only when the handoff points to them (build record, launch notes)
 4. Read **`PROJECT_RECOVERY.md`** and **`RESTORED_CHATS.md`** if folder or history context is unclear
 5. For module work, open the matching section in **`PLATFORM-GUIDE.md` → Module reference**
-6. For Mark 3.2 UI/product vision work, read **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** after **`UI-UX-MASTERPLAN.md`** — extend the live Fly stack; do not greenfield-replace with Supabase/Vercel unless the operator reopens architecture
+6. For Mark 3.2 UI/product vision work, read **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`** then **`docs/design/11_UI_UX_MASTER_GUIDE.md`** and **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** — extend the live Fly stack; do not greenfield-replace with Supabase/Vercel unless the operator reopens architecture
 
 Never switch between Cursor and Codex without updating **`HANDOFF.md`**, **`AGENTS.md`**, and pushing committed work first.
 
@@ -24,7 +24,8 @@ When the operator says to **complete** something, that means the full requested 
 
 ```text
 Read HANDOFF.md first.
-Then read docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md for Mark 3.2 vision (extend live repo — do not greenfield Supabase/Vercel).
+Then read docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md for connected learning architecture.
+Then read docs/design/11_UI_UX_MASTER_GUIDE.md and docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md (extend live repo — do not greenfield Supabase/Vercel).
 ```
 
 Then read **`PLATFORM-GUIDE.md`** before making changes.
@@ -57,8 +58,10 @@ Then read **`PLATFORM-GUIDE.md`** before making changes.
 | **`docs/ideas/`** | Plan index — prior plans historical |
 | **`src/modules/onboarding/README.md`** | Onboarding MVP scope |
 | **`docs/MOCK-IDEA-BUILD-REFERENCE.md`** | UI build-from reference |
+| **`docs/design/11_UI_UX_MASTER_GUIDE.md`** | Authoritative UI reference |
+| **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/`** | Connected learning architecture principles (documentation only) |
+| **`docs/design/UI-UX-MASTERPLAN.md`** | Pointer to UI master guide |
 | **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`** | Mark 3.2 full product vision + route mapping to live repo |
-| **`docs/design/UI-UX-MASTERPLAN.md`** | Live UI implementation constraints (Study Atelier) |
 
 **Dual-agent handoff:** `HANDOFF.md` → **Dual-agent document system** — never switch tools without updating it.
 
@@ -134,6 +137,7 @@ Module folders still contain short **`README.md`** stubs that link back to **`PL
 - Streamline mockup → `/streamlined-mockup` · entry from `/mock-idea-preview`
 - Brand logo mockup → `/brand-mockup` · entry from `/mock-idea-preview`
 - **UI master guide** → **`docs/design/11_UI_UX_MASTER_GUIDE.md`** (authoritative) · **`docs/design/UI-UX-MASTERPLAN.md`** (pointer)
+- **Connected learning architecture** → **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`**
 - **Mark 3.2 build handoff (vision)** → **`docs/design/MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`**
 - External prompt pack → **`docs/CHATGPT-PROMPTS-README.md`**
 
@@ -152,7 +156,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **UI/UX master guide + premium redesign committed** — `11_UI_UX_MASTER_GUIDE.md`, six-rank Power Grid presentation, Phase 7 homepage, accessibility icon 🎛️. Cold-start branch ready to merge. |
+| What are we doing now? | **Connected learning architecture documented** in `09_SENECA_ARCHITECTURE_COMPARISON/` — principles synced across HANDOFF, AGENTS, PLATFORM-GUIDE, UI guides. PR #11 open for UI/premium branch merge. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** now in live code paths. |
 | What is next? | Deploy premium redesign to Fly; commit brand mockup when operator asks; merge cold-start branch; rerun supportive `verify:live-onboarding`. |

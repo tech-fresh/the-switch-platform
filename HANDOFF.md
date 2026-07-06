@@ -44,7 +44,7 @@ Commit and push when the action produced repo changes, unless a task explicitly 
 
 | Step | Action |
 |------|--------|
-| Before each task | Read `HANDOFF.md` → **`docs/MVP-OPERATOR-TRUTH.md`** → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`** → `PLATFORM-GUIDE.md` → README **sections only** (when needed) |
+| Before each task | Read `HANDOFF.md` → **`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`** (journey/progression work) → **`docs/MVP-OPERATOR-TRUTH.md`** → **`docs/ideas/MVP-USABILITY-LAUNCH-READINESS-PLAN.md`** → `PLATFORM-GUIDE.md` → README **sections only** (when needed) |
 | During task | One module, one priority, match architecture gate |
 | After each task | Update **HANDOFF** Live session state + **AGENTS** operator sync (non-negotiable) |
 | End of session | Verification, commit, push, session log, README build record if behavior changed |
@@ -69,14 +69,14 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `cursor/fix-live-onboarding-cold-start` (`7ac1d32` pushed)
 - **Last updated by:** Cursor Agent
-- **Last updated:** 2026-07-06 (`11_UI_UX_MASTER_GUIDE.md` + Phase 7 homepage)
+- **Last updated:** 2026-07-06 (Seneca-inspired connected learning architecture — docs only)
 
 ### Active task
 
-- **Priority item #:** Supportive live verification hardening
-- **Module:** launch scripts / repo entry docs
-- **Status:** `verify:live-onboarding` cold-start fix committed on branch; docs synced; merge to `main` pending
-- **Branch:** `cursor/fix-live-onboarding-cold-start`
+- **Priority item #:** Connected learning architecture documentation
+- **Module:** docs / product architecture
+- **Status:** eight Seneca-inspired principles integrated across HANDOFF, AGENTS, PLATFORM-GUIDE, UI guides, Mark 4 plan — **documentation only, no code**
+- **Branch:** `cursor/fix-live-onboarding-cold-start` · PR #11 open
 
 ### Current readiness truth
 
@@ -107,6 +107,7 @@ Update this section every session.
 
 ### What was just completed
 
+- **Connected learning architecture documentation (6 July 2026)** — created `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/` with eight Switch-native principles: Connected Website, Recall Strength (future), Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue, Modular architecture. Synced across `PLATFORM-GUIDE.md`, `11_UI_UX_MASTER_GUIDE.md`, `MARK-4-UI-UX-IMPLEMENTATION-PLAN.md`, `MARK-3.2-CURSOR-AGENT-BUILD-HANDOFF.md`, `AGENTS.md`. **No implementation** — preserves Fly, OIDC, SQLite, onboarding, existing modules.
 - **Accessibility icon swap (6 July 2026)** — replaced ♿ with 🎛️ on homepage feature cards and benefits (study settings metaphor; avoids wheelchair disability symbol).
 - **`11_UI_UX_MASTER_GUIDE.md` + Mark 4 Phase 7 homepage (6 July 2026)** — created canonical UI/UX guide at `docs/design/11_UI_UX_MASTER_GUIDE.md`; slimmed `UI-UX-MASTERPLAN.md` to pointer. Shipped homepage benefits, how-it-works, and FAQ via `PremiumHomepageMarketing`; hero uses six-rank Power Grid from `xpTotal`; primary CTA **Start Learning Free**; fixed remaining light-mode session cards on dashboard. Verification: lint + type-check + test `198/198`.
 - **Power Grid six-rank XP presentation (6 July 2026)** — presentation-only layer mapping existing `xpTotal` to six milestone ranks (Switch On → Switch Legend) with internal Power Levels 1–10, progress bars, next reward, and next rank preview. New `src/lib/power-grid/rank-presentation.ts`, `PowerGridRankPanel`, updated dashboard/progress/sidebar/homepage cards. Backend XP calculations, APIs, schema, and 9-level service logic unchanged. Tests: `tests/power-grid-rank-presentation.test.mjs`. Verification: lint + type-check + test `198/198`.
@@ -1030,6 +1031,13 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-07-06 — Cursor — Connected learning architecture (documentation only)
+
+- Branch: `cursor/fix-live-onboarding-cold-start`
+- Done: `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/` — eight principles; synced PLATFORM-GUIDE, AGENTS, HANDOFF, README, UI/Mark 4/Mark 3.2 docs
+- Rule: documentation only — no auth, persistence, onboarding, or module code changes
+- Next: implement principles incrementally inside existing modules after operator prioritises (Recall Strength future scope)
 
 ### 2026-07-06 — Cursor — UI master guide, Power Grid presentation, Phase 7 homepage, accessibility icon
 

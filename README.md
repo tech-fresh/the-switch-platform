@@ -16,8 +16,8 @@
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** |
 | Production deploy | **Fly.io only** — [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not use Netlify or Vercel.** |
-| What are we doing now? | **Connected learning phases 0–9 on `main` and deployed to Fly** — journey orchestrator, recall strength, learning loop, ranked recommendations, progression events, dashboard simplification, connected-route panels. |
-| What is next? | Refresh live cookies, run `npm run verify:connected-journey`. **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
+| What are we doing now? | **Homepage slow-load fix is live on Fly** — `/` now renders from seeded marketing data instead of dashboard/account API fetches, and signed-out layout requests skip persistence-backed accessibility reads on guest requests. |
+| What is next? | Refresh live cookies and run `npm run verify:connected-journey`, then continue **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
 | Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength, Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
@@ -652,6 +652,15 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-07 Homepage slow-load fix
+
+- Reduced first-load work on `/` by switching the homepage away from live dashboard/account API fetches and onto the existing seeded marketing dataset.
+- Updated `src/app/page.tsx` to render the marketing experience from `buildMockPreviewDashboardData()`.
+- Updated `src/app/layout.tsx` so signed-out guest requests use the preview accessibility snapshot instead of reading persistence-backed accessibility state on every request.
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed).
+- Deploy: `npm run deploy:fly` succeeded (`deployment-01KWXWSVDS0KCER95SM6BNK6NN`); `curl -I https://theswitchplatform.com` and `curl -I https://the-switch-platform.fly.dev` both returned `HTTP/2 200`.
+- Working-tree cleanup: reverted the unrelated `fly.toml` diff from this pass so only the intended homepage and documentation files remain modified.
 
 ### 2026-07-07 Connected learning deployed to Fly
 

@@ -68,14 +68,14 @@ Update this section every session.
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
-- **Last updated by:** Cursor Agent
-- **Last updated:** 2026-07-06 (Connected learning phases 0–9 merged to `main`)
+- **Last updated by:** Codex
+- **Last updated:** 2026-07-07 (Homepage slow-load fix deployed to Fly)
 
 ### Active task
 
 - **Priority item #:** Connected learning architecture **implementation** (Codex)
-- **Module:** `learning-loop` → `dashboard` → connected routes
-- **Status:** **Phases 0–9 complete, merged to `main`, deployed to Fly** (6 July 2026). Live journey API returns 401 without auth (route live). Authenticated `verify:connected-journey` pending fresh cookies.
+- **Module:** `homepage` → `layout` → marketing render performance
+- **Status:** Homepage performance fix deployed to Fly — `/` now renders from preview marketing data instead of dashboard/account API calls, and signed-out layout requests skip persistence-backed accessibility reads on guest requests.
 - **Branch:** `main`
 - **Codex entry:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`
 
@@ -108,6 +108,8 @@ Update this section every session.
 
 ### What was just completed
 
+- **Homepage slow-load fix deployed (7 July 2026)** — reduced first-load work on `/` by switching [src/app/page.tsx](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/src/app/page.tsx) from live dashboard/account API fetches to the existing preview marketing dataset, and updated [src/app/layout.tsx](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/src/app/layout.tsx) so signed-out guest requests use the preview accessibility snapshot instead of hitting persistence on every request. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed). Deploy: `npm run deploy:fly` (`deployment-01KWXWSVDS0KCER95SM6BNK6NN`) and `curl -I https://theswitchplatform.com` / `curl -I https://the-switch-platform.fly.dev` both returned HTTP 200.
+- **Working-tree cleanup (7 July 2026)** — reverted the unrelated `fly.toml` memory diff from this pass so `git status` now only shows the intended homepage code and doc updates.
 - **Connected learning Fly deploy (7 July 2026)** — `npm run deploy:fly` succeeded (`deployment-01KWWV6CS16RH77WN1B35XKMGW`). `curl -I https://theswitchplatform.com` → HTTP 200. `/api/journey/next-action` live (401 without auth; was 404 pre-deploy). `verify:check-live-cookies` still fails — cookies expired; refresh via live-cookie-guide before `verify:connected-journey`. — completed dashboard simplification (`DashboardPrimarySignals`, four-card hero row, collapsed “More study tools”), connected-route journey panels on all signed-in routes, weak-topic catalog labels, `verify:connected-journey` npm script, `tests/connected-journey-closeout.test.mjs`, and implementation status table in `ARCHITECTURE-PRINCIPLES.md`. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed).
 - **Connected learning architecture Phase 6 (6 July 2026)** — implemented the learning loop from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/lib/persistence/learning-loop-store.ts`, `src/modules/learning-loop/service.ts`, `vocabulary.ts`, `contracts.ts`, `GET`/`POST` `/api/learning-loop/[topicId]`, `LearningLoopStepRail`, and subject-route hooks in `subject-experience.tsx`. Quiz submissions now call `syncLearningLoopAfterQuiz` from `quiz/service.ts`; after feedback the subject route fetches `/api/journey/next-action` for a single next CTA. Added `tests/learning-loop.test.mjs` (`4/4` passed). Verification: `npm run lint`, `npm run type-check`, learning-loop tests green.
 - **Connected learning architecture Phase 4 (6 July 2026)** — implemented the Power Grid progression-event trail from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/modules/power-grid/progression-events.ts` and `src/lib/persistence/progression-event-store.ts`, then wired append-only emits into `src/modules/quiz/service.ts`, `src/modules/exam-engine/service.ts`, and `src/modules/timed-assessment/service.ts` after the existing persistence writes. Added `tests/power-grid-progression-events.test.mjs` to prove quiz, exam, and timed-assessment events append without changing the existing Power Grid scoring path. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`211/211` passed).
@@ -203,6 +205,7 @@ Update this section every session.
 ### What is next
 
 - Refresh **`SWITCH_LIVE_STUDENT_COOKIE`** via https://theswitchplatform.com/account/live-cookie-guide, then run **`npm run verify:check-live-cookies`** and **`npm run verify:connected-journey`**
+- Optionally trim `.next-rehearsal/` from the Docker build context via `.dockerignore` if deploy speed needs a follow-up pass
 - Continue **Mark 4 Phase 7** public marketing refinement when ready
 - **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
 - **Priority E:** **closed for year 1** — Wales/NI routes, parent/teacher onboarding, admin restyle, i18n, broader content expansion remain deferred; operator must explicitly reopen after year 1
@@ -220,16 +223,19 @@ Update this section every session.
 
 ### Blockers
 
-- **Live cookies expired (7 July 2026)** — `verify:check-live-cookies` failed (`status=signed-out`). Refresh via https://theswitchplatform.com/account/live-cookie-guide, update `.env.local`, then rerun journey verification.
+- **Live cookies expired (7 July 2026)** — `verify:check-live-cookies` / `verify:connected-journey` still need fresh live auth cookies. Refresh via https://theswitchplatform.com/account/live-cookie-guide, update `.env.local`, then rerun journey verification.
 - No local verification blocker
 
 ### Verification last run
 
-Fresh rerun on 7 July 2026 (Connected learning Fly deploy):
+Fresh rerun on 7 July 2026 (homepage slow-load fix + Fly deploy):
 
-- [x] `npm run deploy:fly` (`deployment-01KWWV6CS16RH77WN1B35XKMGW`)
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (`228/228` passed)
+- [x] `npm run deploy:fly` (`deployment-01KWXWSVDS0KCER95SM6BNK6NN`)
 - [x] `curl -I https://theswitchplatform.com` → HTTP 200
-- [x] `/api/journey/next-action` route live (401 without auth)
+- [x] `curl -I https://the-switch-platform.fly.dev` → HTTP 200
 - [ ] `npm run verify:check-live-cookies` — cookies expired
 - [ ] `npm run verify:connected-journey` — blocked on cookie refresh
 
@@ -1091,6 +1097,14 @@ Rules:
 ## Session log (newest first)
 
 Add a new entry here at the end of every session. Do not delete older entries.
+
+### 2026-07-07 — Codex — Homepage slow-load fix
+
+- Branch: `main`
+- Module: `src/app/page.tsx` / `src/app/layout.tsx`
+- Done: switched `/` to the seeded marketing dataset instead of dashboard/account API fetches; signed-out layout requests now use preview accessibility defaults instead of persistence-backed reads
+- Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228`)
+- Next: deploy to Fly and verify live first-load speed
 
 ### 2026-07-06 — Codex — Connected learning architecture Phase 5
 

@@ -158,10 +158,10 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Connected learning phases 0–9 on `main` and deployed to Fly** — journey API live; authenticated live verification pending cookie refresh. |
+| What are we doing now? | **Homepage slow-load fix is live on Fly** — `/` now renders from seeded marketing data instead of dashboard/account API fetches, and signed-out layout requests skip persistence-backed accessibility reads on guest requests. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
 | Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** now in live code paths. |
-| What is next? | Refresh live cookies via `/account/live-cookie-guide`, then `npm run verify:connected-journey`. **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
+| What is next? | Refresh live cookies and rerun `npm run verify:connected-journey`, then continue **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) on Fly production closeout evidence dated 26 June 2026.
 

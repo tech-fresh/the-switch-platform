@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { premiumUi } from "@/components/premium/premium-ui";
+import { getPublicRouteHref } from "@/lib/public-route";
 
 interface PremiumSubjectCardProps {
   name: string;
@@ -8,11 +9,19 @@ interface PremiumSubjectCardProps {
   href: string;
   icon: string;
   accent: string;
+  isAuthenticated?: boolean;
 }
 
-export function PremiumSubjectCard({ name, description, href, icon, accent }: PremiumSubjectCardProps) {
+export function PremiumSubjectCard({
+  name,
+  description,
+  href,
+  icon,
+  accent,
+  isAuthenticated = false,
+}: PremiumSubjectCardProps) {
   return (
-    <Link href={href} className={`group block ${premiumUi.cardHover}`}>
+    <Link href={getPublicRouteHref(href, isAuthenticated)} className={`group block ${premiumUi.cardHover}`}>
       <div
         className={`inline-flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br ${accent} text-2xl shadow-lg`}
         aria-hidden="true"

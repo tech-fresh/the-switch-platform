@@ -5,6 +5,7 @@ import {
   POWER_GRID_RANKS,
   getPowerGridRankPresentation,
 } from "@/lib/power-grid/rank-presentation";
+import { getPublicRouteHref } from "@/lib/public-route";
 import type { PowerGridLevel } from "@/modules/power-grid/types";
 
 interface PremiumPowerGridCardProps {
@@ -13,12 +14,14 @@ interface PremiumPowerGridCardProps {
   readinessScore?: number;
   xpTotal?: number;
   compact?: boolean;
+  isAuthenticated?: boolean;
 }
 
 export function PremiumPowerGridCard({
   xpTotal = 0,
   readinessScore,
   compact = false,
+  isAuthenticated = false,
 }: PremiumPowerGridCardProps) {
   const presentation = getPowerGridRankPresentation(xpTotal);
 
@@ -90,7 +93,7 @@ export function PremiumPowerGridCard({
         })}
       </div>
 
-      <Link href="/progress" className={premiumUi.secondaryBtn}>
+      <Link href={getPublicRouteHref("/progress", isAuthenticated)} className={premiumUi.secondaryBtn}>
         View full Power Grid journey
       </Link>
     </section>

@@ -1,14 +1,15 @@
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { PublicMarketingPage } from "@/components/public-marketing-page";
-import { getSupportHubApiData } from "@/lib/api/server";
+import { getRequestAuthSession } from "@/modules/auth/request";
+import { getSupportHubData } from "@/modules/support/service";
 
 export const dynamic = "force-dynamic";
 
 export default async function SupportPage() {
-  const support = await getSupportHubApiData();
+  const [support, session] = await Promise.all([getSupportHubData(), getRequestAuthSession()]);
 
   return (
-    <PublicMarketingPage>
+    <PublicMarketingPage isAuthenticated={session.status === "authenticated"}>
         <Mark32PageHeader
           eyebrow="Support"
           title={support.title}

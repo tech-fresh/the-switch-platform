@@ -3,15 +3,18 @@ import Link from "next/link";
 import { PublicMarketingPage } from "@/components/public-marketing-page";
 import { Mark32PageHeader } from "@/components/streamlined/mark32-page-header";
 import { mark32Ui } from "@/components/streamlined/mark32-ui";
-import { getWebsiteGuideApiData } from "@/lib/api/server";
+import { getPublicRouteHref } from "@/lib/public-route";
+import { getRequestAuthSession } from "@/modules/auth/request";
+import { getWebsiteGuideData } from "@/modules/website-guide/service";
 
 export const dynamic = "force-dynamic";
 
 export default async function HowItWorksPage() {
-  const guide = await getWebsiteGuideApiData();
+  const [guide, session] = await Promise.all([getWebsiteGuideData(), getRequestAuthSession()]);
+  const isAuthenticated = session.status === "authenticated";
 
   return (
-    <PublicMarketingPage>
+    <PublicMarketingPage isAuthenticated={isAuthenticated}>
       <Mark32PageHeader
         eyebrow="Resources"
         title={guide.title}
@@ -24,7 +27,10 @@ export default async function HowItWorksPage() {
               The dashboard is the quickest way to understand what is saved, what needs attention, and
               where to go next.
             </p>
-            <Link href={guide.suggestedFirstRoute} className={`mt-4 ${mark32Ui.primaryBtn}`}>
+            <Link
+              href={getPublicRouteHref(guide.suggestedFirstRoute, isAuthenticated)}
+              className={`mt-4 ${mark32Ui.primaryBtn}`}
+            >
               Open dashboard
             </Link>
           </div>
@@ -64,7 +70,10 @@ export default async function HowItWorksPage() {
                   <p className="mt-3 text-sm leading-6 text-slate-700">
                     Open the route directly and compare what you see on the page with this guide.
                   </p>
-                  <Link href={step.href} className={`mt-4 ${mark32Ui.primaryBtn}`}>
+                  <Link
+                    href={getPublicRouteHref(step.href, isAuthenticated)}
+                    className={`mt-4 ${mark32Ui.primaryBtn}`}
+                  >
                     {step.actionLabel}
                   </Link>
                 </div>

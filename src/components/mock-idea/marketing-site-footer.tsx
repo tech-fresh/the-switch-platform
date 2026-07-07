@@ -2,8 +2,13 @@ import Link from "next/link";
 
 import { MOCK_IDEA_BRAND, SEND_COLOUR_CHIPS } from "@/components/mock-idea/brand-tokens";
 import { SwitchBrandLogo } from "@/components/switch-brand-logo";
+import { getPublicRouteHref } from "@/lib/public-route";
 
-export function MarketingSiteFooter() {
+interface MarketingSiteFooterProps {
+  isAuthenticated?: boolean;
+}
+
+export function MarketingSiteFooter({ isAuthenticated = false }: MarketingSiteFooterProps) {
   return (
     <footer className="relative mt-12 border-t border-stone-200 bg-stone-950 text-stone-100">
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6">
@@ -17,17 +22,17 @@ export function MarketingSiteFooter() {
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">For learners</p>
             <ul className="mt-4 space-y-2.5 text-sm text-stone-200">
-              <li><Link className="hover:text-white" href="/dashboard">Student dashboard</Link></li>
-              <li><Link className="hover:text-white" href="/subjects">Subjects</Link></li>
-              <li><Link className="hover:text-white" href="/onboarding">Guided setup</Link></li>
-              <li><Link className="hover:text-white" href="/exams">Full GCSE exams</Link></li>
+              <li><Link className="hover:text-white" href={getPublicRouteHref("/dashboard", isAuthenticated)}>Student dashboard</Link></li>
+              <li><Link className="hover:text-white" href={getPublicRouteHref("/subjects", isAuthenticated)}>Subjects</Link></li>
+              <li><Link className="hover:text-white" href={getPublicRouteHref("/onboarding", isAuthenticated)}>Guided setup</Link></li>
+              <li><Link className="hover:text-white" href={getPublicRouteHref("/exams", isAuthenticated)}>Full GCSE exams</Link></li>
             </ul>
           </div>
 
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">Access &amp; SEND</p>
             <ul className="mt-4 space-y-2.5 text-sm text-stone-200">
-              <li><Link className="hover:text-white" href="/accessibility">Accessibility settings</Link></li>
+              <li><Link className="hover:text-white" href={getPublicRouteHref("/accessibility", isAuthenticated)}>Accessibility settings</Link></li>
               <li><Link className="hover:text-white" href="/support">Support hub</Link></li>
               <li><Link className="hover:text-white" href="/how-it-works">How it works</Link></li>
             </ul>
@@ -36,7 +41,7 @@ export function MarketingSiteFooter() {
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">Schools</p>
             <ul className="mt-4 space-y-2.5 text-sm text-stone-200">
-              <li><Link className="hover:text-white" href="/admin">For schools</Link></li>
+              <li><Link className="hover:text-white" href={getPublicRouteHref("/admin", isAuthenticated)}>For schools</Link></li>
               <li><Link className="hover:text-white" href="/login?reauth=1">Log in</Link></li>
             </ul>
           </div>
@@ -49,7 +54,7 @@ export function MarketingSiteFooter() {
               {SEND_COLOUR_CHIPS.map((chip) => (
                 <Link
                   key={chip.id}
-                  href={chip.href}
+                  href={getPublicRouteHref(chip.href, isAuthenticated)}
                   className="group flex items-center gap-2 text-sm text-stone-300 hover:text-white"
                 >
                   <span

@@ -1,4 +1,28 @@
 import { headers } from "next/headers";
+import { getAuthenticatedSwitchRequestContext, getSwitchRequestContext } from "@/lib/server/request-context";
+import { getAccessibilitySnapshot } from "@/modules/accessibility/service";
+import { getAccountOverview } from "@/modules/auth/service";
+import { getStudentVisibleContentCatalog } from "@/modules/content/service";
+import { getDashboardHomeData } from "@/modules/dashboard/service";
+import { getMockExamSession } from "@/modules/exam-engine/service";
+import { getExamInventorySummary, listStudentVisibleExamPapers } from "@/modules/exam-inventory/service";
+import { getJourneyContext } from "@/modules/journey/service";
+import { getOnboardingOverview } from "@/modules/onboarding/service";
+import { getOnboardingProfileByUserId } from "@/modules/onboarding/repository";
+import {
+  filterAssessmentsForOnboardingProfile,
+  filterCatalogSubjectsForOnboardingProfile,
+  filterExamPapersForOnboardingProfile,
+} from "@/modules/onboarding/personalization";
+import { getMockPowerGridSummary } from "@/modules/power-grid/service";
+import { getMockQuizQuestion, listQuizProgressByUser } from "@/modules/quiz/service";
+import { getReadAloudSession } from "@/modules/read-aloud/service";
+import { getStudentRecommendations, getRecommendationsPageData } from "@/modules/recommendations/service";
+import { getMockRevisionContent } from "@/modules/revision/service";
+import { getResultsOverview } from "@/modules/results/service";
+import { getSavedProgressOverview } from "@/modules/saved-progress/overview-service";
+import { getSupportHubData } from "@/modules/support/service";
+import { getMockSubjects } from "@/modules/subjects/service";
 import type { AccessibilitySnapshot } from "@/modules/accessibility/types";
 import type { AccountOverview } from "@/modules/auth/types";
 import type { CmsOverview } from "@/modules/cms/types";
@@ -15,6 +39,9 @@ import type { Recommendation, RecommendationsPageData } from "@/modules/recommen
 import type { ReadAloudContentType, ReadAloudSession } from "@/modules/read-aloud/types";
 import type { ResultsOverview } from "@/modules/results/types";
 import type { SavedProgressOverview } from "@/modules/saved-progress/types";
+import { getWebsiteGuideData } from "@/modules/website-guide/service";
+import { getWeeklyPlannerSummary } from "@/modules/weekly-planner/service";
+import { getMockTimedAssessmentAttemptSeed, getMockTimedAssessments } from "@/modules/timed-assessment/service";
 import type { QuizQuestion, SubmitQuizAnswerResult } from "@/modules/quiz/types";
 import type { RevisionContent } from "@/modules/revision/types";
 import type { Subject } from "@/modules/subjects/types";
@@ -24,6 +51,7 @@ import type { TimedAssessmentAttemptSeed, TimedAssessmentDefinition } from "@/mo
 import type { Topic } from "@/modules/topics/types";
 import type { WebsiteGuideData } from "@/modules/website-guide/types";
 import type { WeeklyPlannerSummary } from "@/modules/weekly-planner/types";
+import { getMockTopicsForSubject } from "@/modules/topics/service";
 import type { PersistenceRuntimeSummary } from "@/lib/server/repositories";
 
 export interface SubjectsExperienceData {
@@ -105,27 +133,40 @@ function buildForwardedAuthHeaders(headerStore: Headers): Record<string, string>
 }
 
 export async function getDashboardHomeApiData(): Promise<DashboardHomeData> {
-  const response = await fetchApiJson<{ dashboard: DashboardHomeData }>("/api/dashboard/home");
+  const context = await getSwitchRequestContext();
 
-  return response.dashboard;
+  return getDashboardHomeData(context.userId);
 }
 
 export async function getProgressSummaryApiData(): Promise<PowerGridSummary> {
-  const response = await fetchApiJson<{ summary: PowerGridSummary }>("/api/progress/summary");
+  const context = await getSwitchRequestContext();
+  const onboardingOverview =
+    context.userId === "guest-preview" ? null : await getOnboardingOverview(context.userId);
 
-  return response.summary;
+  return getMockPowerGridSummary({
+    userId: context.userId,
+    savedProgressRepository: context.repositories.savedProgress,
+    onboardingProfile: onboardingOverview?.profile ?? null,
+  });
 }
 
 export async function getSavedProgressOverviewApiData(): Promise<SavedProgressOverview> {
-  const response = await fetchApiJson<{ overview: SavedProgressOverview }>("/api/saved-progress/overview");
+  const context = await getAuthenticatedSwitchRequestContext();
 
-  return response.overview;
+  return getSavedProgressOverview({
+    userId: context.userId,
+    savedProgressRepository: context.repositories.savedProgress,
+  });
 }
 
 export async function getExamPapersApiData(): Promise<ExamPaper[]> {
-  const response = await fetchApiJson<{ papers: ExamPaper[] }>("/api/exams/papers");
+  const context = await getSwitchRequestContext();
+  const profile = await getOnboardingProfileByUserId(context.userId);
+  const papers = listStudentVisibleExamPapers();
 
-  return response.papers;
+  return profile && profile.completedAt
+    ? filterExamPapersForOnboardingProfile(papers, profile)
+    : papers;
 }
 
 export async function getExamInventoryApiData(): Promise<{
@@ -138,96 +179,89 @@ export async function getExamInventoryApiData(): Promise<{
 }
 
 export async function getExamSessionApiData(examId: string): Promise<ExamSession> {
-  const response = await fetchApiJson<{ session: ExamSession }>(
-    `/api/exams/session/${encodeURIComponent(examId)}`,
-  );
+  const context = await getSwitchRequestContext();
 
-  return response.session;
+  return getMockExamSession(examId, {
+    userId: context.userId,
+    accessProfileRepository: context.repositories.accessProfiles,
+    savedProgressRepository: context.repositories.savedProgress,
+  });
 }
 
 export async function getTimedAssessmentDefinitionsApiData(): Promise<TimedAssessmentDefinition[]> {
-  const response = await fetchApiJson<{ assessments: TimedAssessmentDefinition[] }>(
-    "/api/assessments/definitions",
-  );
+  const context = await getSwitchRequestContext();
+  const profile = await getOnboardingProfileByUserId(context.userId);
+  const assessments = getMockTimedAssessments();
 
-  return response.assessments;
+  return profile && profile.completedAt
+    ? filterAssessmentsForOnboardingProfile(assessments, profile)
+    : assessments;
 }
 
 export async function getTimedAssessmentSeedApiData(
   assessmentId: string,
   selectedDurationMinutes?: number,
 ): Promise<TimedAssessmentAttemptSeed> {
-  const searchParams = new URLSearchParams();
+  const context = await getSwitchRequestContext();
 
-  if (selectedDurationMinutes !== undefined) {
-    searchParams.set("durationMinutes", String(selectedDurationMinutes));
-  }
-
-  const query = searchParams.toString();
-  const response = await fetchApiJson<{ seed: TimedAssessmentAttemptSeed }>(
-    `/api/assessments/seed/${encodeURIComponent(assessmentId)}${query ? `?${query}` : ""}`,
-  );
-
-  return response.seed;
+  return getMockTimedAssessmentAttemptSeed(assessmentId, {
+    userId: context.userId,
+    selectedDurationMinutes,
+    accessProfileRepository: context.repositories.accessProfiles,
+    savedProgressRepository: context.repositories.savedProgress,
+  });
 }
 
 export async function getAccessibilitySnapshotApiData(): Promise<AccessibilitySnapshot> {
-  const response = await fetchApiJson<{ snapshot: AccessibilitySnapshot }>(
-    "/api/accessibility/snapshot",
-  );
+  const context = await getSwitchRequestContext();
 
-  return response.snapshot;
+  return getAccessibilitySnapshot(context.userId, context.repositories.accessProfiles);
 }
 
 export async function getReadAloudSessionApiData(
   contentType: ReadAloudContentType,
 ): Promise<ReadAloudSession> {
-  const searchParams = new URLSearchParams({
-    contentType,
-  });
-  const response = await fetchApiJson<{ session: ReadAloudSession }>(
-    `/api/read-aloud/session?${searchParams.toString()}`,
-  );
+  const context = await getSwitchRequestContext();
 
-  return response.session;
+  return getReadAloudSession(
+    context.userId,
+    contentType,
+    context.repositories.accessProfiles,
+  );
 }
 
 export async function getStudentRecommendationsApiData(): Promise<Recommendation[]> {
-  const response = await fetchApiJson<{ recommendations: Recommendation[] }>("/api/recommendations");
+  const context = await getSwitchRequestContext();
 
-  return response.recommendations;
+  return getStudentRecommendations(context.userId);
 }
 
 export async function getJourneyNextActionApiData(): Promise<JourneyContext> {
-  const response = await fetchApiJson<{ journey: JourneyContext }>("/api/journey/next-action");
+  const context = await getAuthenticatedSwitchRequestContext();
 
-  return response.journey;
+  return getJourneyContext(context.userId);
 }
 
 export async function getRecommendationsPageApiData(): Promise<RecommendationsPageData> {
-  const response = await fetchApiJson<{ recommendationsPage: RecommendationsPageData }>(
-    "/api/recommendations/page",
-  );
+  const context = await getAuthenticatedSwitchRequestContext();
 
-  return response.recommendationsPage;
+  return getRecommendationsPageData(context.userId);
 }
 
 export async function getAccountOverviewApiData(): Promise<AccountOverview> {
-  const response = await fetchApiJson<{ account: AccountOverview }>("/api/account/overview");
+  const context = await getSwitchRequestContext();
 
-  return response.account;
+  return getAccountOverview({ session: context.session });
 }
 
 export async function getResultsOverviewApiData(): Promise<ResultsOverview> {
-  const response = await fetchApiJson<{ results: ResultsOverview }>("/api/results/overview");
+  const context = await getAuthenticatedSwitchRequestContext();
 
-  return response.results;
+  return getResultsOverview(context.userId);
 }
 
 export async function getSupportHubApiData(): Promise<SupportHubData> {
-  const response = await fetchApiJson<{ support: SupportHubData }>("/api/support/hub");
-
-  return response.support;
+  return getSupportHubData();
 }
 
 export async function getCmsOverviewApiData(): Promise<CmsOverview> {
@@ -269,11 +303,7 @@ export async function getPersistenceRuntimeSummaryApiData(): Promise<Persistence
 }
 
 export async function getStudentContentCatalogApiData(): Promise<MvpContentCatalog> {
-  const response = await fetchApiJson<{ catalog: MvpContentCatalog }>(
-    "/api/content/catalog?audience=student",
-  );
-
-  return response.catalog;
+  return getStudentVisibleContentCatalog();
 }
 
 export async function getContentEditorialAuditApiData(): Promise<ContentEditorialAudit> {
@@ -295,29 +325,80 @@ export async function getSpecificationLibraryApiData(): Promise<{
 }
 
 export async function getSubjectsExperienceApiData(): Promise<SubjectsExperienceData> {
-  const response = await fetchApiJson<{ experience: SubjectsExperienceData }>(
-    "/api/subjects/experience",
+  const context = await getSwitchRequestContext();
+  const profile = await getOnboardingProfileByUserId(context.userId);
+  const subjects = filterCatalogSubjectsForOnboardingProfile(getMockSubjects(), profile);
+  const topicsBySubject = Object.fromEntries(
+    subjects.map((subject) => [subject.subjectId, getMockTopicsForSubject(subject.subjectId)]),
+  );
+  const allTopics = Object.values(topicsBySubject).flat();
+  const quizProgress = await listQuizProgressByUser(
+    context.userId,
+    context.repositories.quizProgress,
+  );
+  const revisionByTopic = Object.fromEntries(
+    allTopics.map((topic) => [topic.topicId, getMockRevisionContent(topic.topicId)]),
+  );
+  const quizByTopic = Object.fromEntries(
+    allTopics.map((topic) => [topic.topicId, getMockQuizQuestion(topic.topicId)]),
+  );
+  const quizAttemptsByTopic = Object.fromEntries(
+    allTopics.map((topic) => {
+      const question = quizByTopic[topic.topicId];
+      const progress = quizProgress.find((record) => record.topicId === topic.topicId) ?? null;
+      const selectedOption = question.options.find(
+        (option) => option.optionId === progress?.selectedOptionId,
+      );
+      const correctOption = question.options.find(
+        (option) => option.optionId === question.correctOptionId,
+      );
+
+      return [
+        topic.topicId,
+        progress && selectedOption && correctOption
+          ? {
+              topicId: topic.topicId,
+              questionId: question.questionId,
+              selectedOptionId: progress.selectedOptionId,
+              selectedOptionLabel: selectedOption.label,
+              correctOptionId: question.correctOptionId,
+              correctOptionLabel: correctOption.label,
+              isCorrect: progress.isCorrect,
+              explanation: question.explanation,
+              attemptsCount: progress.attemptsCount,
+              correctCount: progress.correctCount,
+              incorrectCount: progress.incorrectCount,
+              accuracyPercentage: Math.round(
+                (progress.correctCount / Math.max(progress.attemptsCount, 1)) * 100,
+              ),
+              lastAnsweredAt: progress.lastAnsweredAt,
+            }
+          : null,
+      ];
+    }),
   );
 
-  return response.experience;
+  return {
+    subjects,
+    topicsBySubject,
+    revisionByTopic,
+    quizByTopic,
+    quizAttemptsByTopic,
+  };
 }
 
 export async function getWeeklyPlannerApiData(): Promise<WeeklyPlannerSummary> {
-  const response = await fetchApiJson<{ planner: WeeklyPlannerSummary }>("/api/planner/week");
+  const context = await getSwitchRequestContext();
 
-  return response.planner;
+  return getWeeklyPlannerSummary({ userId: context.userId });
 }
 
 export async function getWebsiteGuideApiData(): Promise<WebsiteGuideData> {
-  const response = await fetchApiJson<{ guide: WebsiteGuideData }>("/api/website-guide");
-
-  return response.guide;
+  return getWebsiteGuideData();
 }
 
 export async function getOnboardingOverviewApiData(): Promise<import("@/modules/onboarding/types").OnboardingOverview> {
-  const response = await fetchApiJson<{ onboarding: import("@/modules/onboarding/types").OnboardingOverview }>(
-    "/api/onboarding/profile",
-  );
+  const context = await getAuthenticatedSwitchRequestContext();
 
-  return response.onboarding;
+  return getOnboardingOverview(context.userId);
 }

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SwitchBrandLogo } from "@/components/switch-brand-logo";
 import { premiumUi } from "@/components/premium/premium-ui";
 import { getPowerGridRankPresentation } from "@/lib/power-grid/rank-presentation";
+import { getPublicRouteHref } from "@/lib/public-route";
 
 interface PremiumHeroSectionProps {
   isAuthenticated: boolean;
@@ -39,7 +40,7 @@ export function PremiumHeroSection({
             >
               {isAuthenticated ? "Open dashboard" : "Start Learning Free"}
             </Link>
-            <Link href="/subjects" className={premiumUi.secondaryBtn}>
+            <Link href={getPublicRouteHref("/subjects", isAuthenticated)} className={premiumUi.secondaryBtn}>
               View GCSE Subjects
             </Link>
           </div>

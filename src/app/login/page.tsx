@@ -4,7 +4,8 @@ import { PublicMarketingPage } from "@/components/public-marketing-page";
 import { AuthAccessPathPanel } from "@/components/auth-access-path-panel";
 import { SignInBrandMark } from "@/components/sign-in-brand-mark";
 import { UnifiedSignInCard } from "@/components/unified-sign-in-card";
-import { getAccountOverviewApiData } from "@/lib/api/server";
+import { getRequestAuthSession } from "@/modules/auth/request";
+import { getAccountOverview } from "@/modules/auth/service";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +52,7 @@ export default async function LoginPage({
   }>;
 }) {
   const [account, resolvedSearchParams] = await Promise.all([
-    getAccountOverviewApiData(),
+    getRequestAuthSession().then((session) => getAccountOverview({ session })),
     searchParams ??
       Promise.resolve({} as {
         authError?: string | string[] | undefined;

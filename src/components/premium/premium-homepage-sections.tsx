@@ -7,15 +7,22 @@ import {
   PREMIUM_SUBJECTS,
   premiumUi,
 } from "@/components/premium/premium-ui";
+import { getPublicRouteHref } from "@/lib/public-route";
 import type { PowerGridLevel } from "@/modules/power-grid/types";
 
 interface PremiumHomepageSectionsProps {
   powerGridLevel: PowerGridLevel;
   readinessScore: number;
   xpTotal: number;
+  isAuthenticated?: boolean;
 }
 
-export function PremiumHomepageSections({ powerGridLevel, readinessScore, xpTotal }: PremiumHomepageSectionsProps) {
+export function PremiumHomepageSections({
+  powerGridLevel,
+  readinessScore,
+  xpTotal,
+  isAuthenticated = false,
+}: PremiumHomepageSectionsProps) {
   return (
     <div className="space-y-16">
       <section className="space-y-6">
@@ -28,12 +35,17 @@ export function PremiumHomepageSections({ powerGridLevel, readinessScore, xpTota
         </div>
         <div className="grid gap-5 md:grid-cols-3">
           {PREMIUM_SUBJECTS.map((subject) => (
-            <PremiumSubjectCard key={subject.id} {...subject} />
+            <PremiumSubjectCard key={subject.id} {...subject} isAuthenticated={isAuthenticated} />
           ))}
         </div>
       </section>
 
-      <PremiumPowerGridCard level={powerGridLevel} readinessScore={readinessScore} xpTotal={xpTotal} />
+      <PremiumPowerGridCard
+        level={powerGridLevel}
+        readinessScore={readinessScore}
+        xpTotal={xpTotal}
+        isAuthenticated={isAuthenticated}
+      />
 
       <section className="space-y-6">
         <div>
@@ -42,7 +54,11 @@ export function PremiumHomepageSections({ powerGridLevel, readinessScore, xpTota
         </div>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {PREMIUM_PLATFORM_FEATURES.map((feature) => (
-            <Link key={feature.title} href={feature.href} className={premiumUi.cardHover}>
+            <Link
+              key={feature.title}
+              href={getPublicRouteHref(feature.href, isAuthenticated)}
+              className={premiumUi.cardHover}
+            >
               <span className="text-3xl" aria-hidden="true">
                 {feature.icon}
               </span>

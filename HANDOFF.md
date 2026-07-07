@@ -69,13 +69,13 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Codex
-- **Last updated:** 2026-07-07 (Homepage slow-load fix deployed to Fly)
+- **Last updated:** 2026-07-07 (Website clickability + route-speed pass deployed to Fly)
 
 ### Active task
 
-- **Priority item #:** Connected learning architecture **implementation** (Codex)
-- **Module:** `homepage` → `layout` → marketing render performance
-- **Status:** Homepage performance fix deployed to Fly — `/` now renders from preview marketing data instead of dashboard/account API calls, and signed-out layout requests skip persistence-backed accessibility reads on guest requests.
+- **Priority item #:** Website clickability + route render performance (Codex)
+- **Module:** public marketing navigation + shared server page-data helpers
+- **Status:** Live route-speed pass deployed — guest-facing buttons now send learners straight to `/login` with the right `returnTo` target, public pages avoid unnecessary account/API work, and core server-render helpers now call module services directly instead of loopback HTTP fetches.
 - **Branch:** `main`
 - **Codex entry:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`
 
@@ -108,7 +108,8 @@ Update this section every session.
 
 ### What was just completed
 
-- **Homepage slow-load fix deployed (7 July 2026)** — reduced first-load work on `/` by switching [src/app/page.tsx](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/src/app/page.tsx) from live dashboard/account API fetches to the existing preview marketing dataset, and updated [src/app/layout.tsx](/Users/lloydnwagbara/Documents/THE%20SWITCH%203/src/app/layout.tsx) so signed-out guest requests use the preview accessibility snapshot instead of hitting persistence on every request. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed). Deploy: `npm run deploy:fly` (`deployment-01KWXWSVDS0KCER95SM6BNK6NN`) and `curl -I https://theswitchplatform.com` / `curl -I https://the-switch-platform.fly.dev` both returned HTTP 200.
+- **Website clickability + route-speed pass deployed (7 July 2026)** — added [src/lib/public-route.ts](/Users/lloydnwagbara/Documents/THE SWITCH 3/src/lib/public-route.ts) so guest-facing buttons now go straight to `/login` with the correct `returnTo` target instead of bouncing through protected routes first; updated the shared marketing chrome and homepage cards to use it. Reworked [src/lib/api/server.ts](/Users/lloydnwagbara/Documents/THE SWITCH 3/src/lib/api/server.ts) so core server-render routes call module services directly instead of internal loopback HTTP fetches, simplified [src/lib/server/student-route.ts](/Users/lloydnwagbara/Documents/THE SWITCH 3/src/lib/server/student-route.ts) to stop reloading dashboard/account data for every signed-in route, and added a signed-out fast path to [src/modules/auth/service.ts](/Users/lloydnwagbara/Documents/THE SWITCH 3/src/modules/auth/service.ts). Public pages `/login`, `/how-it-works`, and `/support` now read services directly. Deploy: `npm run deploy:fly` (`deployment-01KWXYFFY9201ZB07D7YJA7M47`) and `curl -I https://theswitchplatform.com` / `curl -I https://the-switch-platform.fly.dev` both returned HTTP 200.
+- **Local clickability verification (7 July 2026)** — browser checks confirmed guest homepage links such as `For Students`, `View GCSE Subjects`, `View full Power Grid journey`, and footer dashboard links now resolve to `/login?...returnTo=...` instead of protected routes directly. Local browser navigation timings on `localhost:3000` landed at roughly `/` `1723ms`, `/login` `2024ms`, `/how-it-works` `4764ms`, and `/support` `4007ms` in the dev runtime after the refactor. `npm run test:smoke` passed.
 - **Working-tree cleanup (7 July 2026)** — reverted the unrelated `fly.toml` memory diff from this pass so `git status` now only shows the intended homepage code and doc updates.
 - **Connected learning Fly deploy (7 July 2026)** — `npm run deploy:fly` succeeded (`deployment-01KWWV6CS16RH77WN1B35XKMGW`). `curl -I https://theswitchplatform.com` → HTTP 200. `/api/journey/next-action` live (401 without auth; was 404 pre-deploy). `verify:check-live-cookies` still fails — cookies expired; refresh via live-cookie-guide before `verify:connected-journey`. — completed dashboard simplification (`DashboardPrimarySignals`, four-card hero row, collapsed “More study tools”), connected-route journey panels on all signed-in routes, weak-topic catalog labels, `verify:connected-journey` npm script, `tests/connected-journey-closeout.test.mjs`, and implementation status table in `ARCHITECTURE-PRINCIPLES.md`. Verification: `npm run lint`, `npm run type-check`, `npm run test` (`228/228` passed).
 - **Connected learning architecture Phase 6 (6 July 2026)** — implemented the learning loop from `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`: added `src/lib/persistence/learning-loop-store.ts`, `src/modules/learning-loop/service.ts`, `vocabulary.ts`, `contracts.ts`, `GET`/`POST` `/api/learning-loop/[topicId]`, `LearningLoopStepRail`, and subject-route hooks in `subject-experience.tsx`. Quiz submissions now call `syncLearningLoopAfterQuiz` from `quiz/service.ts`; after feedback the subject route fetches `/api/journey/next-action` for a single next CTA. Added `tests/learning-loop.test.mjs` (`4/4` passed). Verification: `npm run lint`, `npm run type-check`, learning-loop tests green.
@@ -205,7 +206,7 @@ Update this section every session.
 ### What is next
 
 - Refresh **`SWITCH_LIVE_STUDENT_COOKIE`** via https://theswitchplatform.com/account/live-cookie-guide, then run **`npm run verify:check-live-cookies`** and **`npm run verify:connected-journey`**
-- Optionally trim `.next-rehearsal/` from the Docker build context via `.dockerignore` if deploy speed needs a follow-up pass
+- Continue monitoring whether any signed-in route still needs a direct-service fast path beyond the shared helper pass
 - Continue **Mark 4 Phase 7** public marketing refinement when ready
 - **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
 - **Priority E:** **closed for year 1** — Wales/NI routes, parent/teacher onboarding, admin restyle, i18n, broader content expansion remain deferred; operator must explicitly reopen after year 1
@@ -228,12 +229,15 @@ Update this section every session.
 
 ### Verification last run
 
-Fresh rerun on 7 July 2026 (homepage slow-load fix + Fly deploy):
+Fresh rerun on 7 July 2026 (website clickability + route-speed pass):
 
 - [x] `npm run lint`
 - [x] `npm run type-check`
-- [x] `npm run test` (`228/228` passed)
-- [x] `npm run deploy:fly` (`deployment-01KWXWSVDS0KCER95SM6BNK6NN`)
+- [x] `npm run test` (`231/231` passed)
+- [x] `npm run test:smoke`
+- [x] browser guest-link check on `http://localhost:3000` (`/login?returnTo=...` targets confirmed)
+- [x] `npm run build`
+- [x] `npm run deploy:fly` (`deployment-01KWXYFFY9201ZB07D7YJA7M47`)
 - [x] `curl -I https://theswitchplatform.com` → HTTP 200
 - [x] `curl -I https://the-switch-platform.fly.dev` → HTTP 200
 - [ ] `npm run verify:check-live-cookies` — cookies expired

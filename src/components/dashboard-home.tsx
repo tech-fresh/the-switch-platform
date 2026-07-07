@@ -13,6 +13,7 @@ import { Mark32DailyQuote } from "@/components/streamlined/mark32-daily-quote";
 import { getStudyDaysThisWeek } from "@/components/streamlined/mark32-dashboard-utils";
 import { Mark32HeroRow } from "@/components/streamlined/mark32-hero-row";
 import { Mark32WeakestTopics } from "@/components/streamlined/mark32-weakest-topics";
+import { getPublicRouteHref } from "@/lib/public-route";
 import type {
   DashboardHomeData,
   DashboardRouteCard,
@@ -52,7 +53,13 @@ function pickRecentSessions(data: DashboardHomeData, limit = 2): DashboardSessio
     .slice(0, limit);
 }
 
-function StreamlinedRouteCards({ cards }: { cards: DashboardRouteCard[] }) {
+function StreamlinedRouteCards({
+  cards,
+  isAuthenticated = true,
+}: {
+  cards: DashboardRouteCard[];
+  isAuthenticated?: boolean;
+}) {
   if (!cards.length) {
     return null;
   }
@@ -60,7 +67,11 @@ function StreamlinedRouteCards({ cards }: { cards: DashboardRouteCard[] }) {
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {cards.map((card) => (
-        <Link key={card.href} href={card.href} className={premiumUi.cardHover}>
+        <Link
+          key={card.href}
+          href={getPublicRouteHref(card.href, isAuthenticated)}
+          className={premiumUi.cardHover}
+        >
           <p className={premiumUi.eyebrow}>{card.eyebrow}</p>
           <h3 className="mt-3 text-xl font-bold tracking-tight text-white">{card.title}</h3>
           <p className={`mt-2 ${premiumUi.body}`}>{card.description}</p>
@@ -124,6 +135,7 @@ function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeDa
         powerGridLevel={data.summary.overallLevel}
         readinessScore={data.summary.examReadinessScore}
         xpTotal={data.summary.xpTotal}
+        isAuthenticated={isAuthenticated}
       />
 
       <PremiumHomepageMarketing />
@@ -136,7 +148,10 @@ function HomeMarketingContent({ data, isAuthenticated }: { data: DashboardHomeDa
             Start with the route that matches your next task — progress, planning, and support stay connected.
           </p>
         </div>
-        <StreamlinedRouteCards cards={pickStudyRouteCards(data.routeCards)} />
+        <StreamlinedRouteCards
+          cards={pickStudyRouteCards(data.routeCards)}
+          isAuthenticated={isAuthenticated}
+        />
       </section>
 
       <section className={`${premiumUi.card} sm:px-8`}>

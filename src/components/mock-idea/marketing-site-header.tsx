@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MARKETING_NAV } from "@/components/mock-idea/brand-tokens";
 import { SwitchBrandLogo } from "@/components/switch-brand-logo";
 import { premiumUi } from "@/components/premium/premium-ui";
+import { getPublicRouteHref } from "@/lib/public-route";
 
 interface MarketingSiteHeaderProps {
   isAuthenticated?: boolean;
@@ -38,7 +39,7 @@ export function MarketingSiteHeader({ isAuthenticated = false }: MarketingSiteHe
             {MARKETING_NAV.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={getPublicRouteHref(item.href, isAuthenticated)}
                 className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
                   item.primary
                     ? "border border-[#6C4EFF]/40 bg-[#6C4EFF]/15 text-white"

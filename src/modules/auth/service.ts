@@ -203,33 +203,78 @@ export async function getAccountOverview(
 ): Promise<AccountOverview> {
   const session = options?.session ?? { status: "signed-out" as const };
   const userId = getAuthUserIdFromSession(session);
-  const [summary, savedProgress, accessibility, recommendations, routeCopy, signInOptions] = await Promise.all([
-    getMockPowerGridSummary({ userId }),
-    getSavedProgressOverview({ userId }),
-    getAccessibilitySnapshot(userId),
-    getStudentRecommendations(userId),
-    getRouteCopy(),
-    getSignInOptions(),
-  ]);
-
-  const subjects = getMockSubjects();
   const runtime = getAuthRuntimeConfig();
   const configuredProviders = runtime.mode === "oidc" ? getConfiguredOidcProviders() : [];
   const hasConfiguredProductionProviders = configuredProviders.length > 0;
   const authReadiness = getAuthReadinessSummary();
+  const [routeCopy, signInOptions] = await Promise.all([getRouteCopy(), getSignInOptions()]);
   const signedOutCopy = buildSignedOutAccountCopy({
     runtimeMode: runtime.mode,
     hasConfiguredProductionProviders,
     configuredProviderCount: configuredProviders.length,
   });
+
+  if (session.status !== "authenticated") {
+    const metrics: AccountMetric[] = [
+      {
+        label: "Signed in as",
+        value: signedOutCopy.signedInLabel,
+        detail: signedOutCopy.signedInDetail,
+      },
+      {
+        label: "Access level",
+        value: signedOutCopy.accessLevelLabel,
+        detail: "Sign in to unlock account-linked and protected product surfaces.",
+      },
+      {
+        label: "Subjects active",
+        value: String(getMockSubjects().length),
+        detail: "Sign in to store readiness and progress against your account.",
+      },
+      {
+        label: "Saved sessions",
+        value: "0",
+        detail: "Sign in to keep autosave, continuity, and support snapshots linked to you.",
+      },
+      {
+        label: "Support profile",
+        value: "Sign in to keep",
+        detail: "No formal arrangements active yet",
+      },
+    ];
+
+    return {
+      isAuthenticated: false,
+      session,
+      signInOptions,
+      authReadiness,
+      accessPath: buildAuthAccessPathSummary(session),
+      metrics,
+      quickLinks: [
+        buildAccountLink("/dashboard", routeCopy["/dashboard"].label, routeCopy["/dashboard"].description),
+        buildAccountLink("/saved-progress", routeCopy["/saved-progress"].label, routeCopy["/saved-progress"].description),
+        buildAccountLink("/recommendations", routeCopy["/recommendations"].label, routeCopy["/recommendations"].description),
+        buildAccountLink("/accessibility", routeCopy["/accessibility"].label, routeCopy["/accessibility"].description),
+        buildAccountLink("/support", routeCopy["/support"].label, routeCopy["/support"].description),
+      ],
+      supportSummary: signedOutCopy.supportSummary,
+      nextBestAction: signedOutCopy.nextBestAction,
+      signedOutTitle: signedOutCopy.signedOutTitle,
+      signedOutDescription: signedOutCopy.signedOutDescription,
+    };
+  }
+
+  const [summary, savedProgress, accessibility, recommendations] = await Promise.all([
+    getMockPowerGridSummary({ userId }),
+    getSavedProgressOverview({ userId }),
+    getAccessibilitySnapshot(userId),
+    getStudentRecommendations(userId),
+  ]);
+  const subjects = getMockSubjects();
   const signedInLabel =
-    session.status === "authenticated"
-      ? session.user.displayName
-      : signedOutCopy.signedInLabel;
+    session.user.displayName;
   const signedInDetail =
-    session.status === "authenticated"
-      ? session.user.yearGroup + " • " + session.user.email
-      : signedOutCopy.signedInDetail;
+    session.user.yearGroup + " • " + session.user.email;
 
   const metrics: AccountMetric[] = [
     {
@@ -239,14 +284,8 @@ export async function getAccountOverview(
     },
     {
       label: "Access level",
-      value:
-        session.status === "authenticated"
-          ? session.user.roles.join(", ")
-          : signedOutCopy.accessLevelLabel,
-      detail:
-        session.status === "authenticated"
-          ? "Role-aware route protection now uses these account roles."
-          : "Sign in to unlock account-linked and protected product surfaces.",
+      value: session.user.roles.join(", "),
+      detail: "Role-aware route protection now uses these account roles.",
     },
     {
       label: "Subjects active",
@@ -262,9 +301,7 @@ export async function getAccountOverview(
       label: "Support profile",
       value: accessibility.studentAccessProfile.activeAccessArrangements.length
         ? "Configured"
-        : session.status === "authenticated"
-          ? "Ready"
-          : "Sign in to keep",
+        : "Ready",
       detail: accessibility.studentAccessProfile.activeAccessArrangements.length
         ? accessibility.studentAccessProfile.activeAccessArrangements.join(", ")
         : "No formal arrangements active yet",
@@ -280,7 +317,6 @@ export async function getAccountOverview(
   ];
 
   if (
-    session.status === "authenticated" &&
     session.user.roles.some((role) => role === "editor" || role === "admin")
   ) {
     quickLinks.push(
@@ -300,16 +336,10 @@ export async function getAccountOverview(
     accessPath: buildAuthAccessPathSummary(session),
     metrics,
     quickLinks,
-    supportSummary:
-      session.status === "authenticated"
-        ? accessibility.studentAccessProfile.textToSpeechEnabled
-          ? "Text to speech is enabled in the current profile and can travel with saved sessions."
-          : "Support settings are account-linked and ready to carry through future web and app clients."
-        : signedOutCopy.supportSummary,
-    nextBestAction:
-      session.status === "authenticated"
-        ? recommendations[0]?.title ?? summary.nextBestAction
-        : signedOutCopy.nextBestAction,
+    supportSummary: accessibility.studentAccessProfile.textToSpeechEnabled
+      ? "Text to speech is enabled in the current profile and can travel with saved sessions."
+      : "Support settings are account-linked and ready to carry through future web and app clients.",
+    nextBestAction: recommendations[0]?.title ?? summary.nextBestAction,
     signedOutTitle: signedOutCopy.signedOutTitle,
     signedOutDescription: signedOutCopy.signedOutDescription,
   };

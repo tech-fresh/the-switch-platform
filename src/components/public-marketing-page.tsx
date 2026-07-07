@@ -15,7 +15,7 @@ export function PublicMarketingPage({ children, isAuthenticated = false }: Publi
     <main className={mark32Ui.publicMain}>
       <MarketingSiteHeader isAuthenticated={isAuthenticated} />
       <div className={mark32Ui.contentWrap}>{children}</div>
-      <MarketingSiteFooter />
+      <MarketingSiteFooter isAuthenticated={isAuthenticated} />
     </main>
   );
 }

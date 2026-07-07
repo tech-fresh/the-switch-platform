@@ -28,7 +28,7 @@ test("support route stays public with marketing chrome and urgent signposting", 
   const supportPage = readRepoFile("src/app/support/page.tsx");
 
   assert.match(supportPage, /PublicMarketingPage/);
-  assert.match(supportPage, /getSupportHubApiData/);
+  assert.match(supportPage, /getSupportHubData/);
   assert.match(supportPage, /urgentHelp/);
   assert.match(supportPage, /routeGuidance/);
 });

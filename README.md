@@ -16,8 +16,8 @@
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** |
 | Production deploy | **Fly.io only** — [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not use Netlify or Vercel.** |
-| What are we doing now? | **Homepage slow-load fix is live on Fly** — `/` now renders from seeded marketing data instead of dashboard/account API fetches, and signed-out layout requests skip persistence-backed accessibility reads on guest requests. |
-| What is next? | Refresh live cookies and run `npm run verify:connected-journey`, then continue **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
+| What are we doing now? | **Website clickability + route-speed pass is live on Fly** — guest-facing buttons now go straight to `/login` with the correct `returnTo` path, and shared server-render routes now use direct module services instead of loopback API fetches where they were slowing navigation. |
+| What is next? | Refresh live cookies and run `npm run verify:connected-journey`, then continue **Mark 4 Phase 7** when ready. Watch for any remaining signed-in routes that still merit a direct-service fast path. Priority **E** deferred only. |
 | Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength, Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
@@ -652,6 +652,16 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-07 Website clickability + route-speed pass
+
+- Added `src/lib/public-route.ts` so guest-facing homepage, header, footer, and marketing links route directly to `/login` with the correct `returnTo` target instead of first bouncing through protected pages like `/dashboard`, `/subjects`, `/progress`, or `/admin`.
+- Reworked `src/lib/api/server.ts` to call module services directly for core route data instead of making internal loopback HTTP fetches during server rendering. This covered dashboard, progress, saved progress, exams, assessments, journey, recommendations, account, onboarding, support, website guide, read-aloud, accessibility, and subject experience helpers.
+- Simplified `src/lib/server/student-route.ts` so signed-in student routes stop reloading dashboard/account data just to build shell context, and added a signed-out fast path in `src/modules/auth/service.ts` so `/login` does not load persistence-heavy account data before the user is authenticated.
+- Updated `/login`, `/how-it-works`, and `/support` to read services directly instead of going through internal API wrappers.
+- Added `.next-rehearsal` to `.dockerignore`, which cut the Fly Docker upload context back down to about `789 kB` during deploy instead of dragging rehearsal build artifacts into the image build.
+- Local verification: `npm run lint`, `npm run type-check`, `npm run test` (`231/231` passed), `npm run test:smoke` passed. Local browser timings after the refactor were roughly `/` `1723ms`, `/login` `2024ms`, `/how-it-works` `4764ms`, and `/support` `4007ms` in the dev runtime.
+- Deploy: `npm run deploy:fly` succeeded (`deployment-01KWXYFFY9201ZB07D7YJA7M47`); `curl -I https://theswitchplatform.com` and `curl -I https://the-switch-platform.fly.dev` both returned `HTTP/2 200`.
 
 ### 2026-07-07 Homepage slow-load fix
 

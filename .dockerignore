@@ -1,5 +1,6 @@
 .git
 .next
+.next-rehearsal
 node_modules
 .codex-data
 release-evidence

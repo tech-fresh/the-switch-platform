@@ -68,14 +68,14 @@ Update this section every session.
 - **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
-- **Last updated by:** Codex
-- **Last updated:** 2026-07-10 (OIDC callback hardening deployed to Fly)
+- **Last updated by:** Cursor Agent
+- **Last updated:** 2026-07-12 (OIDC + Stone + Teal merged to `main` on tech-fresh/the-switch-platform)
 
 ### Active task
 
 - **Priority item #:** OIDC login hardening (Codex)
 - **Module:** auth start/callback flow
-- **Status:** Added a signed OAuth `state` fallback so Google/Microsoft sign-in can complete even when the embedded browser drops the short-lived `switch_auth_flow` cookie on the return from the identity provider. Local verification is green; Fly deploy is in progress.
+- **Status:** OIDC signed-`state` fallback + Stone + Teal Studio route sweep + `/colourways` preview are on GitHub **`main`** at `tech-fresh/the-switch-platform`. Live Fly already has the auth hardening deploy.
 - **Branch:** `main`
 - **Codex entry:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`
 
@@ -108,7 +108,7 @@ Update this section every session.
 
 ### What was just completed
 
-- **OIDC callback state fallback hardening deployed (10 July 2026)** — updated `src/app/api/auth/start/route.ts` to put the signed auth-flow token into both the cookie and the OAuth `state` parameter, then updated `src/app/api/auth/callback/route.ts` to accept the signed `state` token when the embedded browser loses the short-lived flow cookie. Added `isSameAuthFlowState()` in `src/modules/auth/session-token.ts` plus coverage in `tests/auth-session-token.test.mjs`. Verification: `npm run lint`, `npm run type-check`, and `npm run test -- tests/auth-session-token.test.mjs tests/auth-public-origin.test.mjs tests/auth-login-page.test.mjs tests/auth-runtime.test.mjs` passed; full suite green at `232/232`. Deploy: `npm run deploy:fly` succeeded and Fly reported machine `7812e3dc1240d8` healthy at `https://the-switch-platform.fly.dev/`.
+- **Canonical GitHub `main` sync (12 July 2026)** — confirmed sole remote is `https://github.com/tech-fresh/the-switch-platform.git`; merged OIDC hardening + Stone + Teal Studio + `/colourways` onto **`main`**; added `package.json` repository/homepage; removed stale dark-violet “live default” wording from README/PLATFORM-GUIDE/AGENTS. — updated `src/app/api/auth/start/route.ts` to put the signed auth-flow token into both the cookie and the OAuth `state` parameter, then updated `src/app/api/auth/callback/route.ts` to accept the signed `state` token when the embedded browser loses the short-lived flow cookie. Added `isSameAuthFlowState()` in `src/modules/auth/session-token.ts` plus coverage in `tests/auth-session-token.test.mjs`. Verification: `npm run lint`, `npm run type-check`, and `npm run test -- tests/auth-session-token.test.mjs tests/auth-public-origin.test.mjs tests/auth-login-page.test.mjs tests/auth-runtime.test.mjs` passed; full suite green at `232/232`. Deploy: `npm run deploy:fly` succeeded and Fly reported machine `7812e3dc1240d8` healthy at `https://the-switch-platform.fly.dev/`.
 - **Stone + Teal Studio full route sweep completed (10 July 2026)** — finished the remaining live-route palette pass so the real website no longer mixes the old violet/dark treatment into key user flows. Updated dashboard cards, `/support`, `/how-it-works`, auth access panels, `/account/live-cookie-guide`, subject-study side panels, progress headings, exam and assessment interaction states, admin accents, onboarding chips, Microsoft login guide, and related shared streamlined components to use the warm stone surfaces, deep teal actions, and brass-friendly accent system. Verification: `npm run lint`, `npm run type-check`, and `npm run test` all passed (`231/231`).
 - **Stone + Teal Studio website theme rollout completed (10 July 2026)** — moved the shared premium token layer, global page chrome, marketing header/footer, student shell, homepage hero/marketing sections, Power Grid cards, dashboard summary panels, quiz card, journey panel, and accessibility toolbar onto the calmer stone/teal palette. The live website direction now uses warm stone surfaces, deep teal primary actions, and brass accents instead of the older dark violet/blue scheme across the main public and signed-in shell components. Verification: `npm run lint`, `npm run type-check`, and `npm run test` all passed (`231/231`).
 - **Website colourway samples added (10 July 2026)** — created a new public preview route at `/colourways` with four visual directions for the marketing shell and student-facing surfaces: Midnight Signal, Stone + Teal Studio, Ember Graphite, and Forest Paper. Added `src/components/mock-idea/website-colourways-showcase.tsx`, `src/app/colourways/page.tsx`, and a shortcut from `/mock-idea-preview` so the colour studies are easy to compare locally in the browser. Verification: `npm run lint` and `npm run type-check` passed.

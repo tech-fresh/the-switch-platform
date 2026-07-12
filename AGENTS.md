@@ -160,7 +160,7 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
 | What are we doing now? | **Google/Microsoft sign-in hardening has been deployed to Fly** — the auth callback now has a signed `state` fallback so login can complete even when an embedded browser drops the short-lived flow cookie. The Stone + Teal Studio route sweep remains in place across the live surfaces. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
-| Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** and the route-speed/clickability pass are in live code paths. |
+| Lane B — website | **Complete** — Priority C shipped 24 June 2026; **Stone + Teal Studio** is the live palette; route-speed/clickability pass is in live code paths. |
 | What is next? | Confirm live sign-in completes cleanly with the deployed callback fix, then refresh live student/admin cookies and rerun `npm run verify:check-live-cookies` plus `npm run verify:connected-journey`. After that, continue **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) on Fly production closeout evidence dated 26 June 2026.

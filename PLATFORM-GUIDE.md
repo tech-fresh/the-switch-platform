@@ -14,8 +14,9 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 **Dual-agent rule:** `HANDOFF.md` is the baton between **Cursor** and **Codex** — read it first; update before switching tools. Full map → [`HANDOFF.md` → Dual-agent document system](./HANDOFF.md#dual-agent-document-system-cursor--codex).
 
 **Active folder:** `/Users/lloydnwagbara/Documents/THE SWITCH 3`  
-**GitHub:** `https://github.com/tech-fresh/the-switch-platform`  
-**Live site:** `https://theswitchplatform.com`
+**GitHub (only):** `https://github.com/tech-fresh/the-switch-platform` — default branch **`main`**; do not use any other remote or fork as source of truth  
+**Live site:** `https://theswitchplatform.com`  
+**Do not use:** `THE SWITCH` or `THE SWITCH 2` folders
 
 **Deployment (Fly.io only):** [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md) — do **not** use Netlify or Vercel. Disconnect those GitHub integrations if PR checks still appear.
 
@@ -27,10 +28,12 @@ This file merges **`AGENTS.md`**, all **module READMEs**, and the core **README*
 
 | Question | Answer |
 |----------|--------|
-| Is the platform live? | Yes — https://theswitchplatform.com (Fly). **Fully complete** on production — Priority A closed 26 June 2026. |
-| What are we doing now? | **MVP usability plan complete (Areas 1–9).** Priority A–D closed; Priority E deferred only. |
+| Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A closed 26 June 2026. |
+| GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** only — default branch **`main`** |
+| What are we doing now? | **OIDC callback hardening + Stone + Teal Studio** on the live Fly app; confirm clean sign-in, then refresh live cookies for journey proof. |
+| What is next? | Refresh live cookies → `verify:check-live-cookies` + `verify:connected-journey`; then Mark 4 Phase 7 when ready. Priority **E** deferred. |
 | Onboarding | **8 steps stay** — they **create the dashboard**. Secondary school; GCSE (England) + iGCSE; Wales/NI **later**. |
-| Website polish | **Complete** — Priority C shipped 24 June 2026 (shell, planner, marketing, recovery). |
+| Website polish | **Complete** — Priority C shipped 24 June 2026; Stone + Teal Studio is the live palette. |
 | Usability hardening | **Complete — 30 June 2026** — see [`MVP-OPERATOR-TRUTH.md`](./docs/MVP-OPERATOR-TRUTH.md). |
 | Priority C | **Complete — closed.** Do not reopen unless operator requests exception. |
 

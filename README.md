@@ -36,18 +36,18 @@
 
 ## Website Redesign Direction (July 2026)
 
-Premium dark-mode GCSE revision platform — implemented in code, not mockups only.
+**Live default:** Stone + Teal Studio — warm stone surfaces, deep teal primary actions, brass accents. Compare alternatives at `/colourways`.
 
 | Inspiration | Contribution |
 |-------------|--------------|
-| **Stripe** | Premium homepage gradients, trust stats, purple CTAs |
-| **Linear** | Desktop sidebar navigation, command-centre dashboard |
+| **Stripe** | Premium homepage hierarchy and trust/value sections |
+| **Linear** | Calm shell navigation and command-centre dashboard |
 | **Seneca** | Clean quiz card, progress bar, instant right/wrong feedback |
 | **Duolingo** | Power Grid levels, streak stats, motivational progress rings |
 | **BBC Bitesize** | Clear topic hierarchy and educational structure |
 | **Save My Exams** | Subject → exam board → topic navigation |
 
-**Live code:** `src/components/premium/` · tokens in `premium-ui.ts` · full guide in [`docs/design/UI-UX-MASTERPLAN.md`](docs/design/UI-UX-MASTERPLAN.md).
+**Live code:** `src/components/premium/` · tokens in `premium-ui.ts` · colour studies at `/colourways` · full guide in [`docs/design/UI-UX-MASTERPLAN.md`](docs/design/UI-UX-MASTERPLAN.md) · authoritative UI: [`docs/design/11_UI_UX_MASTER_GUIDE.md`](docs/design/11_UI_UX_MASTER_GUIDE.md).
 
 ---
 
@@ -57,7 +57,7 @@ Premium dark-mode GCSE revision platform — implemented in code, not mockups on
 
 ### In one sentence
 
-**The Switch** is a live GCSE revision website at https://theswitchplatform.com. Connected learning phases 0–9 are on **`main`** and **deployed to Fly** (7 July 2026). Refresh live cookies to complete `verify:connected-journey`.
+**The Switch** is a live GCSE revision website at https://theswitchplatform.com. Source of truth is GitHub **`tech-fresh/the-switch-platform`**. Connected learning, Stone + Teal Studio, and OIDC callback hardening are on the live Fly app — refresh cookies to finish `verify:connected-journey`.
 
 ### Where we are (simple view)
 
@@ -652,6 +652,13 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-12 Canonical GitHub main sync (OIDC + Stone + Teal)
+
+- Confirmed sole remote: `origin` → `https://github.com/tech-fresh/the-switch-platform.git`.
+- Merged `cursor/oidc-hardening-stone-teal-theme` into **`main`** and pushed so default branch holds OIDC callback hardening, Stone + Teal Studio palette, `/colourways`, and matching docs.
+- Added `package.json` `repository` + `homepage` fields pointing at the canonical GitHub and live site.
+- Updated README / PLATFORM-GUIDE / HANDOFF so no operator surface still describes dark-violet as the live default.
 
 ### 2026-07-10 OIDC callback state fallback hardening
 

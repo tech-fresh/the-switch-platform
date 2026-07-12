@@ -95,3 +95,10 @@ export interface AccountOverview {
   signedOutTitle: string;
   signedOutDescription: string;
 }
+
+export interface LoginPageData {
+  isAuthenticated: boolean;
+  session: AuthSession;
+  signInOptions: SignInOption[];
+  accessPath: AuthAccessPathSummary | null;
+}

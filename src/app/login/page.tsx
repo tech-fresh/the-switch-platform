@@ -5,7 +5,7 @@ import { AuthAccessPathPanel } from "@/components/auth-access-path-panel";
 import { SignInBrandMark } from "@/components/sign-in-brand-mark";
 import { UnifiedSignInCard } from "@/components/unified-sign-in-card";
 import { getRequestAuthSession } from "@/modules/auth/request";
-import { getAccountOverview } from "@/modules/auth/service";
+import { getLoginPageData } from "@/modules/auth/service";
 
 export const dynamic = "force-dynamic";
 
@@ -51,16 +51,14 @@ export default async function LoginPage({
     intent?: string | string[] | undefined;
   }>;
 }) {
-  const [account, resolvedSearchParams] = await Promise.all([
-    getRequestAuthSession().then((session) => getAccountOverview({ session })),
-    searchParams ??
-      Promise.resolve({} as {
-        authError?: string | string[] | undefined;
-        returnTo?: string | string[] | undefined;
-        reauth?: string | string[] | undefined;
-        intent?: string | string[] | undefined;
-      }),
-  ]);
+  const resolvedSearchParams =
+    (await searchParams) ??
+    ({} as {
+      authError?: string | string[] | undefined;
+      returnTo?: string | string[] | undefined;
+      reauth?: string | string[] | undefined;
+      intent?: string | string[] | undefined;
+    });
 
   const rawIntent = resolvedSearchParams.intent;
   const intent = (Array.isArray(rawIntent) ? rawIntent[0] : rawIntent) === "admin" ? "admin" : "student";
@@ -70,23 +68,26 @@ export default async function LoginPage({
   const authError = Array.isArray(rawAuthError) ? rawAuthError[0] : rawAuthError;
   const rawReauth = resolvedSearchParams.reauth;
   const reauth = (Array.isArray(rawReauth) ? rawReauth[0] : rawReauth) === "1";
+  const loginPageData = await getRequestAuthSession().then((session) =>
+    getLoginPageData(session, intent),
+  );
 
-  if (account.isAuthenticated && !reauth) {
+  if (loginPageData.isAuthenticated && !reauth) {
     redirect(returnTo);
   }
 
   const authenticatedSession =
-    account.session.status === "authenticated" ? account.session : null;
+    loginPageData.session.status === "authenticated" ? loginPageData.session : null;
 
   return (
-    <PublicMarketingPage isAuthenticated={account.isAuthenticated}>
+    <PublicMarketingPage isAuthenticated={loginPageData.isAuthenticated}>
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 py-4">
         <SignInBrandMark />
-        {intent === "admin" ? (
-          <AuthAccessPathPanel accessPath={account.accessPath} variant="login" />
+        {loginPageData.accessPath ? (
+          <AuthAccessPathPanel accessPath={loginPageData.accessPath} variant="login" />
         ) : null}
         <UnifiedSignInCard
-          signInOptions={account.signInOptions}
+          signInOptions={loginPageData.signInOptions}
           returnTo={returnTo}
           signInIntent={intent}
           authErrorMessage={getAuthErrorMessage(authError)}

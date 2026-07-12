@@ -67,21 +67,25 @@ export async function GET(request: Request) {
     authorizationUrl.searchParams.set("prompt", oidcProvider.prompt);
   }
 
+  const flowToken = createAuthFlowToken(
+    {
+      provider: oidcProvider.provider,
+      state,
+      codeVerifier,
+      returnTo,
+      createdAt: now.toISOString(),
+      expiresAt,
+    },
+    runtime.sessionSecret,
+  );
+
+  authorizationUrl.searchParams.set("state", flowToken);
+
   const response = NextResponse.redirect(authorizationUrl);
 
   response.cookies.set(
     AUTH_FLOW_COOKIE_NAME,
-    createAuthFlowToken(
-      {
-        provider: oidcProvider.provider,
-        state,
-        codeVerifier,
-        returnTo,
-        createdAt: now.toISOString(),
-        expiresAt,
-      },
-      runtime.sessionSecret,
-    ),
+    flowToken,
     getAuthFlowCookieSettings(),
   );
 

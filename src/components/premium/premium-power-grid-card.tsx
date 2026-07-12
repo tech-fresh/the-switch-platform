@@ -27,15 +27,15 @@ export function PremiumPowerGridCard({
 
   if (compact) {
     return (
-      <article className="rounded-2xl border border-[#6C4EFF]/30 bg-gradient-to-br from-[#6C4EFF]/20 to-[#121826] p-5 shadow-lg">
+      <article className="rounded-2xl border border-[#0f766e]/20 bg-gradient-to-br from-[#0f766e]/10 to-[#f7f2ea] p-5 shadow-sm">
         <p className={premiumUi.eyebrowAccent}>Power Grid</p>
         <div className="mt-3 flex items-center gap-3">
           <span className="text-3xl" aria-hidden="true">
             {presentation.rank.icon}
           </span>
           <div>
-            <h2 className="text-lg font-bold text-white">{presentation.rank.label}</h2>
-            <p className="text-sm text-[#9CA3AF]">
+            <h2 className="text-lg font-bold text-[#163038]">{presentation.rank.label}</h2>
+            <p className="text-sm text-[#52646a]">
               Power Level {presentation.powerLevel} · {presentation.xpTotal.toLocaleString()} XP
             </p>
           </div>
@@ -50,7 +50,7 @@ export function PremiumPowerGridCard({
         >
           <div className={premiumUi.progressFill} style={{ width: `${presentation.powerLevelProgressPercentage}%` }} />
         </div>
-        <p className="mt-2 text-sm text-[#9CA3AF]">{presentation.nextRankPreview}</p>
+        <p className="mt-2 text-sm text-[#52646a]">{presentation.nextRankPreview}</p>
       </article>
     );
   }
@@ -77,17 +77,17 @@ export function PremiumPowerGridCard({
               key={rankDef.id}
               className={`rounded-2xl border p-4 transition ${
                 isActive
-                  ? "border-[#6C4EFF] bg-[#6C4EFF]/15 shadow-lg shadow-[#6C4EFF]/20"
+                  ? "border-[#0f766e]/30 bg-[#0f766e]/10"
                   : isPast
-                    ? "border-[#22C55E]/30 bg-[#22C55E]/10"
-                    : "border-white/10 bg-[#121826]"
+                    ? "border-[#3f7d5c]/30 bg-[#3f7d5c]/10"
+                    : "border-[#ddd3c6] bg-white"
               }`}
             >
               <span className="text-2xl" aria-hidden="true">
                 {rankDef.icon}
               </span>
-              <p className="mt-2 text-sm font-bold text-white">{rankDef.label}</p>
-              <p className="mt-1 text-xs text-[#9CA3AF]">{rankDef.xpThreshold.toLocaleString()}+ XP</p>
+              <p className="mt-2 text-sm font-bold text-[#163038]">{rankDef.label}</p>
+              <p className="mt-1 text-xs text-[#52646a]">{rankDef.xpThreshold.toLocaleString()}+ XP</p>
             </div>
           );
         })}

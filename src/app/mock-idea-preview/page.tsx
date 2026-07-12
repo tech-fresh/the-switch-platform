@@ -31,6 +31,12 @@ export default async function MockIdeaPreviewPage() {
           </div>
           <div className="flex shrink-0 flex-wrap gap-2">
             <Link
+              href="/colourways"
+              className="border border-fuchsia-300 bg-fuchsia-50 px-4 py-2.5 text-sm font-semibold text-fuchsia-950 hover:bg-white"
+            >
+              Colourway samples
+            </Link>
+            <Link
               href="/brand-mockup"
               className="border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-950 hover:bg-white"
             >

@@ -14,14 +14,14 @@ const TOOLS = [
 export function PremiumAccessibilityToolbar() {
   return (
     <nav
-      className="sticky bottom-4 z-10 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/10 bg-[#121826]/95 p-3 shadow-xl backdrop-blur-xl"
+      className="sticky bottom-4 z-10 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-[#ddd3c6] bg-[#fbf7f0]/95 p-3 shadow-xl backdrop-blur-xl"
       aria-label="Accessibility tools"
     >
       {TOOLS.map((tool) => (
         <Link
           key={tool.label}
           href={tool.href}
-          className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-[#0B0F17] px-4 py-2.5 text-sm font-semibold text-white transition hover:border-[#6C4EFF]/40 hover:bg-[#6C4EFF]/10"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#ddd3c6] bg-white px-4 py-2.5 text-sm font-semibold text-[#163038] transition hover:border-[#0f766e]/35 hover:bg-[#f7f2ea]"
         >
           <span aria-hidden="true">{tool.icon}</span>
           {tool.label}

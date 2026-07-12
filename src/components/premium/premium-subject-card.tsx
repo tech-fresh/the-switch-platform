@@ -28,9 +28,9 @@ export function PremiumSubjectCard({
       >
         {icon}
       </div>
-      <h3 className="mt-5 text-xl font-bold tracking-tight text-white group-hover:text-[#00BFFF]">{name}</h3>
+      <h3 className="mt-5 text-xl font-bold tracking-tight text-[#163038] group-hover:text-[#0f766e]">{name}</h3>
       <p className={`mt-2 ${premiumUi.body}`}>{description}</p>
-      <p className="mt-5 text-sm font-bold text-[#6C4EFF] group-hover:text-[#00BFFF]">Explore subject →</p>
+      <p className="mt-5 text-sm font-bold text-[#0f766e] group-hover:text-[#b48a38]">Explore subject →</p>
     </Link>
   );
 }

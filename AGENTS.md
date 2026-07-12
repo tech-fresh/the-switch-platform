@@ -158,16 +158,16 @@ This block stays aligned with `README.md` → **Operator and agent sync**. Do no
 | Question | Answer |
 |----------|--------|
 | Is the platform live? | Yes — https://theswitchplatform.com (Fly). Priority A truthful completion **complete** (26 June 2026). |
-| What are we doing now? | **Website clickability + route-speed pass is live on Fly** — guest-facing buttons now go straight to `/login` with the correct `returnTo` path, and shared server-render routes now use direct module services instead of loopback API fetches where they were slowing navigation. |
+| What are we doing now? | **Google/Microsoft sign-in hardening has been deployed to Fly** — the auth callback now has a signed `state` fallback so login can complete even when an embedded browser drops the short-lived flow cookie. The Stone + Teal Studio route sweep remains in place across the live surfaces. |
 | Lane A — onboarding | **8 steps stay.** They **build the student dashboard**. Secondary school + **GCSE (England)** / **iGCSE** only; Wales/NI **coming later**. |
-| Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** now in live code paths. |
-| What is next? | Refresh live cookies and rerun `npm run verify:connected-journey`, then continue **Mark 4 Phase 7** when ready. Watch for any remaining signed-in routes that still merit a direct-service fast path. Priority **E** deferred only. |
+| Lane B — website | **Complete** — Priority C shipped 24 June 2026; **July 2026 premium dark redesign** and the route-speed/clickability pass are in live code paths. |
+| What is next? | Confirm live sign-in completes cleanly with the deployed callback fix, then refresh live student/admin cookies and rerun `npm run verify:check-live-cookies` plus `npm run verify:connected-journey`. After that, continue **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
 
 **Historical completion snapshot:** A `8/8` complete · B `4/4` complete · C `10/10` complete · D `6/6` complete · overall active plan `28/28` complete (`100%`) on Fly production closeout evidence dated 26 June 2026.
 
 **Current branch-readiness rule:** do not reuse the historical `100%` label for the working tree by default. Always read `HANDOFF.md` for the current branch readiness percentage and latest verification result first.
 
-**Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. Canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
+**Current branch readiness (9 July 2026 audit):** `96%` for a fresh auditable release pass. Local launch baseline is green (`verify:launch-status`, `lint`, `type-check`, `test`, `test:smoke`), but live-cookie-backed journey proof still needs a refresh before the branch can honestly return to a fresh `100%` claim. Canonical historical evidence remains `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
 
 ```mermaid
 flowchart LR

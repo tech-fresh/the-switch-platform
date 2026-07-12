@@ -279,7 +279,7 @@ function ExamClientRecoveryState({
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/saved-progress"
-              className="inline-flex items-center justify-center border border-violet-700 bg-violet-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-violet-800"
+              className="inline-flex items-center justify-center border border-[#0F766E] bg-[#0F766E] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#0B5F59]"
             >
               Open saved progress
             </Link>
@@ -793,7 +793,7 @@ export function ExamExperience({
         {focusMode ? (
           <section className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-4">
             <div className="space-y-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-violet-700">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#0F766E]">
                 Exam focus mode
               </p>
               <p className="text-lg font-semibold text-stone-950">{paper.title}</p>
@@ -807,7 +807,7 @@ export function ExamExperience({
               </span>
               <Link
                 href={buildExamLobbyHref(paper.examId)}
-                className="border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:border-violet-400"
+                className="border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:border-[#2D7A72]/40"
               >
                 Exit to lobby
               </Link>
@@ -834,7 +834,7 @@ export function ExamExperience({
                       onClick={() => resetSession(item.examId)}
                       className={`flex w-full flex-col gap-2 px-4 py-4 text-left transition ${
                         isSelected
-                          ? "bg-violet-700 text-white"
+                          ? "bg-[#0F766E] text-white"
                           : "bg-white text-stone-900 hover:bg-stone-50"
                       }`}
                     >
@@ -842,16 +842,16 @@ export function ExamExperience({
                         <span className="text-sm font-semibold">{item.subject}</span>
                         <span
                           className={`text-xs uppercase tracking-[0.2em] ${
-                            isSelected ? "text-violet-100" : "text-stone-500"
+                            isSelected ? "text-teal-100" : "text-stone-500"
                           }`}
                         >
                           {item.board}
                         </span>
                       </div>
-                      <p className={`text-sm ${isSelected ? "text-violet-50" : "text-stone-600"}`}>
+                      <p className={`text-sm ${isSelected ? "text-teal-50" : "text-stone-600"}`}>
                         {item.paperName} • {item.durationMinutes} mins • {item.totalMarks} marks
                       </p>
-                      <p className={`text-xs ${isSelected ? "text-violet-100" : "text-stone-500"}`}>
+                      <p className={`text-xs ${isSelected ? "text-teal-100" : "text-stone-500"}`}>
                         {getStudentStageLabel(item.studentStage)} • {getPaperModeLabel(item.paperMode)}
                       </p>
                     </button>
@@ -967,7 +967,7 @@ export function ExamExperience({
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Read aloud
                 </h2>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0F766E]">
                   {readAloudSource}
                 </span>
               </div>
@@ -1011,7 +1011,7 @@ export function ExamExperience({
                 <button
                   type="button"
                   onClick={() => handleReadAloudAction("playing")}
-                  className="border border-violet-700 bg-violet-700 px-3 py-2 text-sm font-medium text-white"
+                  className="border border-[#0F766E] bg-[#0F766E] px-3 py-2 text-sm font-medium text-white"
                 >
                   Play
                 </button>
@@ -1109,7 +1109,7 @@ export function ExamExperience({
               <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
                 <div className="flex flex-col gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
                   <div className="space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F766E]">
                       {currentQuestion.topic}
                     </p>
                     <p className="text-sm leading-6 text-stone-600">{paper.studentContextSummary}</p>
@@ -1135,14 +1135,14 @@ export function ExamExperience({
                         onClick={() => handleSelectOption(option.optionId)}
                         className={`flex w-full items-start gap-3 border px-4 py-4 text-left transition ${
                           isSelected
-                            ? "border-violet-700 bg-violet-700 text-white"
+                            ? "border-[#0F766E] bg-[#0F766E] text-white"
                             : "border-stone-200 bg-white text-stone-900 hover:bg-stone-50"
                         }`}
                       >
                         <span
                           className={`mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center border text-sm font-semibold ${
                             isSelected
-                              ? "border-white/40 bg-white/10 text-white"
+                              ? "border-teal-200/50 bg-teal-100/15 text-white"
                               : "border-stone-300 bg-stone-50 text-stone-700"
                           }`}
                         >
@@ -1178,7 +1178,7 @@ export function ExamExperience({
                     value={currentResponse.workingNotes ?? ""}
                     onChange={(event) => handleWorkingNotesChange(event.target.value)}
                     rows={5}
-                    className="w-full border border-stone-300 bg-white px-3 py-3 text-sm leading-6 text-stone-900 outline-none transition focus:border-violet-700"
+                    className="w-full border border-stone-300 bg-white px-3 py-3 text-sm leading-6 text-stone-900 outline-none transition focus:border-[#0F766E]"
                     placeholder="Capture working, key quotations, unit conversions, or quick reminders here."
                   />
                 </div>
@@ -1227,7 +1227,7 @@ export function ExamExperience({
               <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
                 <div className="flex flex-col gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
                   <div className="space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-700">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F766E]">
                       End of session review
                     </p>
                     <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
@@ -1323,7 +1323,7 @@ export function ExamExperience({
                       type="button"
                       onClick={handleSubmitExam}
                       disabled={submitState === "submitting"}
-                      className="border border-violet-700 bg-violet-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-violet-800"
+                      className="border border-[#0F766E] bg-[#0F766E] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0B5F59]"
                     >
                       {submitState === "submitting" ? "Submitting..." : "Submit paper"}
                     </button>
@@ -1471,13 +1471,13 @@ export function ExamExperience({
                     type="button"
                     onClick={handleStartFreshAttempt}
                     disabled={freshAttemptState === "starting"}
-                    className="border border-violet-700 bg-violet-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:bg-violet-400"
+                    className="border border-[#0F766E] bg-[#0F766E] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0B5F59] disabled:cursor-not-allowed disabled:bg-[#7DB7B0]"
                   >
                     {freshAttemptState === "starting" ? "Starting..." : "Start fresh attempt"}
                   </button>
                   <a
                     href="/results"
-                    className="inline-flex items-center justify-center border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
+                    className="inline-flex items-center justify-center border border-[#0F766E] bg-[#0F766E] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0B5F59]"
                   >
                     Open results route
                   </a>

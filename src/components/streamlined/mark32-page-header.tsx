@@ -21,17 +21,18 @@ interface Mark32PageHeaderProps {
 function getEyebrowClass(tone: Mark32PageHeaderProps["eyebrowTone"]): string {
   switch (tone) {
     case "sky":
-      return "text-[#00BFFF]";
+      return "text-[#2B7FFF]";
     case "emerald":
-      return "text-[#22C55E]";
+      return "text-[#0F766E]";
     case "amber":
       return "text-[#F59E0B]";
     case "rose":
       return "text-[#EF4444]";
     case "violet":
+      return "text-[#7C5A17]";
     case "teal":
     default:
-      return "text-[#6C4EFF]";
+      return "text-[#0F766E]";
   }
 }
 
@@ -39,7 +40,7 @@ export function Mark32StatCard({ label, value, detail }: Mark32StatItem) {
   return (
     <div className={mark32Ui.statCard}>
       <p className={premiumUi.eyebrow}>{label}</p>
-      <p className="mt-2 text-lg font-bold text-white">{value}</p>
+      <p className="mt-2 text-lg font-bold text-slate-950">{value}</p>
       {detail ? <p className={`mt-1 ${premiumUi.body}`}>{detail}</p> : null}
     </div>
   );

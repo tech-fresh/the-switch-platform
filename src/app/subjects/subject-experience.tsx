@@ -49,7 +49,7 @@ export function SubjectExperience({
     return (
       <div className="flex flex-col gap-6">
         <section className="border border-stone-200 bg-white p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-violet-700">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0F766E]">
               Subjects
             </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
@@ -610,7 +610,7 @@ export function SubjectExperience({
             ) : null}
 
             <section className={`${premiumUi.cardMuted} space-y-3`}>
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9CA3AF]">Exam board</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Exam board</h2>
               <PremiumExamBoardSelector
                 boards={selectedSubject.examBoards}
                 selectedBoard={selectedBoard}
@@ -619,18 +619,18 @@ export function SubjectExperience({
             </section>
 
             <section className={`${premiumUi.cardMuted} space-y-3`}>
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9CA3AF]">Visual support</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Visual support</h2>
               <p className={premiumUi.body}>
                 Generated study visuals follow the same review and fact-check workflow as other student content.
               </p>
-              <div className="rounded-xl border border-white/10 bg-[#0B0F17] p-3">
+              <div className="rounded-xl border border-[#D7D0C7] bg-[#F6F3EE] p-3">
                 <p className={premiumUi.eyebrow}>Planned visual</p>
                 <p className={`mt-2 ${premiumUi.body}`}>{selectedTopic.visualSupport.altText}</p>
               </div>
             </section>
 
             <section className={`${premiumUi.cardMuted} space-y-3`}>
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9CA3AF]">Next after this topic</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Next after this topic</h2>
               <ul className={`space-y-2 ${premiumUi.body}`}>
                 <li>Return to this topic if you need another pass through the explanation.</li>
                 <li>Use timed practice to check how well the idea is sticking.</li>

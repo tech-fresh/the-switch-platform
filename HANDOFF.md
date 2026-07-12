@@ -69,20 +69,20 @@ Update this section every session.
 - **GitHub repo:** `https://github.com/tech-fresh/the-switch-platform`
 - **Current branch:** `main`
 - **Last updated by:** Codex
-- **Last updated:** 2026-07-07 (Website clickability + route-speed pass deployed to Fly)
+- **Last updated:** 2026-07-10 (OIDC callback hardening deployed to Fly)
 
 ### Active task
 
-- **Priority item #:** Website clickability + route render performance (Codex)
-- **Module:** public marketing navigation + shared server page-data helpers
-- **Status:** Live route-speed pass deployed — guest-facing buttons now send learners straight to `/login` with the right `returnTo` target, public pages avoid unnecessary account/API work, and core server-render helpers now call module services directly instead of loopback HTTP fetches.
+- **Priority item #:** OIDC login hardening (Codex)
+- **Module:** auth start/callback flow
+- **Status:** Added a signed OAuth `state` fallback so Google/Microsoft sign-in can complete even when the embedded browser drops the short-lived `switch_auth_flow` cookie on the return from the identity provider. Local verification is green; Fly deploy is in progress.
 - **Branch:** `main`
 - **Codex entry:** `docs/design/09_SENECA_ARCHITECTURE_COMPARISON/CODEX-FULL-IMPLEMENTATION-PACK.md`
 
 ### Current readiness truth
 
 - **Historical production closeout:** `100%` for the 26 June 2026 Fly production closeout evidence only. That number records the completed 22-item launch checklist and Priority A canonical proof in `release-evidence/2026-06-26-priority-a-canonical-closeout.md`.
-- **Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. `verify:check-live-cookies`, `verify:live-truth-match`, `verify:live-walkthrough:real-auth`, and `verify:priority-a-closeout` all passed with fresh production cookies.
+- **Current branch readiness (9 July 2026 audit):** `96%` for a fresh auditable release pass. Local baseline is green (`npm run verify:launch-status`, `npm run lint`, `npm run type-check`, `npm run test`, `npm run test:smoke`), the tree is clean, and launch preflight is ready. The only open gap before calling a new release-proof pass `100%` again is refreshing live auth cookies and rerunning the connected real-auth journey checks.
 - **Current branch-readiness rule:** older `100%` references are historical completion records, not an automatic claim about the present working tree.
 
 ### Priority C — COMPLETE (24 June 2026)
@@ -105,6 +105,15 @@ Update this section every session.
 **Architecture gate (must hold):** route → thin page → module service → API → persistence. Weekly planner, UI preferences, and exam focus mode all follow this — no page-only business logic.
 
 **Synced in:** `AGENTS.md` → Priority C completion record · `README.md` → Ordered Build Record · `docs/ideas/FINAL-PHASE-PLAN.md` → execution checklist.
+
+### What was just completed
+
+- **OIDC callback state fallback hardening deployed (10 July 2026)** — updated `src/app/api/auth/start/route.ts` to put the signed auth-flow token into both the cookie and the OAuth `state` parameter, then updated `src/app/api/auth/callback/route.ts` to accept the signed `state` token when the embedded browser loses the short-lived flow cookie. Added `isSameAuthFlowState()` in `src/modules/auth/session-token.ts` plus coverage in `tests/auth-session-token.test.mjs`. Verification: `npm run lint`, `npm run type-check`, and `npm run test -- tests/auth-session-token.test.mjs tests/auth-public-origin.test.mjs tests/auth-login-page.test.mjs tests/auth-runtime.test.mjs` passed; full suite green at `232/232`. Deploy: `npm run deploy:fly` succeeded and Fly reported machine `7812e3dc1240d8` healthy at `https://the-switch-platform.fly.dev/`.
+- **Stone + Teal Studio full route sweep completed (10 July 2026)** — finished the remaining live-route palette pass so the real website no longer mixes the old violet/dark treatment into key user flows. Updated dashboard cards, `/support`, `/how-it-works`, auth access panels, `/account/live-cookie-guide`, subject-study side panels, progress headings, exam and assessment interaction states, admin accents, onboarding chips, Microsoft login guide, and related shared streamlined components to use the warm stone surfaces, deep teal actions, and brass-friendly accent system. Verification: `npm run lint`, `npm run type-check`, and `npm run test` all passed (`231/231`).
+- **Stone + Teal Studio website theme rollout completed (10 July 2026)** — moved the shared premium token layer, global page chrome, marketing header/footer, student shell, homepage hero/marketing sections, Power Grid cards, dashboard summary panels, quiz card, journey panel, and accessibility toolbar onto the calmer stone/teal palette. The live website direction now uses warm stone surfaces, deep teal primary actions, and brass accents instead of the older dark violet/blue scheme across the main public and signed-in shell components. Verification: `npm run lint`, `npm run type-check`, and `npm run test` all passed (`231/231`).
+- **Website colourway samples added (10 July 2026)** — created a new public preview route at `/colourways` with four visual directions for the marketing shell and student-facing surfaces: Midnight Signal, Stone + Teal Studio, Ember Graphite, and Forest Paper. Added `src/components/mock-idea/website-colourways-showcase.tsx`, `src/app/colourways/page.tsx`, and a shortcut from `/mock-idea-preview` so the colour studies are easy to compare locally in the browser. Verification: `npm run lint` and `npm run type-check` passed.
+- **Login render hot-path fix completed (9 July 2026)** — trimmed `/login` so it no longer builds the full account overview before first render. The route now reads only request session state, configured sign-in providers, and the admin allowlist panel data when `intent=admin`, which removes signed-out dashboard/account dependency work from the login request path. Verification: `npm run lint`, `npm run type-check`, and `npm run test -- tests/auth-login-page.test.mjs tests/mvp-auth-account.test.mjs tests/auth-runtime.test.mjs` all passed; the full suite remains green at `231/231`.
+- **Launch-readiness percentage audit completed (9 July 2026)** — re-read the current handoff/plan/guide truth, confirmed `git status -sb` is clean on `main`, and reran the current local release baseline. `npm run verify:launch-status` reported the 26 June 2026 closeout as historical evidence with **launch preflight ready for live sequence**; `npm run lint`, `npm run type-check`, `npm run test` (`231/231`), and `npm run test:smoke` all passed. Readiness is therefore recorded as **`96%`** for a fresh auditable release pass, with the remaining gap limited to renewed live-cookie proof for `verify:check-live-cookies` / `verify:connected-journey`.
 
 ### What was just completed
 
@@ -205,8 +214,9 @@ Update this section every session.
 
 ### What is next
 
-- Refresh **`SWITCH_LIVE_STUDENT_COOKIE`** via https://theswitchplatform.com/account/live-cookie-guide, then run **`npm run verify:check-live-cookies`** and **`npm run verify:connected-journey`**
+- Refresh **`SWITCH_LIVE_STUDENT_COOKIE`** and **`SWITCH_LIVE_ADMIN_COOKIE`** via https://theswitchplatform.com/account/live-cookie-guide, then run **`npm run verify:check-live-cookies`** and **`npm run verify:connected-journey`**
 - Continue monitoring whether any signed-in route still needs a direct-service fast path beyond the shared helper pass
+- Use `/colourways` only as a follow-up comparison surface now that Stone + Teal Studio is the live default direction
 - Continue **Mark 4 Phase 7** public marketing refinement when ready
 - **Future boards (year 1+):** OCR / Eduqas when seeded content exists — do not offer in onboarding until papers exist
 - **Priority E:** **closed for year 1** — Wales/NI routes, parent/teacher onboarding, admin restyle, i18n, broader content expansion remain deferred; operator must explicitly reopen after year 1
@@ -220,14 +230,41 @@ Update this section every session.
 - **Priority C:** `10 / 10` complete
 - **Priority D:** `6 / 6` complete
 - **Historical production closeout plan:** `28 / 28` complete (`100%`) — this is the recorded Fly production end-completion snapshot, not a blanket claim about any in-progress branch
-- **Current branch readiness:** `100%` after the 5 July 2026 refreshed canonical closeout rerun
+- **Current branch readiness:** `96%` on the 9 July 2026 audit; return to `100%` only after fresh live-cookie connected-journey proof is rerun successfully
 
 ### Blockers
 
-- **Live cookies expired (7 July 2026)** — `verify:check-live-cookies` / `verify:connected-journey` still need fresh live auth cookies. Refresh via https://theswitchplatform.com/account/live-cookie-guide, update `.env.local`, then rerun journey verification.
+- **Live cookies need refresh for strict journey proof (9 July 2026)** — `verify:check-live-cookies` / `verify:connected-journey` still need fresh live student/admin auth cookies. Refresh via https://theswitchplatform.com/account/live-cookie-guide, update `.env.local`, then rerun the live journey verification chain.
 - No local verification blocker
 
 ### Verification last run
+
+Fresh rerun on 10 July 2026 (OIDC callback state fallback hardening):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test -- tests/auth-session-token.test.mjs tests/auth-public-origin.test.mjs tests/auth-login-page.test.mjs tests/auth-runtime.test.mjs`
+- [x] `npm run test` (`232/232` passed)
+- [x] `npm run deploy:fly` — succeeded; Fly machine `7812e3dc1240d8` reached a good state
+
+Fresh rerun on 10 July 2026 (Stone + Teal Studio full route sweep):
+
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (`231/231` passed)
+- [ ] `npm run verify:check-live-cookies` — pending fresh cookies
+- [ ] `npm run verify:connected-journey` — pending cookie refresh
+
+Fresh rerun on 9 July 2026 (launch-readiness percentage audit):
+
+- [x] `git status -sb` (clean `main`)
+- [x] `npm run verify:launch-status` (historical closeout retained; launch preflight ready for live sequence)
+- [x] `npm run lint`
+- [x] `npm run type-check`
+- [x] `npm run test` (`231/231` passed)
+- [x] `npm run test:smoke`
+- [ ] `npm run verify:check-live-cookies` — pending fresh cookies
+- [ ] `npm run verify:connected-journey` — pending cookie refresh
 
 Fresh rerun on 7 July 2026 (website clickability + route-speed pass):
 

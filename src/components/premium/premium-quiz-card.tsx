@@ -46,18 +46,18 @@ export function PremiumQuizCard({
   return (
     <section className="space-y-4" aria-label="Quick check quiz">
       <div className={`${premiumUi.card} space-y-5`}>
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e3d8cb] pb-4">
           <div>
             <p className={premiumUi.eyebrowAccent}>Quick check</p>
-            <p className="mt-1 text-sm font-semibold text-white">
+            <p className="mt-1 text-sm font-semibold text-[#163038]">
               Question {questionIndex} of {questionTotal}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="rounded-xl border border-white/10 bg-[#0B0F17] px-3 py-1.5 font-mono text-sm text-[#00BFFF]">
+            <span className="rounded-xl border border-[#d8cfc3] bg-[#f7f2ea] px-3 py-1.5 font-mono text-sm text-[#0f766e]">
               {minutes}:{secs}
             </span>
-            <span className="rounded-xl border border-[#22C55E]/30 bg-[#22C55E]/10 px-3 py-1.5 text-xs font-semibold text-[#22C55E]">
+            <span className="rounded-xl border border-[#3f7d5c]/30 bg-[#3f7d5c]/10 px-3 py-1.5 text-xs font-semibold text-[#3f7d5c]">
               {submitState === "saving" ? "Saving…" : "Auto-save on"}
             </span>
           </div>
@@ -67,7 +67,7 @@ export function PremiumQuizCard({
           <div className={premiumUi.progressFill} style={{ width: `${progressPct}%` }} />
         </div>
 
-        <h2 className="text-xl font-bold leading-8 text-white sm:text-2xl">{quiz.prompt}</h2>
+        <h2 className="text-xl font-bold leading-8 text-[#163038] sm:text-2xl">{quiz.prompt}</h2>
 
         <div className="space-y-3">
           {quiz.options.map((option, index) => {
@@ -87,15 +87,15 @@ export function PremiumQuizCard({
                     : isWrong
                       ? "border-[#EF4444]/50 bg-[#EF4444]/10"
                       : isSelected
-                        ? "border-[#6C4EFF]/50 bg-[#6C4EFF]/10"
-                        : "border-white/10 bg-[#0F1420] hover:border-[#6C4EFF]/30"
+                        ? "border-[#0f766e]/35 bg-[#0f766e]/08"
+                        : "border-[#ddd3c6] bg-[#f7f2ea] hover:border-[#0f766e]/30"
                 }`}
               >
-                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-sm font-bold text-white">
+                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#163038]">
                   {String.fromCharCode(65 + index)}
                 </span>
-                <span className="text-sm leading-7 text-[#E5E7EB]">
-                  <span className="font-semibold text-white">{option.label}</span> {option.text}
+                <span className="text-sm leading-7 text-[#52646a]">
+                  <span className="font-semibold text-[#163038]">{option.label}</span> {option.text}
                 </span>
               </button>
             );
@@ -129,7 +129,7 @@ export function PremiumQuizCard({
 
         {feedback ? (
           <div className={`${premiumUi.cardMuted} space-y-3`}>
-            <p className="text-sm font-semibold text-white">
+            <p className="text-sm font-semibold text-[#163038]">
               {feedback.isCorrect
                 ? `Yes — ${feedback.correctOptionLabel} is correct.`
                 : `The correct answer is ${feedback.correctOptionLabel}.`}
@@ -143,7 +143,7 @@ export function PremiumQuizCard({
               ].map((stat) => (
                 <div key={stat.label} className={premiumUi.statCard}>
                   <p className={premiumUi.eyebrow}>{stat.label}</p>
-                  <p className="mt-2 text-lg font-bold text-white">{stat.value}</p>
+                  <p className="mt-2 text-lg font-bold text-[#163038]">{stat.value}</p>
                 </div>
               ))}
             </div>

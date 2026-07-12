@@ -598,7 +598,7 @@ export function AssessmentExperience({
                       onClick={() => resetSeed(item.assessmentId, defaultDurationKey)}
                       className={`flex w-full flex-col gap-2 px-4 py-4 text-left transition ${
                         isSelected
-                          ? "bg-emerald-700 text-white"
+                          ? "bg-[#0F766E] text-white"
                           : "bg-white text-stone-900 hover:bg-stone-50"
                       }`}
                     >
@@ -606,13 +606,13 @@ export function AssessmentExperience({
                         <span className="text-sm font-semibold">{item.title}</span>
                         <span
                           className={`text-xs uppercase tracking-[0.2em] ${
-                            isSelected ? "text-emerald-100" : "text-stone-500"
+                            isSelected ? "text-teal-100" : "text-stone-500"
                           }`}
                         >
                           {item.tier ?? "All tiers"}
                         </span>
                       </div>
-                      <p className={`text-sm ${isSelected ? "text-emerald-50" : "text-stone-600"}`}>
+                      <p className={`text-sm ${isSelected ? "text-teal-50" : "text-stone-600"}`}>
                         Official cap {item.officialDurationMinutes} mins • {item.questionCount} questions
                       </p>
                     </button>
@@ -626,7 +626,7 @@ export function AssessmentExperience({
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Duration presets
                 </h2>
-                <span className="text-sm font-semibold text-emerald-700">
+                <span className="text-sm font-semibold text-[#0F766E]">
                   Cap {assessment.officialDurationMinutes}m
                 </span>
               </div>
@@ -642,7 +642,7 @@ export function AssessmentExperience({
                       onClick={() => resetSeed(assessment.assessmentId, durationKey)}
                       className={`border px-3 py-3 text-sm font-medium transition ${
                         isSelected
-                          ? "border-emerald-700 bg-emerald-700 text-white"
+                          ? "border-[#0F766E] bg-[#0F766E] text-white"
                           : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                       }`}
                     >
@@ -703,7 +703,7 @@ export function AssessmentExperience({
               <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
                 <div className="flex flex-col gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
                   <div className="space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F766E]">
                       {currentQuestion.topic}
                     </p>
                     <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
@@ -723,14 +723,14 @@ export function AssessmentExperience({
                         onClick={() => handleSelectOption(option.optionId)}
                         className={`flex w-full items-start gap-3 border px-4 py-4 text-left transition ${
                           isSelected
-                            ? "border-emerald-700 bg-emerald-700 text-white"
+                            ? "border-[#0F766E] bg-[#0F766E] text-white"
                             : "border-stone-200 bg-white text-stone-900 hover:bg-stone-50"
                         }`}
                       >
                         <span
                           className={`mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center border text-sm font-semibold ${
                             isSelected
-                              ? "border-white/40 bg-white/10 text-white"
+                              ? "border-teal-200/50 bg-teal-100/15 text-white"
                               : "border-stone-300 bg-stone-50 text-stone-700"
                           }`}
                         >
@@ -766,7 +766,7 @@ export function AssessmentExperience({
                     value={seed.notes[currentQuestion.questionId] ?? ""}
                     onChange={(event) => handleNotesChange(event.target.value)}
                     rows={4}
-                    className="w-full border border-stone-300 bg-white px-3 py-3 text-sm leading-6 text-stone-900 outline-none transition focus:border-emerald-700"
+                    className="w-full border border-stone-300 bg-white px-3 py-3 text-sm leading-6 text-stone-900 outline-none transition focus:border-[#0F766E]"
                     placeholder="Capture quick reasoning, quotation choices, or checks here."
                   />
                 </div>
@@ -817,7 +817,7 @@ export function AssessmentExperience({
               <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
                 <div className="flex flex-col gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
                   <div className="space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F766E]">
                       End of checkpoint review
                     </p>
                     <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
@@ -903,7 +903,7 @@ export function AssessmentExperience({
                       type="button"
                       onClick={handleSubmitAttempt}
                       disabled={submitState === "submitting"}
-                      className="border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-70"
+                      className="border border-[#0F766E] bg-[#0F766E] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0B5F59] disabled:cursor-not-allowed disabled:opacity-70"
                     >
                       {submitState === "submitting" ? "Submitting..." : "Submit attempt"}
                     </button>
@@ -920,7 +920,7 @@ export function AssessmentExperience({
             {viewMode === "submitted" ? (
               <article className="space-y-6 border border-stone-200 bg-white p-5 sm:p-6">
                 <div className="space-y-3 border-b border-stone-200 pb-5">
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F766E]">
                     Checkpoint submitted
                   </p>
                   <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-stone-950">
@@ -960,7 +960,7 @@ export function AssessmentExperience({
                   </button>
                   <a
                     href="/results"
-                    className="inline-flex items-center justify-center border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
+                    className="inline-flex items-center justify-center border border-[#0F766E] bg-[#0F766E] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0B5F59]"
                   >
                     Open results route
                   </a>
@@ -975,7 +975,7 @@ export function AssessmentExperience({
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Active support snapshot
                 </h2>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0F766E]">
                   {supportSnapshot?.activeAccessArrangements.length
                     ? `${supportSnapshot.activeAccessArrangements.length} active`
                     : "preferences ready"}
@@ -1028,7 +1028,7 @@ export function AssessmentExperience({
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Read aloud
                 </h2>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0F766E]">
                   {readAloudSource}
                 </span>
               </div>
@@ -1072,7 +1072,7 @@ export function AssessmentExperience({
                 <button
                   type="button"
                   onClick={() => handleReadAloudAction("playing")}
-                  className="border border-emerald-700 bg-emerald-700 px-3 py-2 text-sm font-medium text-white"
+                  className="border border-[#0F766E] bg-[#0F766E] px-3 py-2 text-sm font-medium text-white"
                 >
                   Play
                 </button>

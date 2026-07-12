@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   createAuthFlowToken,
   createSessionToken,
+  isSameAuthFlowState,
   readAuthFlowToken,
   readSessionToken,
 } from "../src/modules/auth/session-token.ts";
@@ -79,4 +80,18 @@ test("auth flow tokens round-trip", () => {
   const parsed = readAuthFlowToken(token, secret);
 
   assert.deepEqual(parsed, flowState);
+});
+
+test("auth flow state equality matches identical signed payloads", () => {
+  const flowState = {
+    provider: "google",
+    state: "state-123",
+    codeVerifier: "verifier-123",
+    returnTo: "/account",
+    createdAt: "2026-06-12T12:00:00.000Z",
+    expiresAt: "2099-06-12T12:10:00.000Z",
+  };
+
+  assert.equal(isSameAuthFlowState(flowState, { ...flowState }), true);
+  assert.equal(isSameAuthFlowState(flowState, { ...flowState, returnTo: "/dashboard" }), false);
 });

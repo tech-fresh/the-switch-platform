@@ -32,7 +32,7 @@ const TOTAL_STEPS = 8;
 
 const ROLE_STYLES: Record<string, { emoji: string; circle: string }> = {
   student: { emoji: "🎓", circle: "bg-orange-100 text-orange-600" },
-  "parent-guardian": { emoji: "👨‍👩‍👧", circle: "bg-violet-100 text-violet-600" },
+  "parent-guardian": { emoji: "👨‍👩‍👧", circle: "bg-[#DFF3EE] text-[#0F766E]" },
   "teacher-staff": { emoji: "💼", circle: "bg-rose-100 text-rose-600" },
 };
 
@@ -613,7 +613,7 @@ export function OnboardingExperience({ initialOverview, displayName }: Onboardin
               <span className="flex-1">
                 <span className="block text-sm font-semibold text-slate-800">{choice.label}</span>
                 <span className="mt-1 block text-xs leading-5 text-slate-500">{choice.description}</span>
-                <span className="mt-2 inline-block rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700">
+                <span className="mt-2 inline-block rounded-full bg-[#DFF3EE] px-2 py-0.5 text-[11px] font-medium text-[#0F766E]">
                   {choice.moduleLabel}
                 </span>
               </span>

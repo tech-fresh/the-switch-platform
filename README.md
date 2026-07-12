@@ -16,8 +16,8 @@
 | Is the platform live? | Yes — https://theswitchplatform.com. The site runs on Fly.io and Priority A closeout evidence is recorded. |
 | GitHub source of truth | **https://github.com/tech-fresh/the-switch-platform** — default branch **`main`** |
 | Production deploy | **Fly.io only** — [`docs/DEPLOYMENT-FLY-ONLY.md`](./docs/DEPLOYMENT-FLY-ONLY.md). **Do not use Netlify or Vercel.** |
-| What are we doing now? | **Website clickability + route-speed pass is live on Fly** — guest-facing buttons now go straight to `/login` with the correct `returnTo` path, and shared server-render routes now use direct module services instead of loopback API fetches where they were slowing navigation. |
-| What is next? | Refresh live cookies and run `npm run verify:connected-journey`, then continue **Mark 4 Phase 7** when ready. Watch for any remaining signed-in routes that still merit a direct-service fast path. Priority **E** deferred only. |
+| What are we doing now? | **Google/Microsoft sign-in hardening has been deployed to Fly** — the auth callback now has a signed `state` fallback so login can complete even when an embedded browser drops the short-lived flow cookie. The Stone + Teal Studio route sweep remains in place across the live website surfaces. |
+| What is next? | Confirm live sign-in completes cleanly with the deployed callback fix, then refresh live cookies and run `npm run verify:connected-journey`. After that, continue **Mark 4 Phase 7** when ready. Priority **E** deferred only. |
 | Architecture principles | [`docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md`](./docs/design/09_SENECA_ARCHITECTURE_COMPARISON/ARCHITECTURE-PRINCIPLES.md) — Connected Website, Recall Strength, Power Grid engine, Learning Loop, Dashboard simplification, Recommendations brain, Saved Progress glue |
 | Onboarding (Lane A) | **8 steps stay** — they **create the student dashboard** (qualification, year/goal, school, exam board, subjects, accessibility, guardian, dashboard ready). Secondary school; **GCSE (England)** + **iGCSE**; Wales/NI **coming later**. |
 | Website (Lane B) | **Complete** — shared student layout, weekly planner, public pages, and recovery screens shipped 24 June 2026. |
@@ -28,7 +28,7 @@
 
 **Current branch-readiness rule:** older `100%` references in this repo describe the end-completion plan and the 26 June 2026 production proof chain. They should not be read as a default claim about the current working tree; use `HANDOFF.md` for the live branch readiness percentage.
 
-**Current branch readiness (5 July 2026):** `100%` after the refreshed real-auth production proof and canonical closeout rerun. Canonical evidence: `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
+**Current branch readiness (9 July 2026 audit):** `96%` for a fresh auditable release pass. Local baseline is green, and the remaining gap before a fresh `100%` claim is renewed live-cookie proof for `verify:check-live-cookies` and `verify:connected-journey`. Canonical historical evidence remains `release-evidence/2026-07-05-priority-a-canonical-closeout.md`.
 
 **Every session:** tell the agent `Read HANDOFF.md first.` **Priority C is complete** — do not reopen unless the operator requests an exception.
 
@@ -652,6 +652,44 @@ The current homepage now presents both the website-first preview and the future 
 ## Ordered Build Record
 
 This section is the running record of what has been requested, added, and committed so far in this MVP.
+
+### 2026-07-10 OIDC callback state fallback hardening
+
+- Fixed the live auth flow so Google and Microsoft sign-in no longer depend only on the short-lived `switch_auth_flow` cookie surviving the round-trip through the identity provider.
+- Updated `src/app/api/auth/start/route.ts` to place the signed auth-flow token into the OAuth `state` parameter as well as the cookie.
+- Updated `src/app/api/auth/callback/route.ts` to accept the signed `state` token when the cookie is missing, while still rejecting mismatched callback state when both are present.
+- Added `isSameAuthFlowState()` in `src/modules/auth/session-token.ts` and extended `tests/auth-session-token.test.mjs` so the fallback behavior stays covered.
+- Verification: `npm run lint`, `npm run type-check`, and the full test suite passed (`232/232`). `npm run deploy:fly` then succeeded on Fly, and machine `7812e3dc1240d8` reached a healthy state.
+
+### 2026-07-10 Stone + Teal Studio full route sweep
+
+- Finished the remaining live-route palette pass so the real website no longer mixes the old violet/dark treatment into key user flows.
+- Updated the main holdout routes and shared surfaces: `dashboard-home`, `/support`, `/how-it-works`, `auth-access-path-panel`, `/account/live-cookie-guide`, `mark32-page-header`, `mark32-hero-row`, `mark32-subject-grid`, `/subjects`, `/progress`, `/exams`, `/assessments`, `/admin`, `/login/microsoft-guide`, onboarding accent chips, and subject tone helpers.
+- Normalized live interaction states onto the Stone + Teal system as well, including exam/assessment selected states, primary buttons, route labels, helper cards, and admin accent copy.
+- Kept `/colourways` as the comparison route, but the intended default website direction is now clearly `Stone + Teal Studio`.
+- Verification: `npm run lint`, `npm run type-check`, and `npm run test` passed (`231/231`).
+
+### 2026-07-10 Stone + Teal Studio website rollout
+
+- Reworked the shared `premiumUi` token layer and `src/app/globals.css` so the main website now uses warm stone backgrounds, white/stone panels, deep teal primary actions, brass accents, and darker ink text instead of the older dark violet/blue base.
+- Updated the main public and shared-shell surfaces: `src/components/mock-idea/marketing-site-header.tsx`, `src/components/mock-idea/marketing-site-footer.tsx`, and `src/components/mock-idea/student-app-shell.tsx`.
+- Updated the major homepage and study components that drive the live visual language: `premium-hero-section`, `premium-homepage-marketing`, `premium-homepage-sections`, `premium-subject-card`, `premium-power-grid-card`, `premium-continue-revision-card`, `premium-quiz-card`, `premium-exam-board-selector`, `premium-accessibility-toolbar`, `journey-next-step-panel`, and the main streamlined summary cards (`mark32-daily-quote`, `mark32-weakest-topics`, `mark32-progress-at-a-glance`, `power-grid-rank-panel`).
+- Kept the `/colourways` comparison route in place for future palette decisions, but moved the actual shared website direction onto `Stone + Teal Studio`.
+- Verification: `npm run lint`, `npm run type-check`, and `npm run test` passed (`231/231`).
+
+### 2026-07-10 Website colourway samples
+
+- Added a new public preview route at `/colourways` for fast visual comparison of possible website palette directions.
+- Created `src/components/mock-idea/website-colourways-showcase.tsx` with four colour studies: `Midnight Signal`, `Stone + Teal Studio`, `Ember Graphite`, and `Forest Paper`.
+- Added `src/app/colourways/page.tsx` and linked it from `src/app/mock-idea-preview/page.tsx` so the new palette samples sit inside the existing mockup flow.
+- Verification: `npm run lint` and `npm run type-check` passed.
+
+### 2026-07-09 Login hot-path render fix
+
+- Trimmed `src/app/login/page.tsx` so the page stops building the full account overview before first render.
+- Added `getLoginPageData()` in `src/modules/auth/service.ts` and `LoginPageData` in `src/modules/auth/types.ts` so the login route now reads only request session state, configured sign-in providers, and admin allowlist details when `intent=admin`.
+- Kept the existing unified sign-in shell and admin access-path panel behavior unchanged, but removed unrelated signed-out dashboard/account dependency work from the main `/login` request path.
+- Verification: `npm run lint`, `npm run type-check`, and `npm run test -- tests/auth-login-page.test.mjs tests/mvp-auth-account.test.mjs tests/auth-runtime.test.mjs` passed; full suite remains green at `231/231`.
 
 ### 2026-07-07 Website clickability + route-speed pass
 

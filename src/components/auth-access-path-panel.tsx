@@ -19,14 +19,14 @@ function formatTimestamp(value?: string): string {
 
 function roleBadgeClasses(role: "admin" | "editor" | "student"): string {
   if (role === "admin") {
-    return "border-violet-300 bg-violet-50 text-violet-950";
+    return "border-[#2D7A72]/35 bg-[#DFF3EE] text-[#134E4A]";
   }
 
   if (role === "editor") {
-    return "border-emerald-300 bg-emerald-50 text-emerald-950";
+    return "border-[#C28B2C]/35 bg-[#F6E7C8] text-[#7C5A17]";
   }
 
-  return "border-violet-100 bg-violet-50/50 text-slate-800";
+  return "border-[#D7D0C7] bg-[#F1ECE5] text-slate-800";
 }
 
 interface AuthAccessPathPanelProps {
@@ -52,13 +52,13 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-2xl border border-violet-100 bg-violet-50/40 p-4">
+          <div className="rounded-2xl border border-[#D7D0C7] bg-[#F1ECE5] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Student path</p>
             <p className="mt-2 text-sm leading-6 text-slate-700">{accessPath.studentPathLabel}</p>
           </div>
-          <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700">Admin path</p>
-            <p className="mt-2 text-sm leading-6 text-violet-950">{accessPath.adminPathLabel}</p>
+          <div className="rounded-2xl border border-[#2D7A72]/25 bg-[#DFF3EE] p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0F766E]">Admin path</p>
+            <p className="mt-2 text-sm leading-6 text-slate-900">{accessPath.adminPathLabel}</p>
           </div>
         </div>
 
@@ -87,7 +87,7 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
         </div>
 
         {accessPath.currentUserEmail ? (
-          <div className="rounded-2xl border border-dashed border-violet-200 bg-violet-50/30 p-4">
+          <div className="rounded-2xl border border-dashed border-[#2D7A72]/30 bg-[#EEF7F4] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               Website sign-in record
             </p>
@@ -118,7 +118,7 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
                 </span>
               ))}
               {accessPath.mappedRolesFromAllowlist.length === 0 ? (
-                <span className="border border-violet-200 bg-white px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
+                <span className="border border-[#D7D0C7] bg-white px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-700">
                   not on admin/editor allowlist
                 </span>
               ) : null}
@@ -135,7 +135,7 @@ export function AuthAccessPathPanel({ accessPath, variant = "account" }: AuthAcc
               {accessPath.allowlistEntries.map((entry) => (
                 <div
                   key={`${entry.role}-${entry.maskedEmail}`}
-                  className={`rounded-xl border px-3 py-2 text-sm ${entry.isCurrentUser ? "border-violet-300 bg-violet-50" : "border-violet-100 bg-violet-50/40"}`}
+                  className={`rounded-xl border px-3 py-2 text-sm ${entry.isCurrentUser ? "border-[#2D7A72]/35 bg-[#DFF3EE]" : "border-[#D7D0C7] bg-[#F1ECE5]"}`}
                 >
                   <span
                     className={`mr-2 border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${roleBadgeClasses(entry.role)}`}

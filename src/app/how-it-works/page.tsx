@@ -41,13 +41,13 @@ export default async function HowItWorksPage() {
         <div className="grid gap-6">
           {guide.steps.map((step) => (
             <article key={step.stepId} className={mark32Ui.card}>
-              <div className="flex flex-col gap-4 border-b border-violet-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex flex-col gap-4 border-b border-[#D7D0C7] pb-5 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-3">
                   <p className={mark32Ui.eyebrowSm}>Step {step.stepNumber}</p>
                   <h2 className="text-2xl font-black tracking-tight text-slate-950">{step.title}</h2>
                   <p className={mark32Ui.body}>{step.description}</p>
                 </div>
-                <div className="rounded-2xl border border-violet-100 bg-violet-50/50 px-4 py-3 text-sm text-slate-700">
+                <div className="rounded-2xl border border-[#D7D0C7] bg-[#F1ECE5] px-4 py-3 text-sm text-slate-700">
                   {step.routeLabel}
                 </div>
               </div>
@@ -65,7 +65,7 @@ export default async function HowItWorksPage() {
                     </ul>
                   </div>
                 </div>
-                <div className="rounded-2xl border border-violet-100 bg-violet-50/40 p-4">
+                <div className="rounded-2xl border border-[#D7D0C7] bg-[#F1ECE5] p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Try this route</p>
                   <p className="mt-3 text-sm leading-6 text-slate-700">
                     Open the route directly and compare what you see on the page with this guide.
@@ -87,7 +87,7 @@ export default async function HowItWorksPage() {
             <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-700">Important meanings</h2>
             <div className="mt-4 space-y-4">
               {guide.glossary.map((item) => (
-                <article key={item.termId} className="rounded-xl border border-violet-100 bg-violet-50/40 p-3">
+                <article key={item.termId} className="rounded-xl border border-[#D7D0C7] bg-[#F1ECE5] p-3">
                   <p className="text-sm font-bold text-slate-950">{item.term}</p>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{item.meaning}</p>
                 </article>

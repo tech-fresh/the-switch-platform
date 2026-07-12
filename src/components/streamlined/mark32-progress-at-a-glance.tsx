@@ -56,7 +56,7 @@ export function Mark32ProgressAtAGlance({ summary }: Mark32ProgressAtAGlanceProp
         <div>
           <div className="flex items-center justify-between gap-3 text-sm">
             <span className={premiumUi.body}>Exam readiness</span>
-            <span className="font-semibold text-white">{summary.examReadinessScore} / 100</span>
+            <span className="font-semibold text-[#163038]">{summary.examReadinessScore} / 100</span>
           </div>
           <div
             className={`mt-2 ${premiumUi.progressTrack}`}
@@ -73,7 +73,7 @@ export function Mark32ProgressAtAGlance({ summary }: Mark32ProgressAtAGlanceProp
         <div>
           <div className="flex items-center justify-between gap-3 text-sm">
             <span className={premiumUi.body}>Next Power Level</span>
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-[#163038]">
               {rank.xpNeededForNextPowerLevel > 0 ? `${rank.xpNeededForNextPowerLevel} XP to go` : "Max level in rank"}
             </span>
           </div>
@@ -92,30 +92,30 @@ export function Mark32ProgressAtAGlance({ summary }: Mark32ProgressAtAGlanceProp
         <div className="grid gap-3 sm:grid-cols-2">
           <div className={premiumUi.statCard}>
             <p className={premiumUi.eyebrow}>Active sessions</p>
-            <p className="mt-2 text-2xl font-semibold text-white">{summary.activeSessionCount}</p>
+            <p className="mt-2 text-2xl font-semibold text-[#163038]">{summary.activeSessionCount}</p>
             <p className={`mt-1 ${premiumUi.body}`}>{summary.completedSessionCount} completed</p>
           </div>
           <div className={premiumUi.statCard}>
             <p className={premiumUi.eyebrow}>Next reward</p>
-            <p className="mt-2 text-lg font-semibold leading-tight text-white">{rank.nextReward}</p>
+            <p className="mt-2 text-lg font-semibold leading-tight text-[#163038]">{rank.nextReward}</p>
             <p className={`mt-1 capitalize ${premiumUi.body}`}>{summary.overallTrend} trend</p>
           </div>
           <div className={premiumUi.statCard}>
             <p className={premiumUi.eyebrow}>Quiz totals</p>
-            <p className="mt-2 text-2xl font-semibold text-white">
+            <p className="mt-2 text-2xl font-semibold text-[#163038]">
               {summary.quizCorrectCount}/{summary.quizAttemptCount || 0}
             </p>
             <p className={`mt-1 ${premiumUi.body}`}>{summary.quizAccuracyPercentage}% accuracy</p>
           </div>
           <div className={premiumUi.statCard}>
             <p className={premiumUi.eyebrow}>Next rank</p>
-            <p className="mt-2 text-sm font-semibold leading-tight text-white">{rank.nextRankPreview}</p>
+            <p className="mt-2 text-sm font-semibold leading-tight text-[#163038]">{rank.nextRankPreview}</p>
             <p className={`mt-1 ${premiumUi.body}`}>Evidence level: {summary.overallLevel}</p>
           </div>
         </div>
       </div>
 
-      <aside className="flex flex-col justify-between gap-4 rounded-3xl border border-[#6C4EFF]/40 bg-gradient-to-br from-[#6C4EFF]/30 to-[#121826] p-5 text-white">
+      <aside className="flex flex-col justify-between gap-4 rounded-3xl border border-[#0f766e]/20 bg-gradient-to-br from-[#0f766e]/10 to-[#f7f2ea] p-5 text-[#163038]">
         <div>
           <p className={premiumUi.eyebrowAccent}>Next best step</p>
           <p className="mt-3 text-lg font-semibold leading-snug">{summary.nextBestAction}</p>
@@ -127,7 +127,7 @@ export function Mark32ProgressAtAGlance({ summary }: Mark32ProgressAtAGlanceProp
           {summary.resumeHref ? (
             <Link
               href={summary.resumeHref}
-              className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white hover:bg-white/20"
+              className="inline-flex items-center justify-center rounded-2xl border border-[#d3c7b9] bg-white px-4 py-2.5 text-sm font-semibold text-[#163038] hover:bg-[#f7f2ea]"
             >
               Resume session
             </Link>

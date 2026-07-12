@@ -62,7 +62,7 @@ export function PremiumHomepageSections({
               <span className="text-3xl" aria-hidden="true">
                 {feature.icon}
               </span>
-              <h3 className="mt-4 text-lg font-bold text-white">{feature.title}</h3>
+              <h3 className="mt-4 text-lg font-bold text-[#163038]">{feature.title}</h3>
               <p className={`mt-2 ${premiumUi.body}`}>{feature.detail}</p>
             </Link>
           ))}

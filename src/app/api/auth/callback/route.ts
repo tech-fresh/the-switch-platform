@@ -11,21 +11,17 @@ import {
   getAuthCookieSettings,
   getAuthFlowCookieSettings,
 } from "@/modules/auth/service";
-import { readAuthFlowToken } from "@/modules/auth/session-token";
+import { isSameAuthFlowState, readAuthFlowToken } from "@/modules/auth/session-token";
 
 export async function GET(request: Request) {
   const runtime = getAuthRuntimeConfig();
   const requestUrl = new URL(request.url);
   const cookieStore = await cookies();
   const flowToken = cookieStore.get(AUTH_FLOW_COOKIE_NAME)?.value;
-  const flowState = readAuthFlowToken(flowToken, runtime.sessionSecret);
+  const cookieFlowState = readAuthFlowToken(flowToken, runtime.sessionSecret);
 
   if (runtime.mode !== "oidc") {
     return clearFlowAndRedirect(requestUrl, "/login?authError=callback-not-enabled");
-  }
-
-  if (!flowState) {
-    return clearFlowAndRedirect(requestUrl, "/login?authError=missing-flow-state");
   }
 
   if (requestUrl.searchParams.get("error")) {
@@ -36,11 +32,27 @@ export async function GET(request: Request) {
   }
 
   const authorizationCode = requestUrl.searchParams.get("code");
-  const state = requestUrl.searchParams.get("state");
+  const stateToken = requestUrl.searchParams.get("state");
 
-  if (!authorizationCode || !state || state !== flowState.state) {
+  if (!authorizationCode || !stateToken) {
     return clearFlowAndRedirect(requestUrl, "/login?authError=invalid-callback-state");
   }
+
+  const stateFlowState = readAuthFlowToken(stateToken, runtime.sessionSecret);
+
+  if (!cookieFlowState && !stateFlowState) {
+    return clearFlowAndRedirect(requestUrl, "/login?authError=missing-flow-state");
+  }
+
+  if (!stateFlowState) {
+    return clearFlowAndRedirect(requestUrl, "/login?authError=invalid-callback-state");
+  }
+
+  if (cookieFlowState && !isSameAuthFlowState(cookieFlowState, stateFlowState)) {
+    return clearFlowAndRedirect(requestUrl, "/login?authError=invalid-callback-state");
+  }
+
+  const flowState = cookieFlowState ?? stateFlowState;
 
   const oidcProvider = getConfiguredOidcProvider(flowState.provider);
 
@@ -117,4 +129,3 @@ function clearFlowAndRedirect(requestUrl: URL, path: string): NextResponse {
 
   return response;
 }
-

@@ -64,7 +64,7 @@ function ProgressMainContent({
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className={mark32Ui.eyebrow}>Subject progress</p>
-            <h2 className="mt-2 text-xl font-bold tracking-tight text-white">Your active subjects</h2>
+            <h2 className="mt-2 text-xl font-bold tracking-tight text-slate-950">Your active subjects</h2>
           </div>
           <p className="text-sm text-stone-600">
             {summary.trackedSubjectCount} tracked · {summary.subjectsNeedingAttentionCount} need extra focus

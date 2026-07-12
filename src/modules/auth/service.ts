@@ -25,6 +25,7 @@ import type {
   AuthRole,
   AuthSession,
   AuthUser,
+  LoginPageData,
   SignInOption,
 } from "./types";
 
@@ -185,6 +186,20 @@ export async function getSignInOptions(): Promise<SignInOption[]> {
 }
 
 export { getAuthReadinessSummary };
+
+export async function getLoginPageData(
+  session: AuthSession,
+  intent: "student" | "admin",
+): Promise<LoginPageData> {
+  const signInOptions = await getSignInOptions();
+
+  return {
+    isAuthenticated: session.status === "authenticated",
+    session,
+    signInOptions,
+    accessPath: intent === "admin" ? buildAuthAccessPathSummary(session) : null,
+  };
+}
 
 export function getAuthUserIdFromSession(session: AuthSession): string {
   return session.status === "authenticated" ? session.user.userId : GUEST_AUTH_USER_ID;

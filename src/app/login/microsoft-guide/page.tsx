@@ -31,9 +31,9 @@ export default function MicrosoftLoginGuidePage() {
         title="Turn on Continue with Microsoft for students and admin."
         description="This page explains the live Microsoft sign-in path in plain language. The login button lives on `/login`, but the real session is still created by the auth module through `/api/auth/start` and `/api/auth/callback`."
         aside={
-          <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-violet-800">Learner-friendly rule</p>
-            <p className="mt-3 text-sm leading-6 text-violet-950">
+          <div className="rounded-3xl border border-[#2D7A72]/25 bg-[#DFF3EE] p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-[#0F766E]">Learner-friendly rule</p>
+            <p className="mt-3 text-sm leading-6 text-slate-900">
               Seeing the Microsoft button only means the website knows Microsoft sign-in is configured. A
               real Microsoft login is only proven when the browser leaves the site, returns through the
               callback, and opens your dashboard signed in.
@@ -47,7 +47,7 @@ export default function MicrosoftLoginGuidePage() {
           <h2 className="text-2xl font-black tracking-tight text-slate-950">
             What happens when someone presses the button
           </h2>
-          <div className="mt-5 overflow-hidden rounded-2xl border border-violet-100 bg-violet-50/40 p-4">
+          <div className="mt-5 overflow-hidden rounded-2xl border border-[#D7D0C7] bg-[#F1ECE5] p-4">
             <Image
               src="/docs/microsoft-sign-in-flow.png"
               alt="Diagram showing Log in, Microsoft sign-in, return to The Switch, and dashboard access"
@@ -96,7 +96,7 @@ export default function MicrosoftLoginGuidePage() {
 
         <article className={mark32Ui.card}>
           <h2 className="text-xl font-bold text-slate-950">Environment block</h2>
-          <pre className="mt-4 overflow-x-auto rounded-xl border border-violet-100 bg-slate-950 p-4 text-xs leading-6 text-slate-100">
+          <pre className="mt-4 overflow-x-auto rounded-xl border border-[#D7D0C7] bg-slate-950 p-4 text-xs leading-6 text-slate-100">
             {envExample}
           </pre>
           <p className="mt-4 text-sm leading-6 text-slate-600">

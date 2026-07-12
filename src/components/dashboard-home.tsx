@@ -73,9 +73,9 @@ function StreamlinedRouteCards({
           className={premiumUi.cardHover}
         >
           <p className={premiumUi.eyebrow}>{card.eyebrow}</p>
-          <h3 className="mt-3 text-xl font-bold tracking-tight text-white">{card.title}</h3>
+          <h3 className="mt-3 text-xl font-bold tracking-tight text-slate-950">{card.title}</h3>
           <p className={`mt-2 ${premiumUi.body}`}>{card.description}</p>
-          <p className="mt-4 text-sm font-semibold text-[#6C4EFF]">{card.stat}</p>
+          <p className="mt-4 text-sm font-semibold text-[#0F766E]">{card.stat}</p>
         </Link>
       ))}
     </div>
@@ -85,7 +85,7 @@ function StreamlinedRouteCards({
 function CompactRecentSessions({ sessions }: { sessions: DashboardSessionCard[] }) {
   if (!sessions.length) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-[#0F1420] p-4">
+      <div className="rounded-2xl border border-[#D7D0C7] bg-[#F6F3EE] p-4">
         <p className={premiumUi.body}>No saved sessions yet.</p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Link href="/assessments" className={premiumUi.primaryBtn}>
@@ -105,14 +105,14 @@ function CompactRecentSessions({ sessions }: { sessions: DashboardSessionCard[] 
         <Link
           key={session.sessionId}
           href={session.href}
-          className="block rounded-2xl border border-white/10 bg-[#0F1420] p-4 transition hover:border-[#6C4EFF]/40"
+          className="block rounded-2xl border border-[#D7D0C7] bg-[#F6F3EE] p-4 transition hover:border-[#2D7A72]/40"
         >
           <div className="flex items-center justify-between gap-3">
-            <h3 className="text-sm font-semibold text-white">{session.title}</h3>
-            <span className="text-xs font-semibold text-[#9CA3AF]">{session.completionPercentage}%</span>
+            <h3 className="text-sm font-semibold text-slate-950">{session.title}</h3>
+            <span className="text-xs font-semibold text-slate-500">{session.completionPercentage}%</span>
           </div>
           <p className={`mt-2 ${premiumUi.body}`}>{session.subtitle}</p>
-          <p className="mt-2 text-sm font-semibold text-[#00BFFF]">{session.actionLabel}</p>
+          <p className="mt-2 text-sm font-semibold text-[#0F766E]">{session.actionLabel}</p>
         </Link>
       ))}
     </div>
@@ -189,8 +189,8 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
       {data.onboardingPersonalization.isActive ? (
         <section className={premiumUi.card}>
           <p className={premiumUi.eyebrowAccent}>Your setup</p>
-          <div className="mt-4 space-y-3 rounded-2xl border border-[#6C4EFF]/30 bg-[#6C4EFF]/10 p-4">
-            <p className="text-sm font-semibold text-white">{data.onboardingPersonalization.setupSummary}</p>
+          <div className="mt-4 space-y-3 rounded-2xl border border-[#2D7A72]/25 bg-[#DFF3EE] p-4">
+            <p className="text-sm font-semibold text-slate-950">{data.onboardingPersonalization.setupSummary}</p>
             <p className={premiumUi.body}>{data.onboardingPersonalization.studyGoalMessage}</p>
             <Link href={data.onboardingPersonalization.primarySubjectHref} className={premiumUi.primaryBtn}>
               Open your first subject
@@ -204,11 +204,11 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
       {data.journey ? <JourneyNextStepPanel journey={data.journey} /> : null}
 
       <details className={`${premiumUi.card} group`}>
-        <summary className="cursor-pointer list-none text-lg font-bold tracking-tight text-white marker:content-none [&::-webkit-details-marker]:hidden">
+        <summary className="cursor-pointer list-none text-lg font-bold tracking-tight text-slate-950 marker:content-none [&::-webkit-details-marker]:hidden">
           <span className={premiumUi.eyebrowAccent}>More study tools</span>
           <span className="mt-2 block">Planner, saved work, routes, and support</span>
         </summary>
-        <div className="mt-6 space-y-8 border-t border-white/10 pt-6">
+        <div className="mt-6 space-y-8 border-t border-[#D7D0C7] pt-6">
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
             <Mark32DailyQuote motivation={data.dailyMotivation} />
             <Mark32WeakestTopics data={data} />
@@ -225,11 +225,11 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
                     <Link
                       key={card.subject}
                       href={card.subjectId ? `/subjects?subjectId=${encodeURIComponent(card.subjectId)}` : "/subjects"}
-                      className="block rounded-2xl border border-white/10 bg-[#0F1420] p-4 transition hover:border-[#6C4EFF]/40"
+                      className="block rounded-2xl border border-[#D7D0C7] bg-[#F6F3EE] p-4 transition hover:border-[#2D7A72]/40"
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <h3 className="text-sm font-semibold text-white">{card.subject}</h3>
-                        <span className="text-xs font-semibold text-[#9CA3AF]">{card.readinessScore}/100</span>
+                        <h3 className="text-sm font-semibold text-slate-950">{card.subject}</h3>
+                        <span className="text-xs font-semibold text-slate-500">{card.readinessScore}/100</span>
                       </div>
                       <p className={`mt-2 ${premiumUi.body}`}>{card.recommendedFocus}</p>
                     </Link>
@@ -247,10 +247,10 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
               {primaryRoute ? (
                 <Link
                   href={primaryRoute.href}
-                  className="mt-5 block rounded-2xl border border-[#6C4EFF]/30 bg-[#6C4EFF]/10 p-5 transition hover:border-[#6C4EFF]/50"
+                  className="mt-5 block rounded-2xl border border-[#2D7A72]/25 bg-[#DFF3EE] p-5 transition hover:border-[#2D7A72]/45"
                 >
                   <p className={premiumUi.eyebrowAccent}>{primaryRoute.eyebrow}</p>
-                  <h3 className="mt-2 text-xl font-bold tracking-tight text-white">{primaryRoute.title}</h3>
+                  <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-950">{primaryRoute.title}</h3>
                   <p className={`mt-2 ${premiumUi.body}`}>{primaryRoute.description}</p>
                 </Link>
               ) : null}
@@ -266,7 +266,7 @@ function DashboardStudentContent({ data }: { data: DashboardHomeData }) {
                 <div className="flex flex-wrap items-end justify-between gap-3">
                   <div>
                     <p className={premiumUi.eyebrowAccent}>Resume recent work</p>
-                    <h2 className="mt-2 text-xl font-bold tracking-tight text-white">Return without losing momentum</h2>
+                    <h2 className="mt-2 text-xl font-bold tracking-tight text-slate-950">Return without losing momentum</h2>
                   </div>
                   <Link href="/saved-progress" className={premiumUi.linkAccent}>
                     View all

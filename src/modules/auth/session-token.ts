@@ -14,6 +14,17 @@ export interface AuthFlowState {
   expiresAt: string;
 }
 
+export function isSameAuthFlowState(left: AuthFlowState, right: AuthFlowState): boolean {
+  return (
+    left.provider === right.provider &&
+    left.state === right.state &&
+    left.codeVerifier === right.codeVerifier &&
+    left.returnTo === right.returnTo &&
+    left.createdAt === right.createdAt &&
+    left.expiresAt === right.expiresAt
+  );
+}
+
 interface TokenEnvelope<TPayload> {
   payload: TPayload;
   purpose: string;

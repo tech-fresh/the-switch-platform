@@ -77,10 +77,10 @@ export function Mark32HeroRow({ data }: Mark32HeroRowProps) {
               <li key={topic.subject}>
                 <Link
                   href={topic.href}
-                  className="flex items-center justify-between rounded-xl border border-white/10 bg-[#0F1420] px-4 py-3 transition hover:border-[#F59E0B]/40"
+                  className="flex items-center justify-between rounded-xl border border-[#D7D0C7] bg-[#F6F3EE] px-4 py-3 transition hover:border-[#C28B2C]/35"
                 >
-                  <span className="text-sm font-semibold text-white">{topic.subject}</span>
-                  <span className="text-xs text-[#9CA3AF]">{topic.score}/100</span>
+                  <span className="text-sm font-semibold text-slate-950">{topic.subject}</span>
+                  <span className="text-xs text-slate-500">{topic.score}/100</span>
                 </Link>
               </li>
             ))}

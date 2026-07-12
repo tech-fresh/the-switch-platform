@@ -78,7 +78,7 @@ export function PremiumHomepageMarketing() {
               <span className="text-3xl" aria-hidden="true">
                 {item.icon}
               </span>
-              <h3 className="mt-4 text-lg font-bold text-white">{item.title}</h3>
+              <h3 className="mt-4 text-lg font-bold text-[#163038]">{item.title}</h3>
               <p className={`mt-2 ${premiumUi.body}`}>{item.detail}</p>
             </article>
           ))}
@@ -93,10 +93,10 @@ export function PremiumHomepageMarketing() {
         <ol className="grid gap-4 md:grid-cols-3">
           {PREMIUM_HOW_IT_WORKS.map((item) => (
             <li key={item.step} className={premiumUi.card}>
-              <span className="inline-flex size-10 items-center justify-center rounded-xl bg-[#6C4EFF]/25 text-sm font-bold text-white">
+              <span className="inline-flex size-10 items-center justify-center rounded-xl bg-[#0f766e]/12 text-sm font-bold text-[#0f766e]">
                 {item.step}
               </span>
-              <h3 className="mt-4 text-lg font-bold text-white">{item.title}</h3>
+              <h3 className="mt-4 text-lg font-bold text-[#163038]">{item.title}</h3>
               <p className={`mt-2 ${premiumUi.body}`}>{item.detail}</p>
             </li>
           ))}
@@ -114,7 +114,7 @@ export function PremiumHomepageMarketing() {
         <div className="grid gap-4 md:grid-cols-2">
           {PREMIUM_FAQ.map((item) => (
             <article key={item.question} className={premiumUi.cardMuted}>
-              <h3 className="text-base font-bold text-white">{item.question}</h3>
+              <h3 className="text-base font-bold text-[#163038]">{item.question}</h3>
               <p className={`mt-3 ${premiumUi.body}`}>{item.answer}</p>
             </article>
           ))}

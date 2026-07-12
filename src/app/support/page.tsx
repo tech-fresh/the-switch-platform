@@ -15,7 +15,7 @@ export default async function SupportPage() {
           title={support.title}
           description={support.description}
           aside={
-            <div className="border border-rose-200 bg-rose-50 p-4 shadow-sm">
+            <div className="rounded-3xl border border-rose-200 bg-[#FFF4F1] p-4 shadow-sm">
               <p className="text-xs uppercase tracking-[0.2em] text-rose-700">Important</p>
               <p className="mt-3 text-sm leading-6 text-rose-900">{support.safetyNotice}</p>
             </div>
@@ -46,8 +46,8 @@ export default async function SupportPage() {
               </p>
             </article>
 
-            <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm sm:p-6">
-              <div className="border-b border-violet-100 pb-5">
+            <article className="rounded-3xl border border-[#D7D0C7] bg-[#FCFBF8] p-5 shadow-sm sm:p-6">
+              <div className="border-b border-[#D7D0C7] pb-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-rose-700">
                   Need support right now?
                 </p>
@@ -62,7 +62,7 @@ export default async function SupportPage() {
                     href={option.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="border border-rose-200 bg-rose-50 p-4 transition hover:bg-white"
+                    className="rounded-2xl border border-rose-200 bg-[#FFF4F1] p-4 transition hover:bg-white"
                   >
                     <p className="text-lg font-semibold text-stone-950">{option.name}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-700">{option.actionText}</p>
@@ -72,9 +72,9 @@ export default async function SupportPage() {
               </div>
             </article>
 
-            <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm sm:p-6">
-              <div className="border-b border-violet-100 pb-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-violet-700">
+            <article className="rounded-3xl border border-[#D7D0C7] bg-[#FCFBF8] p-5 shadow-sm sm:p-6">
+              <div className="border-b border-[#D7D0C7] pb-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#0F766E]">
                   Exam stress support
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
@@ -88,7 +88,7 @@ export default async function SupportPage() {
                     href={guide.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-2xl border border-violet-100 bg-violet-50/40 p-4 transition hover:bg-white"
+                    className="rounded-2xl border border-[#D7D0C7] bg-[#F1ECE5] p-4 transition hover:bg-white"
                   >
                     <p className="text-lg font-semibold text-stone-950">{guide.title}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{guide.summary}</p>
@@ -102,14 +102,14 @@ export default async function SupportPage() {
                         </span>
                       ))}
                     </div>
-                    <p className="mt-4 text-sm font-medium text-violet-700">{guide.organisation}</p>
+                    <p className="mt-4 text-sm font-medium text-[#0F766E]">{guide.organisation}</p>
                   </a>
                 ))}
               </div>
             </article>
 
-            <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm sm:p-6">
-              <div className="border-b border-violet-100 pb-5">
+            <article className="rounded-3xl border border-[#D7D0C7] bg-[#FCFBF8] p-5 shadow-sm sm:p-6">
+              <div className="border-b border-[#D7D0C7] pb-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Trusted support services
                 </p>
@@ -124,7 +124,7 @@ export default async function SupportPage() {
                     href={resource.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-2xl border border-violet-100 bg-violet-50/40 p-4 transition hover:bg-white"
+                    className="rounded-2xl border border-[#D7D0C7] bg-[#F1ECE5] p-4 transition hover:bg-white"
                   >
                     <div className="flex flex-wrap items-center gap-3">
                       <p className="text-lg font-semibold text-stone-950">{resource.name}</p>
@@ -139,15 +139,15 @@ export default async function SupportPage() {
                       {resource.providerType === "nhs" ? "NHS" : "Registered charity"} • young people
                     </p>
                     {resource.contactLabel ? (
-                      <p className="mt-4 text-sm font-medium text-violet-700">{resource.contactLabel}</p>
+                      <p className="mt-4 text-sm font-medium text-[#0F766E]">{resource.contactLabel}</p>
                     ) : null}
                   </a>
                 ))}
               </div>
             </article>
 
-            <article className="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm sm:p-6">
-              <div className="border-b border-violet-100 pb-5">
+            <article className="rounded-3xl border border-[#D7D0C7] bg-[#FCFBF8] p-5 shadow-sm sm:p-6">
+              <div className="border-b border-[#D7D0C7] pb-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                   Route guidance
                 </p>
@@ -157,10 +157,10 @@ export default async function SupportPage() {
               </div>
               <div className="mt-5 grid gap-4 lg:grid-cols-3">
                 {support.routeGuidance.map((guidance) => (
-                  <div key={guidance.routeId} className="rounded-2xl border border-violet-100 bg-violet-50/40 p-4">
+                  <div key={guidance.routeId} className="rounded-2xl border border-[#D7D0C7] bg-[#F1ECE5] p-4">
                     <p className="text-lg font-semibold text-stone-950">{guidance.title}</p>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{guidance.message}</p>
-                    <p className="mt-4 text-sm font-medium text-violet-700">{guidance.actionLabel}</p>
+                    <p className="mt-4 text-sm font-medium text-[#0F766E]">{guidance.actionLabel}</p>
                   </div>
                 ))}
               </div>
@@ -168,7 +168,7 @@ export default async function SupportPage() {
           </div>
 
           <aside className="space-y-6">
-            <section className="rounded-2xl border border-violet-100 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-[#D7D0C7] bg-[#FCFBF8] p-4 shadow-sm">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 What this route is
               </h2>
@@ -179,7 +179,7 @@ export default async function SupportPage() {
               </ul>
             </section>
 
-            <section className="rounded-2xl border border-violet-100 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-[#D7D0C7] bg-[#FCFBF8] p-4 shadow-sm">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 What this route is not
               </h2>
@@ -190,7 +190,7 @@ export default async function SupportPage() {
               </ul>
             </section>
 
-            <section className="rounded-2xl border border-violet-100 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-[#D7D0C7] bg-[#FCFBF8] p-4 shadow-sm">
               <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-700">
                 Reviewed safeguards
               </h2>
